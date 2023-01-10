@@ -4,6 +4,8 @@ A sample api server for Sonolus, use C++ & MySQL to develop. You can use it to t
 
 It can be deployed in any Linux devices, even if a moblie phone also can compile the server successfully.
 
+Use httpd core developed by myself, which also support you to build HTTPS server.
+
 ## Links
 
 - [Sonolus Website](https://sonolus.com/)
