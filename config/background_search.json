@@ -1,0 +1,10 @@
+{
+    "options": [
+        {
+            "query": "keywords",
+            "name": "#KEYWORDS",
+            "type": "text",
+            "placeholder": "#KEYWORDS"
+        }
+    ]
+}

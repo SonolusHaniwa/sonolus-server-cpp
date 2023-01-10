@@ -1,0 +1,77 @@
+#ifndef SRL_H
+#define SRL_H
+
+using namespace std;
+
+enum ResourceType {
+    LevelCover,
+    LevelBgm,
+    LevelPreview,
+    LevelData,
+    SkinThumbnail,
+    SkinData,
+    SkinTexture,
+    BackgroundThumbnail,
+    BackgroundData,
+    BackgroundImage,
+    BackgroundConfiguration,
+    EffectThumbnail,
+    EffectData,
+    EffectAudio,
+    ParticleThumbnail,
+    ParticleData,
+    ParticleTexture,
+    EngineThumbnail,
+    EngineData,
+    EngineRom,
+    EngineConfiguration,
+    ServerBanner
+};
+
+string ResourceTypeString[22] = {
+    "LevelCover",
+    "LevelBgm",
+    "LevelPreview",
+    "LevelData",
+    "SkinThumbnail",
+    "SkinData",
+    "SkinTexture",
+    "BackgroundThumbnail",
+    "BackgroundData",
+    "BackgroundImage",
+    "BackgroundConfiguration",
+    "EffectThumbnail",
+    "EffectData",
+    "EffectAudio",
+    "ParticleThumbnail",
+    "ParticleData",
+    "ParticleTexture",
+    "EngineThumbnail",
+    "EngineData",
+    "EngineRom",
+    "EngineConfiguration",
+    "ServerBanner"
+};
+
+template<ResourceType T>
+class SRL {
+    public: 
+    
+    ResourceType type = T;
+    string hash;
+    string url;
+
+    SRL(){}
+    SRL(string hash, string url):
+        hash(hash), url(url){};
+    
+    Json::Value toJsonObject() {
+        Json::Value res;
+        res["type"] = ResourceTypeString[type];
+        res["hash"] = hash;
+        res["url"] = url;
+        return res;
+    }
+};
+
+#endif
