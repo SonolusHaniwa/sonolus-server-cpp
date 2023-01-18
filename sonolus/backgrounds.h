@@ -1,7 +1,13 @@
 using namespace std;
 
 auto sonolus_backgrounds = [](client_conn conn, http_request request, param argv){
-    BackgroundItem item = backgroundList("name = \"" + str_replace("\"", "\\\"", argv[0]) + "\"", 1, 1).items[0];
+    Section<BackgroundItem> section = backgroundList("name = \"" + str_replace("\"", "\\\"", argv[0]) + "\"", 1, 1);
+    if (section.items.size() == 0) {
+        putRequest(conn, 404, __api_default_response);
+        send(conn, json_encode(msg[404]));
+        exitRequest(conn);
+    }
+    BackgroundItem item = section.items[0];
     ItemDetails<BackgroundItem> detail = ItemDetails<BackgroundItem>(item, item.title);
     Json::Value val = detail.toJsonObject();
     putRequest(conn, 200, __api_default_response);

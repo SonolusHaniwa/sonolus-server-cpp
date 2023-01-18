@@ -69,6 +69,7 @@ enum LOG_TARGET {
  */
 void log_init(int log_target) {
     target_id = log_target;
+    if (log_fout.is_open()) log_fout.close();
     if (target_id & LOG_TARGET_FILE) log_fout.open(log_file_target.c_str(), ios::app);
 }
 
@@ -254,7 +255,7 @@ struct http_request {
 
 int sock;
 struct sockaddr_in server_address;
-string http_code[1010];
+string http_code[1024];
 jmp_buf buf[1024 * 1024];
 
 SSL_CTX *ctx;
@@ -998,8 +999,9 @@ class application {
                 case LOG_FILE_PATH: log_file_target = va_arg(arg, const char*); break;
                 case LOG_TARGET_TYPE: log_target_type = va_arg(arg, int); break;
                 case OPEN_DEBUG: isDebug = va_arg(arg, int); break;
-                default: return false;
+                default: va_end(arg); return false;
             }
+            va_end(arg);
             return true;
         }
 }app;
@@ -1060,9 +1062,9 @@ void thread_pool::work_thread() {
     writeLog(LOG_LEVEL_DEBUG, "Created thread #" + to_string(id));
     while (1) {
         #ifdef __linux__
-        usleep(1000 * 1);
+        usleep(1000 * 30);
         #elif __windows__
-        Sleep(1);
+        Sleep(30);
         #endif
         setjmp(buf[id]);
         sockaddr_in client_addr;
