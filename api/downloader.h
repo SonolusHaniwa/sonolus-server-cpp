@@ -39,6 +39,7 @@ auto downloader = [](client_conn conn, http_request request, param argv){
     while (output_len) {
         fin.read(content, min(len, output_len));
         int s = send(conn, content, min(len, output_len));
+        cout << "send " << s << "bytes" << endl;
         if (s == -1) exitRequest(conn);
         output_len -= min(len, output_len);
     }

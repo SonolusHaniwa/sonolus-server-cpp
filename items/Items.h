@@ -13,6 +13,7 @@ Search LevelSearch, SkinSearch, BackgroundSearch, EffectSearch, ParticleSearch, 
 #include"EngineItem.h"
 #include"LevelItem.h"
 // #include"UserProfile.h"
+using namespace std;
 
 Search readJson(string path) {
     ifstream fin(path);

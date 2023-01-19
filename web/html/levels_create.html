@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+    <script src="/js/jQuery.js"></script>
+    <script src="/js/base64.js"></script>
+    <script src="/js/index.js"></script>
+    <title>Create a Level</title>
+    <style>
+        .flex {
+            display: flex;
+            display: -webkit-flex;
+            align-items: center;
+            height: 30px;
+        }
+    </style>
+</html>
+<body>
+    <h1>Create a Level</h1>
+    <div class="flex">
+        <p>level name:</p>
+        <input id="level-name"/>
+    </div>
+    <div class="flex">
+        <p>level rating:</p>
+        <input id="level-rating"/>
+    </div>
+    <div class="flex">
+        <p>level title:</p>
+        <input id="level-title"/>
+    </div>
+    <div class="flex">
+        <p>music artists:</p>
+        <input id="level-artists"/>
+    </div>
+    <div class="flex">
+        <p>your name:</p>
+        <input id="level-author"/>
+    </div>
+    <div class="flex">
+        <p>choose engine: </p>
+        <select id="level-engine">
+            {{ level-engine-options }}
+        </select>
+    </div>
+    <div class="flex">
+        <p>choose skin: </p>
+        <select id="level-skin">
+            <option value="0">default skin</option>
+            {{ level-skin-options }}
+        </select>
+    </div>
+    <div class="flex">
+        <p>choose background: </p>
+        <select id="level-background">
+            <option value="0">default background</option>
+            {{ level-background-options }}
+        </select>
+    </div>
+    <div class="flex">
+        <p>choose effect: </p>
+        <select id="level-effect">
+            <option value="0">default effect</option>
+            {{ level-effect-options }}
+        </select>
+    </div>
+    <div class="flex">
+        <p>choose particle: </p>
+        <select id="level-particle">
+            <option value="0">default particle</option>
+            {{ level-particle-options }}
+        </select>
+    </div>
+    <div class="flex">
+        <p>upload cover: </p>
+        <input type="file" id="level-cover" accept=".jpg,.png"/>
+    </div>
+    <div class="flex">
+        <p>upload bgm: </p>
+        <input type="file" id="level-bgm" accept=".mp3,.wav"/>
+    </div>
+    <div class="flex">
+        <p>upload level data: </p>
+        <input type="file" id="level-data" />
+    </div>
+    <button onclick="upload_level()">Submit</button>
+</body>

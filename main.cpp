@@ -5,12 +5,14 @@
 Json::Value appConfig;
 
 #include"httpd.h"
+#include"html.h"
 #include"mysqli.h"
 #include"json.h"
 #include"encrypt.h"
 #include"items/Items.h"
 #include"sonolus/sonolus.h"
 #include"api/import.h"
+#include"web/import.h"
 using namespace std;
 
 int main() {
@@ -51,9 +53,11 @@ int main() {
     app.setopt(OPEN_DEBUG, appConfig["logSystem.debug"].asInt());
 
     app.addRoute("/data/%s", downloader);
+    app.addRoute("/js/%s", js_import);
+    app.addRoute("/css/%s", css_import);
 
     app.addRoute("/sonolus/info", sonolus_info);
-    // app.addRoute("/sonolus/levels/create", sonolus_levels_create);
+    app.addRoute("/sonolus/levels/create", sonolus_levels_create);
     // app.addRoute("/sonolus/skins/create", sonolus_skins_create);
     // app.addRoute("/sonolus/backgrounds/create", sonolus_backgrounds_create);
     // app.addRoute("/sonolus/effects/create", sonolus_effects_create);
@@ -71,6 +75,9 @@ int main() {
     app.addRoute("/sonolus/effects/%s", sonolus_effects);
     app.addRoute("/sonolus/particles/%s", sonolus_particles);
     app.addRoute("/sonolus/engines/%s", sonolus_engines);
+
+    app.addRoute("/levels/create", web_levels_create);
+    // app.addRoute("/backgrounds/create", web_backgrounds_create);
 
     app.addRoute("/uploader", uploader);
 

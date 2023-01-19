@@ -6,6 +6,7 @@ using namespace std;
 class EffectItem {
     public:
 
+    int id;
     string name;
     int version = 4;
     string title;
@@ -16,9 +17,9 @@ class EffectItem {
     SRL<EffectAudio> audio;
 
     EffectItem(){}
-    EffectItem(string name, string title, string subtitle, string author,
+    EffectItem(int id, string name, string title, string subtitle, string author,
         SRL<EffectThumbnail> thumbnail, SRL<EffectData> data, SRL<EffectAudio> audio):
-        name(name), title(title), subtitle(subtitle), author(author),
+        id(id), name(name), title(title), subtitle(subtitle), author(author),
         thumbnail(thumbnail), data(data), audio(audio){}
     
     Json::Value toJsonObject() {
@@ -51,6 +52,7 @@ Section<EffectItem> effectList(string filter, int st = 1, int en = 20) {
     Section<EffectItem> list = Section<EffectItem>(pageCount, EffectSearch);
     for (int i = 0; i < res.size(); i++) {
         EffectItem data = EffectItem(
+            atoi(res[i]["id"].c_str()),
             res[i]["name"],
             res[i]["title"],
             res[i]["subtitle"],

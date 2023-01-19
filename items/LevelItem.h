@@ -24,6 +24,7 @@ class UseItem {
 class LevelItem {
     public:
 
+    int id;
     string name;
     int version = 1;
     int rating;
@@ -41,10 +42,10 @@ class LevelItem {
     SRL<LevelPreview> preview;
 
     LevelItem(){}
-    LevelItem(string name, int rating, string title, string artists, string author, EngineItem engine, 
+    LevelItem(int id, string name, int rating, string title, string artists, string author, EngineItem engine, 
         UseItem<SkinItem> useSkin, UseItem<BackgroundItem> useBackground, UseItem<EffectItem> useEffect, UseItem<ParticleItem> useParticle,
         SRL<LevelCover> cover, SRL<LevelBgm> bgm, SRL<LevelData> data, SRL<LevelPreview> preview):
-        name(name), rating(rating), title(title), artists(artists), author(author), engine(engine), 
+        id(id), name(name), rating(rating), title(title), artists(artists), author(author), engine(engine), 
         useSkin(useSkin), useBackground(useBackground), useEffect(useEffect), useParticle(useParticle),
         cover(cover), bgm(bgm), data(data), preview(preview){}
 
@@ -69,19 +70,23 @@ class LevelItem {
     }
 };
 
-Section<LevelItem> levelList(string filter, int st = 1, int en = 20) {
-    // 获取数据条数
+int levelNumber(string filter) {
     string sql = "SELECT COUNT(*) AS sum FROM Level";
     if (filter != "") sql += " WHERE (" + filter + ")";
-    sql += " ORDER BY id ASC LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);
+    sql += " ORDER BY id";
     mysqld res = mysqli_query(mysql, sql.c_str());
-    int pageCount = atoi(res[0]["sum"].c_str()) / 20;
+    return atoi(res[0]["sum"].c_str());
+}
+
+Section<LevelItem> levelList(string filter, int st = 1, int en = 20) {
+    // 获取数据条数
+    int pageCount = levelNumber(filter) / 20;
 
     // 获取数据
-    sql = "SELECT * FROM Level";
+    string sql = "SELECT * FROM Level";
     if (filter != "") sql += " WHERE (" + filter + ")";
     sql += " ORDER BY id ASC LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);
-    res = mysqli_query(mysql, sql.c_str());
+    auto res = mysqli_query(mysql, sql.c_str());
     Section<LevelItem> list = Section<LevelItem>(pageCount, LevelSearch);
     for (int i = 0; i < res.size(); i++) {
         EngineItem engine = engineList("id = " + res[i]["engine"], 1, 1).items[0];
@@ -94,6 +99,7 @@ Section<LevelItem> levelList(string filter, int st = 1, int en = 20) {
         UseItem<ParticleItem> useParticle = UseItem<ParticleItem>(
             res[i]["particle"] == "0", res[i]["particle"] == "0" ? ParticleItem() : particleList("id = " + res[i]["particle"], 1, 1).items[0]);
         LevelItem data = LevelItem(
+            atoi(res[i]["id"].c_str()),
             res[i]["name"],
             atoi(res[i]["rating"].c_str()),
             res[i]["title"],

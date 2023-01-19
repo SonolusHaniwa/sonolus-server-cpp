@@ -1,3 +1,5 @@
+using namespace std;
+
 Json::Value msg[1024];
 void loadDefaultVariable() {
     for (int i = 1; i <= 1000; i++) msg[i]["code"] = i;
@@ -61,7 +63,7 @@ void loadDefaultVariable() {
 #include"effects.h"
 #include"particles.h"
 #include"engines.h"
-// #include"levels_create.h"
+#include"levels_create.h"
 // #include"skins_create.h"
 // #include"backgrounds_create.h"
 // #include"effects_create.h"

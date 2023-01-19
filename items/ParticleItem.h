@@ -6,6 +6,7 @@ using namespace std;
 class ParticleItem {
     public:
 
+    int id;
     string name;
     int version = 1;
     string title;
@@ -16,9 +17,9 @@ class ParticleItem {
     SRL<ParticleTexture> texture;
 
     ParticleItem(){}
-    ParticleItem(string name, string title, string subtitle, string author,
+    ParticleItem(int id, string name, string title, string subtitle, string author,
         SRL<ParticleThumbnail> thumbnail, SRL<ParticleData> data, SRL<ParticleTexture> texture):
-        name(name), title(title), subtitle(subtitle), author(author),
+        id(id), name(name), title(title), subtitle(subtitle), author(author),
         thumbnail(thumbnail), data(data), texture(texture){}
 
     Json::Value toJsonObject() {
@@ -51,6 +52,7 @@ Section<ParticleItem> particleList(string filter, int st = 1, int en = 20) {
     Section<ParticleItem> list = Section<ParticleItem>(pageCount, ParticleSearch);
     for (int i = 0; i < res.size(); i++) {
         ParticleItem data = ParticleItem(
+            atoi(res[i]["id"].c_str()),
             res[i]["name"],
             res[i]["title"],
             res[i]["subtitle"],

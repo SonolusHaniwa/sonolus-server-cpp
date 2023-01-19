@@ -6,6 +6,7 @@ using namespace std;
 class EngineItem {
     public:
 
+    int id;
     string name;
     int version = 7;
     string title;
@@ -21,10 +22,10 @@ class EngineItem {
     SRL<EngineRom> rom;
 
     EngineItem(){}
-    EngineItem(string name, string title, string subtitle, string author,
+    EngineItem(int id, string name, string title, string subtitle, string author,
         SkinItem skin, BackgroundItem background, EffectItem effect, ParticleItem particle,
         SRL<EngineThumbnail> thumbnail, SRL<EngineData> data, SRL<EngineConfiguration> configuration, SRL<EngineRom> rom = SRL<EngineRom>("", "")):
-        name(name), title(title), subtitle(subtitle), author(author),
+        id(id), name(name), title(title), subtitle(subtitle), author(author),
         skin(skin), background(background), effect(effect), particle(particle),
         thumbnail(thumbnail), data(data), configuration(configuration), rom(rom){}
     
@@ -67,6 +68,7 @@ Section<EngineItem> engineList(string filter, int st = 1, int en = 20) {
         EffectItem effect = effectList("id = " + res[i]["effect"], 1, 1).items[0];
         ParticleItem particle = particleList("id = " + res[i]["particle"], 1, 1).items[0];
         EngineItem data = EngineItem(
+            atoi(res[i]["id"].c_str()),
             res[i]["name"],
             res[i]["title"],
             res[i]["subtitle"],

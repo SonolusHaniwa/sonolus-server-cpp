@@ -6,6 +6,7 @@ using namespace std;
 class BackgroundItem {
     public:
 
+    int id;
     string name;
     int version = 2;
     string title;
@@ -17,9 +18,9 @@ class BackgroundItem {
     SRL<BackgroundConfiguration> configuration;
 
     BackgroundItem(){}
-    BackgroundItem(string name, string title, string subtitle, string author, 
+    BackgroundItem(int id, string name, string title, string subtitle, string author, 
         SRL<BackgroundThumbnail> thumbnail, SRL<BackgroundData> data, SRL<BackgroundImage> image, SRL<BackgroundConfiguration> configuration):
-        name(name), title(title), subtitle(subtitle), author(author),
+        id(id), name(name), title(title), subtitle(subtitle), author(author),
         thumbnail(thumbnail), data(data), image(image), configuration(configuration){}
     
     Json::Value toJsonObject() {
@@ -37,22 +38,26 @@ class BackgroundItem {
     }
 };
 
-Section<BackgroundItem> backgroundList(string filter, int st = 1, int en = 20) {
-    // 获取数据条数
+int backgroundNumber(string filter) {
     string sql = "SELECT COUNT(*) AS sum FROM Background";
     if (filter != "") sql += " WHERE (" + filter + ")";
-    sql += " ORDER BY id ASC LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);
     mysqld res = mysqli_query(mysql, sql.c_str());
-    int pageCount = atoi(res[0]["sum"].c_str()) / 20;
+    return atoi(res[0]["sum"].c_str());
+}
+
+Section<BackgroundItem> backgroundList(string filter, int st = 1, int en = 20) {
+    // 获取数据条数
+    int pageCount = backgroundNumber(filter) / 20;
 
     // 获取数据
-    sql = "SELECT * FROM Background";
+    string sql = "SELECT * FROM Background";
     if (filter != "") sql += " WHERE (" + filter + ")";
     sql += " ORDER BY id ASC LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);
-    res = mysqli_query(mysql, sql.c_str());
+    auto res = mysqli_query(mysql, sql.c_str());
     Section<BackgroundItem> list = Section<BackgroundItem>(pageCount, BackgroundSearch);
     for (int i = 0; i < res.size(); i++) {
         BackgroundItem data = BackgroundItem(
+            atoi(res[i]["id"].c_str()),
             res[i]["name"], 
             res[i]["title"], 
             res[i]["subtitle"],
@@ -64,5 +69,6 @@ Section<BackgroundItem> backgroundList(string filter, int st = 1, int en = 20) {
         ); list.append(data);
     } return list;
 }
+
 
 #endif

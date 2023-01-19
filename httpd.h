@@ -182,7 +182,7 @@ ssize_t send(client_conn __fd, string __buf) {
  * @param len 要发送的信息长度
  * @return ssize_t 
  */
-ssize_t send(client_conn __fd, char __buf[1024 * 1024], int len) {
+ssize_t send(client_conn __fd, char* __buf, int len) {
     int s = -1;
     if (!https) return send(__fd.conn, __buf, len, 0);
     else return SSL_write(__fd.ssl, __buf, len); 
