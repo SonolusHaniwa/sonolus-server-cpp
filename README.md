@@ -62,6 +62,10 @@ g++ main.cpp -o main -lpthread -lcrypto -lssl -ljsoncpp -lmysqlclient -g
 
 ## Tips
 
+### 2023.1.21
+
+Windows users need to execute program "Setup Sonolus Database" as administrator firstly, and then execute "Sonolus Server for Windows" to open the service. 
+
 ### 2023.1.19
 
 If you want set port to `80/443`, you must have the administrator privilege.
@@ -79,6 +83,10 @@ These days, the official wiki website has added an endpoint `/sonolus/authentica
 - [dankogai/js-base64](https://github.com/dankogai/js-base64)
 
 ## Upload Log
+
+### v1.0.2-2 2023.1.21
+
+1. Fixed the issues occurred by `MYSQL` struct.
 
 ### v1.0.2 2023.1.19
 
