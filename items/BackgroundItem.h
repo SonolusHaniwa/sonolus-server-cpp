@@ -36,6 +36,28 @@ class BackgroundItem {
         res["configuration"] = configuration.toJsonObject();
         return res;
     }
+
+    argvar fetchParamList() {
+        argvar args;
+        args["name"] = name;
+        args["version"] = to_string(version);
+        args["title"] = title;
+        args["subtitle"] = subtitle;
+        args["author"] = author;
+        args["thumbnail"] = thumbnail.url;
+        args["data"] = data.url;
+        args["image"] = image.url;
+        args["configuration"] = configuration.url;
+        args["url"] = "/backgrounds/" + name;
+        args["sonolus.url"] = "sonolus:" + appConfig["server.rootUrl"].asString() + "/backgrounds/" + name;
+        return args;
+    }
+
+    H toHTMLObject() {
+        string buffer = readFile("./web/html/components/backgrounds.html");
+        buffer = str_replace(buffer, fetchParamList());
+        return H(buffer);
+    }
 };
 
 int backgroundNumber(string filter) {
@@ -52,7 +74,7 @@ Section<BackgroundItem> backgroundList(string filter, int st = 1, int en = 20) {
     // 获取数据
     string sql = "SELECT * FROM Background";
     if (filter != "") sql += " WHERE (" + filter + ")";
-    sql += " ORDER BY id ASC LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);
+    sql += " ORDER BY id DESC LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);
     auto res = mysqli_query(mysql, sql.c_str());
     Section<BackgroundItem> list = Section<BackgroundItem>(pageCount, BackgroundSearch);
     for (int i = 0; i < res.size(); i++) {

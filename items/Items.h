@@ -86,4 +86,10 @@ void loadConfig() {
     EffectSearch = readJson("./config/effect_search.json");
     ParticleSearch = readJson("./config/particle_search.json");
     EngineSearch = readJson("./config/engine_search.json");
+    string json = readFile("./i18n/index.json");
+    Json::Value index; json_decode(json, index);
+    for (int i = 0; i < index.size(); i++) {
+        json = readFile(index[i]["path"].asString());
+        json_decode(json, i18n[index[i]["name"].asString()]);
+    } i18n_raw = index;
 }

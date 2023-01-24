@@ -8,7 +8,9 @@ auto sonolus_effects = [](client_conn conn, http_request request, param argv){
         exitRequest(conn);
     }
     EffectItem item = section.items[0];
+    Section<EffectItem> recommended = effectList("author = \"" + str_replace("\"", "\\\"", item.author) + "\"", 1, 10);
     ItemDetails<EffectItem> detail = ItemDetails<EffectItem>(item, item.title);
+    detail.recommended = recommended.items;
     Json::Value val = detail.toJsonObject();
     putRequest(conn, 200, __api_default_response);
     send(conn, json_encode(val));

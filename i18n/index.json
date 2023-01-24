@@ -1,0 +1,11 @@
+[
+    {
+        "name": "zh-cn",
+        "title": "简体中文 (Simplified Chinese)",
+        "path": "./i18n/zh-cn.json"
+    },{
+        "name": "en-us",
+        "title": "English (United States)",
+        "path": "./i18n/en-us.json"
+    }
+]

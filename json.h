@@ -18,4 +18,13 @@ bool json_decode(string json, Json::Value& res) {
     return reader.parse(json, res);
 }
 
+argvar transfer(Json::Value source, string prefix = "") {
+    argvar result;
+    Json::Value::Members mem = source.getMemberNames();
+    for (auto it = mem.begin(); it != mem.end(); it++) {
+        if (source[*it].type() == Json::objectValue) continue;
+        result[prefix + (*it)] = source[*it].asString();
+    } return result;
+}
+
 #endif

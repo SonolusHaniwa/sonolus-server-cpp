@@ -68,6 +68,34 @@ class LevelItem {
         res["preview"] = preview.toJsonObject();
         return res;
     }
+
+    argvar fetchParamList() {
+        argvar args;
+        args["name"] = name;
+        args["version"] = to_string(version);
+        args["rating"] = to_string(rating);
+        args["title"] = title;
+        args["artists"] = artists;
+        args["author"] = author;
+        args["engine"] = engine.title;
+        args["skin"] = useSkin.useDefault ? engine.skin.title : useSkin.item.title;
+        args["background"] = useBackground.useDefault ? engine.background.title : useBackground.item.title;
+        args["effect"] = useEffect.useDefault ? engine.effect.title : useEffect.item.title;
+        args["particle"] = useParticle.useDefault ? engine.particle.title : useParticle.item.title;
+        args["cover"] = cover.url;
+        args["bgm"] = bgm.url;
+        args["data"] = data.url;
+        args["preview"] = preview.url;
+        args["url"] = "/levels/" + name;
+        args["sonolus.url"] = "sonolus:" + appConfig["server.rootUrl"].asString() + "/levels/" + name;
+        return args;
+    }
+
+    H toHTMLObject() {
+        string buffer = readFile("./web/html/components/levels.html");
+        buffer = str_replace(buffer, fetchParamList());
+        return H(buffer);
+    }
 };
 
 int levelNumber(string filter) {
@@ -85,7 +113,7 @@ Section<LevelItem> levelList(string filter, int st = 1, int en = 20) {
     // 获取数据
     string sql = "SELECT * FROM Level";
     if (filter != "") sql += " WHERE (" + filter + ")";
-    sql += " ORDER BY id ASC LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);
+    sql += " ORDER BY id DESC LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);
     auto res = mysqli_query(mysql, sql.c_str());
     Section<LevelItem> list = Section<LevelItem>(pageCount, LevelSearch);
     for (int i = 0; i < res.size(); i++) {

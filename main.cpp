@@ -3,6 +3,7 @@
 #include<mysql/mysql.h>
 
 Json::Value appConfig;
+Json::Value i18n, i18n_raw;
 
 #include"httpd.h"
 #include"html.h"
@@ -76,8 +77,33 @@ int main() {
     app.addRoute("/sonolus/particles/%s", sonolus_particles);
     app.addRoute("/sonolus/engines/%s", sonolus_engines);
 
+    app.addRoute("/", web_index);
+    app.addRoute("/index", web_index);
     app.addRoute("/levels/create", web_levels_create);
+    // app.addRoute("/skins/create", web_skins_create);
     // app.addRoute("/backgrounds/create", web_backgrounds_create);
+    // app.addRoute("/effects/create", web_effects_create);
+    // app.addRoute("/particles/create", web_particles_create);
+    // app.addRoute("/engines/create", web_engines_create);
+    // app.addRoute("/levels/list", web_levels_list);
+    // app.addRoute("/skins/list", web_skins_list);
+    // app.addRoute("/backgrounds/list", web_backgrounds_list);
+    // app.addRoute("/effects/list", web_effects_list);
+    // app.addRoute("/particles/list", web_particles_list);
+    // app.addRoute("/engines/list", web_engines_list);
+    // app.addRoute("/levels/search", web_levels_search);
+    // app.addRoute("/skins/search", web_skins_search);
+    // app.addRoute("/backgrounds/search", web_backgrounds_search);
+    // app.addRoute("/effects/search", web_effects_search);
+    // app.addRoute("/particles/search", web_particles_search);
+    // app.addRoute("/engines/search", web_engines_search);
+    app.addRoute("/levels/%s", web_levels);
+    app.addRoute("/skins/%s", web_skins);
+    app.addRoute("/backgrounds/%s", web_backgrounds);
+    app.addRoute("/effects/%s", web_effects);
+    app.addRoute("/particles/%s", web_particles);
+    app.addRoute("/engines/%s", web_engines);
+
 
     app.addRoute("/uploader", uploader);
 

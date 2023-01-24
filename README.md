@@ -1,80 +1,120 @@
 # Sonolus Server for C++
 
-A sample api server for Sonolus, use C++ & MySQL to develop. You can use it to test your own Sonolus engine or build a Sonolus server for yourself.
+[English](./README_en.md) [简体中文](./README.md)
 
-It can be deployed in any Linux devices and any Windows devices, even if a moblie phone also can compile the server successfully.
+使用 C++ 与 MySQL 开发的一个适用于 Sonolus 的 api 服务器，您可以用于测试您自己的引擎或自己构建一个 Sonolus 服务。
 
-Use httpd core developed by myself, which also support you to build HTTPS server.
+该项目可以被部署在任何 Linux 设备以及 Windows 设备，即使是一台手机也能轻松完成服务器的编译。
 
-## Links
+使用自主研发的 WebServer Core 进行开发，同时支持您构建 HTTPS 服务器。
+
+## 链接
 
 - [Sonolus Website](https://sonolus.com/)
 - [Sonolus Wiki](https://wiki.sonolus.com/)
 
-## Building
+## 构建
 
-### Install Dependencies
+### 下载依赖
 
 ```bash
 sudo apt install g++ libjsoncpp-dev libmysqlclient-dev libssl-dev -y
 ```
 
-### Import Databases
+### 导入数据库
 
-Just enter MySQL Server and import `data.sql`.
+仅需要进入 MySQL 数据库导入 `data.sql` 即可。
 
-### Customize
+### 网站配置
 
-- Edit `./config/*_search.json` for all search configuration.
-- Edit `./config/config.json` for application configuration.
+- 在 `./config/*_search.json` 中编辑所有的搜索配置。
+- 在 `./config/config.json` 中编辑应用配置。
 
-### Compile
+### 编译
 
 ```bash
 g++ main.cpp -o main -lpthread -lcrypto -lssl -ljsoncpp -lmysqlclient -g
 ```
 
-### Run
+### 运行
 
 ```bash
 ./main
 ```
 
-## Configuration
+## 配置信息
 
-- `mysql.hostname`: MySQL Server listen host.
-- `mysql.port`: MySQL Server listen port.
-- `mysql.username`: MySQL user's name.
-- `mysql.password`: MySQL user's password.
-- `mysql.database`: MySQL Server database's name.
-- `server.title`: Sonolus server title.
-- `server.bannerAddress`: The banner address that will displayed in the app.
-- `server.bannerHash`: The SHA1 code of the banner.
-- `server.listenHost`: Listening address for WebServer Core.
-- `server.listenPort`: Listening port for WebServer Core.
-- `server.enableSSL`: Whether the WebServer Core use HTTPS.
-- `server.httpsCacert`: Server's CA Certificate.
-- `server.httpsPrivate`: Server's Private Certificate.
-- `server.threadNumber`: The number of multithread.
-- `logSystem.debug`: Whether the WebServer Core output DEBUG info.
-- `logSystem.target`: Where the log info was output. `0` for none, `1` for Console, `2` for Log File, `3` for Console & Log File. 
-- `logSystem.targetFile`: Log file path.
+- `mysql.hostname`: MySQL 服务器监听地址。
+- `mysql.port`: MySQL 服务器监听端口。
+- `mysql.username`: MySQL 用户名。
+- `mysql.password`: MySQL 用户密码。
+- `mysql.database`: MySQL 目标数据库名。
+- `server.name`: 默认 `sonolus` 就行。
+- `server.title`: Sonolus 服务器标题。
+- `server.description`: Sonolus 服务器描述。
+- `server.logo`: Sonolus 服务器 logo。
+- `server.bannerUrl`: 网站导航图地址。
+- `server.bannerHash`: 网站导航图 SHA-1 代码。
+- `server.listenHost`: WebServer Core 监听地址。
+- `server.listenPort`: WebServer Core 监听端口。
+- `server.enableSSL`: 指定服务器是否启用 HTTPS。
+- `server.httpsCacert`: 服务器 CA 证书。
+- `server.httpsPrivate`: 服务器私钥。
+- `server.threadNumber`: 线程数。
+- `server.rootUrl`: 服务器根节点(不含协议信息)。
+- `logSystem.debug`: 指定是否输出 DEBUG 信息。
+- `logSystem.target`: 指定日志输出位置。`0` 为不输出，`1` 为输出在控制台，`2` 为文件输出，`3` 为二者皆有。 
+- `logSystem.targetFile`: 日志文件地址。
+- `language.default`: 网站默认语言。
 
-## Tips
+## 终节点
+
+### API
+
+- `POST /uploader`: 上传文件接口。
+- `GET /data/{hash}`: 下载 SHA-1 为 {hash} 的文件。
+- `GET /sonolus/info`: 获取服务器信息。
+- `GET /sonolus/levels/list`: 获取部分关卡信息。
+- `GET /sonolus/skins/list`: 获取部分皮肤信息。
+- `GET /sonolus/backgrounds/list`: 获取部分背景信息。
+- `GET /sonolus/effects/list`: 获取部分音效信息。
+- `GET /sonolus/particles/list`: 获取部分粒子效果信息。
+- `GET /sonolus/engines/list`: 获取部分引擎信息。
+- `POST /sonolus/levels/create`: 创建请求以新增关卡
+- `GET /sonolus/levels/{name}`: 获取名为 {name} 的关卡信息。
+- `GET /sonolus/skins/{name}`: 获取名为 {name} 的皮肤信息。
+- `GET /sonolus/backgrounds/{name}`: 获取名为 {name} 的背景信息。
+- `GET /sonolus/effects/{name}`: 获取名为 {name} 的音效信息。
+- `GET /sonolus/particles/{name}`: 获取名为 {name} 的粒子效果信息。
+- `GET /sonolus/engines/{name}`: 获取名为 {name} 的引擎信息。
+
+### GUI
+
+- `GET /`: 网站主页面。
+- `GET /index`: 网站主页面。
+- `GET /levels/create`: 创建一个关卡。
+- `GET /levels/{name}`: 显示名为 {name} 的关卡信息。
+- `GET /skins/{name}`: 显示名为 {name} 的皮肤信息。
+- `GET /backgrounds/{name}`: 显示名为 {name} 的背景信息。
+- `GET /effects/{name}`: 显示名为 {name} 的音效信息。
+- `GET /particles/{name}`: 显示名为 {name} 的粒子效果信息。
+- `GET /engines/{name}`: 显示名为 {name} 的引擎信息。
+
+## 提示
 
 ### 2023.1.21
 
-Windows users need to execute program "Setup Sonolus Database" as administrator firstly, and then execute "Sonolus Server for Windows" to open the service. 
+对于 Windows 用户，需要首先以管理员身份运行 "Setup Sonolus Database" 程序，然后运行 "Sonolus Server for Windows" 开启服务。
 
 ### 2023.1.19
 
-If you want set port to `80/443`, you must have the administrator privilege.
+如果您想监听 `80/443` 端口，您必须以管理员身份运行程序。
 
 ### 2023.1.18
 
-These days, the official wiki website has added an endpoint `/sonolus/authenticate` and an object `UserProject`, but I couldn't find the interactive way with the Sonolus app. So I didn't add this function into the application.
+最近官方 wiki 网站新增了终节点 `/sonolus/authenticate` 以及对象 `UserProfile`，但我不知道该终节点与 Sonolus 应用交互的方法，故本应用中暂时无 `/sonolus/authenticate` 终节点。
 
-## Extensions
+## 扩展
 
 - [open-source-parsers/jsoncpp](https://github.com/open-source-parsers/jsoncpp)
 - libmysqlclient
@@ -82,23 +122,32 @@ These days, the official wiki website has added an endpoint `/sonolus/authentica
 - [jquery/jquery](https://github.com/jquery/jquery)
 - [dankogai/js-base64](https://github.com/dankogai/js-base64)
 
-## Upload Log
+## 更新日志
+
+### v1.1.0 2023.1.24
+
+1. 修复 Windows 由于缺少 __int64_t 导致的编译错误。
+2. 修复所有 list api 的反馈均为一个条目的错误。
+3. 新增推荐显示功能，默认显示同一作者的 5 个作品。
+4. 新增网页主页，仿照官方项目使用原生 js 进行编写。
+5. 新增各组件详情页，仿照官方项目使用原生 js 进行编写。
+6. 新增网站国际化功能，即 i18n。
 
 ### v1.0.2-2 2023.1.21
 
-1. Fixed the issues occurred by `MYSQL` struct.
+1. 修复由于 `MYSQL` 引起的 Windows 版程序闪退 by @LittleYang0531 in #1。
 
 ### v1.0.2 2023.1.19
 
-1. Add the endpoints to create levels.
-2. Add a sample page to create levels.
-3. Provide configuration options to set the website title and banner.
+1. 新增用于创建关卡的终节点。
+2. 新增页面以添加关卡。
+3. 提供设置网站标题以及网站导航图的选项。
 
 ### v1.0.1 2023.1.18
 
-1. Merge all the configuration into `./config/config.json`
-2. Optimize the CPU usage of WebServer Core
+1. 合并所有的设置选项于 `./config/config.json`。
+2. 优化 WebServer Core 对 CPU 的使用。
 
 ### v1.0.0 2023.1.10
 
-1. Release the first version
+1. 第一个版本发布

@@ -1,0 +1,42 @@
+<body class="text-sm text-sonolus-ui-text-normal sm:text-base">
+    <div id="app" data-v-app="">
+        <div class="duration-150">
+            {{html.navbar}}
+            <div class="h-11 sm:h-16"></div>
+            <main class="mx-auto flex max-w-4xl flex-col space-y-9 p-9 transition-opacity v-transition:opacity-0 sm:space-y-12 sm:p-12">
+                <div class="flex w-full flex-col items-center whitespace-nowrap text-center">
+                    <div class="flex w-full justify-between space-x-2 text-2xs text-sonolus-ui-text-soften sm:space-x-3 sm:text-xs">
+                        <div class="overflow-hidden text-el/lipsis">#{{name}}</div>
+                        <div class="overflow-hidden text-ellipsis">{{author}}</div>
+                    </div>
+                    <h1 class="mt-2 w-full overflow-hidden text-ellipsis py-1 text-xl font-bold sm:py-1.5 sm:text-3xl">{{title}}</h1>
+                    <div class="mt-1 mb-4 w-full overflow-hidden text-ellipsis sm:mb-0">{{author}}</div>
+                </div>
+                <div class="flex flex-col items-center justify-center sm:flex-row">
+                    <div class="relative h-48 w-48 flex-shrink-0">
+                        <img class="h-full w-full" src="{{cover}}" alt="Thumbnail">
+                        <div class="absolute left-0 top-0 flex items-center justify-center bg-sonolus-ui-surface bg-opacity-90 h-8 w-8">
+                            <div class="text-base">{{rating}}</div>
+                        </div>
+                        <div class="absolute left-0 top-0 flex h-full w-full items-end justify-center">
+                            <div class="overflow-hidden text-ellipsis whitespace-nowrap bg-sonolus-ui-surface bg-opacity-90 px-2 py-1 text-base">{{engine}}</div>
+                        </div>
+                    </div>
+                    <div class="mt-8 sm:mt-0 sm:ml-24">
+                        {{html.open_in_sonolus}}
+                    </div>
+                </div>
+                <div class="flex flex-col space-y-2 sm:space-y-3">
+                    <h2 class="py-1 text-xl font-bold sm:py-1.5 sm:text-3xl">{{language.description}}</h2>
+                    <p class="whitespace-pre-wrap">{{title}}</p>
+                </div>
+                <div class="flex flex-col space-y-2 sm:space-y-3">
+                    <h2 class="py-1 text-xl font-bold sm:py-1.5 sm:text-3xl">{{language.recommended}}</h2>
+                    {{recommended}}
+                </div>
+                <div class="fixed top-2 left-0 -z-10 flex w-full justify-center sm:top-4">
+                    <img class="banner pointer-events-none w-full object-cover opacity-40 sm:h-60" src="{{cover}}" alt="Banner"></div>
+            </main>
+        </div>
+    </div>
+</body>

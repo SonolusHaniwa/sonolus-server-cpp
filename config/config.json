@@ -4,8 +4,11 @@
     "mysql.username": "root",
     "mysql.password": "root",
     "mysql.database": "sonolus",
+    "server.name": "Sonolus",
     "server.title": "Sonolus Server for C++",
-    "server.bannerAddress": "https://servers.sonolus.com/bestdorisonolus/repository/ServerBanner/a7f0a83e3929f70caf583140d4f6df14e0bd5e41",
+    "server.description": "A Test Server for Sonolus",
+    "server.logo": "https://servers.sonolus.com/bestdori/favicon.ico",
+    "server.bannerUrl": "https://servers.sonolus.com/bestdori/sonolus/repository/ServerBanner/a7f0a83e3929f70caf583140d4f6df14e0bd5e41",
     "server.bannerHash": "a7f0a83e3929f70caf583140d4f6df14e0bd5e41",
     "server.listenHost": "0.0.0.0",
     "server.listenPort": 8080,
@@ -13,7 +16,9 @@
     "server.httpsCacert": "cert.pem",
     "server.httpsPrivkey": "privkey.pem",
     "server.threadNumber": 8,
+    "server.rootUrl": "//192.168.0.102:8080",
     "logSystem.debug": false,
     "logSystem.target": 1,
-    "logSystem.targetFile": "./log.txt"
+    "logSystem.targetFile": "./log.txt",
+    "language.default": "zh-cn"
 }

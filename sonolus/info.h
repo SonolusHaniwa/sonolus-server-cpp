@@ -9,7 +9,7 @@ auto sonolus_info = [](client_conn conn, http_request request, param argv){
     Section<ParticleItem> particles = particleList("", 1, 5);
     Section<EngineItem> engines = engineList("", 1, 5);
     SRL<ServerBanner> banner = SRL<ServerBanner>(
-        appConfig["server.bannerHash"].asString(), appConfig["server.bannerAddres"].asString());
+        appConfig["server.bannerHash"].asString(), appConfig["server.bannerUrl"].asString());
     ServerInfo["title"] = appConfig["server.banner"].asString();
     ServerInfo["banner"] = banner.toJsonObject();
     ServerInfo["levels"] = levels.toJsonObject();

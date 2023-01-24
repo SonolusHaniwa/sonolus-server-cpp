@@ -24,7 +24,7 @@ mysqld mysqli_query(MYSQL conn,const char* sql,string name="main-server") {
 	mysqld res; map<string,string> tmp;
 	for (int i=0;fd=mysql_fetch_field(res2);i++) field.push_back(fd->name);
 	while (row=mysql_fetch_row(res2)) {
-		for (int i=0;i<field.size();i++) tmp.insert({field[i], row[i]});
+		for (int i=0;i<field.size();i++) tmp[field[i]] = row[i];
 		res.push_back(tmp);
 	} 
 	mysql_free_result(res2);

@@ -1,5 +1,12 @@
 #include"js/import.h"
 #include"css/import.h"
+#include"index.h"
+#include"levels.h"
+#include"skins.h"
+#include"backgrounds.h"
+#include"effects.h"
+#include"particles.h"
+#include"engines.h"
 #include"levels_create.h"
 // #include"backgrounds_create.h"
 using namespace std;

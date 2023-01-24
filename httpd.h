@@ -1152,4 +1152,23 @@ string str_replace(string from, string to, string source) {
     return result;
 }
 
+string str_replace(string source, argvar argv) {
+    for (auto it : argv) {
+        source = str_replace("{{" + it.first + "}}", it.second, source);
+    } return source;
+}
+
+string readFile(string path) {
+    ifstream fin(path.c_str());
+    fin.seekg(0, ios::end);
+    int len = fin.tellg();
+    if (len == -1) return "";
+    fin.seekg(0, ios::beg);
+    char* ch = new char[len];
+    fin.read(ch, len);
+    string buffer;
+    for (int i = 0; i < len; i++) buffer.push_back(ch[i]);
+    return buffer;
+}
+
 #endif

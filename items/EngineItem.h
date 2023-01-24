@@ -46,20 +46,46 @@ class EngineItem {
         if (rom.hash != "") res["rom"] = rom.toJsonObject();
         return res;
     }
+
+    argvar fetchParamList() {
+        argvar args;
+        args["name"] = name;
+        args["version"] = to_string(version);
+        args["title"] = title;
+        args["subtitle"] = subtitle;
+        args["author"] = author;
+        args["skin"] = "/skins/" + skin.name;
+        args["background"] = "/backgrounds/" + background.name;
+        args["effect"] = "/effects/" + effect.name;
+        args["particle"] = "/particles/" + particle.name;
+        args["thumbnail"] = thumbnail.url;
+        args["data"] = data.url;
+        args["configuration"] = configuration.url;
+        args["rom"] = rom.url;
+        args["url"] = "/engines/" + name;
+        args["sonolus.url"] = "sonolus:" + appConfig["server.rootUrl"].asString() + "/engines/" + name;
+        return args;
+    }
+
+    H toHTMLObject() {
+        string buffer = readFile("./web/html/components/engines.html");
+        buffer = str_replace(buffer, fetchParamList());
+        return H(buffer);
+    }
 };
 
 Section<EngineItem> engineList(string filter, int st = 1, int en = 20) {
     // 获取数据条数
     string sql = "SELECT COUNT(*) AS sum FROM Engine";
     if (filter != "") sql += " WHERE (" + filter + ")";
-    sql += " ORDER BY id ASC LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);
+    sql += " ORDER BY id DESC LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);
     mysqld res = mysqli_query(mysql, sql.c_str());
     int pageCount = atoi(res[0]["sum"].c_str()) / 20;
 
     // 获取数据
     sql = "SELECT * FROM Engine";
     if (filter != "") sql += " WHERE (" + filter + ")";
-    sql += " ORDER BY id ASC LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);
+    sql += " ORDER BY id DESC LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);
     res = mysqli_query(mysql, sql.c_str());
     Section<EngineItem> list = Section<EngineItem>(pageCount, EngineSearch);
     for (int i = 0; i < res.size(); i++) {

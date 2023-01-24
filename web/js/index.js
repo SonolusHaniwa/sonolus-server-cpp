@@ -67,3 +67,73 @@ async function upload_level() {
         }
     });
 }
+
+async function displayLanguage() {
+    document.getElementById("languageOptions").style.display = "flex";
+    await sleep(10);
+    document.getElementById("languageOptions").style.opacity = "1";
+}
+
+async function hideLanguage() {
+    document.getElementById("languageOptions").style.opacity = "0";
+    await sleep(200);
+    document.getElementById("languageOptions").style.display = "none";
+}
+
+function setCookie(cname, cvalue, exdays = 30) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+    var expires = "expires=" + d.toGMTString();
+    document.cookie = cname + "=" + cvalue + "; " + expires;
+}
+
+function changeLanguage(name) {
+    setCookie("lang", name);
+    location.href = location.href;
+}
+
+const width = window.innerWidth;
+const height = window.innerHeight;
+const size = Math.min(width, height) * 0.125;
+const xCount = Math.ceil(width / size / 2 - 0.5);
+const yCount = Math.ceil(height / size / 2 - 0.5);
+let nonce = 0;
+let items = new Array;
+const pointer_events_none = "<div class=\"pointer-events-none\" id=\"pointer-events-none\"></div>";
+window.onload = function(){
+    document.getElementById("app").innerHTML = pointer_events_none + document.getElementById("app").innerHTML;
+    setInterval(async function(){
+        const time = Date.now();
+        while (items.length && items[0].endTime > time) items.shift();
+        const x = Math.floor(Math.random() * (2 * xCount + 1) - xCount);
+        const y = Math.floor(Math.random() * (2 * yCount + 1) - yCount);
+        if (items.some(function(arg){return arg.x == x && arg.y == y;})) return;
+        const duration = (0.5 + Math.random()) * 2;
+        const value = Math.random() * 0.25;
+        const id = nonce++;
+        items.push({
+            id: id,
+            x: x,
+            y: y,
+            duration: duration,
+            value: value,
+            endTime: time + duration * 1000,
+        })
+        e = document.createElement("div");
+        e.className = "glow fixed -z-50 bg-sonolus-glow";
+        e.style =
+            "left: " + (width / 2 + (x - 0.5) * size) + "px; " +
+            "top: " + (height / 2 + (y - 0.5) * size) + "px; " +
+            "width: " + size + "px; " + 
+            "height: " + size + "px; " +
+            "animation-duration: " + duration + "s; " +
+            "--scale: " + (0.75 + value) + "; " +
+            "--brightness: " + value + ";"
+        ;
+        e.id = "background-block-" + id;
+        document.getElementById("pointer-events-none").append(e);
+        await sleep(duration * 1000);
+        e = document.getElementById("background-block-" + id);
+        document.getElementById("pointer-events-none").removeChild(e);
+    }, 100);
+}

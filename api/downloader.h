@@ -1,4 +1,6 @@
 using namespace std;
+#define __int64_t long long
+
 auto downloader = [](client_conn conn, http_request request, param argv){
     /** 打开文件 */
     ifstream fin(("./data/" + argv[0]).c_str(), ios::binary);
@@ -39,7 +41,6 @@ auto downloader = [](client_conn conn, http_request request, param argv){
     while (output_len) {
         fin.read(content, min(len, output_len));
         int s = send(conn, content, min(len, output_len));
-        cout << "send " << s << "bytes" << endl;
         if (s == -1) exitRequest(conn);
         output_len -= min(len, output_len);
     }
