@@ -4,19 +4,32 @@
 
 Json::Value appConfig;
 Json::Value i18n, i18n_raw;
+int exportLevelId[] = {};
+int exportSkinId[] = {};
+int exportBackgroundId[] = {};
+int exportEffectId[] = {};
+int exportParticleId[] = {};
+int exportEngineId[] = {};
 
-#include"httpd.h"
-#include"html.h"
-#include"mysqli.h"
-#include"json.h"
-#include"encrypt.h"
+#include"modules/import.h"
 #include"items/Items.h"
 #include"sonolus/sonolus.h"
 #include"api/import.h"
 #include"web/import.h"
+#include"modules/export.h"
 using namespace std;
 
-int main() {
+void invalidUsage(char** argv) {
+    cerr << "Usage: " << argv[0] << " [command]" << endl;
+    cerr << "commands: " << endl;
+    cerr << "    help: " << argv[0] << " help" << endl;
+    cerr << "    serve: " << argv[0] << " serve" << endl;
+    cerr << "    import: " << argv[0] << " import [file]" << endl;
+    cerr << "    export: " << argv[0] << " export [level/engine] [name] [file]" << endl;
+    exit(0);
+}
+
+int main(int argc, char** argv) {
     app.setopt(LOG_TARGET_TYPE, LOG_TARGET_CONSOLE);
     app.setopt(OPEN_DEBUG, true);
 
@@ -41,6 +54,27 @@ int main() {
         exit(3);
     }
     loadDefaultVariable();
+
+    if (argc < 2) invalidUsage(argv);
+    if (string(argv[1]) == "import") {
+        if (argc < 3) invalidUsage(argv);
+        import(argv[2]);
+        return 0;
+    }
+    else if (string(argv[1]) == "export") {
+        if (argc < 5) invalidUsage(argv);
+        if (string(argv[2]) == "level") {
+            exportLevel(argv[3]);
+            exportData(argv[4]);
+            return 0;
+        } else if (string(argv[2]) == "engine") {
+            exportEngine(argv[3]);
+            exportData(argv[4]);
+            return 0;
+        } else invalidUsage(argv);
+    } else if (string(argv[1]) == "help") invalidUsage(argv);
+    else if (string(argv[1]) != "serve") invalidUsage(argv);
+    
     mysql = mysqli_connect(appConfig["mysql.hostname"].asString().c_str(), appConfig["mysql.username"].asString().c_str(), 
         appConfig["mysql.password"].asString().c_str(), appConfig["mysql.database"].asString().c_str(), appConfig["mysql.port"].asInt());
     app.setopt(HTTP_ENABLE_SSL, appConfig["server.enableSSL"].asBool());

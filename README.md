@@ -13,6 +13,16 @@
 - [Sonolus Website](https://sonolus.com/)
 - [Sonolus Wiki](https://wiki.sonolus.com/)
 
+## 安装
+
+我们提供对 Windows 用户的安装包，内含 MySQL v5.7.37，下载地址: [Latest Release](https://github.com/LittleYang0531/sonolus-server-cpp/releases/latest)
+
+安装后第一次使用需要**以管理员身份运行**启动菜单里的 `Setup Sonolus Database` 程序，之后就可以启动 `Sonolus Server for Windows` 来启动服务。
+
+导入数据需要运行 `Import Sonolus Data` 程序，按照提示输入相关信息即可。
+
+我们并未提供对 Linux 用户的安装包 ~~(都用 Linux 了相信或多或少还是有一点使用终端的基础了吧)~~，请自行参照下方教程进行构建。
+
 ## 构建
 
 ### 下载依赖
@@ -36,10 +46,34 @@ sudo apt install g++ libjsoncpp-dev libmysqlclient-dev libssl-dev -y
 g++ main.cpp -o main -lpthread -lcrypto -lssl -ljsoncpp -lmysqlclient -g
 ```
 
+### 导入数据
+
+以 bandori 的数据包 `bandori.bin` 为例。
+
+```bash
+./main import bandori.bin
+```
+
+我们提供各官方引擎的数据包下载: [Data Packages for v1.1.1+](https://github.com/LittleYang0531/sonolus-server-cpp/releases/tag/data)
+
 ### 运行
 
 ```bash
-./main
+./main serve
+```
+
+### 导出数据
+
+以导出名为 `bandori` 的引擎为例
+
+```bash
+./main export engine bandori bandori.bin
+```
+
+以导出名为 `bandori-#1` 的关卡为例
+
+```bash
+./main export level "bandori-#1" bandori1.bin
 ```
 
 ## 配置信息
@@ -100,6 +134,24 @@ g++ main.cpp -o main -lpthread -lcrypto -lssl -ljsoncpp -lmysqlclient -g
 - `GET /particles/{name}`: 显示名为 {name} 的粒子效果信息。
 - `GET /engines/{name}`: 显示名为 {name} 的引擎信息。
 
+<!-- ## 数据包格式
+
+**数据格式**
+
+| 域 | 长度 | 内容说明 |
+|:-:|:-:|:-:|
+| FileNumber | $8$ bytes | 存储数据包文件数 |
+| FileChunk | $x$ bytes | 存储各文件数据 |
+| SQLCode | $y$ bytes | 存储更新数据库代码 |
+
+**FileChunk 格式**
+
+| 域 | 长度 | 内容说明 |
+|:-:|:-:|:-:|
+| FileSHA1 | $20$ bytes | 文件 SHA1 码，用于校验文件 |
+| FileSize | $8$ bytes | 存储文件大小 |
+| FileBuffer | $z$ bytes | 存储文件内容 | -->
+
 ## 提示
 
 ### 2023.1.21
@@ -123,6 +175,15 @@ g++ main.cpp -o main -lpthread -lcrypto -lssl -ljsoncpp -lmysqlclient -g
 - [dankogai/js-base64](https://github.com/dankogai/js-base64)
 
 ## 更新日志
+
+### v1.1.1 2023.1.26
+
+1. 修复当没有条目时主页面显示 `{{html.xxx}}` 的错误。
+2. 修复当数据库中存在 NULL 数据时引起程序退出错误。
+3. 新增数据导入功能，并提供 bandori, pjsekai, llsif, taiko, voez, deemo 的数据包。
+4. 新增数据导出功能，支持引擎和关卡的导出。
+5. 修改服务器启动方式为 `./main serve`。
+6. 新增应用帮助信息。
 
 ### v1.1.0 2023.1.24
 

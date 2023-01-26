@@ -13,6 +13,16 @@ Use httpd core developed by myself, which also support you to build HTTPS server
 - [Sonolus Website](https://sonolus.com/)
 - [Sonolus Wiki](https://wiki.sonolus.com/)
 
+## Install
+
+We provide an installation package for Windows users, including MySQL v5.7.37. Download link: [Latest Release](https://github.com/LittleYang0531/sonolus-server-cpp/releases/latest).
+
+The first use after installation requires to run the `Setup Sonolus Database` program in the startup menu **as an administrator**, and then you can run the `Sonolus Server for Windows` to start the service.
+
+To import data, you need to run the `Import Sonolus Data` program and enter relevant information according to the prompts.
+
+We have not provided the installation package for Linux users. Please refer to the following tutorial to build it.
+
 ## Building
 
 ### Install Dependencies
@@ -36,10 +46,34 @@ Just enter MySQL Server and import `data.sql`.
 g++ main.cpp -o main -lpthread -lcrypto -lssl -ljsoncpp -lmysqlclient -g
 ```
 
+### Import Data
+
+Take Bandori's data package `bandori.bin` as an example.
+
+```bash
+./main import bandori.bin
+```
+
+We provide data package download of all official engines: [Data Packages for v1.1.1+](https://github.com/LittleYang0531/sonolus-server-cpp/releases/tag/data)
+
 ### Run
 
 ```bash
 ./main
+```
+
+### Export Data
+
+Take the export engine named `bandori` as an example
+
+```bash
+./main export engine bandori bandori.bin
+```
+
+Take the export level named `bandori-#1` as an example
+
+```bash
+./main export level "bandori-#1" bandori1.bin
 ```
 
 ## Configuration
@@ -100,6 +134,24 @@ g++ main.cpp -o main -lpthread -lcrypto -lssl -ljsoncpp -lmysqlclient -g
 - `GET /particles/{name}`: Show information of particle named {name}.
 - `GET /engines/{name}`: Show information of engine named {name}.
 
+<!-- ## 数据包格式
+
+**数据格式**
+
+| 域 | 长度 | 内容说明 |
+|:-:|:-:|:-:|
+| FileNumber | $8$ bytes | 存储数据包文件数 |
+| FileChunk | $x$ bytes | 存储各文件数据 |
+| SQLCode | $y$ bytes | 存储更新数据库代码 |
+
+**FileChunk 格式**
+
+| 域 | 长度 | 内容说明 |
+|:-:|:-:|:-:|
+| FileSHA1 | $20$ bytes | 文件 SHA1 码，用于校验文件 |
+| FileSize | $8$ bytes | 存储文件大小 |
+| FileBuffer | $z$ bytes | 存储文件内容 | -->
+
 ## Tips
 
 ### 2023.1.21
@@ -124,13 +176,22 @@ These days, the official wiki website has added an endpoint `/sonolus/authentica
 
 ## Upload Log
 
+### v1.1.1 2023.1.26
+
+1. Fixed the error that the main page displays `{{html.xxx}}` when there are no entries.
+2. Fixed the program error caused by NULL data in the database.
+3. Added data import function and provided data packages of bandori, pjsekai, llsif, taiko, voez and deemo.
+4. Added data export function and provided exporting engines and levels.
+5. Modified the server startup mode to `./main serve`
+6. Added application help information.
+
 ### v1.1.0 2023.1.24
 
 1. Fixed Windows version will compiled error caused by missing __int64_t.
 2. Fixed the error that the feedbacks of all list apis is the same.
 3. Add the recommended display function, which displays 5 works of the same author by default.
-4. Add a new homepage and use native js to write it after the official project.
-5. Add the detail page of each component, and use native js to write after the official project.
+4. Add a new homepage and use native javascript to write it after the official project.
+5. Add the detail page of each component, and use native javascript to write after the official project.
 6. Add the website internationalization function.
 
 ### v1.0.2-2 2023.1.21
