@@ -4,8 +4,10 @@ using namespace std;
 
 typedef vector<map<string,string> > mysqld;
 MYSQL mysqli_connect(const char* host,const char* user,const char* passwd,const char* db,int port,string name="main-server") {
-	MYSQL mysql,*res1; res1=mysql_init(&mysql); if (res1==NULL) cout << "Failed to initialize MYSQL structure!" << endl;
-	bool res2=mysql_real_connect(&mysql,host,user,passwd,db,port,nullptr,CLIENT_MULTI_STATEMENTS); if (!res2) cerr << mysql_error(&mysql) << endl;
+	MYSQL mysql,*res1; res1=mysql_init(&mysql); 
+	if (res1==NULL) cout << "Failed to initialize MYSQL structure!" << endl;
+	bool res2=mysql_real_connect(&mysql,host,user,passwd,db,port,nullptr,CLIENT_MULTI_STATEMENTS); 
+	if (!res2) cerr << mysql_error(&mysql) << endl;
 	return mysql;
 }
 
@@ -26,7 +28,7 @@ mysqld mysqli_query(MYSQL conn,const char* sql,string name="main-server") {
 	while (row=mysql_fetch_row(res2)) {
 		for (int i=0;i<field.size();i++) tmp[field[i]] = row[i] == NULL ? "" : row[i];
 		res.push_back(tmp);
-	} 
+	}
 	mysql_free_result(res2);
 	mysql_close(&mysql);
 	return res;

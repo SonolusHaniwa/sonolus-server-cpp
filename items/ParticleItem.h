@@ -57,19 +57,22 @@ class ParticleItem {
     }
 };
 
-Section<ParticleItem> particleList(string filter, int st = 1, int en = 20) {
-    // 获取数据条数
+int particleNumber(string filter) {
     string sql = "SELECT COUNT(*) AS sum FROM Particle";
     if (filter != "") sql += " WHERE (" + filter + ")";
-    sql += " ORDER BY id ASC LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);
     mysqld res = mysqli_query(mysql, sql.c_str());
-    int pageCount = atoi(res[0]["sum"].c_str()) / 20;
+    return atoi(res[0]["sum"].c_str());
+}
+
+Section<ParticleItem> particleList(string filter, int st = 1, int en = 20) {
+    // 获取数据条数
+    int pageCount = ceil(1.0 * particleNumber(filter) / 20);
 
     // 获取数据
-    sql = "SELECT * FROM Particle";
+    string sql = "SELECT * FROM Particle";
     if (filter != "") sql += " WHERE (" + filter + ")";
     sql += " ORDER BY id DESC LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);
-    res = mysqli_query(mysql, sql.c_str());
+    mysqld res = mysqli_query(mysql, sql.c_str());
     Section<ParticleItem> list = Section<ParticleItem>(pageCount, ParticleSearch);
     for (int i = 0; i < res.size(); i++) {
         ParticleItem data = ParticleItem(
@@ -83,6 +86,12 @@ Section<ParticleItem> particleList(string filter, int st = 1, int en = 20) {
             SRL<ParticleTexture>(res[i]["texture"], "/data/" + res[i]["texture"])
         ); list.append(data);
     } return list;
+}
+
+string particleFilter(argvar arg) {
+    string filter = "";
+    if (arg["keywords"] != "") filter = "title like \"%" + str_replace("\"", "\\\"", arg["keywords"]) + "%\"";
+    return filter;
 }
 
 #endif

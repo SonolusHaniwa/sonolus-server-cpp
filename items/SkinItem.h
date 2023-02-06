@@ -56,19 +56,22 @@ class SkinItem {
     }
 };
 
-Section<SkinItem> skinList(string filter, int st = 1, int en = 20) {
-    // 获取数据条数
+int skinNumber(string filter) {
     string sql = "SELECT COUNT(*) AS sum FROM Skin";
     if (filter != "") sql += " WHERE (" + filter + ")";
-    sql += " ORDER BY id ASC LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);
     mysqld res = mysqli_query(mysql, sql.c_str());
-    int pageCount = atoi(res[0]["sum"].c_str()) / 20;
+    return atoi(res[0]["sum"].c_str());
+}
+
+Section<SkinItem> skinList(string filter, int st = 1, int en = 20) {
+    // 获取数据条数
+    int pageCount = ceil(1.0 * skinNumber(filter) / 20);
 
     // 获取数据
-    sql = "SELECT * FROM Skin";
+    string sql = "SELECT * FROM Skin";
     if (filter != "") sql += " WHERE (" + filter + ")";
     sql += " ORDER BY id DESC LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);
-    res = mysqli_query(mysql, sql.c_str());
+    mysqld res = mysqli_query(mysql, sql.c_str());
     Section<SkinItem> list = Section<SkinItem>(pageCount, SkinSearch);
     for (int i = 0; i < res.size(); i++) {
         SkinItem data = SkinItem(
@@ -82,6 +85,12 @@ Section<SkinItem> skinList(string filter, int st = 1, int en = 20) {
             SRL<SkinTexture>(res[i]["texture"], "/data/" + res[i]["texture"])
         ); list.append(data);
     } return list;
+}
+
+string skinFilter(argvar arg) {
+    string filter = "";
+    if (arg["keywords"] != "") filter = "title like \"%" + str_replace("\"", "\\\"", arg["keywords"]) + "%\"";
+    return filter;
 }
 
 #endif

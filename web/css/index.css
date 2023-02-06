@@ -1573,3 +1573,11 @@ body {
 ul {
     transition: opacity 0.2s;
 }
+
+main {
+    opacity: 0;
+}
+
+nav {
+    transform: translateY(-100%);
+}

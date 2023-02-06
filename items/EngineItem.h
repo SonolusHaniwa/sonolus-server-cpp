@@ -74,19 +74,22 @@ class EngineItem {
     }
 };
 
+int engineNumber(string filter) {
+    string sql = "SELECT COUNT(*) AS sum FROM Engine";
+    if (filter != "") sql += " WHERE (" + filter + ")";
+    mysqld res = mysqli_query(mysql, sql.c_str());
+    return atoi(res[0]["sum"].c_str());
+}
+
 Section<EngineItem> engineList(string filter, int st = 1, int en = 20) {
     // 获取数据条数
-    string sql = "SELECT COUNT(*) AS sum FROM Engine";
+    int pageCount = ceil(1.0 * engineNumber(filter) / 20);
+
+    // 获取数据
+    string sql = "SELECT * FROM Engine";
     if (filter != "") sql += " WHERE (" + filter + ")";
     sql += " ORDER BY id DESC LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);
     mysqld res = mysqli_query(mysql, sql.c_str());
-    int pageCount = atoi(res[0]["sum"].c_str()) / 20;
-
-    // 获取数据
-    sql = "SELECT * FROM Engine";
-    if (filter != "") sql += " WHERE (" + filter + ")";
-    sql += " ORDER BY id DESC LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);
-    res = mysqli_query(mysql, sql.c_str());
     Section<EngineItem> list = Section<EngineItem>(pageCount, EngineSearch);
     for (int i = 0; i < res.size(); i++) {
         SkinItem skin = skinList("id = " + res[i]["skin"], 1, 1).items[0];
@@ -108,6 +111,10 @@ Section<EngineItem> engineList(string filter, int st = 1, int en = 20) {
     } return list;
 }
 
-
+string engineFilter(argvar arg) {
+    string filter = "";
+    if (arg["keywords"] != "") filter = "title like \"%" + str_replace("\"", "\\\"", arg["keywords"]) + "%\"";
+    return filter;
+}
 
 #endif

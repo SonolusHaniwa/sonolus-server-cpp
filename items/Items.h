@@ -28,12 +28,13 @@ Search readJson(string path) {
     fin.read(ch, len);
     fin.close();
 
-    Json::Value json;
-    if (!json_decode(ch, json)) {
+    Json::Value json = Json::Value();
+    string str = ""; for (int i = 0; i < len; i++) str.push_back(ch[i]);
+    if (!json_decode(str, json)) {
         writeLog(LOG_LEVEL_ERROR, ("Invalid json file in \"" + path + "\"").c_str()); 
         exit(3);
     }
-    free(ch);
+    delete[] ch;
 
     Search search;
     json = json["options"];

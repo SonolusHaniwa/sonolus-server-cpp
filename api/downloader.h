@@ -35,14 +35,14 @@ auto downloader = [](client_conn conn, http_request request, param argv){
     putRequest(conn, request.argv.find("Range") != request.argv.end() ? 206 : 200, response);
 
     /** 从st起每次读取len长度的数据并发送 */
-    char content[len] = "";
-    memset(content, '\0', len);
     fin.seekg(st, ios::beg);
     while (output_len) {
+        char* content = new char[min(len, output_len)];
         fin.read(content, min(len, output_len));
         int s = send(conn, content, min(len, output_len));
-        if (s == -1) exitRequest(conn);
+        delete[] content;
+        if (s == -1) fin.close(), exitRequest(conn);
         output_len -= min(len, output_len);
-    }
+    } fin.close();
     exitRequest(conn);
 };

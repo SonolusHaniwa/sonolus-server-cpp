@@ -108,7 +108,7 @@ int levelNumber(string filter) {
 
 Section<LevelItem> levelList(string filter, int st = 1, int en = 20) {
     // 获取数据条数
-    int pageCount = levelNumber(filter) / 20;
+    int pageCount = ceil(1.0 * levelNumber(filter) / 20);
 
     // 获取数据
     string sql = "SELECT * FROM Level";
@@ -144,6 +144,12 @@ Section<LevelItem> levelList(string filter, int st = 1, int en = 20) {
             SRL<LevelPreview>(res[i]["preview"], "/data/" + res[i]["preview"])
         ); list.append(data);
     } return list;
+}
+
+string levelFilter(argvar arg) {
+    string filter = "";
+    if (arg["keywords"] != "") filter = "title like \"%" + str_replace("\"", "\\\"", arg["keywords"]) + "%\"";
+    return filter;
 }
 
 #endif

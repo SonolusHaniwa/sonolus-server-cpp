@@ -69,7 +69,7 @@ int backgroundNumber(string filter) {
 
 Section<BackgroundItem> backgroundList(string filter, int st = 1, int en = 20) {
     // 获取数据条数
-    int pageCount = backgroundNumber(filter) / 20;
+    int pageCount = ceil(1.0 * backgroundNumber(filter) / 20);
 
     // 获取数据
     string sql = "SELECT * FROM Background";
@@ -92,5 +92,10 @@ Section<BackgroundItem> backgroundList(string filter, int st = 1, int en = 20) {
     } return list;
 }
 
+string backgroundFilter(argvar arg) {
+    string filter = "";
+    if (arg["keywords"] != "") filter = "title like \"%" + str_replace("\"", "\\\"", arg["keywords"]) + "%\"";
+    return filter;
+}
 
 #endif

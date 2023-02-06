@@ -619,6 +619,19 @@ argvar getParam(http_request request) {
 }
 
 /**
+ * @brief 将GET参数字符串化
+ * 
+ * @param $_GET GET参数
+ * @return string
+ */
+string getStringfy(argvar $_GET) {
+    string res = "";
+    for (auto v : $_GET) res += v.first + "=" + v.second + "&";
+    res.pop_back();
+    return res;
+}
+
+/**
  * @brief 获取POST参数
  * 
  * @param request 请求头信息
@@ -969,7 +982,12 @@ class application {
             #endif
             
             http_init(); pool.init(http_thread_num);
-            writeLog(LOG_LEVEL_INFO, "Listening...");
+            string address = "";
+            address += https ? "https://" : "http://";
+            address += http_host;
+            if (https && http_port != 443 || !https && http_port != 80) address += ":" + to_string(http_port);
+            address += "/";
+            writeLog(LOG_LEVEL_INFO, "Listening on " + address + "...");
             while(1) {
                 sockaddr_in client_addr;
                 int conn = accept(client_addr);
@@ -1168,6 +1186,7 @@ string readFile(string path) {
     fin.read(ch, len);
     string buffer;
     for (int i = 0; i < len; i++) buffer.push_back(ch[i]);
+    delete[] ch;
     return buffer;
 }
 

@@ -19,6 +19,17 @@ async function uploader(context) {
     return hash;
 }
 
+function addLoadEvent(func) {
+    var oldonload = window.onload;
+    if (typeof window.onload != 'function') window.onload = func;
+    else {  
+        window.onload = function() {
+            oldonload();
+            func();
+        };
+    }
+}
+
 function sleep(milliseconds) {
     return new Promise(resolve => {
         setTimeout(() => {
@@ -80,16 +91,16 @@ async function hideLanguage() {
     document.getElementById("languageOptions").style.display = "none";
 }
 
+function changeLanguage(name) {
+    setCookie("lang", name);
+    location.href = location.href;
+}
+
 function setCookie(cname, cvalue, exdays = 30) {
     var d = new Date();
     d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
     var expires = "expires=" + d.toGMTString();
     document.cookie = cname + "=" + cvalue + "; " + expires;
-}
-
-function changeLanguage(name) {
-    setCookie("lang", name);
-    location.href = location.href;
 }
 
 const width = window.innerWidth;
@@ -100,7 +111,7 @@ const yCount = Math.ceil(height / size / 2 - 0.5);
 let nonce = 0;
 let items = new Array;
 const pointer_events_none = "<div class=\"pointer-events-none\" id=\"pointer-events-none\"></div>";
-window.onload = function(){
+addLoadEvent(function(){
     document.getElementById("app").innerHTML = pointer_events_none + document.getElementById("app").innerHTML;
     setInterval(async function(){
         const time = Date.now();
@@ -136,4 +147,29 @@ window.onload = function(){
         e = document.getElementById("background-block-" + id);
         document.getElementById("pointer-events-none").removeChild(e);
     }, 100);
-}
+});
+
+/* 图片加载 */
+addLoadEvent(function(){
+    var img = document.getElementsByTagName("img");
+    for (i = 0; i < img.length; i++) {
+        img[i].src = img[i].getAttribute("data-src");
+        img[i].removeAttribute("data-src");
+    }
+});
+
+/* 链接事件更新 */
+addLoadEvent(async function(){
+    var a = document.getElementsByTagName("a");
+    await sleep(10);
+    document.getElementsByTagName("main")[0].style.opacity = "1";
+    document.getElementsByTagName("nav")[0].style.transform = "translateY(0)";
+    for (i = 0; i < a.length; i++) {
+        a[i].onclick = async function() {
+            document.getElementsByTagName("main")[0].style.opacity = "0";
+            document.getElementsByTagName("nav")[0].style.transform = "translateY(-100%)";
+            await sleep(150);
+            location.href = this.href;
+        };
+    }
+});

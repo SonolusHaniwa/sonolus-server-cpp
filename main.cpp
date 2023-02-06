@@ -119,12 +119,12 @@ int main(int argc, char** argv) {
     // app.addRoute("/effects/create", web_effects_create);
     // app.addRoute("/particles/create", web_particles_create);
     // app.addRoute("/engines/create", web_engines_create);
-    // app.addRoute("/levels/list", web_levels_list);
-    // app.addRoute("/skins/list", web_skins_list);
-    // app.addRoute("/backgrounds/list", web_backgrounds_list);
-    // app.addRoute("/effects/list", web_effects_list);
-    // app.addRoute("/particles/list", web_particles_list);
-    // app.addRoute("/engines/list", web_engines_list);
+    app.addRoute("/levels/list", web_levels_list);
+    app.addRoute("/skins/list", web_skins_list);
+    app.addRoute("/backgrounds/list", web_backgrounds_list);
+    app.addRoute("/effects/list", web_effects_list);
+    app.addRoute("/particles/list", web_particles_list);
+    app.addRoute("/engines/list", web_engines_list);
     // app.addRoute("/levels/search", web_levels_search);
     // app.addRoute("/skins/search", web_skins_search);
     // app.addRoute("/backgrounds/search", web_backgrounds_search);
