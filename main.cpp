@@ -90,6 +90,9 @@ int main(int argc, char** argv) {
     app.addRoute("/data/%s", downloader);
     app.addRoute("/js/%s", js_import);
     app.addRoute("/css/%s", css_import);
+    app.addRoute("/test", [](client_conn conn, http_request request, param argv){
+        
+    });
 
     app.addRoute("/sonolus/info", sonolus_info);
     app.addRoute("/sonolus/levels/create", sonolus_levels_create);
@@ -125,12 +128,12 @@ int main(int argc, char** argv) {
     app.addRoute("/effects/list", web_effects_list);
     app.addRoute("/particles/list", web_particles_list);
     app.addRoute("/engines/list", web_engines_list);
-    // app.addRoute("/levels/search", web_levels_search);
-    // app.addRoute("/skins/search", web_skins_search);
-    // app.addRoute("/backgrounds/search", web_backgrounds_search);
-    // app.addRoute("/effects/search", web_effects_search);
-    // app.addRoute("/particles/search", web_particles_search);
-    // app.addRoute("/engines/search", web_engines_search);
+    app.addRoute("/levels/search", web_levels_search);
+    app.addRoute("/skins/search", web_skins_search);
+    app.addRoute("/backgrounds/search", web_backgrounds_search);
+    app.addRoute("/effects/search", web_effects_search);
+    app.addRoute("/particles/search", web_particles_search);
+    app.addRoute("/engines/search", web_engines_search);
     app.addRoute("/levels/%s", web_levels);
     app.addRoute("/skins/%s", web_skins);
     app.addRoute("/backgrounds/%s", web_backgrounds);

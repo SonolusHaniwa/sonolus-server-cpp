@@ -9,5 +9,11 @@
     "particles": "Particles",
     "engines": "Engines",
     "search": "Search",
-    "more": "More"
+    "more": "More",
+    "opening": "Opening...",
+    "retry": "If Sonolus did not open, click the following link to try again:",
+    "download": "If you do not have Sonolus yet, download it here:",
+    "searchButton":"Search",
+    "yes": "OFF",
+    "no": "ON"
 }

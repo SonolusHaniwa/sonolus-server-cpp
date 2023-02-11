@@ -1,6 +1,8 @@
-# Sonolus Server for C++
+<p align="center"><img src="http://pic.littleyang.ml/sonolus-server-screenshot/favicon.png"/></p>
 
-[English](./README_en.md) [简体中文](./README.md)
+<h1 align="center">Sonolus Server for C++</h1>
+
+<p align="center"><a href="./README_en.md">English</a>&nbsp; <a href="./README.md">简体中文</a></p>
 
 使用 C++ 与 MySQL 开发的一个适用于 Sonolus 的 api 服务器，您可以用于测试您自己的引擎或自己构建一个 Sonolus 服务。
 
@@ -272,8 +274,20 @@ string levelSearch(map<string, string> $_GET) {
 - [openssl/openssl](https://github.com/openssl/openssl)
 - [jquery/jquery](https://github.com/jquery/jquery)
 - [dankogai/js-base64](https://github.com/dankogai/js-base64)
+- [lyoj-dev/webserver](https://github.com/lyoj-dev/webserver)
 
 ## 更新日志
+
+### v1.1.3 2023.2.11
+
+1. 修复当 list 页面没有条目时显示 `{{html.xxx}}` 的错误。
+2. 彻底修复由于客户端长连接不发送信息导致的内存爆炸。
+3. 新增各组件 list 页面对搜索条件的显示。
+4. 修复链接跳转时动画生硬的问题。
+5. 修复读取搜索配置文件时读取出错的问题。
+6. 修复各组件 list 页面搜索链接无法使用的问题。
+7. 修复服务器标题无法显示的问题。
+8. 新增各组件搜索页面。
 
 ### v1.1.2 2023.2.5
 

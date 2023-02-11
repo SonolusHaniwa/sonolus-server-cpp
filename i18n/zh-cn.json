@@ -9,5 +9,11 @@
     "particles": "粒子效果",
     "engines": "引擎",
     "search": "搜索",
-    "more": "更多"
+    "more": "更多",
+    "opening": "正在打开...",
+    "retry": "如果 Sonolus 没有打开，请点击以下链接重试:",
+    "download": "如果您还没有 sonolus，请前往下载:",
+    "searchButton":"搜索",
+    "yes": "开",
+    "no": "关"
 }

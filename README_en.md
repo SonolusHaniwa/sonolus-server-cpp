@@ -1,6 +1,8 @@
-# Sonolus Server for C++
+<p align="center"><img src="http://pic.littleyang.ml/sonolus-server-screenshot/favicon.png"/></p>
 
-[English](./README_en.md) [简体中文](./README.md)
+<h1 align="center">Sonolus Server for C++</h1>
+
+<p align="center"><a href="./README_en.md">English</a>&nbsp; <a href="./README.md">简体中文</a></p>
 
 A sample api server for Sonolus, use C++ & MySQL to develop. You can use it to test your own Sonolus engine or build a Sonolus server for yourself.
 
@@ -272,8 +274,20 @@ These days, the official wiki website has added an endpoint `/sonolus/authentica
 - [openssl/openssl](https://github.com/openssl/openssl)
 - [jquery/jquery](https://github.com/jquery/jquery)
 - [dankogai/js-base64](https://github.com/dankogai/js-base64)
+- [lyoj-dev/webserver](https://github.com/lyoj-dev/webserver)
 
 ## Upload Log
+
+### v1.1.3 2023.2.11
+
+1. Fix the error of displaying `{{html. xxx}}` when the list page has no entries.
+2. Completely repair the memory leak caused by the client's long connection without sending information.
+3. Add the display of search criteria on the list page of each component.
+4. Fix the problem of stiff animation when the link jumps.
+5. Fix the problem of reading error when reading the search configuration file.
+6. Fix the problem that the search link on the list page of each component cannot be used.
+7. Fix the problem that the server title cannot be displayed.
+8. Add a search page for each component.
 
 ### v1.1.2 2023.2.5
 

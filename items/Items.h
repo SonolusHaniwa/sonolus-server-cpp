@@ -68,7 +68,7 @@ Search readJson(string path) {
                 json[i]["def"].asInt(),
                 vector<string>()
             );
-            for (int j = 0; j < json[i]["values"].size(); i++) 
+            for (int j = 0; j < json[i]["values"].size(); j++) 
                 select.values.push_back(json[i]["values"][j].asString());
             search.append(select);
         } else {

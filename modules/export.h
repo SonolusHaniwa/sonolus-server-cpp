@@ -138,7 +138,7 @@ void exportData(const char* path) {
     reverse(x.begin(), x.end());
     char* ch = new char[8];
     for (int i = 0; i < 8; i++) ch[i] = x[i];
-    fout.write(ch, 8); free(ch);
+    fout.write(ch, 8); delete[] ch;
     for (auto v : fileSha) {
         if (v == "") continue;
         char* sha = new char[20];
@@ -149,7 +149,7 @@ void exportData(const char* path) {
             val += isdigit(b) ? b - '0' : b - 'a' + 10;
             sha[i / 2] = val;
         }
-        fout.write(sha, 20); free(sha);
+        fout.write(sha, 20); delete[] sha;
 
         ifstream fin(("./data/" + v).c_str());
         fin.seekg(0, ios::end);
@@ -158,13 +158,13 @@ void exportData(const char* path) {
         reverse(x.begin(), x.end());
         char* ch = new char[8];
         for (int i = 0; i < 8; i++) ch[i] = x[i];
-        fout.write(ch, 8); free(ch);
+        fout.write(ch, 8); delete[] ch;
 
         len = tmp;
         fin.seekg(0, ios::beg);
         ch = new char[len];
         fin.read(ch, len); fin.close();
-        fout.write(ch, len); free(ch);
+        fout.write(ch, len); delete[] ch;
         writeLog(LOG_LEVEL_DEBUG, "Add file " + v + " into binary file.");
     }
     fout << sqlbuffer.str();

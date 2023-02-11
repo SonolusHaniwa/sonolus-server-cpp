@@ -28,7 +28,8 @@ mysqld mysqli_query(MYSQL conn,const char* sql,string name="main-server") {
 	while (row=mysql_fetch_row(res2)) {
 		for (int i=0;i<field.size();i++) tmp[field[i]] = row[i] == NULL ? "" : row[i];
 		res.push_back(tmp);
-	}
+	} tmp.clear();
+	delete[] row;
 	mysql_free_result(res2);
 	mysql_close(&mysql);
 	return res;

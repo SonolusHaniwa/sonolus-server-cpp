@@ -113,7 +113,7 @@ Section<EngineItem> engineList(string filter, int st = 1, int en = 20) {
 
 string engineFilter(argvar arg) {
     string filter = "";
-    if (arg["keywords"] != "") filter = "title like \"%" + str_replace("\"", "\\\"", arg["keywords"]) + "%\"";
+    if (arg["keywords"] != "") filter = "title like \"%" + str_replace("\"", "\\\"", urldecode(arg["keywords"])) + "%\"";
     return filter;
 }
 

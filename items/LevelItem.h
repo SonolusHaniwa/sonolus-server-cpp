@@ -147,8 +147,12 @@ Section<LevelItem> levelList(string filter, int st = 1, int en = 20) {
 }
 
 string levelFilter(argvar arg) {
-    string filter = "";
-    if (arg["keywords"] != "") filter = "title like \"%" + str_replace("\"", "\\\"", arg["keywords"]) + "%\"";
+    string filter = ""; bool pre = false;
+    if (arg["keywords"] != "") filter += (pre ? "AND " : "") + string("title like \"%") + str_replace("\"", "\\\"", urldecode(arg["keywords"])) + "%\" ", pre = true;
+    if (arg["artist"] != "") filter += (pre ? "AND " : "") + string("artists like \"%") + str_replace("\"", "\\\"", urldecode(arg["artist"])) + "%\" ", pre = true;
+    if (arg["author"] != "") filter += (pre ? "AND " : "") + string("author like \"%") + str_replace("\"", "\\\"", urldecode(arg["author"])) + "%\" ", pre = true;
+    if (arg["minRating"] != "") filter += (pre ? "AND " : "") + string("rating >= ") + arg["minRating"] + " ", pre = true;
+    if (arg["maxRating"] != "") filter += (pre ? "AND " : "") + string("rating <= ") + arg["maxRating"] + " ", pre = true;
     return filter;
 }
 

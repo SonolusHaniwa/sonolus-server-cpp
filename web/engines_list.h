@@ -17,8 +17,18 @@ auto web_engines_list = [](client_conn conn, http_request request, param argv) {
     $_GET["page"] = to_string(page - 1); string previousUrl = "/engines/list?" + getStringfy($_GET);
     $_GET["page"] = to_string(page + 1); string nextUrl = "/engines/list?" + getStringfy($_GET);
     $_GET["page"] = to_string(section.pageCount - 1); string bottomUrl = "/engines/list?" + getStringfy($_GET);
-    argList["html.enginesBottom"] = fetchBottomBar(sonolusUrl, topUrl, previousUrl, nextUrl, bottomUrl, page, section.pageCount).output();
-    for (int i = 0; i < section.items.size(); i++) argList["html.enginesList"] += section.items[i].toHTMLObject().output();
+    argList["html.enginesBottom"] = fetchBottomBar(sonolusUrl, topUrl, previousUrl, nextUrl, bottomUrl, "/engines/search", page, section.pageCount).output();
+    argList["html.enginesList"] = "";
+    argList["url.list"] = "/engines/list";
+    argList["search.display"] = $_GET.size() == 1 && $_GET.find("page") != $_GET.end() ? "style=\"display: none\"" : "";
+    argList["search.filterWords"] = "";
+    for (auto v : $_GET) {
+        if (v.first == "page") continue;
+        argList["search.filterWords"] += v.first + ": " + urldecode(v.second) + ", ";
+    } if (argList["search.filterWords"].size() >= 2) {
+        argList["search.filterWords"].pop_back();
+        argList["search.filterWords"].pop_back();
+    } for (int i = 0; i < section.items.size(); i++) argList["html.enginesList"] += section.items[i].toHTMLObject().output();
 
     header = str_replace(header, argList);
     body = str_replace(body, argList);

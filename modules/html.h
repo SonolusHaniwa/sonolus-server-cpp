@@ -91,7 +91,7 @@ H fetchIndexBottom(string searchUrl, string listUrl) {
 
 string disableClass = "router-link-active router-link-exact-active flex select-none space-x-2 p-2 transition-colors sm:space-x-3 sm:p-3 pointer-events-none bg-sonolus-ui-button-disabled text-sonolus-ui-text-disabled";
 string enableClass = "router-link-active router-link-exact-active flex select-none space-x-2 p-2 transition-colors sm:space-x-3 sm:p-3 cursor-pointer bg-sonolus-ui-button-normal hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed";
-H fetchBottomBar(string sonolusUrl, string topUrl, string previousUrl, string nextUrl, string bottomUrl, int currentPage, int totalPage) {
+H fetchBottomBar(string sonolusUrl, string topUrl, string previousUrl, string nextUrl, string bottomUrl, string searchUrl, int currentPage, int totalPage) {
     string source = readFile("./web/html/components/bottomBar.html");
     argvar args;
     args["class.previous"] = currentPage > 0 ? enableClass : disableClass;
@@ -101,8 +101,63 @@ H fetchBottomBar(string sonolusUrl, string topUrl, string previousUrl, string ne
     args["url.previous"] = previousUrl;
     args["url.next"] = nextUrl;
     args["url.bottom"] = bottomUrl;
+    args["url.search"] = searchUrl;
     args["pages.current"] = to_string(currentPage + 1);
     args["pages.all"] = to_string(totalPage);
+    return str_replace(source, args);
+}
+
+H fetchSearchText(string query, string name, string placeholder, bool isMargin) {
+    string source = readFile("./web/html/components/searchText.html");
+    argvar args;
+    args["search.query"] = query;
+    args["search.name"] = name;
+    args["search.placeholder"] = placeholder;
+    args["search.isMargin"] = isMargin ? "style=\"margin-top: 12px;\"" : "";
+    return str_replace(source, args);
+}
+
+H fetchSearchToggle(string query, string name, bool def, bool isMargin) {
+    string source = readFile("./web/html/components/searchToggle.html");
+    argvar args;
+    args["search.query"] = query;
+    args["search.name"] = name;
+    args["search.defaultLang"] = def ? "{{language.yes}}" : "{{language.no}}";
+    args["search.default"] = to_string(def);
+    args["search.isMargin"] = isMargin ? "style=\"margin-top: 12px;\"" : "";
+    return str_replace(source, args);
+}
+
+H fetchSearchSelect(string query, string name, vector<string> options, int def, bool isMargin) {
+    string source = readFile("./web/html/components/searchSelect.html");
+    argvar args;
+    args["search.query"] = query;
+    args["search.name"] = name;
+    args["search.defaultValues"] = def < options.size() && def >= 0 ? options[def] : "";
+    args["search.default"] = to_string(def);
+    args["search.options"] = "";
+    for (int i = 0; i < options.size(); i++) {
+        H optionsObject = H(true, "option", options[i]);
+        optionsObject["class"] = "bg-sonolus-ui-surface";
+        optionsObject["id"] = "search-" + query + "-" + to_string(i);
+        optionsObject["value"] = to_string(i);
+        if (i == def) optionsObject["default"] = "default";
+        args["search.options"] += optionsObject.output();
+    }
+    args["search.isMargin"] = isMargin ? "style=\"margin-top: 12px;\"" : "";
+    return str_replace(source, args);
+}
+
+H fetchSearchSlider(string query, string name, int def, int min, int max, int step, bool isMargin) {
+    string source = readFile("./web/html/components/searchSlider.html");
+    argvar args;
+    args["search.query"] = query;
+    args["search.name"] = name;
+    args["search.default"] = to_string(def);
+    args["search.min"] = to_string(min);
+    args["search.max"] = to_string(max);
+    args["search.step"] = to_string(step);
+    args["search.isMargin"] = isMargin ? "style=\"margin-top: 12px;\"" : "";
     return str_replace(source, args);
 }
 

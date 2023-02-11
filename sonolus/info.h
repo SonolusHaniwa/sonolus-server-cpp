@@ -10,7 +10,7 @@ auto sonolus_info = [](client_conn conn, http_request request, param argv){
     Section<EngineItem> engines = engineList("", 1, 5);
     SRL<ServerBanner> banner = SRL<ServerBanner>(
         appConfig["server.bannerHash"].asString(), appConfig["server.bannerUrl"].asString());
-    ServerInfo["title"] = appConfig["server.banner"].asString();
+    ServerInfo["title"] = appConfig["server.title"].asString();
     ServerInfo["banner"] = banner.toJsonObject();
     ServerInfo["levels"] = levels.toJsonObject();
     ServerInfo["skins"] = skins.toJsonObject();

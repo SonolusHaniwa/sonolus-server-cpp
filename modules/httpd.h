@@ -166,8 +166,11 @@ void putRequest(client_conn&, int, argvar);
  */
 ssize_t send(client_conn __fd, string __buf) {
     int s = -1;
-    if (!https) s = send(__fd.conn, const_cast<char*>(__buf.c_str()), __buf.size(), 0);
-    else s = SSL_write(__fd.ssl, const_cast<char*>(__buf.c_str()), __buf.size()); 
+    char* ch = new char[__buf.size()];
+    for (int i = 0; i < __buf.size(); i++) ch[i] = __buf[i];
+    if (!https) s = send(__fd.conn, ch, __buf.size(), 0);
+    else s = SSL_write(__fd.ssl, ch, __buf.size()); 
+    delete[] ch;
     if (s == -1) writeLog(LOG_LEVEL_WARNING, "Failed to send data to client!");
     else if (s != __buf.size()) writeLog(LOG_LEVEL_WARNING, "The data wasn't send completely! Send " + to_string(s) + "/" + to_string(__buf.size()) + " bytes.");
     else writeLog(LOG_LEVEL_DEBUG, "Send " + to_string(s) + " bytes to client.");
@@ -199,17 +202,15 @@ ssize_t send(client_conn __fd, char* __buf, int len) {
  * @return char
 */
 char recvchar(client_conn __fd) {
-    const int length = 10;
-    char __buf[length] = "";
-    memset(__buf, '\0', sizeof __buf);
+    const int length = 1;
+    char* __buf = new char[length];
     int s = -1;
     if (!https) s = recv(__fd.conn, __buf, 1, 0);
     else s = SSL_read(__fd.ssl, __buf, 1);
-    if (s == -1) {
-        writeLog(LOG_LEVEL_WARNING, "Failed to recieve data!");
-        return -1;
-    } 
-    return __buf[0];
+    char ans = __buf[0]; 
+    delete[] __buf;
+    if (s < 1) return -1;
+    return ans;
 }
 
 /**
@@ -220,12 +221,17 @@ char recvchar(client_conn __fd) {
  */
 string recv(client_conn __fd, int siz = -1) {
     string __buf = "";
+    const int lim = 1e6;
     if (siz == -1) {
+        int times = 0;
         while (__buf.size() < 4 || __buf.substr(__buf.size() - 4, 4) != "\r\n\r\n") {
             char ch = recvchar(__fd);
             if (ch == -1) {
-                exitRequest(__fd);
-                return "";
+                if (times <= lim) times++;
+                else {
+                    writeLog(LOG_LEVEL_WARNING, "Failed to recieve data!");
+                    return "";    
+                }
             }
             __buf.push_back(ch);
         } 
@@ -235,7 +241,7 @@ string recv(client_conn __fd, int siz = -1) {
         while (__buf.size() != siz) {
             char ch = recvchar(__fd);
             if (ch == -1) {
-                exitRequest(__fd);
+                writeLog(LOG_LEVEL_WARNING, "Failed to recieve data!");
                 return "";
             }
             __buf.push_back(ch);
@@ -458,6 +464,8 @@ void exitRequest(client_conn& conn) {
     #elif __windows__
     closesocket(conn.conn);
     #endif
+    if (https) SSL_clear(conn.ssl);
+
     writeLog(LOG_LEVEL_INFO, "Close connection of conn " + to_string(conn.conn));
     longjmp(buf[conn.thread_id], 0);
 }
@@ -469,7 +477,6 @@ void exitRequest(client_conn& conn) {
  * @return http_request 
  */
 http_request getRequest(client_conn& conn) {
-
     /** 获取请求头 */
     string s = recv(conn);
     if (s == "") {
@@ -795,10 +802,12 @@ argvar mime(string ext) {
 
 typedef vector<string> param;
 
+const int SIZE = 1024 * 1024;
 class thread_pool {
     private: 
-        pthread_t pt[1024 * 1024];
-        vector<pair<int, sockaddr_in> > connlist;
+        pthread_t pt[SIZE];
+        pair<int, sockaddr_in> connlist[SIZE];
+        int l = 1, r = 0;
 
         int cnt = 0;
         /**
@@ -820,8 +829,8 @@ class thread_pool {
          */
         int getConn(sockaddr_in& client_addr) {
             pthread_mutex_lock(&g_mutex_lock);
-            int conn = connlist.size() ? (*connlist.begin()).first : -1;
-            if (conn != -1) client_addr = (*connlist.begin()).second, connlist.erase(connlist.begin());
+            int conn = (r + 1) % SIZE != l ? connlist[l].first : -1;
+            if (conn != -1) client_addr = connlist[l].second, l = (l + 1) % SIZE;
             pthread_mutex_unlock(&g_mutex_lock);
             if (conn != -1) writeLog(LOG_LEVEL_DEBUG, "Get connection " + to_string(conn) + " from connlist!");
             return conn;
@@ -859,7 +868,8 @@ class thread_pool {
          * @param conn 客户端连接符
          */
         void addConn(int conn, sockaddr_in client_addr) {
-            connlist.push_back(make_pair(conn, client_addr));
+            ++r; r %= SIZE;
+            connlist[r] = make_pair(conn, client_addr);
             writeLog(LOG_LEVEL_DEBUG, "Insert connection " + to_string(conn) + " to connlist.");
         }
 }pool;
@@ -918,7 +928,6 @@ class application {
          * @return false 匹配失败
          */
         bool matchPath(r __route, string path) {
-
             /** 拆散字符串 */
             vector<string> __goal = explode("/", __route.path.c_str());
             vector<string> __path = explode("/", path.c_str());
@@ -1089,13 +1098,13 @@ void thread_pool::work_thread() {
         int conn = this->getConn(client_addr);
         if (conn == -1) continue;
 
-        SSL* ssl;
+        client_conn conn2;
         if (https) {
             /** 基于 ctx 产生一个新的 SSL */
-            ssl = SSL_new(ctx);
+            conn2.ssl = SSL_new(ctx);
             /** 将连接用户的 socket 加入到 SSL */
-            SSL_set_fd(ssl, conn);
-            if (SSL_accept(ssl) == -1) {
+            SSL_set_fd(conn2.ssl, conn);
+            if (SSL_accept(conn2.ssl) == -1) {
                 writeLog(LOG_LEVEL_WARNING, "Failed to accept SSL of connection " + to_string(conn));
                 continue;
             }
@@ -1103,11 +1112,9 @@ void thread_pool::work_thread() {
         }
         
         /** 获取新连接 */
-        client_conn conn2;
         conn2.conn = conn;
         conn2.client_addr = client_addr;
         conn2.thread_id = id;
-        conn2.ssl = ssl;
         http_request request = getRequest(conn2);
         writeLog(LOG_LEVEL_INFO, "New Connection: " + request.method + " " + request.path + 
                                  " [" + inet_ntoa(client_addr.sin_addr) + ":" + to_string(client_addr.sin_port) + "]");

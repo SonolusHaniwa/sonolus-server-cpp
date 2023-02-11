@@ -87,7 +87,7 @@ async function displayLanguage() {
 
 async function hideLanguage() {
     document.getElementById("languageOptions").style.opacity = "0";
-    await sleep(200);
+    await sleep(150);
     document.getElementById("languageOptions").style.display = "none";
 }
 
@@ -96,11 +96,34 @@ function changeLanguage(name) {
     location.href = location.href;
 }
 
+async function displayOpenInSonolus(e) {
+    document.getElementById("openInSonolus").style.display = "flex";
+    await sleep(10);
+    document.getElementById("openInSonolus").style.opacity = "1";
+    location.href = e.getAttribute("data-href");
+}
+
+async function hideOpenInSonolus() {
+    document.getElementById("openInSonolus").style.opacity = "0";
+    await sleep(150);
+    document.getElementById("openInSonolus").style.display = "none";
+}
+
+async function search(path) {
+    path += "?";
+    for (index in searchConfig) path += index + "=" + searchConfig[index] + "&";
+    path = path.substr(0, path.length - 1);
+    document.getElementsByTagName("main")[0].style.opacity = "0";
+    document.getElementsByTagName("nav")[0].style.transform = "translateY(-100%)";
+    await sleep(150);
+    location.href = path;
+}
+
 function setCookie(cname, cvalue, exdays = 30) {
     var d = new Date();
     d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
     var expires = "expires=" + d.toGMTString();
-    document.cookie = cname + "=" + cvalue + "; " + expires;
+    document.cookie = cname + "=" + cvalue + "; " + expires + "; path=/";
 }
 
 const width = window.innerWidth;
@@ -108,8 +131,8 @@ const height = window.innerHeight;
 const size = Math.min(width, height) * 0.125;
 const xCount = Math.ceil(width / size / 2 - 0.5);
 const yCount = Math.ceil(height / size / 2 - 0.5);
-let nonce = 0;
-let items = new Array;
+var nonce = 0;
+var items = new Array;
 const pointer_events_none = "<div class=\"pointer-events-none\" id=\"pointer-events-none\"></div>";
 addLoadEvent(function(){
     document.getElementById("app").innerHTML = pointer_events_none + document.getElementById("app").innerHTML;
@@ -161,15 +184,25 @@ addLoadEvent(function(){
 /* 链接事件更新 */
 addLoadEvent(async function(){
     var a = document.getElementsByTagName("a");
-    await sleep(10);
-    document.getElementsByTagName("main")[0].style.opacity = "1";
-    document.getElementsByTagName("nav")[0].style.transform = "translateY(0)";
     for (i = 0; i < a.length; i++) {
+        const href = a[i].href;
         a[i].onclick = async function() {
             document.getElementsByTagName("main")[0].style.opacity = "0";
             document.getElementsByTagName("nav")[0].style.transform = "translateY(-100%)";
             await sleep(150);
-            location.href = this.href;
+            location.href = href;
         };
+        a[i].removeAttribute("href");
     }
+});
+
+// 监听返回页面事件
+addLoadEvent(async function(){
+    window.addEventListener("pageshow", async function(){
+        // if (window.performance.navigation.type == 1) {
+            await sleep(10);
+            document.getElementsByTagName("main")[0].style.opacity = "1";
+            document.getElementsByTagName("nav")[0].style.transform = "translateY(0%)";
+        // }
+    });
 });

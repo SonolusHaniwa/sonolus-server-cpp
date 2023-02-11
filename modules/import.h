@@ -42,12 +42,13 @@ void import(const char* path) {
             buffer << hex << setw(2) << setfill('0') << int(fileSha1[i]);
         ofstream fout(("./data/" + buffer.str()).c_str());
         fout.write(filePointer, filesize);
-        fout.close(); free(filePointer); free(fileSha1); free(fileSha1Real);
+        fout.close(); delete[] filePointer; delete[] fileSha1; delete[] fileSha1Real;
         writeLog(LOG_LEVEL_DEBUG, "Saved file " + buffer.str() + " into data.");
     }
     string sql = "";
     while (pt < len) sql.push_back(ch[pt++]);
     int raws = mysqli_execute(mysql, sql.c_str());
+    delete[] ch;
     writeLog(LOG_LEVEL_INFO, "Import data successfully.");
     writeLog(LOG_LEVEL_DEBUG, to_string(filenum) + " files were written.");
     writeLog(LOG_LEVEL_DEBUG, to_string(raws) + " raws were affected.");

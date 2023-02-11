@@ -1,0 +1,95 @@
+<div {{search.isMargin}}>
+    <div class="py-2 font-bold sm:py-3">{{search.name}}</div>
+    <div class="ml-9 flex flex-grow items-center space-x-2 sm:ml-12 sm:space-x-3">
+        <div id="search-info-{{search.query}}" class="w-12 text-center sm:w-16">{{search.default}}</div>
+        <div class="relative flex items-center flex-grow">
+            <button id="search-left-{{search.query}}" class="flex select-none space-x-2 p-2 transition-colors sm:space-x-3 sm:p-3 cursor-pointer bg-sonolus-ui-button-normal hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512" class="h-5 w-5 fill-current sm:h-6 sm:w-6">
+                    <path d="M192 448c-8.188 0-16.38-3.125-22.62-9.375l-160-160c-12.5-12.5-12.5-32.75 0-45.25l160-160c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25L77.25 256l137.4 137.4c12.5 12.5 12.5 32.75 0 45.25C208.4 444.9 200.2 448 192 448z"></path>
+                </svg>
+            </button>
+            <button id="search-{{search.query}}" class="h-full w-full flex-grow bg-sonolus-ui-button-normal p-2 hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed sm:p-3">
+                <div class="h-full w-full bg-sonolus-ui-surface bg-opacity-25 p-1.5 sm:p-2">
+                    <div id="search-block-full-{{search.query}}" class="h-full w-full">
+                        <div id="search-block-{{search.query}}" class="h-2 w-full origin-left transform bg-sonolus-ui-text-normal transition-transform" style="--tw-scale-x: 0.8;"></div>
+                    </div>
+                </div>
+            </button>
+            <button id="search-right-{{search.query}}" class="flex select-none space-x-2 p-2 transition-colors sm:space-x-3 sm:p-3 cursor-pointer bg-sonolus-ui-button-normal hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512" class="h-5 w-5 fill-current sm:h-6 sm:w-6">
+                    <path d="M64 448c-8.188 0-16.38-3.125-22.62-9.375-12.5-12.5-12.5-32.75 0-45.25L178.8 256 41.38 118.6c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0l160 160c12.5 12.5 12.5 32.75 0 45.25l-160 160C80.38 444.9 72.19 448 64 448z"></path>
+                </svg>
+            </button>
+        </div>
+        <button id="search-reset-{{search.query}}" class="flex select-none space-x-2 p-2 transition-colors sm:space-x-3 sm:p-3 pointer-events-none bg-sonolus-ui-button-disabled text-sonolus-ui-text-disabled">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="h-5 w-5 fill-current sm:h-6 sm:w-6">
+                <path d="M480 256c0 123.4-100.5 223.9-223.9 223.9-48.84 0-95.17-15.58-134.2-44.86-14.12-10.59-16.97-30.66-6.375-44.81 10.59-14.12 30.62-16.94 44.81-6.375 27.84 20.91 61 31.94 95.88 31.94C344.3 415.8 416 344.1 416 256S344.31 96.2 256.2 96.2c-37.46 0-73.09 13.49-101.3 36.64l45.12 45.14c17.01 17.02 4.955 46.1-19.1 46.1H35.17C24.58 224.1 16 215.5 16 204.9V59.04C16 35 45.07 22.96 62.07 39.97l47.6 47.63C149.9 52.71 201.5 32.11 256.1 32.11 379.5 32.11 480 132.6 480 256z"></path>
+            </svg>
+        </button>
+    </div>
+    <script>
+        addLoadEvent(function(){
+            var min = {{search.min}};
+            var max = {{search.max}};
+            var def = {{search.default}};
+            var step = {{search.step}};
+            searchConfig["{{search.query}}"] = def;
+            var block = document.getElementById("search-block-{{search.query}}");
+            var nMax = document.getElementById("search-block-full-{{search.query}}").clientWidth;
+            var info = document.getElementById("search-info-{{search.query}}");
+            var reset = document.getElementById("search-reset-{{search.query}}");
+            var siz = Math.round((max - min) / step);
+            block.style.setProperty("--tw-scale-x", (def - min) / (max - min));
+            document.getElementById("search-{{search.query}}").onmousedown = function(event){
+                var nWidth = block.getBoundingClientRect().left;
+                var nX = event.clientX - nWidth;
+                if (nX > nMax) nX = nMax;
+                if (nX < 0) nX = 0;
+                var value = Math.round(nX / nMax * siz);
+                info.innerHTML = value + min;
+                if (value + min == def) reset.className = disableResetClass;
+                else reset.className = enableResetClass;
+                searchConfig["{{search.query}}"] = value + min;
+                block.style.setProperty("--tw-scale-x", value / siz);
+                document.onmousemove = function(event){
+                    event.preventDefault();
+                    var nX = event.clientX - nWidth;
+                    if (nX > nMax) nX = nMax;
+                    if (nX < 0) nX = 0;
+                    var value = Math.round(nX / nMax * siz);
+                    info.innerHTML = value + min;
+                    if (value + min == def) reset.className = disableResetClass;
+                    else reset.className = enableResetClass;
+                    searchConfig["{{search.query}}"] = value + min;
+                    block.style.setProperty("--tw-scale-x", value / siz);
+                };
+                document.onmouseup = function(event){
+                    document.onmousemove = null;
+                    document.onmouseup = null;
+                }
+            };
+            document.getElementById("search-left-{{search.query}}").onclick = function(){
+                if (searchConfig["{{search.query}}"] == min) return false;
+                var s = --searchConfig["{{search.query}}"];
+                block.style.setProperty("--tw-scale-x", (s - min) / (max - min));
+                info.innerHTML = searchConfig["{{search.query}}"];
+                if (searchConfig["{{search.query}}"] == def) reset.className = disableResetClass;
+                else reset.className = enableResetClass;
+            };
+            document.getElementById("search-right-{{search.query}}").onclick = function(){
+                if (searchConfig["{{search.query}}"] == max) return false;
+                var s = ++searchConfig["{{search.query}}"];
+                block.style.setProperty("--tw-scale-x", (s - min) / (max - min));
+                info.innerHTML = searchConfig["{{search.query}}"];
+                if (searchConfig["{{search.query}}"] == def) reset.className = disableResetClass;
+                else reset.className = enableResetClass;
+            };
+            document.getElementById("search-reset-{{search.query}}").onclick = function(){
+                searchConfig["{{search.query}}"] = def;
+                block.style.setProperty("--tw-scale-x", (def - min) / (max - min));
+                info.innerHTML = searchConfig["{{search.query}}"];
+                reset.className = disableResetClass;
+            };
+        });
+    </script>
+</div>

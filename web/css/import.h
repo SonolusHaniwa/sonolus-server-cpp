@@ -15,5 +15,6 @@ auto css_import = [](client_conn conn, http_request request, param argv) {
     char* ch = new char[len];
     fin.read(ch, len);
     send(conn, ch, len);
+    delete[] ch;
     exitRequest(conn);
 };
