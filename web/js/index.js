@@ -109,6 +109,18 @@ async function hideOpenInSonolus() {
     document.getElementById("openInSonolus").style.display = "none";
 }
 
+async function displayJump() {
+    document.getElementById("bottomBar").style.display = "flex";
+    await sleep(10);
+    document.getElementById("bottomBar").style.opacity = "1";
+}
+
+async function hideJump() {
+    document.getElementById("bottomBar").style.opacity = "0";
+    await sleep(150);
+    document.getElementById("bottomBar").style.display = "none";
+}
+
 async function search(path) {
     path += "?";
     for (index in searchConfig) path += index + "=" + searchConfig[index] + "&";
@@ -123,7 +135,7 @@ function setCookie(cname, cvalue, exdays = 30) {
     var d = new Date();
     d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
     var expires = "expires=" + d.toGMTString();
-    document.cookie = cname + "=" + cvalue + "; " + expires + "; path=/";
+    document.cookie = cname + "=" + cvalue + "; " + expires + "; path=/;";
 }
 
 const width = window.innerWidth;

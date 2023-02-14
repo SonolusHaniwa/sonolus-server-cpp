@@ -633,8 +633,10 @@ argvar getParam(http_request request) {
  */
 string getStringfy(argvar $_GET) {
     string res = "";
-    for (auto v : $_GET) res += v.first + "=" + v.second + "&";
-    res.pop_back();
+    for (auto v : $_GET) {
+        if (v.first == "" && v.second == "") continue;
+        res += v.first + "=" + v.second + "&";
+    } if (res.size()) res.pop_back();
     return res;
 }
 

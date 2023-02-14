@@ -91,7 +91,7 @@ H fetchIndexBottom(string searchUrl, string listUrl) {
 
 string disableClass = "router-link-active router-link-exact-active flex select-none space-x-2 p-2 transition-colors sm:space-x-3 sm:p-3 pointer-events-none bg-sonolus-ui-button-disabled text-sonolus-ui-text-disabled";
 string enableClass = "router-link-active router-link-exact-active flex select-none space-x-2 p-2 transition-colors sm:space-x-3 sm:p-3 cursor-pointer bg-sonolus-ui-button-normal hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed";
-H fetchBottomBar(string sonolusUrl, string topUrl, string previousUrl, string nextUrl, string bottomUrl, string searchUrl, int currentPage, int totalPage) {
+H fetchBottomBar(string sonolusUrl, string topUrl, string previousUrl, string nextUrl, string bottomUrl, string searchUrl, string jumpUrl, int currentPage, int totalPage) {
     string source = readFile("./web/html/components/bottomBar.html");
     argvar args;
     args["class.previous"] = currentPage > 0 ? enableClass : disableClass;
@@ -102,18 +102,20 @@ H fetchBottomBar(string sonolusUrl, string topUrl, string previousUrl, string ne
     args["url.next"] = nextUrl;
     args["url.bottom"] = bottomUrl;
     args["url.search"] = searchUrl;
+    args["url.jump"] = jumpUrl;
     args["pages.current"] = to_string(currentPage + 1);
     args["pages.all"] = to_string(totalPage);
     return str_replace(source, args);
 }
 
-H fetchSearchText(string query, string name, string placeholder, bool isMargin) {
+H fetchSearchText(string query, string name, string placeholder, string def, bool isMargin) {
     string source = readFile("./web/html/components/searchText.html");
     argvar args;
     args["search.query"] = query;
     args["search.name"] = name;
     args["search.placeholder"] = placeholder;
     args["search.isMargin"] = isMargin ? "style=\"margin-top: 12px;\"" : "";
+    args["search.default"] = def;
     return str_replace(source, args);
 }
 

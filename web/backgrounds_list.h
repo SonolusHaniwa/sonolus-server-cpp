@@ -17,10 +17,12 @@ auto web_backgrounds_list = [](client_conn conn, http_request request, param arg
     $_GET["page"] = to_string(page - 1); string previousUrl = "/backgrounds/list?" + getStringfy($_GET);
     $_GET["page"] = to_string(page + 1); string nextUrl = "/backgrounds/list?" + getStringfy($_GET);
     $_GET["page"] = to_string(section.pageCount - 1); string bottomUrl = "/backgrounds/list?" + getStringfy($_GET);
-    argList["html.backgroundsBottom"] = fetchBottomBar(sonolusUrl, topUrl, previousUrl, nextUrl, bottomUrl, "/backgrounds/search", page, section.pageCount).output();
+    $_GET.erase("page"); string jumpUrl = "/backgrounds/jump/" + to_string(page) + "?" + getStringfy($_GET);
+    string searchUrl = "/backgrounds/search?" + getStringfy($_GET);
+    argList["html.backgroundsBottom"] = fetchBottomBar(sonolusUrl, topUrl, previousUrl, nextUrl, bottomUrl, searchUrl, jumpUrl, page, section.pageCount).output();
     argList["html.backgroundsList"] = "";
     argList["url.list"] = "/backgrounds/list";
-    argList["search.display"] = $_GET.size() == 1 && $_GET.find("page") != $_GET.end() ? "style=\"display: none\"" : "";
+    argList["search.display"] = $_GET.size() == 0 ? "style=\"display: none\"" : "";
     argList["search.filterWords"] = "";
     for (auto v : $_GET) {
         if (v.first == "page") continue;

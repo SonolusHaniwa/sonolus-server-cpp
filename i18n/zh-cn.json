@@ -15,5 +15,9 @@
     "download": "如果您还没有 sonolus，请前往下载:",
     "searchButton":"搜索",
     "yes": "开",
-    "no": "关"
+    "no": "关",
+    "jumpTitle": "跳至页码",
+    "pages": "页码",
+    "pagesPlaceholder": "输入页码...",
+    "jump": "跳至"
 }

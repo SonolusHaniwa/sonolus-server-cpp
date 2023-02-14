@@ -278,9 +278,20 @@ These days, the official wiki website has added an endpoint `/sonolus/authentica
 
 ## Upload Log
 
+### v1.2.0 2023.2.14
+
+🎁 Happy Valentine's Day 💝
+
+All basic web interfaces have been completed. At present, all pages and hyperlinks have been consistent with the official ones.
+
+1. Add the jump page of all components.
+2. Update the level search configuration.
+3. Add the feature to save the status of all search interfaces.
+4. Fix the problem that language modification only takes effect on the current page.
+
 ### v1.1.3 2023.2.11
 
-1. Fix the error of displaying `{{html. xxx}}` when the list page has no entries.
+1. Fix the error of displaying `{{html.xxx}}` when the list page has no entries.
 2. Completely repair the memory leak caused by the client's long connection without sending information.
 3. Add the display of search criteria on the list page of each component.
 4. Fix the problem of stiff animation when the link jumps.

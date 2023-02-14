@@ -15,5 +15,9 @@
     "download": "If you do not have Sonolus yet, download it here:",
     "searchButton":"Search",
     "yes": "OFF",
-    "no": "ON"
+    "no": "ON",
+    "jumpTitle": "Jump to Page",
+    "pages": "Page",
+    "pagesPlaceholder": "Enter page number...",
+    "jump": "Jump"
 }

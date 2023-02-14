@@ -1,0 +1,76 @@
+<body class="text-sm text-sonolus-ui-text-normal sm:text-base">
+    <div id="app" data-v-app="">
+        <div class="duration-150">
+            {{html.navbar}}
+            <div class="h-11 sm:h-16"></div>
+            <main class="mx-auto flex max-w-4xl flex-col space-y-9 p-9 transition-opacity v-transition:opacity-0 sm:space-y-12 sm:p-12">
+                <div>
+                    <div class="py-2 font-bold sm:py-3">{{language.pages}}</div>
+                    <div class="ml-9 flex flex-grow items-center space-x-2 sm:ml-12 sm:space-x-3">
+                        <div class="flex relative flex-grow">
+                            <div class="relative flex-grow">
+                                <input id="page" type="text" class="w-full border-none bg-sonolus-ui-button-normal p-2 pl-9 text-center text-sm placeholder:text-sm hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed sm:p-3 sm:pl-12 sm:text-base sm:placeholder:text-base" placeholder="{{language.pagesPlaceholder}}" value="{{pages.current}}">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="absolute top-2 left-2 h-5 w-5 fill-current sm:top-3 sm:left-3 sm:h-6 sm:w-6">
+                                    <path d="M416 127.1h-58.23l9.789-58.74c2.906-17.44-8.875-33.92-26.3-36.83-17.53-2.875-33.92 8.891-36.83 26.3L292.9 127.1h-95.1l9.789-58.74c2.906-17.44-8.875-33.92-26.3-36.83-17.53-2.875-33.92 8.891-36.83 26.3L132.9 127.1H64c-17.67 0-32 14.33-32 32 0 18.6 14.33 32 32 32h58.23l-21.33 128H32c-17.67 0-32 14.33-32 32s14.33 31.1 32 31.1h58.23l-9.789 58.74c-2.906 17.44 8.875 33.92 26.3 36.83C108.5 479.9 110.3 480 112 480c15.36 0 28.92-11.09 31.53-26.73L155.07 384h95.12l-9.789 58.74c-2.906 17.44 8.875 33.92 26.3 36.83 1.799.33 3.599.43 5.299.43 15.36 0 28.92-11.09 31.53-26.73L315.07 384H384c17.67 0 32-14.33 32-31.1 0-17.67-14.33-32-32-32h-58.23l21.33-128H416c17.67 0 32-14.32 32-31.1 0-19.5-14.3-34.7-32-34.7zm-155.1 192h-95.1l21.3-128h95.12l-21.32 128z"></path>
+                                </svg>
+                            </div>
+                            <button id="clear" onclick="clearPage()" class="flex select-none space-x-2 p-2 transition-colors sm:space-x-3 sm:p-3 cursor-pointer bg-sonolus-ui-button-normal hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" class="h-5 w-5 fill-current sm:h-6 sm:w-6">
+                                    <path d="M310.6 361.4c12.5 12.5 12.5 32.75 0 45.25-6.2 6.25-14.4 9.35-22.6 9.35s-16.38-3.125-22.62-9.375L160 301.3 54.63 406.6C48.38 412.9 40.19 416 32 416s-16.37-3.1-22.625-9.4c-12.5-12.5-12.5-32.75 0-45.25l105.4-105.4L9.375 150.6c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0L160 210.8l105.4-105.4c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25l-105.4 105.4L310.6 361.4z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <button id="reset" onclick="resetPage()" class="flex select-none space-x-2 p-2 transition-colors sm:space-x-3 sm:p-3 pointer-events-none bg-sonolus-ui-button-disabled text-sonolus-ui-text-disabled">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="h-5 w-5 fill-current sm:h-6 sm:w-6">
+                                <path d="M480 256c0 123.4-100.5 223.9-223.9 223.9-48.84 0-95.17-15.58-134.2-44.86-14.12-10.59-16.97-30.66-6.375-44.81 10.59-14.12 30.62-16.94 44.81-6.375 27.84 20.91 61 31.94 95.88 31.94C344.3 415.8 416 344.1 416 256S344.31 96.2 256.2 96.2c-37.46 0-73.09 13.49-101.3 36.64l45.12 45.14c17.01 17.02 4.955 46.1-19.1 46.1H35.17C24.58 224.1 16 215.5 16 204.9V59.04C16 35 45.07 22.96 62.07 39.97l47.6 47.63C149.9 52.71 201.5 32.11 256.1 32.11 379.5 32.11 480 132.6 480 256z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="flex justify-end">
+                    <button id="jump" onclick="jump(this)" data-href="{{url.base}}" class="flex select-none space-x-2 p-2 transition-colors sm:space-x-3 sm:p-3 cursor-pointer bg-sonolus-ui-button-normal hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="h-5 w-5 fill-current sm:h-6 sm:w-6">
+                            <path d="M297.4 9.372c12.5-12.496 32.7-12.496 45.2 0l96 96.028c12.5 12.5 12.5 32.7 0 45.2l-96 96c-12.5 12.5-32.7 12.5-45.2 0s-12.5-32.7 0-45.2l41.3-41.4H128c-35.35 0-64 28.7-64 64v32c0 17.7-14.33 32-32 32S0 273.7 0 256v-32C0 153.3 57.31 96 128 96h210.7l-41.3-41.37c-12.5-12.5-12.5-32.76 0-45.257v-.001zm-96 256.028c12.5-12.5 32.7-12.5 45.2 0l96 96c12.5 12.5 12.5 32.7 0 45.2l-96 96c-12.5 12.5-32.7 12.5-45.2 0s-12.5-32.7 0-45.2l41.3-41.4H96c-17.67 0-32 14.3-32 32v32c0 17.7-14.33 32-32 32S0 497.7 0 480v-32c0-53.9 42.98-96 96-96h146.7l-41.3-41.4c-12.5-12.5-12.5-32.7 0-45.2z"></path>
+                        </svg>
+                        <span class="min-w-[4.5rem] flex-grow text-center sm:min-w-[6rem]">{{language.jump}}</span>
+                    </button>
+                </div>
+                <script>
+                    var enableResetClass = "flex select-none space-x-2 p-2 transition-colors sm:space-x-3 sm:p-3 cursor-pointer bg-sonolus-ui-button-normal hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed";
+                    var disableResetClass = "flex select-none space-x-2 p-2 transition-colors sm:space-x-3 sm:p-3 pointer-events-none bg-sonolus-ui-button-disabled text-sonolus-ui-text-disabled";
+                    var def;
+                    function clearPage() {
+                        document.getElementById("page").value = "";
+                        document.getElementById("jump").className = disableResetClass;
+                        if (def == "") document.getElementById("reset").className = disableResetClass;
+                        else document.getElementById("reset").className = enableResetClass;
+                    }
+                    function resetPage() {
+                        document.getElementById("page").value = def;
+                        if (def == "") document.getElementById("jump").className = disableResetClass;
+                        else document.getElementById("jump").className = enableResetClass;
+                        document.getElementById("reset").className = disableResetClass;
+                    }
+                    async function jump(e) {
+                        var href = e.getAttribute("data-href");
+                        if (href[href.length - 1] != '?') href += "&";
+                        href += "page=" + (document.getElementById("page").value - 1);
+                        document.getElementsByTagName("main")[0].style.opacity = "0";
+                        document.getElementsByTagName("nav")[0].style.transform = "translateY(-100%)";
+                        await sleep(150);
+                        location.href = href;
+                    }
+                    addLoadEvent(function(){
+                        def = document.getElementById("page").value;
+                        document.getElementById("page").oninput = function(){
+                            if (this.value == "") document.getElementById("jump").className = disableResetClass;
+                            else document.getElementById("jump").className = enableResetClass;
+                            if (this.value == def) document.getElementById("reset").className = disableResetClass;
+                            else document.getElementById("reset").className = enableResetClass;
+                        };
+                    });
+                </script>
+            </main>
+        </div>
+    </div>
+</body>

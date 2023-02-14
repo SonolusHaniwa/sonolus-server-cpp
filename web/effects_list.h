@@ -17,10 +17,12 @@ auto web_effects_list = [](client_conn conn, http_request request, param argv) {
     $_GET["page"] = to_string(page - 1); string previousUrl = "/effects/list?" + getStringfy($_GET);
     $_GET["page"] = to_string(page + 1); string nextUrl = "/effects/list?" + getStringfy($_GET);
     $_GET["page"] = to_string(section.pageCount - 1); string bottomUrl = "/effects/list?" + getStringfy($_GET);
-    argList["html.effectsBottom"] = fetchBottomBar(sonolusUrl, topUrl, previousUrl, nextUrl, bottomUrl, "/effects/search", page, section.pageCount).output();
+    $_GET.erase("page"); string jumpUrl = "/effects/jump/" + to_string(page) + "?" + getStringfy($_GET);
+    string searchUrl = "/effects/search?" + getStringfy($_GET);
+    argList["html.effectsBottom"] = fetchBottomBar(sonolusUrl, topUrl, previousUrl, nextUrl, bottomUrl, searchUrl, jumpUrl, page, section.pageCount).output();
     argList["html.effectsList"] = "";
     argList["url.list"] = "/effects/list";
-    argList["search.display"] = $_GET.size() == 1 && $_GET.find("page") != $_GET.end() ? "style=\"display: none\"" : "";
+    argList["search.display"] = $_GET.size() == 0 ? "style=\"display: none\"" : "";
     argList["search.filterWords"] = "";
     for (auto v : $_GET) {
         if (v.first == "page") continue;
