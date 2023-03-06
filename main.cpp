@@ -11,11 +11,12 @@ int exportEffectId[] = {};
 int exportParticleId[] = {};
 int exportEngineId[] = {};
 
-#include"modules/import.h"
+#include"modules/modules.h"
 #include"items/Items.h"
 #include"sonolus/sonolus.h"
 #include"api/import.h"
 #include"web/import.h"
+#include"modules/import.h"
 #include"modules/export.h"
 using namespace std;
 
@@ -75,8 +76,9 @@ int main(int argc, char** argv) {
     } else if (string(argv[1]) == "help") invalidUsage(argv);
     else if (string(argv[1]) != "serve") invalidUsage(argv);
     
-    mysql = mysqli_connect(appConfig["mysql.hostname"].asString().c_str(), appConfig["mysql.username"].asString().c_str(), 
-        appConfig["mysql.password"].asString().c_str(), appConfig["mysql.database"].asString().c_str(), appConfig["mysql.port"].asInt());
+    // mysql = mysqli_connect(appConfig["mysql.hostname"].asString().c_str(), appConfig["mysql.username"].asString().c_str(), 
+    //     appConfig["mysql.password"].asString().c_str(), appConfig["mysql.database"].asString().c_str(), appConfig["mysql.port"].asInt());
+    (new DB_Controller)->query("SELECT COUNT(*) FROM Level");
     app.setopt(HTTP_ENABLE_SSL, appConfig["server.enableSSL"].asBool());
     app.setopt(HTTP_LISTEN_HOST, appConfig["server.listenHost"].asString().c_str());
     app.setopt(HTTP_LISTEN_PORT, appConfig["server.listenPort"].asInt());
@@ -93,11 +95,11 @@ int main(int argc, char** argv) {
 
     app.addRoute("/sonolus/info", sonolus_info);
     app.addRoute("/sonolus/levels/create", sonolus_levels_create);
-    // app.addRoute("/sonolus/skins/create", sonolus_skins_create);
-    // app.addRoute("/sonolus/backgrounds/create", sonolus_backgrounds_create);
-    // app.addRoute("/sonolus/effects/create", sonolus_effects_create);
-    // app.addRoute("/sonolus/particles/create", sonolus_particles_create);
-    // app.addRoute("/sonolus/engines/create", sonolus_engines_create);
+    app.addRoute("/sonolus/skins/create", sonolus_skins_create);
+    app.addRoute("/sonolus/backgrounds/create", sonolus_backgrounds_create);
+    app.addRoute("/sonolus/effects/create", sonolus_effects_create);
+    app.addRoute("/sonolus/particles/create", sonolus_particles_create);
+    app.addRoute("/sonolus/engines/create", sonolus_engines_create);
     app.addRoute("/sonolus/levels/list", sonolus_levels_list);
     app.addRoute("/sonolus/skins/list", sonolus_skins_list);
     app.addRoute("/sonolus/backgrounds/list", sonolus_backgrounds_list);
@@ -113,7 +115,7 @@ int main(int argc, char** argv) {
 
     app.addRoute("/", web_index);
     app.addRoute("/index", web_index);
-    app.addRoute("/levels/create", web_levels_create);
+    // app.addRoute("/levels/create", web_levels_create);
     // app.addRoute("/skins/create", web_skins_create);
     // app.addRoute("/backgrounds/create", web_backgrounds_create);
     // app.addRoute("/effects/create", web_effects_create);

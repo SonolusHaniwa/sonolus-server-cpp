@@ -136,7 +136,7 @@ Take the export level named `bandori-#1` as an example
 
 - `GET /`: Website's index.
 - `GET /index`: Website's index.
-- `GET /levels/create`: Create a level.
+<!-- - `GET /levels/create`: Create a level. -->
 - `GET /levels/{name}`: Show information of level named {name}.
 - `GET /skins/{name}`: Show information of skin named {name}.
 - `GET /backgrounds/{name}`: Show information of background named {name}.
@@ -277,6 +277,14 @@ These days, the official wiki website has added an endpoint `/sonolus/authentica
 - [lyoj-dev/webserver](https://github.com/lyoj-dev/webserver)
 
 ## Upload Log
+
+### v1.2.1 2023.3.6
+
+1. New support for SQLite database.
+2. The data package format has been modified to provide support for SQLite.
+3. Re-package the official engine with a new download link: [Data Packages for v1.2.1+](https://github.com/LittleYang0531/sonolus-server-cpp/releases/tag/v1.2.1-data)。
+4. New component creation interfaces are added to support the creation of components in the next version.
+5. Temporarily delete the `/levels/create` interface to facilitate GUI rewriting in the next version.
 
 ### v1.2.0 2023.2.14
 

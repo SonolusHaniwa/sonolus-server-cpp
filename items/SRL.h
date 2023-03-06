@@ -64,6 +64,10 @@ class SRL {
     SRL(){}
     SRL(string hash, string url):
         hash(hash), url(url){};
+    SRL(Json::Value arr) {
+        hash = arr["hash"].asString();
+        url = arr["url"].asString();
+    }
     
     Json::Value toJsonObject() {
         Json::Value res;

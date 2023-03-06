@@ -4,7 +4,7 @@
 
 <p align="center"><a href="./README_en.md">English</a>&nbsp; <a href="./README.md">简体中文</a></p>
 
-使用 C++ 与 MySQL 开发的一个适用于 Sonolus 的 api 服务器，您可以用于测试您自己的引擎或自己构建一个 Sonolus 服务。
+使用 C++ 与 MySQL/SQLite 开发的一个适用于 Sonolus 的 api 服务器，您可以用于测试您自己的引擎或自己构建一个 Sonolus 服务。
 
 该项目可以被部署在任何 Linux 设备以及 Windows 设备，即使是一台手机也能轻松完成服务器的编译。
 
@@ -64,7 +64,7 @@ g++ main.cpp -o main -lpthread -lcrypto -lssl -ljsoncpp -lmysqlclient -g
 ./main import bandori.bin
 ```
 
-我们提供各官方引擎的数据包下载: [Data Packages for v1.1.1+](https://github.com/LittleYang0531/sonolus-server-cpp/releases/tag/data)
+我们提供各官方引擎的数据包下载: [Data Packages for v1.2.1+](https://github.com/LittleYang0531/sonolus-server-cpp/releases/tag/v1.2.1-data)
 
 ### 运行
 
@@ -136,7 +136,7 @@ g++ main.cpp -o main -lpthread -lcrypto -lssl -ljsoncpp -lmysqlclient -g
 
 - `GET /`: 网站主页面。
 - `GET /index`: 网站主页面。
-- `GET /levels/create`: 创建一个关卡。
+<!-- - `GET /levels/create`: 创建一个关卡。 -->
 - `GET /levels/{name}`: 显示名为 {name} 的关卡信息。
 - `GET /skins/{name}`: 显示名为 {name} 的皮肤信息。
 - `GET /backgrounds/{name}`: 显示名为 {name} 的背景信息。
@@ -277,6 +277,14 @@ string levelSearch(map<string, string> $_GET) {
 - [lyoj-dev/webserver](https://github.com/lyoj-dev/webserver)
 
 ## 更新日志
+
+### v1.2.1 2023.3.6
+
+1. 新增对 SQLite 数据库的支持。
+2. 修改了数据包格式，以为 SQLite 提供支持。
+3. 重新对官方引擎进行打包，新的下载链接: [Data Packages for v1.2.1+](https://github.com/LittleYang0531/sonolus-server-cpp/releases/tag/v1.2.1-data)。
+4. 新增了各组件创建接口，为下一版本创建组件提供支持。
+5. 临时删除 `/levels/create` 接口，便于下一版本对 GUI 的重写。
 
 ### v1.2.0 2023.2.14
 

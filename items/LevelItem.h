@@ -1,4 +1,4 @@
-#ifndef LEVELITEM_h
+#ifndef LEVELITEM_H
 #define LEVELITEM_H
 
 using namespace std;
@@ -12,6 +12,10 @@ class UseItem {
 
     UseItem(){}
     UseItem(bool useDefault, T item = T()): useDefault(useDefault), item(item){}
+    UseItem(Json::Value arr) {
+        useDefault = arr["useDefault"].asInt();
+        item = T(-1, arr["item"]);
+    }
 
     Json::Value toJsonObject() {
         Json::Value res;
@@ -48,6 +52,24 @@ class LevelItem {
         id(id), name(name), rating(rating), title(title), artists(artists), author(author), engine(engine), 
         useSkin(useSkin), useBackground(useBackground), useEffect(useEffect), useParticle(useParticle),
         cover(cover), bgm(bgm), data(data), preview(preview){}
+    LevelItem(int level_id, Json::Value arr) {
+        id = level_id;
+        name = arr["name"].asString();
+        version = arr["version"].asInt();
+        rating = arr["rating"].asInt();
+        title = arr["title"].asString();
+        artists = arr["artists"].asString();
+        author = arr["author"].asString();
+        engine = EngineItem(-1, arr["engine"]);
+        useSkin = UseItem<SkinItem>(arr["useSkin"]);
+        useBackground = UseItem<BackgroundItem>(arr["useBackground"]);
+        useEffect = UseItem<EffectItem>(arr["useEffect"]);
+        useParticle = UseItem<ParticleItem>(arr["useParticle"]);
+        cover = SRL<LevelCover>(arr["cover"]);
+        bgm = SRL<LevelBgm>(arr["bgm"]);
+        data = SRL<LevelData>(arr["data"]);
+        preview = SRL<LevelPreview>(arr["preview"]);
+    }
 
     Json::Value toJsonObject() {
         Json::Value res;
@@ -102,7 +124,7 @@ int levelNumber(string filter) {
     string sql = "SELECT COUNT(*) AS sum FROM Level";
     if (filter != "") sql += " WHERE (" + filter + ")";
     sql += " ORDER BY id";
-    mysqld res = mysqli_query(mysql, sql.c_str());
+    dbres res = (new DB_Controller)->query(sql.c_str());
     return atoi(res[0]["sum"].c_str());
 }
 
@@ -114,7 +136,7 @@ Section<LevelItem> levelList(string filter, int st = 1, int en = 20) {
     string sql = "SELECT * FROM Level";
     if (filter != "") sql += " WHERE (" + filter + ")";
     sql += " ORDER BY id DESC LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);
-    auto res = mysqli_query(mysql, sql.c_str());
+    auto res = (new DB_Controller)->query(sql.c_str());
     Section<LevelItem> list = Section<LevelItem>(pageCount, LevelSearch);
     for (int i = 0; i < res.size(); i++) {
         EngineItem engine = engineList("id = " + res[i]["engine"], 1, 1).items[0];
@@ -154,6 +176,28 @@ string levelFilter(argvar arg) {
     if (arg["minRating"] != "") filter += (pre ? "AND " : "") + string("rating >= ") + arg["minRating"] + " ", pre = true;
     if (arg["maxRating"] != "") filter += (pre ? "AND " : "") + string("rating <= ") + arg["maxRating"] + " ", pre = true;
     return filter;
+}
+
+int levelCreate(LevelItem item) {
+    stringstream sqlbuffer;
+    auto res = (new DB_Controller)->query("SELECT id FROM Level WHERE name = \"" + item.name + "\"");
+    if (res.size() != 0) return 0;
+    int id = atoi((new DB_Controller)->query("SELECT COUNT(*) AS sum FROM Level;")[0]["sum"].c_str()) + 1;
+    int skinId = 0, backgroundId = 0, effectId = 0, particleId = 0, engineId = 0;
+    if (item.useSkin.useDefault == false)
+        skinId = atoi((new DB_Controller)->query("SELECT id FROM Skin WHERE name = \"" + item.useSkin.item.name + "\";")[0]["id"].c_str());
+    if (item.useBackground.useDefault == false)
+        backgroundId = atoi((new DB_Controller)->query("SELECT id FROM Background WHERE name = \"" + item.useBackground.item.name + "\";")[0]["id"].c_str());
+    if (item.useEffect.useDefault == false)
+        effectId = atoi((new DB_Controller)->query("SELECT id FROM Effect WHERE name = \"" + item.useEffect.item.name + "\";")[0]["id"].c_str());
+    if (item.useParticle.useDefault == false)
+        particleId = atoi((new DB_Controller)->query("SELECT id FROM Particle WHERE name = \"" + item.useParticle.item.name + "\";")[0]["id"].c_str());
+    engineId = atoi((new DB_Controller)->query("SELECT id FROM Engine WHERE name = \"" + item.engine.name + "\";")[0]["id"].c_str());
+    sqlbuffer << "INSERT INTO Level (id, name, version, rating, title, artists, author, engine, skin, background, effect, particle, cover, bgm, data, preview) VALUES (";
+    sqlbuffer << id << ", \"" << item.name << "\", " << item.version << ", " << item.rating << ", \"" << item.title << "\", ";
+    sqlbuffer << "\"" << item.artists << "\", \"" << item.author << "\", " << engineId << ", " << skinId << ", " << backgroundId << ", " << effectId << ", " << particleId << ", ";
+    sqlbuffer << "\"" << item.cover.hash << "\", \"" << item.bgm.hash << "\", \"" << item.data.hash << "\", \"" << item.preview.hash << "\")";
+    return (new DB_Controller)->execute(sqlbuffer.str());
 }
 
 #endif

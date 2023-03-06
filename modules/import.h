@@ -1,9 +1,3 @@
-#include"httpd.h"
-#include"html.h"
-#include"mysqli.h"
-#include"json.h"
-#include"encrypt.h"
-
 using namespace std;
 
 void import(const char* path) {
@@ -45,11 +39,24 @@ void import(const char* path) {
         fout.close(); delete[] filePointer; delete[] fileSha1; delete[] fileSha1Real;
         writeLog(LOG_LEVEL_DEBUG, "Saved file " + buffer.str() + " into data.");
     }
-    string sql = "";
-    while (pt < len) sql.push_back(ch[pt++]);
-    int raws = mysqli_execute(mysql, sql.c_str());
+    int jsonnum = 0, effected_raws = 0;
+    for (int i = 0; i < 8; i++) jsonnum <<= 8, jsonnum += (unsigned char)ch[pt++];
+    for (int i = 1; i <= jsonnum; i++) {
+        int jsonsize = 0; string json; int type = ch[pt++];
+        for (int j = 0; j < 8; j++) jsonsize <<= 8, jsonsize += (unsigned char)ch[pt++];
+        for (int j = 0; j < jsonsize; j++) json.push_back(ch[pt++]);
+        Json::Value arr; json_decode(json, arr);
+        switch(type) {
+            case 1: effected_raws += levelCreate(LevelItem(-1, arr)); break;
+            case 2: effected_raws += skinCreate(SkinItem(-1, arr)); break;
+            case 3: effected_raws += backgroundCreate(BackgroundItem(-1, arr)); break;
+            case 4: effected_raws += effectCreate(EffectItem(-1, arr)); break;
+            case 5: effected_raws += particleCreate(ParticleItem(-1, arr)); break;
+            case 6: effected_raws += engineCreate(EngineItem(-1, arr)); break;
+        }
+    }
     delete[] ch;
     writeLog(LOG_LEVEL_INFO, "Import data successfully.");
     writeLog(LOG_LEVEL_DEBUG, to_string(filenum) + " files were written.");
-    writeLog(LOG_LEVEL_DEBUG, to_string(raws) + " raws were affected.");
+    writeLog(LOG_LEVEL_DEBUG, to_string(effected_raws) + " raws were affected.");
 }

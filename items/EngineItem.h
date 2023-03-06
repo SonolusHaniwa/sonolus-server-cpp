@@ -28,6 +28,22 @@ class EngineItem {
         id(id), name(name), title(title), subtitle(subtitle), author(author),
         skin(skin), background(background), effect(effect), particle(particle),
         thumbnail(thumbnail), data(data), configuration(configuration), rom(rom){}
+    EngineItem(int engine_id, Json::Value arr) {
+        id = engine_id;
+        name = arr["name"].asString();
+        version = arr["version"].asInt();
+        title = arr["title"].asString();
+        subtitle = arr["subtitle"].asString();
+        author = arr["author"].asString();
+        skin = SkinItem(-1, arr["skin"]);
+        background = BackgroundItem(-1, arr["background"]);
+        effect = EffectItem(-1, arr["effect"]);
+        particle = ParticleItem(-1, arr["particle"]);
+        thumbnail = SRL<EngineThumbnail>(arr["thumbnail"]);
+        data = SRL<EngineData>(arr["data"]);
+        configuration = SRL<EngineConfiguration>(arr["configuration"]);
+        rom = SRL<EngineRom>(arr["rom"]);
+    }
     
     Json::Value toJsonObject() {
         Json::Value res;
@@ -77,7 +93,7 @@ class EngineItem {
 int engineNumber(string filter) {
     string sql = "SELECT COUNT(*) AS sum FROM Engine";
     if (filter != "") sql += " WHERE (" + filter + ")";
-    mysqld res = mysqli_query(mysql, sql.c_str());
+    dbres res = (new DB_Controller)->query(sql.c_str());
     return atoi(res[0]["sum"].c_str());
 }
 
@@ -89,7 +105,7 @@ Section<EngineItem> engineList(string filter, int st = 1, int en = 20) {
     string sql = "SELECT * FROM Engine";
     if (filter != "") sql += " WHERE (" + filter + ")";
     sql += " ORDER BY id DESC LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);
-    mysqld res = mysqli_query(mysql, sql.c_str());
+    dbres res = (new DB_Controller)->query(sql.c_str());
     Section<EngineItem> list = Section<EngineItem>(pageCount, EngineSearch);
     for (int i = 0; i < res.size(); i++) {
         SkinItem skin = skinList("id = " + res[i]["skin"], 1, 1).items[0];
@@ -115,6 +131,23 @@ string engineFilter(argvar arg) {
     string filter = "";
     if (arg["keywords"] != "") filter = "title like \"%" + str_replace("\"", "\\\"", urldecode(arg["keywords"])) + "%\"";
     return filter;
+}
+
+int engineCreate(EngineItem item) {
+    stringstream sqlbuffer;
+    auto res = (new DB_Controller)->query("SELECT id FROM Engine WHERE name = \"" + item.name + "\"");
+    if (res.size() != 0) return 0;
+    int id = atoi((new DB_Controller)->query("SELECT COUNT(*) AS sum FROM Engine;")[0]["sum"].c_str()) + 1;
+    int skinId = atoi((new DB_Controller)->query("SELECT id FROM Skin WHERE name = \"" + item.skin.name + "\";")[0]["id"].c_str());
+    int backgroundId = atoi((new DB_Controller)->query("SELECT id FROM Background WHERE name = \"" + item.background.name + "\";")[0]["id"].c_str());
+    int effectId = atoi((new DB_Controller)->query("SELECT id FROM Effect WHERE name = \"" + item.effect.name + "\";")[0]["id"].c_str());
+    int particleId = atoi((new DB_Controller)->query("SELECT id FROM Particle WHERE name = \"" + item.particle.name + "\";")[0]["id"].c_str());
+    sqlbuffer << "INSERT INTO Engine (id, name, version, title, subtitle, author, skin, background, effect, particle, thumbnail, data, configuration, rom) VALUES (";
+    sqlbuffer << id << ", \"" << item.name << "\", " << item.version << ", \"" << item.title << "\", ";
+    sqlbuffer << "\"" << item.subtitle << "\", \"" << item.author << "\", " << skinId << ", " << backgroundId << ", " << effectId << ", " << particleId << ", ";
+    sqlbuffer << "\"" << item.thumbnail.hash << "\", \"" << item.data.hash << "\", \"" << item.configuration.hash << "\", ";
+    sqlbuffer << "\"" << item.rom.hash << "\");";
+    return (new DB_Controller)->execute(sqlbuffer.str());
 }
 
 #endif
