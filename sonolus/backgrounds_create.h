@@ -10,7 +10,6 @@ auto sonolus_backgrounds_create = [](client_conn conn, http_request request, par
     auto $_POST = postParam(request);
     int id = backgroundNumber("") + 1;
     string name = $_POST["name"];
-    int version = BackgroundItem().version;
     string title = $_POST["title"];
     string subtitle = $_POST["subtitle"];
     string author = $_POST["author"];

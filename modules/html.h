@@ -163,4 +163,13 @@ H fetchSearchSlider(string query, string name, int def, int min, int max, int st
     return str_replace(source, args);
 }
 
+H fetchSearchFile(string query, string name, bool isMargin) {
+    string source = readFile("./web/html/components/searchFile.html");
+    argvar args;
+    args["search.query"] = query;
+    args["search.name"] = name;
+    args["search.isMargin"] = isMargin ? "style=\"margin-top: 12px;\"" : "";
+    return str_replace(source, args);
+}
+
 #endif

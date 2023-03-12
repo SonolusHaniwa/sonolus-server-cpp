@@ -2,6 +2,7 @@
 #include"Search.h"
 
 Search LevelSearch, SkinSearch, BackgroundSearch, EffectSearch, ParticleSearch, EngineSearch;
+Search LevelCreate, SkinCreate, BackgroundCreate, EffectCreate, ParticleCreate, EngineCreate;
 
 #include"Section.h"
 #include"ItemList.h"
@@ -71,6 +72,11 @@ Search readJson(string path) {
             for (int j = 0; j < json[i]["values"].size(); j++) 
                 select.values.push_back(json[i]["values"][j].asString());
             search.append(select);
+        } else if (json[i]["type"].asString() == "file") {
+            SearchFileOption file = SearchFileOption(
+                json[i]["query"].asString(),
+                json[i]["name"].asString()
+            ); search.append(file);
         } else {
             writeLog(LOG_LEVEL_ERROR, ("Invalid search option type \"" + 
                 json[i]["type"].asString() + "\" in file \"" + path + "\"").c_str());  
@@ -82,11 +88,17 @@ Search readJson(string path) {
 
 void loadConfig() {
     LevelSearch = readJson("./config/level_search.json");
+    LevelCreate = readJson("./config/level_create.json");
     SkinSearch = readJson("./config/skin_search.json");
+    SkinCreate = readJson("./config/skin_create.json");
     BackgroundSearch = readJson("./config/background_search.json");
+    BackgroundCreate = readJson("./config/background_create.json");
     EffectSearch = readJson("./config/effect_search.json");
+    EffectCreate = readJson("./config/effect_create.json");
     ParticleSearch = readJson("./config/particle_search.json");
+    ParticleCreate = readJson("./config/particle_create.json");
     EngineSearch = readJson("./config/engine_search.json");
+    EngineCreate = readJson("./config/engine_create.json");
     string json = readFile("./i18n/index.json");
     Json::Value index; json_decode(json, index);
     for (int i = 0; i < index.size(); i++) {

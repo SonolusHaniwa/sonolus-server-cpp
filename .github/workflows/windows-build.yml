@@ -1,0 +1,61 @@
+name: windows-build
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  windows-build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v3
+            
+      - name: Setup C/C++ Compiler
+        run: |
+          curl "https://ghproxy.com/https://github.com/LittleYang0531/LittleYang0531/releases/download/g++/windows-x64.zip" -o gcc.zip
+          unzip gcc.zip
+      
+      - name: Checking C/C++ Compiler
+        run: |
+          ./mingw/bin/g++ --version
+        
+      - name: Compiling Sonolus Server for Windows
+        run: |
+          ./mingw/bin/g++.exe main.cpp -osonolus -lmysql -lpthread -lcrypto -lssl -lwsock32 -ljson -std=c++14 -O2
+          
+      - name: Fetching Packages for Sonolus Server
+        run: |
+          curl "https://ghproxy.com/https://github.com/LittleYang0531/LittleYang0531/releases/download/g++/packages.zip" -o packages.zip
+          mkdir packages
+          mv packages.zip ./packages
+          cd packages
+          unzip packages.zip
+          rm ./packages.zip
+          rm sonolus.exe
+      
+      - name: Checking Sonolus Server for Windows
+        run: |
+          mv sonolus.exe ./packages
+          cd packages
+          ./sonolus help
+      - name: Packaging Sonolus Server for Windows
+        run: |
+          mv ./config/* ./packages/config/ -Force
+          mv ./i18n/* ./packages/i18n/ -Force
+          mv ./web/css ./packages/web/ -Force
+          mv ./web/js ./packages/web/ -Force
+          mv ./web/html ./packages/web/ -Force
+          mv ./CODE_OF_CONDUCT.md ./packages/ -Force
+          mv ./data.sql ./packages/ -Force
+          mv ./LICENSE.txt ./packages/ -Force
+          mv ./README.md ./packages/ -Force
+          mv ./README_en.md ./packages/ -Force
+          Compress-Archive -Path ./packages/* -DestinationPath ./windows-x64.zip
+          
+      - name: Upload Sonolus Server for Windows
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: windows-x64.zip

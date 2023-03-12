@@ -1,0 +1,48 @@
+{
+    "options": [
+        {
+            "query": "name",
+            "name": "Name",
+            "type": "text",
+            "placeholder": "Enter background name..."
+        },
+        {
+            "query": "title",
+            "name": "Title",
+            "type": "text",
+            "placeholder": "Enter background title..."
+        },
+        {
+            "query": "subtitle",
+            "name": "Subtitle",
+            "type": "text",
+            "placeholder": "Enter background subtitle..."
+        },
+        {
+            "query": "author",
+            "name": "Author",
+            "type": "text",
+            "placeholder": "Enter background author..."
+        },
+        {
+            "query": "thumbnail",
+            "name": "Thumbnail",
+            "type": "file"
+        },
+        {
+            "query": "data",
+            "name": "Data",
+            "type": "file"
+        },
+        {
+            "query": "image",
+            "name": "Image",
+            "type": "file"
+        },
+        {
+            "query": "configuration",
+            "name": "Configuration",
+            "type": "file"
+        }
+    ]
+}

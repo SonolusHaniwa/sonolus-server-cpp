@@ -1,0 +1,43 @@
+{
+    "options": [
+        {
+            "query": "name",
+            "name": "Name",
+            "type": "text",
+            "placeholder": "Enter particle name..."
+        },
+        {
+            "query": "title",
+            "name": "Title",
+            "type": "text",
+            "placeholder": "Enter particle title..."
+        },
+        {
+            "query": "subtitle",
+            "name": "Subtitle",
+            "type": "text",
+            "placeholder": "Enter particle subtitle..."
+        },
+        {
+            "query": "author",
+            "name": "Author",
+            "type": "text",
+            "placeholder": "Enter particle author..."
+        },
+        {
+            "query": "thumbnail",
+            "name": "Thumbnail",
+            "type": "file"
+        },
+        {
+            "query": "data",
+            "name": "Data",
+            "type": "file"
+        },
+        {
+            "query": "texture",
+            "name": "Texture",
+            "type": "file"
+        }
+    ]
+}

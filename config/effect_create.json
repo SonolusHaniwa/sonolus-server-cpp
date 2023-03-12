@@ -1,0 +1,43 @@
+{
+    "options": [
+        {
+            "query": "name",
+            "name": "Name",
+            "type": "text",
+            "placeholder": "Enter effect name..."
+        },
+        {
+            "query": "title",
+            "name": "Title",
+            "type": "text",
+            "placeholder": "Enter effect title..."
+        },
+        {
+            "query": "subtitle",
+            "name": "Subtitle",
+            "type": "text",
+            "placeholder": "Enter effect subtitle..."
+        },
+        {
+            "query": "author",
+            "name": "Author",
+            "type": "text",
+            "placeholder": "Enter effect author..."
+        },
+        {
+            "query": "thumbnail", 
+            "name": "Thumbnail",
+            "type": "file"
+        },
+        {
+            "query": "data", 
+            "name": "Data",
+            "type": "file"
+        },
+        {
+            "query": "audio", 
+            "name": "Audio",
+            "type": "file"
+        }
+    ]
+}

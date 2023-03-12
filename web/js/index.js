@@ -1,21 +1,42 @@
+var xhr = new XMLHttpRequest();
+xhr.upload.onprogress = function(e){};
+var xhrOnProgress = function(fun) {
+    xhrOnProgress.onprogress = fun;
+    return function() {
+        var xhr = $.ajaxSettings.xhr();
+        if (typeof xhrOnProgress.onprogress !== 'function') return xhr;
+        if (xhrOnProgress.onprogress && xhr.upload) xhr.upload.onprogress = xhrOnProgress.onprogress;
+        return xhr;
+    }
+};
+
 async function uploader(context) {
-    array = new Uint8Array(context);
-    context = "";
+    array = new Uint8Array(context); context = "";
     for (i = 0; i < array.length; i++) context += String.fromCharCode(array[i]);
-    context = window.btoa(context);
-    console.log(context);
-    hash = "";
+    context = window.btoa(context); hash = "";
+    inner = document.getElementById("uploader-progress");
+    inner.style.width = "0%";
+    e = document.getElementsByClassName("uploader-progress")[0];
+    e.style.opacity = 1; var finish = 0;
     $.ajax({
         url: "/uploader",
-        type: "POST", 
-        async: false,
+        type: "POST",
+        async: true,
         data: "file=" + context,
+        xhr: xhrOnProgress(function(e){
+            var per = 100 * e.loaded / e.total;
+            inner.style.width = per + "%";
+        }),
         success: function(msg) {
             msg = JSON.parse(msg);
             console.log(msg);
             hash = msg["hash"];
+            finish = 1;
         }
     });
+    while(!finish) await sleep(10);
+    e = document.getElementsByClassName("uploader-progress")[0];
+    e.style.opacity = 0;
     return hash;
 }
 
@@ -48,35 +69,6 @@ async function readBinaryFile(FileObject) {
     }
     while (!finish) await sleep(10);
     return result;
-}
-
-async function upload_level() {
-    var name = document.getElementById("level-name").value;
-    var rating = document.getElementById("level-rating").value;
-    var title = document.getElementById("level-title").value;
-    var artists = document.getElementById("level-artists").value;
-    var author = document.getElementById("level-author").value;
-    var engine = document.getElementById("level-engine").value;
-    var skin = document.getElementById("level-skin").value;
-    var background = document.getElementById("level-background").value;
-    var effect = document.getElementById("level-effect").value;
-    var particle = document.getElementById("level-particle").value;
-    var cover = await uploader(await readBinaryFile(document.getElementById("level-cover").files[0]));
-    var bgm = await uploader(await readBinaryFile(document.getElementById("level-bgm").files[0]));
-    var data = await uploader(await readBinaryFile(document.getElementById("level-data").files[0]));
-    var postdata = "name=" + name + "&rating=" + rating + "&title=" + title +
-    "&artists=" + artists + "&author=" + author + "&engine=" + engine + "&skin=" + skin +
-    "&background=" + background + "&effect=" + effect + "&particle=" + particle +
-    "&cover=" + cover + "&bgm=" + bgm + "&data=" + data;
-    $.ajax({
-        url: "/sonolus/levels/create",
-        type: "POST", 
-        data: postdata,
-        success: function(msg) {
-            console.log(msg);
-            alert(msg["msg"]);
-        }
-    });
 }
 
 async function displayLanguage() {
@@ -119,6 +111,32 @@ async function hideJump() {
     document.getElementById("bottomBar").style.opacity = "0";
     await sleep(150);
     document.getElementById("bottomBar").style.display = "none";
+}
+
+async function create(path, return_path) {
+    postdata = "";
+    for (index in searchConfig) postdata += index + "=" + searchConfig[index] + "&";
+    postdata = postdata.substr(0, postdata.length - 1);
+    $.ajax({
+        url: path,
+        type: "POST",
+        async: true,
+        data: postdata,
+        success: async function(msg) {
+            console.log(msg);
+            if (msg["code"] != 200) {
+                alert("Create Failed, " + msg["msg"]);
+                return false;
+            } document.getElementsByTagName("main")[0].style.opacity = "0";
+            document.getElementsByTagName("nav")[0].style.transform = "translateY(-100%)";
+            await sleep(150);
+            location.href = return_path + searchConfig["name"]; 
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+            alert("Create Failed, " + XMLHttpRequest["responseJSON"]["msg"]);
+            return false;
+        }
+    });
 }
 
 async function search(path) {

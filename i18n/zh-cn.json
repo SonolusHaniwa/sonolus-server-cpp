@@ -19,5 +19,12 @@
     "jumpTitle": "跳至页码",
     "pages": "页码",
     "pagesPlaceholder": "输入页码...",
-    "jump": "跳至"
+    "jump": "跳至",
+    "levelCreate": "创建关卡",
+    "skinCreate": "创建皮肤",
+    "backgroundCreate": "创建背景",
+    "effectCreate": "创建音效",
+    "particleCreate": "创建粒子效果",
+    "engineCreate": "创建引擎",
+    "createButton": "创建"
 }

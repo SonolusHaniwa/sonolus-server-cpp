@@ -278,6 +278,12 @@ These days, the official wiki website has added an endpoint `/sonolus/authentica
 
 ## Upload Log
 
+### v1.2.2 2023.3.12
+
+1. Add each component creation page.
+2. Add a `file` type search component, which can be used to create pages.
+3. Add `Windows` automatic packaging script.
+
 ### v1.2.1 2023.3.6
 
 1. New support for SQLite database.

@@ -102,6 +102,25 @@ class SearchSelectOption {
     }
 };
 
+class SearchFileOption {
+    public:
+
+    string query;
+    string name;
+    string type = "file";
+
+    SearchFileOption(){};
+    SearchFileOption(string query, string name): query(query), name(name){};
+
+    Json::Value toJsonObject() {
+        Json::Value res;
+        res["query"] = query;
+        res["name"] = name;
+        res["type"] = type;
+        return res;
+    }
+};
+
 class SearchOption {
     public:
 
@@ -110,6 +129,7 @@ class SearchOption {
     SearchSliderOption slider;
     SearchToggleOption toggle;
     SearchSelectOption select;
+    SearchFileOption file;
 
     SearchOption(){}
     SearchOption(SearchTextOption text):
@@ -120,6 +140,8 @@ class SearchOption {
         toggle(toggle), type("toggle"){}
     SearchOption(SearchSelectOption select):
         select(select), type("select"){}
+    SearchOption(SearchFileOption file): 
+        file(file), type("file"){}
 };
 
 class Search {
@@ -139,6 +161,7 @@ class Search {
             if (options[i].type == "slider") res["options"].append(options[i].slider.toJsonObject());
             if (options[i].type == "toggle") res["options"].append(options[i].toggle.toJsonObject());
             if (options[i].type == "select") res["options"].append(options[i].select.toJsonObject());
+            if (options[i].type == "file") res["options"].append(options[i].file.toJsonObject());
         }
         return res;
     }

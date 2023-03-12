@@ -19,5 +19,12 @@
     "jumpTitle": "Jump to Page",
     "pages": "Page",
     "pagesPlaceholder": "Enter page number...",
-    "jump": "Jump"
+    "jump": "Jump",
+    "levelCreate": "Create a Level",
+    "skinCreate": "Create a Skin",
+    "backgroundCreate": "Create a Background",
+    "effectCreate": "Create an Effect",
+    "particleCreate": "Create a Particle",
+    "engineCreate": "Create an Engine",
+    "createButton": "Create"
 }

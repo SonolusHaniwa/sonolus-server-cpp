@@ -1,0 +1,88 @@
+{
+    "options": [
+        {
+            "query": "name",
+            "name": "Name",
+            "type": "text",
+            "placeholder": "Enter engine name..."
+        },
+        {
+            "query": "title",
+            "name": "Title",
+            "type": "text",
+            "placeholder": "Enter engine title..."
+        },
+        {
+            "query": "subtitle",
+            "name": "Subtitle",
+            "type": "text",
+            "placeholder": "Enter engine subtitle..."
+        },
+        {
+            "query": "author",
+            "name": "Author",
+            "type": "text",
+            "placeholder": "Enter engine author..."
+        },
+        {
+            "query": "skin",
+            "name": "Skin",
+            "type": "select",
+            "def": 0,
+            "values": [
+                "Choose a Skin",
+                "{{jsonArray.skinList}}"
+            ]
+        },
+        {
+            "query": "background",
+            "name": "Background",
+            "type": "select",
+            "def": 0,
+            "values": [
+                "Choose a Background",
+                "{{jsonArray.backgroundList}}"
+            ]
+        },
+        {
+            "query": "effect",
+            "name": "Effect",
+            "type": "select",
+            "def": 0,
+            "values": [
+                "Choose an Effect",
+                "{{jsonArray.effectList}}"
+            ]
+        },
+        {
+            "query": "particle",
+            "name": "Particle",
+            "type": "select",
+            "def": 0,
+            "values": [
+                "Choose a Particle", 
+                "{{jsonArray.particleList}}"
+            ]
+        },
+        {
+            "query": "thumbnail",
+            "name": "Thumbnail",
+            "type": "file"
+        },
+        {
+            "query": "data",
+            "name": "Data",
+            "type": "file"
+        },
+        {
+            "query": "configuration",
+            "name": "Configuration",
+            "type": "file"
+        },
+        {
+            "query": "rom",
+            "name": "Rom",
+            "type": "file"
+        }
+    ]
+}

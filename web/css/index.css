@@ -1581,3 +1581,16 @@ main {
 nav {
     transform: translateY(-100%);
 }
+
+.uploader-progress {
+    width: 100%;
+    height: 5px;
+    opacity: 0;
+    transition: opacity .15s;
+}
+
+.uploader-progress > #uploader-progress {
+    height: 5px;
+    background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+    transition: width .15s;
+}

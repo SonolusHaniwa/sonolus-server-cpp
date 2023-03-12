@@ -37,7 +37,6 @@ int main(int argc, char** argv) {
     // 先初始化一遍日志系统
     log_init(log_target_type);
 
-    loadConfig();
     ifstream fin("./config/config.json");
     if (!fin) {
         writeLog(LOG_LEVEL_ERROR, "Failed to open config file \"./config/config.json\"");
@@ -53,7 +52,7 @@ int main(int argc, char** argv) {
     if (!json_decode(configJson, appConfig)) {
         writeLog(LOG_LEVEL_ERROR, "Invalid json file in \"./config/config.json\""); 
         exit(3);
-    }
+    } loadConfig();
     loadDefaultVariable();
 
     if (argc < 2) invalidUsage(argv);
@@ -115,12 +114,12 @@ int main(int argc, char** argv) {
 
     app.addRoute("/", web_index);
     app.addRoute("/index", web_index);
-    // app.addRoute("/levels/create", web_levels_create);
-    // app.addRoute("/skins/create", web_skins_create);
-    // app.addRoute("/backgrounds/create", web_backgrounds_create);
-    // app.addRoute("/effects/create", web_effects_create);
-    // app.addRoute("/particles/create", web_particles_create);
-    // app.addRoute("/engines/create", web_engines_create);
+    app.addRoute("/levels/create", web_levels_create);
+    app.addRoute("/skins/create", web_skins_create);
+    app.addRoute("/backgrounds/create", web_backgrounds_create);
+    app.addRoute("/effects/create", web_effects_create);
+    app.addRoute("/particles/create", web_particles_create);
+    app.addRoute("/engines/create", web_engines_create);
     app.addRoute("/levels/list", web_levels_list);
     app.addRoute("/skins/list", web_skins_list);
     app.addRoute("/backgrounds/list", web_backgrounds_list);
@@ -145,7 +144,6 @@ int main(int argc, char** argv) {
     app.addRoute("/effects/%s", web_effects);
     app.addRoute("/particles/%s", web_particles);
     app.addRoute("/engines/%s", web_engines);
-
 
     app.addRoute("/uploader", uploader);
 

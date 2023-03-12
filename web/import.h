@@ -26,5 +26,9 @@
 #include"particles_jump.h"
 #include"engines_jump.h"
 #include"levels_create.h"
-// #include"backgrounds_create.h"
+#include"skins_create.h"
+#include"backgrounds_create.h"
+#include"effects_create.h"
+#include"particles_create.h"
+#include"engines_create.h"
 using namespace std;
