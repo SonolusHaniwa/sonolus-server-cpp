@@ -804,11 +804,11 @@ argvar mime(string ext) {
 
 typedef vector<string> param;
 
-const int SIZE = 1024 * 1024;
+const int PoolSize = 1024 * 1024;
 class thread_pool {
     private: 
-        pthread_t pt[SIZE];
-        pair<int, sockaddr_in> connlist[SIZE];
+        pthread_t pt[PoolSize];
+        pair<int, sockaddr_in> connlist[PoolSize];
         int l = 1, r = 0;
 
         int cnt = 0;
@@ -831,8 +831,8 @@ class thread_pool {
          */
         int getConn(sockaddr_in& client_addr) {
             pthread_mutex_lock(&g_mutex_lock);
-            int conn = (r + 1) % SIZE != l ? connlist[l].first : -1;
-            if (conn != -1) client_addr = connlist[l].second, l = (l + 1) % SIZE;
+            int conn = (r + 1) % PoolSize != l ? connlist[l].first : -1;
+            if (conn != -1) client_addr = connlist[l].second, l = (l + 1) % PoolSize;
             pthread_mutex_unlock(&g_mutex_lock);
             if (conn != -1) writeLog(LOG_LEVEL_DEBUG, "Get connection " + to_string(conn) + " from connlist!");
             return conn;
@@ -870,7 +870,7 @@ class thread_pool {
          * @param conn 客户端连接符
          */
         void addConn(int conn, sockaddr_in client_addr) {
-            ++r; r %= SIZE;
+            ++r; r %= PoolSize;
             connlist[r] = make_pair(conn, client_addr);
             writeLog(LOG_LEVEL_DEBUG, "Insert connection " + to_string(conn) + " to connlist.");
         }
