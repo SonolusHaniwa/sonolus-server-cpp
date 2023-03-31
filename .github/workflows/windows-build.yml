@@ -23,7 +23,7 @@ jobs:
         
       - name: Compiling Sonolus Server for Windows
         run: |
-          ./mingw/bin/g++.exe main.cpp -osonolus -lmysql -lpthread -lcrypto -lssl -lwsock32 -ljson -std=c++14 -O2
+          ./mingw/bin/g++.exe main.cpp -osonolus -lmysql -lpthread -lcrypto -lssl -lwsock32 -ljson -DENABLE_MYSQL -std=c++14 -O2
           
       - name: Fetching Packages for Sonolus Server
         run: |
@@ -40,6 +40,7 @@ jobs:
           mv sonolus.exe ./packages
           cd packages
           ./sonolus help
+          
       - name: Packaging Sonolus Server for Windows
         run: |
           mv ./config/* ./packages/config/ -Force

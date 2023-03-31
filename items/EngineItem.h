@@ -133,11 +133,12 @@ string engineFilter(argvar arg) {
     return filter;
 }
 
-int engineCreate(EngineItem item) {
+int engineCreate(EngineItem item, bool strong = false) {
     stringstream sqlbuffer;
     auto res = (new DB_Controller)->query("SELECT id FROM Engine WHERE name = \"" + item.name + "\"");
-    if (res.size() != 0) return 0;
-    int id = atoi((new DB_Controller)->query("SELECT COUNT(*) AS sum FROM Engine;")[0]["sum"].c_str()) + 1;
+    if (res.size() != 0 && !strong) return 0;
+    if (res.size() != 0) (new DB_Controller)->execute("DELETE FROM Engine WHERE name = \"" + item.name + "\"");
+    int id = res.size() ? atoi(res[0]["id"].c_str()) : (atoi((new DB_Controller)->query("SELECT COUNT(*) AS sum FROM Engine;")[0]["sum"].c_str()) + 1);
     int skinId = atoi((new DB_Controller)->query("SELECT id FROM Skin WHERE name = \"" + item.skin.name + "\";")[0]["id"].c_str());
     int backgroundId = atoi((new DB_Controller)->query("SELECT id FROM Background WHERE name = \"" + item.background.name + "\";")[0]["id"].c_str());
     int effectId = atoi((new DB_Controller)->query("SELECT id FROM Effect WHERE name = \"" + item.effect.name + "\";")[0]["id"].c_str());

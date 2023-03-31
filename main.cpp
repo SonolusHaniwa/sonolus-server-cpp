@@ -1,6 +1,5 @@
 #include<bits/stdc++.h>
 #include<jsoncpp/json/json.h>
-#include<mysql/mysql.h>
 
 Json::Value appConfig;
 Json::Value i18n, i18n_raw;
@@ -18,6 +17,7 @@ int exportEngineId[] = {};
 #include"web/import.h"
 #include"modules/import.h"
 #include"modules/export.h"
+#include"modules/custom_engine.h"
 using namespace std;
 
 void invalidUsage(char** argv) {
@@ -27,6 +27,7 @@ void invalidUsage(char** argv) {
     cerr << "    serve: " << argv[0] << " serve" << endl;
     cerr << "    import: " << argv[0] << " import [file]" << endl;
     cerr << "    export: " << argv[0] << " export [level/engine] [name] [file]" << endl;
+    cerr << "    init: " << argv[0] << " init [dir]" << endl;
     exit(0);
 }
 
@@ -72,9 +73,14 @@ int main(int argc, char** argv) {
             exportData(argv[4]);
             return 0;
         } else invalidUsage(argv);
+    } else if (string(argv[1]) == "init") {
+        if (argc < 3) invalidUsage(argv);
+        initCustomEngine(argv);
+        return 0;
     } else if (string(argv[1]) == "help") invalidUsage(argv);
-    else if (string(argv[1]) != "serve") invalidUsage(argv);
+    if (string(argv[1]) != "serve") invalidUsage(argv);
     
+    if (argc > 2) initBuild(argv[2]);
     // mysql = mysqli_connect(appConfig["mysql.hostname"].asString().c_str(), appConfig["mysql.username"].asString().c_str(), 
     //     appConfig["mysql.password"].asString().c_str(), appConfig["mysql.database"].asString().c_str(), appConfig["mysql.port"].asInt());
     (new DB_Controller)->query("SELECT COUNT(*) FROM Level");

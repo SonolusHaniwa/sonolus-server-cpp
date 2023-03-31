@@ -10,6 +10,21 @@
 
 使用自主研发的 WebServer Core 进行开发，同时支持您构建 HTTPS 服务器。
 
+## 目录
+
+- [目录](#目录)
+- [链接](#链接)
+- [屏幕截图](#屏幕截图)
+<!-- - [安装](#安装) -->
+- [构建](#构建)
+- [配置信息](#配置信息)
+- [终节点](#终节点)
+- [自定义搜索](#自定义搜索)
+- [引擎开发](#引擎开发)
+- [提示](#提示)
+- [扩展](#扩展)
+- [更新日志](#更新日志)
+
 ## 链接
 
 - [Sonolus Website](https://sonolus.com/)
@@ -23,15 +38,15 @@
 ![](http://pic.littleyang.ml/sonolus-server-screenshot/pic4.png)
 ![](http://pic.littleyang.ml/sonolus-server-screenshot/pic5.png)
 
-## 安装
+<!-- ## 安装
 
-我们提供对 Windows 用户的安装包，内含 MySQL v5.7.37，下载地址: [Latest Release](https://github.com/LittleYang0531/sonolus-server-cpp/releases/latest)
+我们提供对 Windows 可执行文件压缩包，内含 MySQL v5.7.37，下载地址: [Latest Release](https://github.com/LittleYang0531/sonolus-server-cpp/releases/latest)
 
-安装后第一次使用需要**以管理员身份运行**启动菜单里的 `Setup Sonolus Database` 程序，之后就可以启动 `Sonolus Server for Windows` 来启动服务。
+解压后第一次使用需要**以管理员身份运行**启动菜单里的 `Setup Sonolus Database` 程序，之后就可以启动 `Sonolus Server for Windows` 来启动服务。
 
 导入数据需要运行 `Import Sonolus Data` 程序，按照提示输入相关信息即可。
 
-我们并未提供对 Linux 用户的安装包 ~~(都用 Linux 了相信或多或少还是有一点使用终端的基础了吧)~~，请自行参照下方教程进行构建。
+我们并未提供对 Linux 用户的安装包 ~~(都用 Linux 了相信或多或少还是有一点使用终端的基础了吧)~~，请自行参照下方教程进行构建。 -->
 
 ## 构建
 
@@ -88,11 +103,13 @@ g++ main.cpp -o main -lpthread -lcrypto -lssl -ljsoncpp -lmysqlclient -g
 
 ## 配置信息
 
+- `database`: 数据库类型，可选 `mysql` 或 `sqlite`。
 - `mysql.hostname`: MySQL 服务器监听地址。
 - `mysql.port`: MySQL 服务器监听端口。
 - `mysql.username`: MySQL 用户名。
 - `mysql.password`: MySQL 用户密码。
 - `mysql.database`: MySQL 目标数据库名。
+- `sqlite.dbfile`: SQLite 数据库文件位置。
 - `server.name`: 默认 `sonolus` 就行。
 - `server.title`: Sonolus 服务器标题。
 - `server.description`: Sonolus 服务器描述。
@@ -125,6 +142,11 @@ g++ main.cpp -o main -lpthread -lcrypto -lssl -ljsoncpp -lmysqlclient -g
 - `GET /sonolus/particles/list`: 获取部分粒子效果信息。
 - `GET /sonolus/engines/list`: 获取部分引擎信息。
 - `POST /sonolus/levels/create`: 创建请求以新增关卡
+- `POST /sonolus/skins/create`: 创建请求以新增皮肤。
+- `POST /sonolus/backgrounds/create`: 创建请求以新增背景。
+- `POST /sonolus/effects/create`: 创建请求以新增音效。
+- `POST /sonolus/particles/create`: 创建请求以新增粒子效果。
+- `POST /sonolus/engines/create`: 创建请求以新增引擎。
 - `GET /sonolus/levels/{name}`: 获取名为 {name} 的关卡信息。
 - `GET /sonolus/skins/{name}`: 获取名为 {name} 的皮肤信息。
 - `GET /sonolus/backgrounds/{name}`: 获取名为 {name} 的背景信息。
@@ -136,7 +158,30 @@ g++ main.cpp -o main -lpthread -lcrypto -lssl -ljsoncpp -lmysqlclient -g
 
 - `GET /`: 网站主页面。
 - `GET /index`: 网站主页面。
-<!-- - `GET /levels/create`: 创建一个关卡。 -->
+- `GET /levels/list`: 根据筛选信息列举关卡。
+- `GET /skins/list`: 根据筛选信息列举皮肤。
+- `GET /backgrounds/list`: 根据筛选信息列举背景。
+- `GET /effects/list`: 根据筛选信息列举音效。
+- `GET /particles/list`: 根据筛选信息列举粒子效果。
+- `GET /engines/list`: 根据筛选信息列举引擎。
+- `GET /levels/search`: 搜索关卡页面。
+- `GET /skins/search`: 搜索皮肤页面。
+- `GET /backgrounds/search`: 搜索背景页面。
+- `GET /effects/search`: 搜索音效页面。
+- `GET /particles/search`: 搜索粒子效果页面。
+- `GET /engines/search`: 搜索引擎页面。
+- `GET /levels/create`: 创建关卡页面。
+- `GET /skins/create`: 创建皮肤页面。
+- `GET /backgrounds/create`: 创建背景页面。
+- `GET /effects/create`: 创建音效页面。
+- `GET /particles/create`: 创建粒子效果页面。
+- `GET /engines/create`: 创建引擎页面。
+- `GET /levels/jump/{page}`: 跳转关卡列表页面。
+- `GET /skins/jump/{page}`: 跳转皮肤列表页面。
+- `GET /backgrounds/jump/{page}`: 跳转背景列表页面。
+- `GET /effects/jump/{page}`: 跳转音效列表页面。
+- `GET /particles/jump/{page}`: 跳转粒子效果列表页面。
+- `GET /engines/jump/{page}`: 跳转引擎列表页面。
 - `GET /levels/{name}`: 显示名为 {name} 的关卡信息。
 - `GET /skins/{name}`: 显示名为 {name} 的皮肤信息。
 - `GET /backgrounds/{name}`: 显示名为 {name} 的背景信息。
@@ -235,23 +280,37 @@ string levelSearch(map<string, string> $_GET) {
 }
 ```
 
-<!-- ## 数据包格式
+## 引擎开发
 
-**数据格式**
+### 系统依赖
 
-| 域 | 长度 | 内容说明 |
-|:-:|:-:|:-:|
-| FileNumber | $8$ bytes | 存储数据包文件数 |
-| FileChunk | $x$ bytes | 存储各文件数据 |
-| SQLCode | $y$ bytes | 存储更新数据库代码 |
+环境变量中需要包含 `npm` 指令。
 
-**FileChunk 格式**
+运行 `npm --version` 即可查看环境变量中是否存在 `npm` 指令。
 
-| 域 | 长度 | 内容说明 |
-|:-:|:-:|:-:|
-| FileSHA1 | $20$ bytes | 文件 SHA1 码，用于校验文件 |
-| FileSize | $8$ bytes | 存储文件大小 |
-| FileBuffer | $z$ bytes | 存储文件内容 | -->
+### 初始化仓库
+
+以初始化名为 `sonolus-hwpl-engines` 的仓库为例:
+
+```bash
+./main init sonolus-hwpl-engines 
+```
+
+在 `sonolus-hwpl-engines` 的目录下会新建基本的引擎模板。
+
+修改 `src/res/thumbnail.jpg` 为您想要的引擎图标，支持 jpg 与 png 格式。
+
+修改 `src/engines/*` 内的代码为您的引擎的处理逻辑，具体详见官方 wiki。
+
+### 打包测试
+
+以测试名为 `sonolus-hwpl-engines` 的引擎为例:
+
+```bash
+./main serve sonolus-hwpl-engines
+```
+
+程序会自动构建您的引擎并将其更新至您的服务器，在 Sonolus 中添加服务器后就可以看到您的引擎了。
 
 ## 提示
 
@@ -277,6 +336,11 @@ string levelSearch(map<string, string> $_GET) {
 - [lyoj-dev/webserver](https://github.com/lyoj-dev/webserver)
 
 ## 更新日志
+
+### v1.2.3 2023.3.16
+
+1. 新增引擎一键打包 & 测试功能。
+2. 修复 `windows` 自动打包脚本。
 
 ### v1.2.2 2023.3.12
 

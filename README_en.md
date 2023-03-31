@@ -10,6 +10,21 @@ It can be deployed in any Linux devices and any Windows devices, even if a mobli
 
 Use httpd core developed by myself, which also support you to build HTTPS server.
 
+## Catalog
+
+- [Catalog](#Catalog)
+- [Links](#Links)
+- [Screenshots](#Screenshots)
+<!-- - [Install](#Install) -->
+- [Building](#Building)
+- [Configuration](#Configuration)
+- [Endpoints](#Endpoints)
+- [Custom Search](#Custom Search)
+- [Engine Development](#Engine Development)
+- [Tips](#Tips)
+- [Extensions](#Extensions)
+- [Upload Log](#Upload Log)
+
 ## Links
 
 - [Sonolus Website](https://sonolus.com/)
@@ -23,7 +38,7 @@ Use httpd core developed by myself, which also support you to build HTTPS server
 ![](http://pic.littleyang.ml/sonolus-server-screenshot/pic4.png)
 ![](http://pic.littleyang.ml/sonolus-server-screenshot/pic5.png)
 
-## Install
+<!-- ## Install
 
 We provide an installation package for Windows users, including MySQL v5.7.37. Download link: [Latest Release](https://github.com/LittleYang0531/sonolus-server-cpp/releases/latest).
 
@@ -31,7 +46,7 @@ The first use after installation requires to run the `Setup Sonolus Database` pr
 
 To import data, you need to run the `Import Sonolus Data` program and enter relevant information according to the prompts.
 
-We have not provided the installation package for Linux users. Please refer to the following tutorial to build it.
+We have not provided the installation package for Linux users. Please refer to the following tutorial to build it. -->
 
 ## Building
 
@@ -88,11 +103,13 @@ Take the export level named `bandori-#1` as an example
 
 ## Configuration
 
+- `database`: Database type. You can choose `mysql` or `sqlite`。
 - `mysql.hostname`: MySQL Server listen host.
 - `mysql.port`: MySQL Server listen port.
 - `mysql.username`: MySQL user's name.
 - `mysql.password`: MySQL user's password.
 - `mysql.database`: MySQL Server database's name.
+- `sqlite.dbfile`: SQLite Database File path。
 - `server.name`: Default is `sonolus`.
 - `server.title`: Sonolus server's title.
 - `server.description`: Sonolus server's description.
@@ -125,6 +142,11 @@ Take the export level named `bandori-#1` as an example
 - `GET /sonolus/particles/list`: Fetch a list of particles.
 - `GET /sonolus/engines/list`: Fecth a list of engines.
 - `POST /sonolus/levels/create`: Put a request to create a level.
+- `POST /sonolus/skins/create`: Put a request to create a skin.
+- `POST /sonolus/backgrounds/create`: Put a request to create a background.
+- `POST /sonolus/effects/create`: Put a request to create an effect.
+- `POST /sonolus/particles/create`: Put a request to create a particle.
+- `POST /sonolus/engines/create`: Put a request to create an engine.
 - `GET /sonolus/levels/{name}`: Fetch the information of level named {name}.
 - `GET /sonolus/skins/{name}`: Fetch the information of skin named {name}.
 - `GET /sonolus/backgrounds/{name}`: Fetch the information of background named {name}.
@@ -136,7 +158,30 @@ Take the export level named `bandori-#1` as an example
 
 - `GET /`: Website's index.
 - `GET /index`: Website's index.
-<!-- - `GET /levels/create`: Create a level. -->
+- `GET /levels/list`: List levels according to the filter.
+- `GET /skins/list`: List skins according to the filter.
+- `GET /backgrounds/list`: List backgrounds according to the filter.
+- `GET /effects/list`: List effects according to the filter.
+- `GET /particles/list`: List particles according to the filter.
+- `GET /engines/list`: List engines according to the filter.
+- `GET /levels/search`: Search levels page.
+- `GET /skins/search`: Search skins page.
+- `GET /backgrounds/search`: Search backgrounds page.
+- `GET /effects/search`: Search effects page.
+- `GET /particles/search`: Search particles page.
+- `GET /engines/search`: Search engines page.
+- `GET /levels/create`: Create level page.
+- `GET /skins/create`: Create skin page.
+- `GET /backgrounds/create`: Create background page.
+- `GET /effects/create`: Create effect page.
+- `GET /particles/create`: Create particle page.
+- `GET /engines/create`: Create engine page.
+- `GET /levels/jump/{page}`: Jump to level list page.
+- `GET /skins/jump/{page}`: Jump to skin list page.
+- `GET /backgrounds/jump/{page}`: Jump to background list page.
+- `GET /effects/jump/{page}`: Jump to effect list page.
+- `GET /particles/jump/{page}`: Jump to particle list page.
+- `GET /engines/jump/{page}`: Jump to engine list page.
 - `GET /levels/{name}`: Show information of level named {name}.
 - `GET /skins/{name}`: Show information of skin named {name}.
 - `GET /backgrounds/{name}`: Show information of background named {name}.
@@ -235,23 +280,37 @@ string levelSearch(map<string, string> $_GET) {
 }
 ```
 
-<!-- ## 数据包格式
+## Engine Development
 
-**数据格式**
+### Dependences
 
-| 域 | 长度 | 内容说明 |
-|:-:|:-:|:-:|
-| FileNumber | $8$ bytes | 存储数据包文件数 |
-| FileChunk | $x$ bytes | 存储各文件数据 |
-| SQLCode | $y$ bytes | 存储更新数据库代码 |
+Command `npm` need be included in environment variables.
 
-**FileChunk 格式**
+Run `npm --version` can check whether exist command `npm` in environment variables.
 
-| 域 | 长度 | 内容说明 |
-|:-:|:-:|:-:|
-| FileSHA1 | $20$ bytes | 文件 SHA1 码，用于校验文件 |
-| FileSize | $8$ bytes | 存储文件大小 |
-| FileBuffer | $z$ bytes | 存储文件内容 | -->
+### Initialize repository
+
+Take initializing repository named `sonolus-hwpl-engines` as an example.
+
+```bash
+./main init sonolus-hwpl-engines 
+```
+
+It will create base engine template in directory `sonolus-hwpl-engines`.
+
+Replace `src/res/thumbnail.jpg` to the icon you want, support jpg & png format.
+
+Modify the code in `src/engines/*` to your engine. For more information, see official wiki.
+
+### Package & Test
+
+Take testing engine named `sonolus-hwpl-engines` as an example.
+
+```bash
+./main serve sonolus-hwpl-engines
+```
+
+It will build your engine and update it to your server automatically. You will see your engine after adding server in your Sonolus.
 
 ## Tips
 
@@ -277,6 +336,10 @@ These days, the official wiki website has added an endpoint `/sonolus/authentica
 - [lyoj-dev/webserver](https://github.com/lyoj-dev/webserver)
 
 ## Upload Log
+
+### v1.2.3 2023.3.16
+
+1. Add package & test engine features.
 
 ### v1.2.2 2023.3.12
 
