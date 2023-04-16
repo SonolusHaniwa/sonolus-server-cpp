@@ -7,6 +7,8 @@ auto sonolus_particles_create = [](client_conn conn, http_request request, param
         exitRequest(conn);
     }
 
+    checkSecret(cookieParam(request)["passwd"], conn);
+
     auto $_POST = postParam(request);
     int id = particleNumber("") + 1;
     string name = $_POST["name"];

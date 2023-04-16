@@ -50,6 +50,14 @@ void loadDefaultVariable() {
     msg[505]["msg"] = "505 HTTP Version not supported";
 }
 
+void checkSecret(string token, client_conn conn) {
+    if (token != appConfig["admin.password"].asString()) {
+        putRequest(conn, 401, __api_default_response);
+        send(conn, json_encode(msg[401]));
+        exitRequest(conn);
+    }
+}
+
 #include"info.h"
 #include"levels_list.h"
 #include"skins_list.h"
@@ -69,3 +77,6 @@ void loadDefaultVariable() {
 #include"effects_create.h"
 #include"particles_create.h"
 #include"engines_create.h"
+#include"./studios/skins_create.h"
+#include"./studios/backgrounds_create.h"
+#include"./studios/effects_create.h"

@@ -6,21 +6,14 @@
     "mysql.password": "root",
     "mysql.database": "sonolus",
     "sqlite.dbfile": "sonolus.db",
-    "server.name": "Sonolus",
-    "server.title": "Sonolus Server for C++",
-    "server.description": "A Test Server for Sonolus",
-    "server.logo": "https://servers.sonolus.com/bestdori/favicon.ico",
-    "server.bannerUrl": "https://servers.sonolus.com/bestdori/sonolus/repository/ServerBanner/a7f0a83e3929f70caf583140d4f6df14e0bd5e41",
-    "server.bannerHash": "a7f0a83e3929f70caf583140d4f6df14e0bd5e41",
     "server.listenHost": "0.0.0.0",
     "server.listenPort": 8080,
     "server.enableSSL": false,
     "server.httpsCacert": "cert.pem",
     "server.httpsPrivkey": "privkey.pem",
     "server.threadNumber": 8,
-    "server.rootUrl": "//127.0.0.1:8080",
     "logSystem.debug": false,
     "logSystem.target": 1,
     "logSystem.targetFile": "./log.txt",
-    "language.default": "zh-cn"
+    "admin.password": 123456
 }

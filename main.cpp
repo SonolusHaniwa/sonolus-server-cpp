@@ -1,7 +1,8 @@
 #include<bits/stdc++.h>
 #include<jsoncpp/json/json.h>
 
-Json::Value appConfig;
+std::string sonolus_server_version = "1.2.3";
+Json::Value appConfig, studiosConfig;
 Json::Value i18n, i18n_raw;
 int exportLevelId[] = {};
 int exportSkinId[] = {};
@@ -38,22 +39,13 @@ int main(int argc, char** argv) {
     // 先初始化一遍日志系统
     log_init(log_target_type);
 
-    ifstream fin("./config/config.json");
-    if (!fin) {
-        writeLog(LOG_LEVEL_ERROR, "Failed to open config file \"./config/config.json\"");
-        exit(3);
-    }
-    fin.seekg(0, ios::end);
-    int len = fin.tellg();
-    fin.seekg(0, ios::beg);
-    char* config = new char[len];
-    fin.read(config, len);
-    string configJson = "";
-    for (int i = 0; i < len; i++) configJson.push_back(config[i]);
-    if (!json_decode(configJson, appConfig)) {
-        writeLog(LOG_LEVEL_ERROR, "Invalid json file in \"./config/config.json\""); 
-        exit(3);
-    } loadConfig();
+    string sonolusJson = readFile("./config/sonolus_config.json");
+    string studiosJson = readFile("./config/studios_config.json");
+    string configJson = readFile("./config/config.json");
+    json_decode(sonolusJson, appConfig); json_decode(studiosJson, studiosConfig);
+    Json::Value tmpConfig; json_decode(configJson, tmpConfig);
+    json_merge(appConfig, tmpConfig); json_merge(studiosConfig, tmpConfig);
+    loadConfig();
     loadDefaultVariable();
 
     if (argc < 2) invalidUsage(argv);
@@ -81,8 +73,6 @@ int main(int argc, char** argv) {
     if (string(argv[1]) != "serve") invalidUsage(argv);
     
     if (argc > 2) initBuild(argv[2]);
-    // mysql = mysqli_connect(appConfig["mysql.hostname"].asString().c_str(), appConfig["mysql.username"].asString().c_str(), 
-    //     appConfig["mysql.password"].asString().c_str(), appConfig["mysql.database"].asString().c_str(), appConfig["mysql.port"].asInt());
     (new DB_Controller)->query("SELECT COUNT(*) FROM Level");
     app.setopt(HTTP_ENABLE_SSL, appConfig["server.enableSSL"].asBool());
     app.setopt(HTTP_LISTEN_HOST, appConfig["server.listenHost"].asString().c_str());
@@ -98,6 +88,7 @@ int main(int argc, char** argv) {
     app.addRoute("/js/%s", js_import);
     app.addRoute("/css/%s", css_import);
 
+    #ifdef ENABLE_SONOLUS
     app.addRoute("/sonolus/info", sonolus_info);
     app.addRoute("/sonolus/levels/create", sonolus_levels_create);
     app.addRoute("/sonolus/skins/create", sonolus_skins_create);
@@ -150,6 +141,40 @@ int main(int argc, char** argv) {
     app.addRoute("/effects/%s", web_effects);
     app.addRoute("/particles/%s", web_particles);
     app.addRoute("/engines/%s", web_engines);
+    #endif
+
+    #ifdef ENABLE_STUDIOS
+    // app.addRoute("/sonolus/studios/skins/import", sonolus_studios_skins_import);
+    // app.addRoute("/sonolus/studios/backgrounds/import", sonolus_studios_backgrounds_import);
+    // app.addRoute("/sonolus/studios/effects/import", sonolus_studios_effects_import);
+    // app.addRoute("/sonolus/studios/skins/create", sonolus_studios_skins_create);
+    // app.addRoute("/sonolus/studios/backgrounds/create", sonolus_studios_backgrounds_create);
+    // app.addRoute("/sonolus/studios/effects/create", sonolus_studios_effects_create);
+    // app.addRoute("/sonolus/studios/skins/save", sonolus_studios_skins_save);
+    // app.addRoute("/sonolus/studios/backgrounds/save", sonolus_studios_backgrounds_save);
+    // app.addRoute("/sonolus/studios/effects/save", sonolus_studios_effects_save);
+    // app.addRoute("/sonolus/studios/skins/export", sonolus_studios_skins_export);
+    // app.addRoute("/sonolus/studios/backgrounds/export", sonolus_studios_backgrounds_export);
+    // app.addRoute("/sonolus/studios/effects/export", sonolus_studios_effects_export);
+    // app.addRoute("/sonolus/studios/skins/%s", sonolus_studios_skins_edit);
+    // app.addRoute("/sonolus/studios/backgrounds/%s", sonolus_studios_backgrounds_edit);
+    // app.addRoute("/sonolus/studios/effects/%s", sonolus_studios_effects_edit);
+
+    // app.addRoute("/studios/", studios_index);
+    // app.addRoute("/studios/index", studios_index);
+    // app.addRoute("/studios/skins/list", studios_skins_list);
+    // app.addRoute("/studios/backgrounds/list", studios_backgrounds_list);
+    // app.addRoute("/studios/effects/list", studios_effects_list);
+    // app.addRoute("/studios/skins/search", studios_skins_search);
+    // app.addRoute("/studios/backgrounds/search", studios_backgrounds_search);
+    // app.addRoute("/studios/effects/search", studios_effects_search);
+    // app.addRoute("/studios/skins/jump", studios_skins_jump);
+    // app.addRoute("/studios/backgrounds/jump", studios_backgrounds_jump);
+    // app.addRoute("/studios/effects/jump", studios_effects_jump);
+    // app.addRoute("/studios/skins/%s", studios_skins_edit);
+    // app.addRoute("/studios/backgrounds/%s", studios_backgrounds_edit);
+    // app.addRoute("/studios/effects/%s", studios_effects_edit);
+    #endif
 
     app.addRoute("/uploader", uploader);
 

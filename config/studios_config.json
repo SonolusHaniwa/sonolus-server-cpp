@@ -1,0 +1,10 @@
+{
+    "server.name": "Sonolus Studios",
+    "server.title": "Sonolus Studios for C++",
+    "server.description": "A Test Server for Sonolus Studios",
+    "server.logo": "https://studio.sonolus.com/favicon-96x96.png",
+    "server.bannerUrl": "https://servers.sonolus.com/bestdori/sonolus/repository/ServerBanner/a7f0a83e3929f70caf583140d4f6df14e0bd5e41",
+    "server.bannerHash": "a7f0a83e3929f70caf583140d4f6df14e0bd5e41",
+    "server.rootUrl": "//127.0.0.1:8080/studios",
+    "language.default": "zh-cn"
+}

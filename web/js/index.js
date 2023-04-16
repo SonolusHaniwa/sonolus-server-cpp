@@ -88,6 +88,31 @@ function changeLanguage(name) {
     location.href = location.href;
 }
 
+async function displayPassword() {
+    document.getElementById("passwordOptions").style.display = "flex";
+    await sleep(10);
+    document.getElementById("passwordOptions").style.opacity = "1";
+}
+
+async function hidePassword() {
+    var mouseX = window.event.clientX, mouseY = window.event.clientY;
+    var divL = document.getElementById("passwordInline").offsetLeft;
+    var divT = document.getElementById("passwordInline").offsetTop;
+    var divR = document.getElementById("passwordInline").offsetWidth + divL;
+    var divD = document.getElementById("passwordInline").offsetHeight + divT;
+    if (divL <= mouseX && mouseX <= divR && divT <= mouseY && mouseY <= divD) return false;
+    document.getElementById("passwordOptions").style.opacity = "0";
+    await sleep(150);
+    document.getElementById("passwordOptions").style.display = "none";
+}
+
+async function savePassword() {
+    setCookie("passwd", searchConfig["password"]);
+    document.getElementById("passwordOptions").style.opacity = "0";
+    await sleep(150);
+    document.getElementById("passwordOptions").style.display = "none";
+}
+
 async function displayOpenInSonolus(e) {
     document.getElementById("openInSonolus").style.display = "flex";
     await sleep(10);
@@ -114,6 +139,11 @@ async function hideJump() {
 }
 
 async function create(path, return_path) {
+    if (return_path.indexOf("studios") != -1) {
+        type = return_path.substr(9, return_path.length - 10);
+        console.log(type);
+        searchConfig["name"] = searchConfig[type + "-name"];
+    }
     postdata = "";
     for (index in searchConfig) postdata += index + "=" + searchConfig[index] + "&";
     postdata = postdata.substr(0, postdata.length - 1);
@@ -133,7 +163,8 @@ async function create(path, return_path) {
             location.href = return_path + searchConfig["name"]; 
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
-            alert("Create Failed, " + XMLHttpRequest["responseJSON"]["msg"]);
+            if (XMLHttpRequest["responseJSON"] != null) alert("Create Failed, " + XMLHttpRequest["responseJSON"]["msg"]);
+            else alert("Create Failed, " + XMLHttpRequest["status"] + " " + XMLHttpRequest["statusText"]);
             return false;
         }
     });
@@ -216,6 +247,7 @@ addLoadEvent(async function(){
     var a = document.getElementsByTagName("a");
     for (i = 0; i < a.length; i++) {
         const href = a[i].href;
+        if (href.indexOf("http") === -1) continue; 
         a[i].onclick = async function() {
             document.getElementsByTagName("main")[0].style.opacity = "0";
             document.getElementsByTagName("nav")[0].style.transform = "translateY(-100%)";
@@ -226,13 +258,65 @@ addLoadEvent(async function(){
     }
 });
 
-// 监听返回页面事件
+/* 监听返回页面事件 */
 addLoadEvent(async function(){
     window.addEventListener("pageshow", async function(){
-        // if (window.performance.navigation.type == 1) {
-            await sleep(10);
-            document.getElementsByTagName("main")[0].style.opacity = "1";
-            document.getElementsByTagName("nav")[0].style.transform = "translateY(0%)";
-        // }
+        await sleep(10);
+        document.getElementsByTagName("main")[0].style.opacity = "1";
+        document.getElementsByTagName("nav")[0].style.transform = "translateY(0%)";
     });
 });
+
+async function displayStudiosSkin() {
+    document.getElementById("createStudiosSkin").style.display = "flex";
+    await sleep(10);
+    document.getElementById("createStudiosSkin").style.opacity = "1";
+}
+
+async function hideStudiosSkin() {
+    var mouseX = window.event.clientX, mouseY = window.event.clientY;
+    var divL = document.getElementById("createStudiosSkinInline").offsetLeft;
+    var divT = document.getElementById("createStudiosSkinInline").offsetTop;
+    var divR = document.getElementById("createStudiosSkinInline").offsetWidth + divL;
+    var divD = document.getElementById("createStudiosSkinInline").offsetHeight + divT;
+    if (divL <= mouseX && mouseX <= divR && divT <= mouseY && mouseY <= divD) return false;
+    document.getElementById("createStudiosSkin").style.opacity = "0";
+    await sleep(150);
+    document.getElementById("createStudiosSkin").style.display = "none";
+}
+
+async function displayStudiosBackground() {
+    document.getElementById("createStudiosBackground").style.display = "flex";
+    await sleep(10);
+    document.getElementById("createStudiosBackground").style.opacity = "1";
+}
+
+async function hideStudiosBackground() {
+    var mouseX = window.event.clientX, mouseY = window.event.clientY;
+    var divL = document.getElementById("createStudiosBackgroundInline").offsetLeft;
+    var divT = document.getElementById("createStudiosBackgroundInline").offsetTop;
+    var divR = document.getElementById("createStudiosBackgroundInline").offsetWidth + divL;
+    var divD = document.getElementById("createStudiosBackgroundInline").offsetHeight + divT;
+    if (divL <= mouseX && mouseX <= divR && divT <= mouseY && mouseY <= divD) return false;
+    document.getElementById("createStudiosBackground").style.opacity = "0";
+    await sleep(150);
+    document.getElementById("createStudiosBackground").style.display = "none";
+}
+ 
+async function displayStudiosEffect() {
+    document.getElementById("createStudiosEffect").style.display = "flex";
+    await sleep(10);
+    document.getElementById("createStudiosEffect").style.opacity = "1";
+}
+ 
+async function hideStudiosEffect() {
+    var mouseX = window.event.clientX, mouseY = window.event.clientY;
+    var divL = document.getElementById("createStudiosEffectInline").offsetLeft;
+    var divT = document.getElementById("createStudiosEffectInline").offsetTop;
+    var divR = document.getElementById("createStudiosEffectInline").offsetWidth + divL;
+    var divD = document.getElementById("createStudiosEffectInline").offsetHeight + divT;
+    if (divL <= mouseX && mouseX <= divR && divT <= mouseY && mouseY <= divD) return false;
+    document.getElementById("createStudiosEffect").style.opacity = "0";
+    await sleep(150);
+    document.getElementById("createStudiosEffect").style.display = "none";
+}

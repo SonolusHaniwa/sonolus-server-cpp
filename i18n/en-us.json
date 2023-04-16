@@ -26,5 +26,6 @@
     "effectCreate": "Create an Effect",
     "particleCreate": "Create a Particle",
     "engineCreate": "Create an Engine",
-    "createButton": "Create"
+    "createButton": "Create",
+    "savePasswordButton": "Save Password"
 }

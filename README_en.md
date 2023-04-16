@@ -15,7 +15,6 @@ Use httpd core developed by myself, which also support you to build HTTPS server
 - [Catalog](#Catalog)
 - [Links](#Links)
 - [Screenshots](#Screenshots)
-<!-- - [Install](#Install) -->
 - [Building](#Building)
 - [Configuration](#Configuration)
 - [Endpoints](#Endpoints)
@@ -53,7 +52,7 @@ We have not provided the installation package for Linux users. Please refer to t
 ### Install Dependencies
 
 ```bash
-sudo apt install g++ libjsoncpp-dev libmysqlclient-dev libssl-dev -y
+g++ main.cpp -o main -lpthread -lcrypto -lssl -ljsoncpp -lmysqlclient -lz -std=c++14 -O2 -g
 ```
 
 ### Import Databases
@@ -67,9 +66,18 @@ Just enter MySQL Server and import `data.sql`.
 
 ### Compile
 
+Basic Compile Command:
+
 ```bash
 g++ main.cpp -o main -lpthread -lcrypto -lssl -ljsoncpp -lmysqlclient -g
 ```
+
+**Extra Compilation Options List**
+
+- `-DENABLE_SONOLUS` Load main routes of Sonolus Server.
+- `-DENABLE_STUDIOS` Load main routes of Sonolus Studios Server (developing...).
+- `-DENABLE_MYSQL` allow program interactive with MySQL/MariaDB database.
+- `-DENABLE_SQLITE` allow program interactive with SQLite database.
 
 ### Import Data
 
@@ -340,6 +348,8 @@ These days, the official wiki website has added an endpoint `/sonolus/authentica
 ### v1.2.3 2023.3.16
 
 1. Add package & test engine features.
+2. Add create items button.
+3. Add admin login interface.
 
 ### v1.2.2 2023.3.12
 

@@ -1,0 +1,45 @@
+<div {{search.isMargin}}>
+    <div class="py-2 font-bold sm:py-3">{{search.name}}</div>
+    <div class="ml-9 flex flex-grow items-center space-x-2 sm:ml-12 sm:space-x-3">
+        <div class="flex relative flex-grow">
+            <div class="relative flex-grow">
+                <input id="search-{{search.query}}" type="text" class="w-full border-none bg-sonolus-ui-button-normal p-2 pl-9 text-center text-sm placeholder:text-sm hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed sm:p-3 sm:pl-12 sm:text-base sm:placeholder:text-base" value="{{search.default}}">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="absolute top-2 left-2 h-5 w-5 fill-current sm:top-3 sm:left-3 sm:h-6 sm:w-6">
+                    <path d="M512 448H64c-35.35 0-64-28.65-64-64V128c0-35.35 28.65-64 64-64h448c35.35 0 64 28.65 64 64v256c0 35.3-28.7 64-64 64zM128 180v-40c0-6.6-5.4-12-12-12H76c-6.62 0-12 5.4-12 12v40c0 6.6 5.38 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-384 96v-40c0-6.6-5.4-12-12-12H76c-6.62 0-12 5.4-12 12v40c0 6.6 5.38 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-384 96v-40c0-6.6-5.4-12-12-12H76c-6.62 0-12 5.4-12 12v40c0 6.6 5.38 12 12 12h40c6.6 0 12-5.4 12-12zm288 0v-40c0-6.6-5.4-12-12-12H172c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h232c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12z"></path>
+                </svg>
+            </div>
+            <button id="search-clear-{{search.query}}" class="flex select-none space-x-2 p-2 transition-colors sm:space-x-3 sm:p-3 cursor-pointer bg-sonolus-ui-button-normal hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" class="h-5 w-5 fill-current sm:h-6 sm:w-6">
+                    <path d="M310.6 361.4c12.5 12.5 12.5 32.75 0 45.25-6.2 6.25-14.4 9.35-22.6 9.35s-16.38-3.125-22.62-9.375L160 301.3 54.63 406.6C48.38 412.9 40.19 416 32 416s-16.37-3.1-22.625-9.4c-12.5-12.5-12.5-32.75 0-45.25l105.4-105.4L9.375 150.6c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0L160 210.8l105.4-105.4c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25l-105.4 105.4L310.6 361.4z"></path>
+                </svg>
+            </button>
+        </div>
+        <button id="search-color-{{search.query}}" class="flex select-none space-x-2 p-2 transition-colors sm:space-x-3 sm:p-3 cursor-pointer bg-sonolus-ui-button-normal hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed">
+            <input class="h-full w-8 opacity-0" type="color" tabindex="-1">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36" class="h-5 w-5 fill-current sm:h-6 sm:w-6" style="display: positive; left: -10px">
+                <path d="M32.23 14.89c-2.1-.56-4.93 1.8-6.34.3-1.71-1.82 2.27-5.53 1.86-8.92-.33-2.78-3.51-4.08-6.66-4.1A18.5 18.5 0 0 0 7.74 7.59c-6.64 6.59-8.07 16-1.37 22.48 6.21 6 16.61 4.23 22.67-1.4a17.73 17.73 0 0 0 4.22-6.54c1.08-2.9 1.18-6.64-1.03-7.24ZM9.4 10.57a2.23 2.23 0 0 1 2.87 1.21 2.22 2.22 0 0 1-1.81 2.53 2.22 2.22 0 0 1-2.87-1.21 2.23 2.23 0 0 1 1.81-2.53ZM5.07 20.82a2.22 2.22 0 0 1 1.82-2.53 2.22 2.22 0 0 1 2.86 1.21A2.23 2.23 0 0 1 7.94 22a2.24 2.24 0 0 1-2.87-1.18Zm7 8.33a2.22 2.22 0 0 1-2.87-1.21 2.23 2.23 0 0 1 1.8-2.53 2.23 2.23 0 0 1 2.87 1.21A2.22 2.22 0 0 1 12 29.15ZM15 8.26a2.23 2.23 0 0 1 1.81-2.53 2.24 2.24 0 0 1 2.87 1.21 2.22 2.22 0 0 1-1.82 2.53A2.21 2.21 0 0 1 15 8.26Zm5.82 22.19a2.22 2.22 0 0 1-2.87-1.21 2.23 2.23 0 0 1 1.81-2.53 2.24 2.24 0 0 1 2.87 1.21 2.22 2.22 0 0 1-1.85 2.53Zm5-10.46a3.2 3.2 0 0 1-1.69 1.76 3.53 3.53 0 0 1-1.4.3 2.78 2.78 0 0 1-2.56-1.5 2.49 2.49 0 0 1-.07-2 3.2 3.2 0 0 1 1.69-1.76 3 3 0 0 1 4 1.2 2.54 2.54 0 0 1 0 2.01Z" data-name="Layer 3"/>
+            </svg>
+        </button>
+        <button id="search-reset-{{search.query}}" class="flex select-none space-x-2 p-2 transition-colors sm:space-x-3 sm:p-3 pointer-events-none bg-sonolus-ui-button-disabled text-sonolus-ui-text-disabled">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="h-5 w-5 fill-current sm:h-6 sm:w-6">
+                <path d="M480 256c0 123.4-100.5 223.9-223.9 223.9-48.84 0-95.17-15.58-134.2-44.86-14.12-10.59-16.97-30.66-6.375-44.81 10.59-14.12 30.62-16.94 44.81-6.375 27.84 20.91 61 31.94 95.88 31.94C344.3 415.8 416 344.1 416 256S344.31 96.2 256.2 96.2c-37.46 0-73.09 13.49-101.3 36.64l45.12 45.14c17.01 17.02 4.955 46.1-19.1 46.1H35.17C24.58 224.1 16 215.5 16 204.9V59.04C16 35 45.07 22.96 62.07 39.97l47.6 47.63C149.9 52.71 201.5 32.11 256.1 32.11 379.5 32.11 480 132.6 480 256z"></path>
+            </svg>
+        </button>
+    </div>
+    <script>
+        addLoadEvent(function(){
+            var def = "{{search.default}}"; searchConfig["{{search.query}}"] = def;
+            document.getElementById("search-reset-{{search.query}}").onclick =
+            document.getElementById("search-clear-{{search.query}}").onclick = function(){
+                searchConfig["{{search.query}}"] = def;
+                document.getElementById("search-{{search.query}}").value = def;
+                document.getElementById("search-reset-{{search.query}}").className = disableResetClass;
+            };
+            document.getElementById("search-{{search.query}}").oninput = function(){
+                searchConfig["{{search.query}}"] = this.value;
+                if (this.value == def) document.getElementById("search-reset-{{search.query}}").className = disableResetClass;
+                else document.getElementById("search-reset-{{search.query}}").className = enableResetClass;
+            }
+        });
+    </script>
+</div>

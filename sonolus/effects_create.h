@@ -7,6 +7,8 @@ auto sonolus_effects_create = [](client_conn conn, http_request request, param a
         exitRequest(conn);
     }
 
+    checkSecret(cookieParam(request)["passwd"], conn);
+
     auto $_POST = postParam(request);
     int id = effectNumber("") + 1;
     string name = $_POST["name"];

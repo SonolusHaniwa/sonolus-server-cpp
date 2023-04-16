@@ -50,21 +50,6 @@ class H {
     }
 };
 
-H fetchNavBar(string title) {
-    string navSource = readFile("./web/html/components/navbar.html");
-    string langSource = readFile("./web/html/components/language.html");
-    string htmlLangList = "";
-    for (int i = 0; i < i18n_raw.size(); i++) {
-        argvar args;
-        args["name"] = i18n_raw[i]["name"].asString();
-        args["title"] = i18n_raw[i]["title"].asString();
-        htmlLangList += str_replace(langSource, args);
-    } argvar args;
-    args["title"] = title;
-    args["html.language"] = htmlLangList;
-    return str_replace(navSource, args);
-}
-
 H fetchOpenInSonolus(string url) {
     string source = readFile("./web/html/components/open_in_sonolus.html");
     argvar args;
@@ -72,9 +57,10 @@ H fetchOpenInSonolus(string url) {
     return str_replace(source, args);
 }
 
-H fetchIndexTitle(string searchUrl, string listUrl, string langId) {
+H fetchIndexTitle(string createUrl, string searchUrl, string listUrl, string langId) {
     string source = readFile("./web/html/components/indexTitle.html");
     argvar args;
+    args["createUrl"] = createUrl;
     args["searchUrl"] = searchUrl;
     args["listUrl"] = listUrl;
     args["title"] = "{{language." + langId + "}}";
@@ -170,6 +156,42 @@ H fetchSearchFile(string query, string name, bool isMargin) {
     args["search.name"] = name;
     args["search.isMargin"] = isMargin ? "style=\"margin-top: 12px;\"" : "";
     return str_replace(source, args);
+}
+
+H fetchSearchTitle(string name, int level, bool isMargin) {
+    string source = readFile("./web/html/components/searchTitle.html");
+    argvar args;
+    args["search.level"] = to_string(level);
+    args["search.name"] = name;
+    args["search.isMargin"] = isMargin ? "style=\"margin-top: 12px;\"" : "";
+    args["search.isStyle"] = isMargin ? "style=\"padding-top: " + to_string((7 - level) * 12) + "px\"" : "";
+    return str_replace(source, args);
+}
+
+H fetchSearchColor(string query, string name, string def, bool isMargin) {
+    string source = readFile("./web/html/components/searchColor.html");
+    argvar args;
+    args["search.query"] = query;
+    args["search.name"] = name;
+    args["search.default"] = def;
+    args["search.isMargin"] = isMargin ? "style=\"margin-top: 12px;\"" : "";
+    return str_replace(source, args);
+}
+
+H fetchNavBar(string title) {
+    string navSource = readFile("./web/html/components/navbar.html");
+    string langSource = readFile("./web/html/components/language.html");
+    string htmlLangList = "";
+    for (int i = 0; i < i18n_raw.size(); i++) {
+        argvar args;
+        args["name"] = i18n_raw[i]["name"].asString();
+        args["title"] = i18n_raw[i]["title"].asString();
+        htmlLangList += str_replace(langSource, args);
+    } argvar args;
+    args["title"] = title;
+    args["html.language"] = htmlLangList;
+    args["html.password"] = fetchSearchText("password", "Password", "Enter admin password...", "", false).output();
+    return str_replace(navSource, args);
 }
 
 #endif

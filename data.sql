@@ -77,3 +77,40 @@ CREATE TABLE Engine (
     configuration text, 
     rom text
 );
+
+CREATE TABLE Studios_Skin (
+    id int,
+    name text,
+    version int,
+    title text,
+    subtitle text,
+    author text,
+    thumbnail text,
+    interpolation boolean,
+    sprites text
+);
+CREATE TABLE Studios_Background (
+    id int,
+    name text,
+    version int,
+    title text,
+    subtitle text,
+    author text,
+    thumbnail text,
+    image text,
+    aspectRadio int,
+    fit text,
+    color text,
+    blur int,
+    mask text
+);
+CREATE TABLE Studios_Effect (
+    id int,
+    name text,
+    version int,
+    title text,
+    subtitle text,
+    author text,
+    thumbnail text,
+    clips text
+);

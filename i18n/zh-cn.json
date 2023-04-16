@@ -26,5 +26,6 @@
     "effectCreate": "创建音效",
     "particleCreate": "创建粒子效果",
     "engineCreate": "创建引擎",
-    "createButton": "创建"
+    "createButton": "创建",
+    "savePasswordButton": "保存密码"
 }

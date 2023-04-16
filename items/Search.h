@@ -121,6 +121,44 @@ class SearchFileOption {
     }
 };
 
+class SearchTitleOption {
+    public:
+
+    string name;
+    int level;
+    string type = "title";
+
+    SearchTitleOption(){};
+    SearchTitleOption(string name, int level): name(name), level(level){};
+
+    Json::Value toJsonObject() {
+        Json::Value res;
+        res["name"] = name;
+        res["level"] = level;
+        res["type"] = type;
+        return res; 
+    }
+};
+
+class SearchColorOption {
+    public:
+
+    string query;
+    string name;
+    string type = "color";
+
+    SearchColorOption(){};
+    SearchColorOption(string query, string name): query(query), name(name){};
+
+    Json::Value toJsonObject() {
+        Json::Value res;
+        res["query"] = query;
+        res["name"] = name;
+        res["type"] = type;
+        return res;
+    }
+};
+
 class SearchOption {
     public:
 
@@ -130,6 +168,8 @@ class SearchOption {
     SearchToggleOption toggle;
     SearchSelectOption select;
     SearchFileOption file;
+    SearchTitleOption title;
+    SearchColorOption color;
 
     SearchOption(){}
     SearchOption(SearchTextOption text):
@@ -142,6 +182,10 @@ class SearchOption {
         select(select), type("select"){}
     SearchOption(SearchFileOption file): 
         file(file), type("file"){}
+    SearchOption(SearchTitleOption title):
+        title(title), type("title"){}
+    SearchOption(SearchColorOption color):
+        color(color), type("color"){}
 };
 
 class Search {
@@ -162,6 +206,8 @@ class Search {
             if (options[i].type == "toggle") res["options"].append(options[i].toggle.toJsonObject());
             if (options[i].type == "select") res["options"].append(options[i].select.toJsonObject());
             if (options[i].type == "file") res["options"].append(options[i].file.toJsonObject());
+            if (options[i].type == "title") res["options"].append(options[i].title.toJsonObject());
+            if (options[i].type == "color") res["options"].append(options[i].color.toJsonObject());
         }
         return res;
     }

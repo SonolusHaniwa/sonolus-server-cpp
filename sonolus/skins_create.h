@@ -7,6 +7,8 @@ auto sonolus_skins_create = [](client_conn conn, http_request request, param arg
         exitRequest(conn);
     }
 
+    checkSecret(cookieParam(request)["passwd"], conn);
+
     auto $_POST = postParam(request);
     int id = skinNumber("") + 1;
     string name = $_POST["name"];

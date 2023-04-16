@@ -15,7 +15,6 @@
 - [目录](#目录)
 - [链接](#链接)
 - [屏幕截图](#屏幕截图)
-<!-- - [安装](#安装) -->
 - [构建](#构建)
 - [配置信息](#配置信息)
 - [终节点](#终节点)
@@ -53,7 +52,7 @@
 ### 下载依赖
 
 ```bash
-sudo apt install g++ libjsoncpp-dev libmysqlclient-dev libssl-dev -y
+sudo apt install g++ libjsoncpp-dev libmysqlclient-dev libssl-dev libsqlite3-dev zliblg-dev -y
 ```
 
 ### 导入数据库
@@ -67,9 +66,18 @@ sudo apt install g++ libjsoncpp-dev libmysqlclient-dev libssl-dev -y
 
 ### 编译
 
+基础编译指令: 
+
 ```bash
-g++ main.cpp -o main -lpthread -lcrypto -lssl -ljsoncpp -lmysqlclient -g
+g++ main.cpp -o main -lpthread -lcrypto -lssl -ljsoncpp -lmysqlclient -lz -std=c++14 -O2 -g
 ```
+
+**附加编译选项列表**
+
+- `-DENABLE_SONOLUS` 加载 Sonolus 服务器主要路由。
+- `-DENABLE_STUDIOS` 加载 Sonolus Studio (暂未开放) 服务器主要路由。
+- `-DENABLE_MYSQL` 允许程序与 MySQL/MariaDB 数据库进行交互。
+- `-DENABLE_SQLITE` 允许程序与 SQLite 数据库进行交互。
 
 ### 导入数据
 
@@ -337,10 +345,11 @@ string levelSearch(map<string, string> $_GET) {
 
 ## 更新日志
 
-### v1.2.3 2023.3.16
+### v1.2.3 2023.4.16
 
 1. 新增引擎一键打包 & 测试功能。
-2. 修复 `windows` 自动打包脚本。
+2. 新增创建组件按钮。
+3. 新增用户登录接口。
 
 ### v1.2.2 2023.3.12
 

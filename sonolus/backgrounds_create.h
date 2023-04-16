@@ -6,6 +6,8 @@ auto sonolus_backgrounds_create = [](client_conn conn, http_request request, par
         send(conn, json_encode(msg[405]));
         exitRequest(conn);
     }
+
+    checkSecret(cookieParam(request)["passwd"], conn);
     
     auto $_POST = postParam(request);
     int id = backgroundNumber("") + 1;

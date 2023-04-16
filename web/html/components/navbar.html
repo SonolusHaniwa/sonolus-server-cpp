@@ -1,16 +1,47 @@
 <div class="fixed top-0" style="width: 100%; z-index: 10000">
+    <script>
+        var searchConfig = new Object();
+        var enableResetClass = "flex select-none space-x-2 p-2 transition-colors sm:space-x-3 sm:p-3 cursor-pointer bg-sonolus-ui-button-normal hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed";
+        var disableResetClass = "flex select-none space-x-2 p-2 transition-colors sm:space-x-3 sm:p-3 pointer-events-none bg-sonolus-ui-button-disabled text-sonolus-ui-text-disabled";
+    </script>
     <nav class="z-10 flex items-center bg-sonolus-ui-surface w-full transition-transform v-transition:-translate-y-full">
         <a href="/" class="cursor-pointer select-none p-2 transition-colors hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed sm:p-3">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="h-7 w-7 flex-shrink-0 fill-current sm:h-10 sm:w-10">
                 <path d="M575.8 255.5c0 18-15 32.1-32 32.1h-32l.7 160.1c0 2.8-.2 5.4-.5 8.1V472c0 22.1-17.9 40-40 40h-16c-1.1 0-2.2-.9-3.3-.1-1.4-.8-2.8.1-4.2.1H392c-22.1 0-40-17.9-40-40v-88c0-17.7-14.3-32-32-32h-64c-17.7 0-32 14.3-32 32v88c0 22.1-17.9 40-40 40h-55.9c-1.5 0-3-.1-4.5-.2-1.2.1-2.4.2-3.6.2h-16c-22.09 0-40-17.9-40-40V360c0-.9.03-1.9.09-2.8v-69.6H32.05C14.02 287.6 0 273.5 0 255.5c0-9 3.004-17 10.01-24L266.4 8.016c7-7.014 15-8.016 22-8.016s15 2.004 21.1 7.014L564.8 231.5c8 7 12.1 15 11 24z"></path>
             </svg>
         </a>
+        <button class="cursor-pointer select-none p-2 transition-colors hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed sm:p-3" onclick="displayPassword()">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="h-7 w-7 flex-shrink-0 fill-current sm:h-10 sm:w-10">
+            </svg>
+        </button>
         <div class="flex-grow overflow-hidden text-ellipsis whitespace-nowrap px-2 text-center text-xl font-bold sm:px-3 sm:text-3xl">{{title}}</div>
+        <button class="cursor-pointer select-none p-2 transition-colors hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed sm:p-3" onclick="displayPassword()">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="h-7 w-7 flex-shrink-0 fill-current sm:h-10 sm:w-10">
+                <path fill-rule="evenodd" d="M6.5 5.5a4 4 0 1 1 2.731 3.795.75.75 0 0 0-.768.18L7.44 10.5H6.25a.75.75 0 0 0-.75.75v1.19l-.06.06H4.25a.75.75 0 0 0-.75.75v1.19l-.06.06H1.75a.25.25 0 0 1-.25-.25v-1.69l5.024-5.023a.75.75 0 0 0 .181-.768A3.995 3.995 0 0 1 6.5 5.5zm4-5.5a5.5 5.5 0 0 0-5.348 6.788L.22 11.72a.75.75 0 0 0-.22.53v2C0 15.216.784 16 1.75 16h2a.75.75 0 0 0 .53-.22l.5-.5a.75.75 0 0 0 .22-.53V14h.75a.75.75 0 0 0 .53-.22l.5-.5a.75.75 0 0 0 .22-.53V12h.75a.75.75 0 0 0 .53-.22l.932-.932A5.5 5.5 0 1 0 10.5 0zm.5 6a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+              </svg>
+        </button>
         <button class="cursor-pointer select-none p-2 transition-colors hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed sm:p-3" onclick="displayLanguage()">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="h-7 w-7 flex-shrink-0 fill-current sm:h-10 sm:w-10">
                 <path d="M352 256c0 22.2-1.2 43.6-3.3 64H163.3c-2.1-20.4-4.2-41.8-4.2-64 0-22.2 2.1-43.6 4.2-64h185.4c2.1 20.4 3.3 41.8 3.3 64zm151.9-64c5.3 20.5 8.1 41.9 8.1 64s-2.8 43.5-8.1 64H380.8c2.1-20.6 3.2-42.9 3.2-64 0-22-1.1-43.4-3.2-64h123.1zm-10.5-32H376.7c-10-63.86-29.8-117.38-55.3-151.558C399.8 29.09 463.4 85.94 493.4 160zm-149.1 0H167.7c6.1-36.4 15.5-68.62 27-94.65 10.5-23.61 22.2-40.74 33.5-51.54C239.4 3.178 248.7 0 256 0c7.3 0 16.6 3.178 27.8 13.81 11.3 10.8 23 27.93 33.5 51.54 11.5 26.03 20.9 58.25 27 94.65zm-325.69 0C48.59 85.94 112.2 29.09 190.6 8.442 165.1 42.62 145.3 96.14 135.3 160H18.61zm112.59 32c-2.1 20.6-4.1 42-4.1 64 0 21.1 2 43.4 4.1 64H8.065C2.8 299.5 0 278.1 0 256s2.8-43.5 8.065-64H131.2zm63.5 254.6c-11.5-26-20.9-58.2-27-94.6h176.6c-6.1 36.4-15.5 68.6-27 94.6-10.5 23.7-22.2 40.8-33.5 51.6-11.2 10.6-20.5 13.8-28.7 13.8-6.4 0-15.7-3.2-26.9-13.8-11.3-10.8-23-27.9-33.5-51.6zm-4.1 57C112.2 482.9 48.59 426.1 18.61 352H135.3c10 63.9 29.8 117.4 55.3 151.6zm130.8 0c25.5-34.2 45.3-87.7 55.3-151.6h116.7c-30 74.1-93.6 130.9-172 151.6z"></path>
             </svg>
         </button>
+        <ul class="fixed top-0 left-0 z-50 flex h-[100vh] w-[100vw] select-none flex-col items-center justify-center bg-sonolus-main bg-opacity-90 transition-opacity" style="opacity: 0; display: none;" id="passwordOptions" onclick="hidePassword()">
+            <div id="passwordInline" class="mx-auto flex max-w-4xl flex-col space-y-9 p-9 transition-opacity v-transition:opacity-0">
+                <div class="flex flex-col space-y-2 sm:space-y-3">
+                    <div>
+                        {{html.password}}
+                    </div>
+                </div>
+                <div class="flex justify-end">
+                    <button class="flex select-none space-x-2 p-2 transition-colors sm:space-x-3 sm:p-3 cursor-pointer bg-sonolus-ui-button-normal hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed" onclick="savePassword()">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2048 2048" class="h-5 w-5 fill-current sm:h-6 sm:w-6">
+                            <path d="M1792 960q0 26-19 45t-45 19h-704v704q0 26-19 45t-45 19q-26 0-45-19t-19-45v-704H192q-26 0-45-19t-19-45q0-26 19-45t45-19h704V192q0-26 19-45t45-19q26 0 45 19t19 45v704h704q26 0 45 19t19 45z"/>
+                        </svg>
+                        <span class="min-w-[4.5rem] flex-grow text-center sm:min-w-[6rem]">{{language.savePasswordButton}}</span>
+                    </button>
+                </div>
+            </div>
+        </ul>
         <ul class="fixed top-0 left-0 z-50 flex h-[100vh] w-[100vw] select-none flex-col items-center justify-center bg-sonolus-main bg-opacity-90 transition-opacity" style="opacity: 0; display: none;" id="languageOptions" onclick="hideLanguage()">
             {{html.language}}
         </ul>

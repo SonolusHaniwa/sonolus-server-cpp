@@ -3,6 +3,7 @@
 
 Search LevelSearch, SkinSearch, BackgroundSearch, EffectSearch, ParticleSearch, EngineSearch;
 Search LevelCreate, SkinCreate, BackgroundCreate, EffectCreate, ParticleCreate, EngineCreate;
+Search SkinStudios, BackgroundStudios, EffectStudios;
 
 #include"Section.h"
 #include"ItemList.h"
@@ -14,6 +15,9 @@ Search LevelCreate, SkinCreate, BackgroundCreate, EffectCreate, ParticleCreate, 
 #include"EngineItem.h"
 #include"LevelItem.h"
 // #include"UserProfile.h"
+#include"StudiosSkinItem.h"
+#include"StudiosBackgroundItem.h"
+#include"StudiosEffectItem.h"
 using namespace std;
 
 Search readJson(string path) {
@@ -77,6 +81,16 @@ Search readJson(string path) {
                 json[i]["query"].asString(),
                 json[i]["name"].asString()
             ); search.append(file);
+        } else if (json[i]["type"].asString() == "title") {
+            SearchTitleOption title = SearchTitleOption(
+                json[i]["name"].asString(),
+                json[i]["level"].asInt()
+            ); search.append(title);
+        } else if (json[i]["type"].asString() == "color") {
+            SearchColorOption color = SearchColorOption(
+                json[i]["query"].asString(),
+                json[i]["name"].asString()
+            ); search.append(color);
         } else {
             writeLog(LOG_LEVEL_ERROR, ("Invalid search option type \"" + 
                 json[i]["type"].asString() + "\" in file \"" + path + "\"").c_str());  
@@ -99,6 +113,7 @@ void loadConfig() {
     ParticleCreate = readJson("./config/particle_create.json");
     EngineSearch = readJson("./config/engine_search.json");
     EngineCreate = readJson("./config/engine_create.json");
+    BackgroundStudios = readJson("./config/background_studios.json");
     string json = readFile("./i18n/index.json");
     Json::Value index; json_decode(json, index);
     for (int i = 0; i < index.size(); i++) {
