@@ -18,10 +18,10 @@
 - [构建](#构建)
 - [配置信息](#配置信息)
 - [终节点](#终节点)
-- [自定义搜索](#自定义搜索)
-- [引擎开发](#引擎开发)
+- [自定义搜索](#自定义搜索)=
 - [提示](#提示)
-- [扩展](#扩展)
+- [第三方仓库](#第三方仓库)
+- [插件](#插件)
 - [更新日志](#更新日志)
 
 ## 链接
@@ -64,6 +64,12 @@ sudo apt install g++ libjsoncpp-dev libmysqlclient-dev libssl-dev libsqlite3-dev
 - 在 `./config/*_search.json` 中编辑所有的搜索配置。
 - 在 `./config/config.json` 中编辑应用配置。
 
+### 获取源码
+
+```bash
+git clone --recursive https://github.com/SonolusHaniwa/sonolus-server-cpp
+```
+
 ### 编译
 
 基础编译指令: 
@@ -78,6 +84,13 @@ g++ main.cpp -o main -lpthread -lcrypto -lssl -ljsoncpp -lmysqlclient -lz -std=c
 - `-DENABLE_STUDIOS` 加载 Sonolus Studio (暂未开放) 服务器主要路由。
 - `-DENABLE_MYSQL` 允许程序与 MySQL/MariaDB 数据库进行交互。
 - `-DENABLE_SQLITE` 允许程序与 SQLite 数据库进行交互。
+
+扩展编译指令:
+
+```bash
+g++ plugins/libsonolush/libsonolush.cpp -o plugins/libsonolush.so -fPIC -shared -std=c++17 -DENABLE_MYSQL -DENABLE_SQLITE
+g++ plugins/libsonolusjs/libsonolusjs.cpp -o plugins/libsonolusjs.so -fPIC -shared -std=c++17 -DENABLE_MYSQL -DENABLE_SQLITE
+```
 
 ### 导入数据
 
@@ -288,38 +301,6 @@ string levelSearch(map<string, string> $_GET) {
 }
 ```
 
-## 引擎开发
-
-### 系统依赖
-
-环境变量中需要包含 `npm` 指令。
-
-运行 `npm --version` 即可查看环境变量中是否存在 `npm` 指令。
-
-### 初始化仓库
-
-以初始化名为 `sonolus-hwpl-engines` 的仓库为例:
-
-```bash
-./main init sonolus-hwpl-engines 
-```
-
-在 `sonolus-hwpl-engines` 的目录下会新建基本的引擎模板。
-
-修改 `src/res/thumbnail.jpg` 为您想要的引擎图标，支持 jpg 与 png 格式。
-
-修改 `src/engines/*` 内的代码为您的引擎的处理逻辑，具体详见官方 wiki。
-
-### 打包测试
-
-以测试名为 `sonolus-hwpl-engines` 的引擎为例:
-
-```bash
-./main serve sonolus-hwpl-engines
-```
-
-程序会自动构建您的引擎并将其更新至您的服务器，在 Sonolus 中添加服务器后就可以看到您的引擎了。
-
 ## 提示
 
 ### 2023.1.21
@@ -334,7 +315,7 @@ string levelSearch(map<string, string> $_GET) {
 
 最近官方 wiki 网站新增了终节点 `/sonolus/authenticate` 以及对象 `UserProfile`，但我不知道该终节点与 Sonolus 应用交互的方法，故本应用中暂时无 `/sonolus/authenticate` 终节点。
 
-## 扩展
+## 第三方仓库
 
 - [open-source-parsers/jsoncpp](https://github.com/open-source-parsers/jsoncpp)
 - libmysqlclient
@@ -342,8 +323,19 @@ string levelSearch(map<string, string> $_GET) {
 - [jquery/jquery](https://github.com/jquery/jquery)
 - [dankogai/js-base64](https://github.com/dankogai/js-base64)
 - [lyoj-dev/webserver](https://github.com/lyoj-dev/webserver)
+- [pluma](https://github.com/aelzenaar/pluma)
+
+## 插件
+
+- [libsonolush](https://github.com/SonolusHaniwa/sonolus-server-plugin-libsonolush)
+- [libsonolusjs](https://github.com/SonolusHaniwa/sonolus-server-plugin-libsonolusjs)
 
 ## 更新日志
+
+### v1.3.0 2023.5.21
+
+1. 新增插件功能。
+2. 允许自定义服务器 Sonolus 版本。
 
 ### v1.2.3 2023.4.16
 

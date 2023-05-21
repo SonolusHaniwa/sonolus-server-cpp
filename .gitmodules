@@ -1,0 +1,6 @@
+[submodule "plugins/libsonolush"]
+	path = plugins/libsonolush
+	url = https://github.com/SonolusHaniwa/sonolus-server-plugin-libsonolush
+[submodule "plugins/libsonolusjs"]
+	path = plugins/libsonolusjs
+	url = https://github.com/SonolusHaniwa/sonolus-server-plugin-libsonolusjs

@@ -1,3 +1,5 @@
+#include"pluma.h"
+#include"plugin.h"
 #include"httpd.h"
 #include"html.h"
 #include"mysqli.h"

@@ -9,7 +9,6 @@
  * 
  */
 const std::string httpd_version = "1.0.4";
-const std::string Sonolus_Version = "0.6.5";
 
 #ifndef _HTTPD_H_
 #define _HTTPD_H_

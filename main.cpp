@@ -1,9 +1,11 @@
 #include<bits/stdc++.h>
 #include<jsoncpp/json/json.h>
 
-std::string sonolus_server_version = "1.2.3";
+std::string sonolus_server_version = "1.3.0";
+std::string Sonolus_Version = "0.6.5";
 Json::Value appConfig, studiosConfig;
 Json::Value i18n, i18n_raw;
+Json::Value enableListJson;
 int exportLevelId[] = {};
 int exportSkinId[] = {};
 int exportBackgroundId[] = {};
@@ -18,77 +20,42 @@ int exportEngineId[] = {};
 #include"web/import.h"
 #include"modules/import.h"
 #include"modules/export.h"
-#include"modules/custom_engine.h"
 using namespace std;
 
-void invalidUsage(char** argv) {
-    cerr << "Usage: " << argv[0] << " [command]" << endl;
-    cerr << "commands: " << endl;
-    cerr << "    help: " << argv[0] << " help" << endl;
-    cerr << "    serve: " << argv[0] << " serve" << endl;
-    cerr << "    import: " << argv[0] << " import [file]" << endl;
-    cerr << "    export: " << argv[0] << " export [level/engine] [name] [file]" << endl;
-    cerr << "    init: " << argv[0] << " init [dir]" << endl;
+pluma::Pluma plugins;
+vector<SonolusServerPluginProvider*> providers;
+stringstream usage;
+
+void initUsage(char** argv) {
+    usage << "Usage: " << argv[0] << " [command]" << endl;
+    usage << "commands: " << endl;
+    usage << "    help: " << argv[0] << " help" << endl;
+    usage << "    serve: " << argv[0] << " serve" << endl;
+    usage << "    import: " << argv[0] << " import [file]" << endl;
+    usage << "    export: " << argv[0] << " export <level/engine> [name] [file]" << endl;
+    usage << "    list plugin: " << argv[0] << " plugin list" << endl;
+    usage << "    manage plugin: " << argv[0] << " plugin <info/enable/disable> [plugin]" << endl;
+    usage << "Plugin commands: " << endl;
+    for (int i = 0; i < providers.size(); i++) {
+        SonolusServerPlugin* plugin = providers[i]->create();
+        vector<string> res = plugin->onPluginHelp(argv);
+        for (int j = 0; j < res.size(); j++) usage << "    " << res[j] << endl;
+        delete plugin;
+    }
+}
+
+void invalidUsage() {
+    cerr << usage.str();
     exit(0);
 }
 
-int main(int argc, char** argv) {
-    app.setopt(LOG_TARGET_TYPE, LOG_TARGET_CONSOLE);
-    app.setopt(OPEN_DEBUG, true);
-
-    // 先初始化一遍日志系统
-    log_init(log_target_type);
-
-    string sonolusJson = readFile("./config/sonolus_config.json");
-    string studiosJson = readFile("./config/studios_config.json");
-    string configJson = readFile("./config/config.json");
-    json_decode(sonolusJson, appConfig); json_decode(studiosJson, studiosConfig);
-    Json::Value tmpConfig; json_decode(configJson, tmpConfig);
-    json_merge(appConfig, tmpConfig); json_merge(studiosConfig, tmpConfig);
-    loadConfig();
-    loadDefaultVariable();
-
-    if (argc < 2) invalidUsage(argv);
-    if (string(argv[1]) == "import") {
-        if (argc < 3) invalidUsage(argv);
-        import(argv[2]);
-        return 0;
-    }
-    else if (string(argv[1]) == "export") {
-        if (argc < 5) invalidUsage(argv);
-        if (string(argv[2]) == "level") {
-            exportLevel(argv[3]);
-            exportData(argv[4]);
-            return 0;
-        } else if (string(argv[2]) == "engine") {
-            exportEngine(argv[3]);
-            exportData(argv[4]);
-            return 0;
-        } else invalidUsage(argv);
-    } else if (string(argv[1]) == "init") {
-        if (argc < 3) invalidUsage(argv);
-        initCustomEngine(argv);
-        return 0;
-    } else if (string(argv[1]) == "help") invalidUsage(argv);
-    if (string(argv[1]) != "serve") invalidUsage(argv);
-    
-    if (argc > 2) initBuild(argv[2]);
-    (new DB_Controller)->query("SELECT COUNT(*) FROM Level");
-    app.setopt(HTTP_ENABLE_SSL, appConfig["server.enableSSL"].asBool());
-    app.setopt(HTTP_LISTEN_HOST, appConfig["server.listenHost"].asString().c_str());
-    app.setopt(HTTP_LISTEN_PORT, appConfig["server.listenPort"].asInt());
-    app.setopt(HTTP_SSL_CACERT, appConfig["server.httpsCacert"].asString().c_str());
-    app.setopt(HTTP_SSL_PRIVKEY, appConfig["server.httpsPrivkey"].asString().c_str());
-    app.setopt(HTTP_MULTI_THREAD, appConfig["server.threadNumber"].asInt());
-    app.setopt(LOG_FILE_PATH, appConfig["logSystem.targetFile"].asString().c_str());
-    app.setopt(LOG_TARGET_TYPE, appConfig["logSystem.target"].asInt());
-    app.setopt(OPEN_DEBUG, appConfig["logSystem.debug"].asInt());
+void routerRegister(int argc, char** argv) {
+    app.route.clear();
 
     app.addRoute("/data/%s", downloader);
     app.addRoute("/js/%s", js_import);
     app.addRoute("/css/%s", css_import);
 
-    #ifdef ENABLE_SONOLUS
     app.addRoute("/sonolus/info", sonolus_info);
     app.addRoute("/sonolus/levels/create", sonolus_levels_create);
     app.addRoute("/sonolus/skins/create", sonolus_skins_create);
@@ -141,42 +108,225 @@ int main(int argc, char** argv) {
     app.addRoute("/effects/%s", web_effects);
     app.addRoute("/particles/%s", web_particles);
     app.addRoute("/engines/%s", web_engines);
-    #endif
-
-    #ifdef ENABLE_STUDIOS
-    // app.addRoute("/sonolus/studios/skins/import", sonolus_studios_skins_import);
-    // app.addRoute("/sonolus/studios/backgrounds/import", sonolus_studios_backgrounds_import);
-    // app.addRoute("/sonolus/studios/effects/import", sonolus_studios_effects_import);
-    // app.addRoute("/sonolus/studios/skins/create", sonolus_studios_skins_create);
-    // app.addRoute("/sonolus/studios/backgrounds/create", sonolus_studios_backgrounds_create);
-    // app.addRoute("/sonolus/studios/effects/create", sonolus_studios_effects_create);
-    // app.addRoute("/sonolus/studios/skins/save", sonolus_studios_skins_save);
-    // app.addRoute("/sonolus/studios/backgrounds/save", sonolus_studios_backgrounds_save);
-    // app.addRoute("/sonolus/studios/effects/save", sonolus_studios_effects_save);
-    // app.addRoute("/sonolus/studios/skins/export", sonolus_studios_skins_export);
-    // app.addRoute("/sonolus/studios/backgrounds/export", sonolus_studios_backgrounds_export);
-    // app.addRoute("/sonolus/studios/effects/export", sonolus_studios_effects_export);
-    // app.addRoute("/sonolus/studios/skins/%s", sonolus_studios_skins_edit);
-    // app.addRoute("/sonolus/studios/backgrounds/%s", sonolus_studios_backgrounds_edit);
-    // app.addRoute("/sonolus/studios/effects/%s", sonolus_studios_effects_edit);
-
-    // app.addRoute("/studios/", studios_index);
-    // app.addRoute("/studios/index", studios_index);
-    // app.addRoute("/studios/skins/list", studios_skins_list);
-    // app.addRoute("/studios/backgrounds/list", studios_backgrounds_list);
-    // app.addRoute("/studios/effects/list", studios_effects_list);
-    // app.addRoute("/studios/skins/search", studios_skins_search);
-    // app.addRoute("/studios/backgrounds/search", studios_backgrounds_search);
-    // app.addRoute("/studios/effects/search", studios_effects_search);
-    // app.addRoute("/studios/skins/jump", studios_skins_jump);
-    // app.addRoute("/studios/backgrounds/jump", studios_backgrounds_jump);
-    // app.addRoute("/studios/effects/jump", studios_effects_jump);
-    // app.addRoute("/studios/skins/%s", studios_skins_edit);
-    // app.addRoute("/studios/backgrounds/%s", studios_backgrounds_edit);
-    // app.addRoute("/studios/effects/%s", studios_effects_edit);
-    #endif
 
     app.addRoute("/uploader", uploader);
 
+    for (int i = 0; i < providers.size(); i++) {
+        SonolusServerPlugin* plugin = providers[i]->create();
+        plugin->onPluginRouter(argc, argv);
+        delete plugin;
+    }
+}
+
+void serverRunner(int argc, char** argv) {
+    (new DB_Controller)->query("SELECT COUNT(*) FROM Level");
+
+    app.setopt(HTTP_ENABLE_SSL, appConfig["server.enableSSL"].asBool());
+    app.setopt(HTTP_LISTEN_HOST, appConfig["server.listenHost"].asString().c_str());
+    app.setopt(HTTP_LISTEN_PORT, appConfig["server.listenPort"].asInt());
+    app.setopt(HTTP_SSL_CACERT, appConfig["server.httpsCacert"].asString().c_str());
+    app.setopt(HTTP_SSL_PRIVKEY, appConfig["server.httpsPrivkey"].asString().c_str());
+    app.setopt(HTTP_MULTI_THREAD, appConfig["server.threadNumber"].asInt());
+    app.setopt(LOG_FILE_PATH, appConfig["logSystem.targetFile"].asString().c_str());
+    app.setopt(LOG_TARGET_TYPE, appConfig["logSystem.target"].asInt());
+    app.setopt(OPEN_DEBUG, appConfig["logSystem.debug"].asInt());
+
+    routerRegister(argc, argv);
+
     app.run();
+}
+
+#if __windows__
+string pluginExt = ".dll";
+#else
+string pluginExt = ".so";
+#endif
+
+void getSoFileList(string path, vector<string>& fileList) {
+    DIR* dir;
+    struct dirent* ptr;
+    if ((dir = opendir(path.c_str())) == NULL) return;
+    while ((ptr = readdir(dir)) != NULL) {
+        if (ptr->d_name[0] == '.') continue;
+        if (ptr->d_type == 8) {
+            string fileName = ptr->d_name;
+            if (fileName.substr(fileName.length() - pluginExt.size(), pluginExt.size()) == pluginExt) {
+                fileList.push_back(fileName);
+            }
+        }
+    }
+    closedir(dir);
+}
+
+void saveEnableList(Json::Value enableList) {
+    string enableListJson = json_encode(enableList);
+    ofstream fout("./plugins/enableList.json");
+    fout << enableListJson;
+    fout.close();
+}
+
+void loadPlugins() {
+    plugins.acceptProviderType<SonolusServerPluginProvider>();
+    vector<string> fileList;
+    getSoFileList("./plugins", fileList);
+    string enableList = readFile("./plugins/enableList.json");
+    json_decode(enableList, enableListJson);
+    for (int i = 0; i < fileList.size(); i++) {
+        string fileName = fileList[i];
+        if (!enableListJson.isMember(fileName)) enableListJson[fileName] = true;
+        if (enableListJson[fileName].asBool()) plugins.load("./plugins/" + fileName);
+    } plugins.getProviders(providers);
+    saveEnableList(enableListJson);
+}
+
+void listPlugin() {
+    vector<string> fileList;
+    getSoFileList("./plugins", fileList);
+    cout << "Loaded Plugins:" << endl;
+    for (int i = 0; i < fileList.size(); i++) {
+        string fileName = fileList[i];
+        if (!enableListJson[fileName].asBool()) continue;
+        pluma::Pluma pluma;
+        pluma.acceptProviderType<SonolusServerPluginProvider>();
+        pluma.load("./plugins/" + fileName);
+        vector<SonolusServerPluginProvider*> providers;
+        pluma.getProviders(providers);
+        if (providers.size() == 0) continue;
+        SonolusServerPlugin* plugin = providers[0]->create();
+        cout << "    " << plugin->onPluginName() << " v" << plugin->onPluginVersion() << " (Loaded from \"./plugins/" << fileName << "\")" << endl;
+        delete plugin;
+    }
+    cout << "Other Plugins:" << endl;
+    for (int i = 0; i < fileList.size(); i++) {
+        string fileName = fileList[i];
+        if (enableListJson[fileName].asBool()) continue;
+        pluma::Pluma pluma;
+        pluma.acceptProviderType<SonolusServerPluginProvider>();
+        pluma.load("./plugins/" + fileName);
+        vector<SonolusServerPluginProvider*> providers;
+        pluma.getProviders(providers);
+        if (providers.size() == 0) continue;
+        SonolusServerPlugin* plugin = providers[0]->create();
+        cout << "    " << plugin->onPluginName() << " v." << plugin->onPluginVersion() << " (Source from \"./plugins/" << fileName << "\")" << endl;
+        delete plugin;
+    }
+}
+
+void infoPlugin(string name) {
+    string enableList = readFile("./plugins/enableList.json");
+    Json::Value enableListJson;
+    json_decode(enableList, enableListJson);
+    pluma::Pluma pluma;
+    pluma.acceptProviderType<SonolusServerPluginProvider>();
+    pluma.load("./plugins/" + name + pluginExt);
+    vector<SonolusServerPluginProvider*> providers;
+    pluma.getProviders(providers);
+    if (providers.size() == 0) {
+        cout << "Plugin \"" << name << "\" not found." << endl;
+        return;
+    }
+    SonolusServerPlugin* plugin = providers[0]->create();
+    cout << "Plugin \"" << plugin->onPluginName() << "\" v" << plugin->onPluginVersion() << endl;
+    cout << "Description: " << plugin->onPluginDescription() << endl;
+    cout << "Author: " << plugin->onPluginAuthor() << endl;
+    cout << "Website: " << plugin->onPluginWebsite() << endl;
+    cout << "License: " << plugin->onPluginLicense() << endl;
+    cout << "Status: " << (enableListJson[name + pluginExt].asBool() ? "Enabled" : "Disabled") << endl;
+}
+
+void enablePlugin(string name) {
+    string enableList = readFile("./plugins/enableList.json");
+    Json::Value enableListJson;
+    json_decode(enableList, enableListJson);
+    if (enableListJson.isMember(name + pluginExt)) {
+        enableListJson[name + pluginExt] = true;
+        saveEnableList(enableListJson);
+        cout << "Plugin \"" << name << "\" enabled." << endl;
+    } else {
+        cout << "Plugin \"" << name << "\" not found." << endl;
+    }
+}
+
+void disablePlugin(string name) {
+    string enableList = readFile("./plugins/enableList.json");
+    Json::Value enableListJson;
+    json_decode(enableList, enableListJson);
+    if (enableListJson.isMember(name + pluginExt)) {
+        enableListJson[name + pluginExt] = false;
+        saveEnableList(enableListJson);
+        cout << "Plugin \"" << name << "\" disabled." << endl;
+    } else {
+        cout << "Plugin \"" << name << "\" not found." << endl;
+    }
+}
+
+void preload() {
+    app.setopt(LOG_TARGET_TYPE, LOG_TARGET_CONSOLE);
+    app.setopt(OPEN_DEBUG, true);
+
+    // 先初始化一遍日志系统
+    log_init(log_target_type);
+
+    string sonolusJson = readFile("./config/sonolus_config.json");
+    string studiosJson = readFile("./config/studios_config.json");
+    string configJson = readFile("./config/config.json");
+    json_decode(sonolusJson, appConfig); json_decode(studiosJson, studiosConfig);
+    Json::Value tmpConfig; json_decode(configJson, tmpConfig);
+    json_merge(appConfig, tmpConfig); json_merge(studiosConfig, tmpConfig);
+    Sonolus_Version = appConfig["sonolus.version"].asString();
+    loadConfig();
+    loadDefaultVariable();
+}
+
+int main(int argc, char** argv) {
+    preload();
+    loadPlugins();
+    initUsage(argv);
+
+    if (argc < 2) invalidUsage();
+    if (string(argv[1]) == "import") {
+        if (argc < 3) invalidUsage();
+        import(argv[2]);
+        return 0;
+    }
+    else if (string(argv[1]) == "export") {
+        if (argc < 5) invalidUsage();
+        if (string(argv[2]) == "level") {
+            exportLevel(argv[3]);
+            exportData(argv[4]);
+            return 0;
+        } else if (string(argv[2]) == "engine") {
+            exportEngine(argv[3]);
+            exportData(argv[4]);
+            return 0;
+        } else invalidUsage();
+    } else if (string(argv[1]) == "help") invalidUsage();
+    else if (string(argv[1]) == "serve") {
+        serverRunner(argc, argv);
+        return 0;
+    } else if (string(argv[1]) == "plugin") {
+        if (argc < 3) invalidUsage();
+        if (string(argv[2]) == "list") {
+            listPlugin();
+            return 0;
+        } else if (string(argv[2]) == "info") {
+            if (argc < 4) invalidUsage();
+            infoPlugin(argv[3]);
+            return 0;
+        } else if (string(argv[2]) == "enable") {
+            if (argc < 4) invalidUsage();
+            enablePlugin(argv[3]);
+            return 0;
+        } else if (string(argv[2]) == "disable") {
+            if (argc < 4) invalidUsage();
+            disablePlugin(argv[3]);
+            return 0;
+        } else invalidUsage();
+    } 
+    for (int i = 0; i < providers.size(); i++) {
+        SonolusServerPlugin* plugin = providers[i]->create();
+        plugin->onPluginRunner(argc, argv);
+        delete plugin;
+    }
+    invalidUsage();
 }

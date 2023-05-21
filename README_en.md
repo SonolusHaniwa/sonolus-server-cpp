@@ -18,11 +18,11 @@ Use httpd core developed by myself, which also support you to build HTTPS server
 - [Building](#Building)
 - [Configuration](#Configuration)
 - [Endpoints](#Endpoints)
-- [Custom Search](#Custom Search)
-- [Engine Development](#Engine Development)
+- [Custom Search](#Custom%20Search)
 - [Tips](#Tips)
-- [Extensions](#Extensions)
-- [Upload Log](#Upload Log)
+- [Third-party Repo](#Third-party%Repo)
+- [Plugins](#Plugins)
+- [Upload Log](#Upload%20Log)
 
 ## Links
 
@@ -64,6 +64,12 @@ Just enter MySQL Server and import `data.sql`.
 - Edit `./config/*_search.json` for all search configuration.
 - Edit `./config/config.json` for application configuration.
 
+### Fetch Source
+
+```bash
+git clone --recursive https://github.com/SonolusHaniwa/sonolus-server-cpp
+```
+
 ### Compile
 
 Basic Compile Command:
@@ -78,6 +84,13 @@ g++ main.cpp -o main -lpthread -lcrypto -lssl -ljsoncpp -lmysqlclient -g
 - `-DENABLE_STUDIOS` Load main routes of Sonolus Studios Server (developing...).
 - `-DENABLE_MYSQL` allow program interactive with MySQL/MariaDB database.
 - `-DENABLE_SQLITE` allow program interactive with SQLite database.
+
+Compile Plugins:
+
+```bash
+g++ plugins/libsonolush/libsonolush.cpp -o plugins/libsonolush.so -fPIC -shared -std=c++17 -DENABLE_MYSQL -DENABLE_SQLITE
+g++ plugins/libsonolusjs/libsonolusjs.cpp -o plugins/libsonolusjs.so -fPIC -shared -std=c++17 -DENABLE_MYSQL -DENABLE_SQLITE
+```
 
 ### Import Data
 
@@ -288,38 +301,6 @@ string levelSearch(map<string, string> $_GET) {
 }
 ```
 
-## Engine Development
-
-### Dependences
-
-Command `npm` need be included in environment variables.
-
-Run `npm --version` can check whether exist command `npm` in environment variables.
-
-### Initialize repository
-
-Take initializing repository named `sonolus-hwpl-engines` as an example.
-
-```bash
-./main init sonolus-hwpl-engines 
-```
-
-It will create base engine template in directory `sonolus-hwpl-engines`.
-
-Replace `src/res/thumbnail.jpg` to the icon you want, support jpg & png format.
-
-Modify the code in `src/engines/*` to your engine. For more information, see official wiki.
-
-### Package & Test
-
-Take testing engine named `sonolus-hwpl-engines` as an example.
-
-```bash
-./main serve sonolus-hwpl-engines
-```
-
-It will build your engine and update it to your server automatically. You will see your engine after adding server in your Sonolus.
-
 ## Tips
 
 ### 2023.1.21
@@ -334,7 +315,7 @@ If you want set port to `80/443`, you must have the administrator privilege.
 
 These days, the official wiki website has added an endpoint `/sonolus/authenticate` and an object `UserProfile`, but I couldn't find the interactive way with the Sonolus app. So I didn't add this function into the application.
 
-## Extensions
+## Third-party Repo
 
 - [open-source-parsers/jsoncpp](https://github.com/open-source-parsers/jsoncpp)
 - libmysqlclient
@@ -342,10 +323,21 @@ These days, the official wiki website has added an endpoint `/sonolus/authentica
 - [jquery/jquery](https://github.com/jquery/jquery)
 - [dankogai/js-base64](https://github.com/dankogai/js-base64)
 - [lyoj-dev/webserver](https://github.com/lyoj-dev/webserver)
+- [pluma](https://github.com/aelzenaar/pluma)
+
+## Plugins
+
+- [libsonolush](https://github.com/SonolusHaniwa/sonolus-server-plugin-libsonolush)
+- [libsonolusjs](https://github.com/SonolusHaniwa/sonolus-server-plugin-libsonolusjs)
 
 ## Upload Log
 
-### v1.2.3 2023.3.16
+### v1.3.0 2023.5.21
+
+1. Add plugin functionality.
+2. Allow custom Sonolus Server version.
+
+### v1.2.3 2023.4.16
 
 1. Add package & test engine features.
 2. Add create items button.
