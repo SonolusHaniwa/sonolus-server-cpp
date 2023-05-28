@@ -207,7 +207,7 @@ void listPlugin() {
         pluma.getProviders(providers);
         if (providers.size() == 0) continue;
         SonolusServerPlugin* plugin = providers[0]->create();
-        cout << "    " << plugin->onPluginName() << " v." << plugin->onPluginVersion() << " (Source from \"./plugins/" << fileName << "\")" << endl;
+        cout << "    " << plugin->onPluginName() << " v" << plugin->onPluginVersion() << " (Source from \"./plugins/" << fileName << "\")" << endl;
         delete plugin;
     }
 }
