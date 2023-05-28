@@ -113,7 +113,7 @@ void routerRegister(int argc, char** argv) {
 
     for (int i = 0; i < providers.size(); i++) {
         SonolusServerPlugin* plugin = providers[i]->create();
-        plugin->onPluginRouter(argc, argv);
+        plugin->onPluginRouter(argc, argv, &app);
         delete plugin;
     }
 }
@@ -193,10 +193,15 @@ void listPlugin() {
         pluma.getProviders(providers);
         if (providers.size() == 0) continue;
         SonolusServerPlugin* plugin = providers[0]->create();
+        string platformVersion = plugin->onPluginPlatformVersion();
+        if (platformVersion != sonolus_server_version) {
+            delete plugin;
+            continue;
+        }
         cout << "    " << plugin->onPluginName() << " v" << plugin->onPluginVersion() << " (Loaded from \"./plugins/" << fileName << "\")" << endl;
         delete plugin;
     }
-    cout << "Other Plugins:" << endl;
+    cout << "Disabled Plugins:" << endl;
     for (int i = 0; i < fileList.size(); i++) {
         string fileName = fileList[i];
         if (enableListJson[fileName].asBool()) continue;
@@ -207,7 +212,30 @@ void listPlugin() {
         pluma.getProviders(providers);
         if (providers.size() == 0) continue;
         SonolusServerPlugin* plugin = providers[0]->create();
+        string platformVersion = plugin->onPluginPlatformVersion();
+        if (platformVersion != sonolus_server_version) {
+            delete plugin;
+            continue;
+        }
         cout << "    " << plugin->onPluginName() << " v" << plugin->onPluginVersion() << " (Source from \"./plugins/" << fileName << "\")" << endl;
+        delete plugin;
+    }
+    cout << "Unsuitable Plugins:" << endl;
+    for (int i = 0; i < fileList.size(); i++) {
+        string fileName = fileList[i];
+        pluma::Pluma pluma;
+        pluma.acceptProviderType<SonolusServerPluginProvider>();
+        pluma.load("./plugins/" + fileName);
+        vector<SonolusServerPluginProvider*> providers;
+        pluma.getProviders(providers);
+        if (providers.size() == 0) continue;
+        SonolusServerPlugin* plugin = providers[0]->create();
+        string platformVersion = plugin->onPluginPlatformVersion();
+        if (platformVersion == sonolus_server_version) {
+            delete plugin;
+            continue;
+        }
+        cout << "    ./plugins/" << fileName << "(Expected platform version v" << platformVersion << ")" << endl;
         delete plugin;
     }
 }
@@ -276,9 +304,66 @@ void preload() {
     Sonolus_Version = appConfig["sonolus.version"].asString();
     loadConfig();
     loadDefaultVariable();
+
+    /** 设置HTTP代码解释 */
+    http_code[100] = "Continue";
+    http_code[101] = "Switching Protocols";
+
+    http_code[200] = "OK";
+    http_code[201] = "Created";
+    http_code[202] = "Accepted";
+    http_code[203] = "Non-Authoritative Information";
+    http_code[204] = "No Content";
+    http_code[205] = "Reset Content";
+    http_code[206] = "Partial Content";
+
+    http_code[300] = "Multiple Choices";
+    http_code[301] = "Moved Permanently";
+    http_code[302] = "Found";
+    http_code[303] = "See Other";
+    http_code[304] = "Not Modified";
+    http_code[305] = "Use Proxy";
+    http_code[306] = "Unused";
+    http_code[307] = "Temporary Redirect";
+
+    http_code[400] = "Bad Request";
+    http_code[401] = "Unauthorized";
+    http_code[402] = "Payment Required";
+    http_code[403] = "Forbidden";
+    http_code[404] = "Not Found";
+    http_code[405] = "Method Not Allowed";
+    http_code[406] = "Not Acceptable";
+    http_code[407] = "Proxy Authentication Required";
+    http_code[408] = "Request Time-out";
+    http_code[409] = "Conflict";
+    http_code[410] = "Gone";
+    http_code[411] = "Length Required";
+    http_code[412] = "Precondition Failed";
+    http_code[413] = "Request Entity Too Large";
+    http_code[414] = "Request-URI Too Large";
+    http_code[415] = "Unsupported Media Type";
+    http_code[416] = "Requested range not satisfiable";
+    http_code[417] = "Expectation Failed";
+
+    http_code[500] = "Internal Server Error";
+    http_code[501] = "Not Implemented";
+    http_code[502] = "Bad Gateway";
+    http_code[503] = "Service Unavailable";
+    http_code[504] = "Gateway Time-out";
+    http_code[505] = "HTTP Version not supported";
+    writeLog(LOG_LEVEL_DEBUG, "Successfully initialize HTTP Code!");
+}
+
+void MKDIR(string path, int mode = 0777) {
+    #ifdef __linux__
+    mkdir(path.c_str(), mode);
+    #else
+    _mkdir(path.c_str());
+    #endif
 }
 
 int main(int argc, char** argv) {
+    MKDIR("./data");
     preload();
     loadPlugins();
     initUsage(argv);
