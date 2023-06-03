@@ -1,0 +1,67 @@
+name: build (linux-aarch64)
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+env: 
+  VERSION: ${{ github.ref_name }}
+
+jobs:
+  linux-aarch64-build:
+    runs-on: ubuntu-20.04
+    
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Compile
+        uses: uraimo/run-on-arch-action@v2
+        with:
+          arch: aarch64
+          distro: ubuntu20.04
+          run: |
+            apt update -y
+            apt install sudo git -y
+            git clone --recursive https://github.com/SonolusHaniwa/sonolus-server-cpp sources
+            sudo apt install g++ libjsoncpp-dev libmysqlclient-dev libssl-dev libsqlite3-dev sqlite3 -y
+            g++ --version
+            mkdir packages
+            cd sources
+            g++ main.cpp -o../packages/sonolus -ldl -lmysqlclient -lpthread -lcrypto -lssl -ljsoncpp -lsqlite3 -DENABLE_SQLITE -DENABLE_MYSQL -std=c++14 -O2 -w
+            cd ..
+            mkdir ./packages/plugins
+            cd sources
+            g++ plugins/libsonolush/libsonolush.cpp -o ../packages/plugins/libsonolush.so -ldl -fPIC -shared -lmysqlclient -lpthread -lcrypto -lssl -ljsoncpp -lsqlite3 -std=c++17 -O2 -DENABLE_MYSQL -DENABLE_SQLITE
+            mv plugins/libsonolush ../packages/plugins
+            g++ plugins/libsonolusjs/libsonolusjs.cpp -o ../packages/plugins/libsonolusjs.so -ldl -fPIC -shared -lmysqlclient -lpthread -lcrypto -lssl -ljsoncpp -lsqlite3 -std=c++17 -O2 -DENABLE_MYSQL -DENABLE_SQLITE
+            mv plugins/libsonolusjs ../packages/plugins
+            cd ..
+            mv ./sources/config ./packages/config
+            mv ./sources/i18n ./packages/i18n
+            mkdir ./packages/web
+            mv ./sources/web/css ./packages/web/
+            mv ./sources/web/js ./packages/web/
+            mv ./sources/web/html ./packages/web/
+            mv ./sources/CODE_OF_CONDUCT.md ./packages/
+            mv ./sources/LICENSE.txt ./packages/
+            mv ./sources/README.md ./packages/
+            mv ./sources/README_en.md ./packages/
+            cd packages
+            sed -i 's/"mysql"/"sqlite"/g' ./config/config.json
+            sqlite3 sonolus.db ".read ../data.sql"
+            ./sonolus help
+          
+      - name: Packaging Sonolus Server for Linux aarch64
+        run: |
+          cd packages
+          zip ../sonolus-server-linux-aarch64-${{ env.VERSION }}.zip ./* -r
+          
+      - name: Uploading Sonolus Server for Linux aarch64
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: sonolus-server-linux-aarch64-${{ env.VERSION }}.zip
