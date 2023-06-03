@@ -148,11 +148,10 @@ void getSoFileList(string path, vector<string>& fileList) {
     if ((dir = opendir(path.c_str())) == NULL) return;
     while ((ptr = readdir(dir)) != NULL) {
         if (ptr->d_name[0] == '.') continue;
-        if (ptr->d_type == 8) {
-            string fileName = ptr->d_name;
-            if (fileName.substr(fileName.length() - pluginExt.size(), pluginExt.size()) == pluginExt) {
-                fileList.push_back(fileName);
-            }
+        string fileName = ptr->d_name;
+        if (fileName.size() < pluginExt.size()) continue;
+        if (fileName.substr(fileName.length() - pluginExt.size(), pluginExt.size()) == pluginExt) {
+            fileList.push_back(fileName);
         }
     }
     closedir(dir);
