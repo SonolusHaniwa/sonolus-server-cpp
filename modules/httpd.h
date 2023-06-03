@@ -27,6 +27,8 @@ const std::string httpd_version = "1.0.4";
 // 指定Windows环境下头文件 
 #elif __windows__
 #include<Windows.h>
+#include<direct.h>
+#include<winsock.h>
 // 指定其他环境头文件 
 #else 
 #error("We only support Windows & Linux system! Sorry for that your system wasn't supported!")
