@@ -1,0 +1,98 @@
+name: build (win-x64)
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+  
+env: 
+  VERSION: ${{ github.ref_name }}
+
+jobs:
+  win-x64-build:
+    runs-on: windows-latest
+    
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Preparing Sonolus Server Source Code
+        run: |
+          git clone --recursive https://github.com/SonolusHaniwa/sonolus-server-cpp sources
+            
+      - name: Preparing C/C++ Compiler
+        run: |
+          echo $env:VERSION
+          curl "https://ghproxy.com/https://github.com/LittleYang0531/LittleYang0531/releases/download/g%2B%2B13/windows-x64.zip" -o gcc.zip
+          unzip -q gcc.zip
+      
+      - name: Preparing Chocolately
+        run: |
+          Set-ExecutionPolicy Bypass -Scope Process -Force;
+          [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072;
+          iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+      
+      - name: Checking C/C++ Compiler
+        run: |
+          ./mingw/bin/g++ --version
+        
+      - name: Compiling Sonolus Server for Windows
+        run: |
+          cd sources
+          ../mingw/bin/g++ main.cpp -osonolus -lmysql -lpthread -lcrypto -lssl -lwsock32 -ljson -lsqlite3 -DENABLE_SQLITE -DENABLE_MYSQL -std=c++14 -O2 -w
+      
+      - name: Compiling Plugins
+        run: |
+          mkdir packages
+          mkdir ./packages/plugins
+          cd sources
+          ../mingw/bin/g++ plugins/libsonolush/libsonolush.cpp -o ../packages/plugins/libsonolush.dll -fPIC -shared -lmysql -lpthread -lcrypto -lssl -lwsock32 -ljson -lsqlite3 -std=c++17 -O2 -DENABLE_MYSQL -DENABLE_SQLITE
+          mv plugins/libsonolush ../packages/plugins -Force
+          ../mingw/bin/g++ plugins/libsonolusjs/libsonolusjs.cpp -o ../packages/plugins/libsonolusjs.dll -fPIC -shared -lmysql -lpthread -lcrypto -lssl -lwsock32 -ljson -lsqlite3 -std=c++17 -O2 -DENABLE_MYSQL -DENABLE_SQLITE
+          mv plugins/libsonolusjs ../packages/plugins -Force
+      
+      - name: Preparing Package Environment
+        run: |
+          mv sources/sonolus.exe ./packages
+          cp ./mingw/dll/libcrypto-1_1-x64.dll ./packages
+          cp ./mingw/dll/libmysql.dll ./packages
+          cp ./mingw/dll/libssl-1_1-x64.dll ./packages
+          cp ./mingw/dll/sqlite3.dll ./packages
+          cp ./mingw/bin/libatomic-1.dll ./packages
+          cp ./mingw/bin/libgcc_s_seh-1.dll ./packages
+          cp ./mingw/bin/libgfortran-5.dll ./packages
+          cp ./mingw/bin/libgomp-1.dll ./packages
+          cp ./mingw/bin/libquadmath-0.dll ./packages
+          cp ./mingw/bin/libstdc++-6.dll ./packages
+          cp ./mingw/bin/libwinpthread-1.dll ./packages
+          mv ./sources/config ./packages/config -Force
+          mv ./sources/i18n ./packages/i18n -Force
+          mkdir ./packages/web
+          mv ./sources/web/css ./packages/web/ -Force
+          mv ./sources/web/js ./packages/web/ -Force
+          mv ./sources/web/html ./packages/web/ -Force
+          mv ./sources/CODE_OF_CONDUCT.md ./packages/ -Force
+          mv ./sources/LICENSE.txt ./packages/ -Force
+          mv ./sources/README.md ./packages/ -Force
+          mv ./sources/README_en.md ./packages/ -Force
+          cd packages
+          (Get-Content ./config/config.json) -Replace '"mysql"', '"sqlite"' | Set-Content ./config/config.json
+          choco install sqlite.shell
+          sqlite3 sonolus.db ".read ../data.sql"
+          
+      - name: Checking Sonolus Server for Windows
+        run: |
+          cd packages
+          ./sonolus help
+          
+      - name: Packaging Sonolus Server for Windows
+        run: |
+          Compress-Archive -Path ./packages/* -DestinationPath ./sonolus-server-win-x64-${{ env.VERSION }}.zip
+          
+      - name: Uploading Sonolus Server for Windows
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: sonolus-server-win-x64-${{ env.VERSION }}.zip
