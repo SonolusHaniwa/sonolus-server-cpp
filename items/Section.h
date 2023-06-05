@@ -11,6 +11,7 @@ class Section {
 
     Section(){}
     Section(int pageCount, Search search): pageCount(pageCount), search(search){}
+    Section(int pageCount, vector<T> items, Search search): pageCount(pageCount), items(items), search(search){}
     
     void append(T item) {
         items.push_back(item);

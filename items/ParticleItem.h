@@ -57,7 +57,7 @@ class ParticleItem {
         args["data"] = data.url;
         args["texture"] = texture.url;
         args["url"] = "/particles/" + name;
-        args["sonolus.url"] = "sonolus:" + appConfig["server.rootUrl"].asString() + "/particles/" + name;
+        args["sonolus.url"] = "sonolus://" + appConfig["server.rootUrl"].asString() + "/particles/" + name;
         return args;
     }
 

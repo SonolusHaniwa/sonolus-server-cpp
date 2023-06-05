@@ -1,6 +1,12 @@
 using namespace std;
 
 auto web_skins_create = [](client_conn conn, http_request request, param argv){
+    if (!checkLogin(request)) {
+        putRequest(conn, 401, __default_response);
+        send(conn, "<script>alert('Permission Denied: 401 Unauthorized'); window.history.back(-1);</script>");
+        exitRequest(conn);
+    }
+    
     string header = readFile("./web/html/components/header.html");
     string body = readFile("./web/html/pages/skins_create.html");
     auto cookie = cookieParam(request);
@@ -8,7 +14,7 @@ auto web_skins_create = [](client_conn conn, http_request request, param argv){
 
     // TODO: add the argList here
     argList["page.title"] = argList["language.skinCreate"] + " | " + appConfig["server.title"].asString();
-    argList["html.navbar"] = fetchNavBar(argList["language.skinCreate"]).output();
+    argList["html.navbar"] = fetchNavBar(argList["language.skinCreate"], checkLogin(request)).output();
     argList["html.skinsCreateOption"] = "";
     for (int i = 0; i < SkinCreate.options.size(); i++) {
         auto v = SkinCreate.options[i];

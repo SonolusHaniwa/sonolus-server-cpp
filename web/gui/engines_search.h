@@ -8,7 +8,7 @@ auto web_engines_search = [](client_conn conn, http_request request, param argv)
 
     // TODO: add the argList here
     argList["page.title"] = argList["language.search"] + " | " + appConfig["server.title"].asString();
-    argList["html.navbar"] = fetchNavBar("{{language.search}}").output();
+    argList["html.navbar"] = fetchNavBar("{{language.search}}", checkLogin(request)).output();
     argList["html.enginesSearchOption"] = ""; auto $_GET = getParam(request);
     for (int i = 0; i < EngineSearch.options.size(); i++) {
         auto v = EngineSearch.options[i];

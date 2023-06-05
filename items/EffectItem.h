@@ -57,7 +57,7 @@ class EffectItem {
         args["data"] = data.url;
         args["audio"] = audio.url;
         args["url"] = "/effects/" + name;
-        args["sonolus.url"] = "sonolus:" + appConfig["server.rootUrl"].asString() + "/effects/" + name;
+        args["sonolus.url"] = "sonolus://" + appConfig["server.rootUrl"].asString() + "/effects/" + name;
         return args;
     }
 

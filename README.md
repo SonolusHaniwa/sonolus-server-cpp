@@ -15,6 +15,7 @@
 - [目录](#目录)
 - [链接](#链接)
 - [屏幕截图](#屏幕截图)
+- [安装](#安装)
 - [构建](#构建)
 - [配置信息](#配置信息)
 - [终节点](#终节点)
@@ -22,7 +23,7 @@
 - [提示](#提示)
 - [第三方仓库](#第三方仓库)
 - [插件](#插件)
-- [更新日志](#更新日志)
+- [更新日志](#更新日志) 
 
 ## 链接
 
@@ -37,15 +38,13 @@
 ![](http://pic.littleyang.ml/sonolus-server-screenshot/pic4.png)
 ![](http://pic.littleyang.ml/sonolus-server-screenshot/pic5.png)
 
-<!-- ## 安装
+## 安装
 
-我们提供对 Windows 可执行文件压缩包，内含 MySQL v5.7.37，下载地址: [Latest Release](https://github.com/LittleYang0531/sonolus-server-cpp/releases/latest)
+我们提供各版本的可执行文件压缩包，默认选择 SQLite 数据库。
 
-解压后第一次使用需要**以管理员身份运行**启动菜单里的 `Setup Sonolus Database` 程序，之后就可以启动 `Sonolus Server for Windows` 来启动服务。
+对于 `Windows` 用户，无需配置环境，直接命令行输入 `./main serve` 即可运行。
 
-导入数据需要运行 `Import Sonolus Data` 程序，按照提示输入相关信息即可。
-
-我们并未提供对 Linux 用户的安装包 ~~(都用 Linux 了相信或多或少还是有一点使用终端的基础了吧)~~，请自行参照下方教程进行构建。 -->
+对于 `Linux` 用户，您需要自行准备依赖文件，安装指令见 [下载依赖](#下载依赖)。
 
 ## 构建
 
@@ -303,9 +302,15 @@ string levelSearch(map<string, string> $_GET) {
 
 ## 提示
 
+### 2023.6.5
+
+我们依照了 [sevenc-nanashi/chart_cyanvas](https://github.com/sevenc-nanashi/chart_cyanvas) 的实现原理，实现了使用 Sonolus 用户登录的接口。目前网页的右上部分即为网页的登录入口。
+
+我们重新编写了各环境的自动编译脚本，对于 `Linux` 用户来说新增了预编译版本的可执行文件，而对于 `Windows` 用户来说，我们将安装包变为了包含可执行文件及运行时环境的压缩包。
+
 ### 2023.1.21
 
-对于 Windows 用户，需要首先以管理员身份运行 "Setup Sonolus Database" 程序，然后运行 "Sonolus Server for Windows" 开启服务。
+~~对于 Windows 用户，需要首先以管理员身份运行 "Setup Sonolus Database" 程序，然后运行 "Sonolus Server for Windows" 开启服务。~~
 
 ### 2023.1.19
 
@@ -313,7 +318,7 @@ string levelSearch(map<string, string> $_GET) {
 
 ### 2023.1.18
 
-最近官方 wiki 网站新增了终节点 `/sonolus/authenticate` 以及对象 `UserProfile`，但我不知道该终节点与 Sonolus 应用交互的方法，故本应用中暂时无 `/sonolus/authenticate` 终节点。
+~~最近官方 wiki 网站新增了终节点 `/sonolus/authenticate` 以及对象 `UserProfile`，但我不知道该终节点与 Sonolus 应用交互的方法，故本应用中暂时无 `/sonolus/authenticate` 终节点。~~
 
 ## 第三方仓库
 
@@ -332,10 +337,17 @@ string levelSearch(map<string, string> $_GET) {
 
 ## 更新日志
 
+### v1.4.0 2023.6.5
+
+1. 新增 Sonolus 用户登录接口，并摒弃旧的登录接口。
+2. 修复了部分 Windows 编译问题。
+3. 更新 workflows 脚本。
+
 ### v1.3.0 2023.5.21
 
 1. 新增插件功能。
 2. 允许自定义服务器 Sonolus 版本。
+3. 更新 workflows 脚本。
 
 ### v1.2.3 2023.4.16
 

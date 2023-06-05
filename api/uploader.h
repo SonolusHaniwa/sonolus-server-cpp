@@ -1,5 +1,10 @@
 using namespace std;
 auto uploader = [](client_conn conn, http_request request, param argv){
+    if (!checkLogin(request)) {
+        putRequest(conn, 401, __default_response);
+        send(conn, json_encode(msg[401]));
+        exitRequest(conn);
+    }
     auto $_POST = postParam(request); int len;
     char* filePointerBeg = base64_decode($_POST["file"], len);
     unsigned char* fileSha1 = sha1(filePointerBeg, len);

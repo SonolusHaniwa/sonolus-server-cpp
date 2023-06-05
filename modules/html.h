@@ -57,7 +57,7 @@ H fetchOpenInSonolus(string url) {
     return str_replace(source, args);
 }
 
-H fetchIndexTitle(string createUrl, string searchUrl, string listUrl, string langId) {
+H fetchIndexTitle(string createUrl, string searchUrl, string listUrl, string langId, bool login = false) {
     string source = readFile("./web/html/components/indexTitle.html");
     argvar args;
     args["createUrl"] = createUrl;
@@ -178,7 +178,7 @@ H fetchSearchColor(string query, string name, string def, bool isMargin) {
     return str_replace(source, args);
 }
 
-H fetchNavBar(string title) {
+H fetchNavBar(string title, bool login = false) {
     string navSource = readFile("./web/html/components/navbar.html");
     string langSource = readFile("./web/html/components/language.html");
     string htmlLangList = "";
@@ -190,7 +190,11 @@ H fetchNavBar(string title) {
     } argvar args;
     args["title"] = title;
     args["html.language"] = htmlLangList;
-    args["html.password"] = fetchSearchText("password", "Password", "Enter admin password...", "", false).output();
+    string code = "123456";
+    args["html.login"] = fetchSearchText("code", "Code", code, code, false).output();
+    args["login.open_in_sonolus"] = fetchOpenInSonolus("sonolus://" + appConfig["server.rootUrl"].asString() + "/auth/sonolus/levels/" + code).output();
+    args["args.login"] = login ? "block" : "none";
+    args["args.visitor"] = login ? "none" : "block";
     return str_replace(navSource, args);
 }
 

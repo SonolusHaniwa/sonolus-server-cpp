@@ -79,7 +79,7 @@ class EngineItem {
         args["configuration"] = configuration.url;
         args["rom"] = rom.url;
         args["url"] = "/engines/" + name;
-        args["sonolus.url"] = "sonolus:" + appConfig["server.rootUrl"].asString() + "/engines/" + name;
+        args["sonolus.url"] = "sonolus://" + appConfig["server.rootUrl"].asString() + "/engines/" + name;
         return args;
     }
 

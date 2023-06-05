@@ -15,6 +15,6 @@
     "logSystem.debug": false,
     "logSystem.target": 1,
     "logSystem.targetFile": "./log.txt",
-    "admin.password": 123456,
-    "sonolus.version": "0.6.5"
+    "sonolus.version": "0.6.5",
+    "session.expireTime": 30
 }

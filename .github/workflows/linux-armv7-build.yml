@@ -43,6 +43,7 @@ jobs:
             cd ..
             mv ./sources/config ./packages/config
             mv ./sources/i18n ./packages/i18n
+            mv ./sources/data ./packages/data
             mkdir ./packages/web
             mv ./sources/web/css ./packages/web/
             mv ./sources/web/js ./packages/web/

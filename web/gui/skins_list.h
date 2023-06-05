@@ -11,8 +11,8 @@ auto web_skins_list = [](client_conn conn, http_request request, param argv) {
     if (page < 0) page = 0;
     auto section = skinList(skinFilter($_GET), page * 20 + 1, (page + 1) * 20);
     argList["page.title"] = argList["language.skins"] + " | " + appConfig["server.title"].asString();
-    argList["html.navbar"] = fetchNavBar(argList["language.skins"]).output();
-    string sonolusUrl = "sonolus:" + appConfig["server.rootUrl"].asString() + "/skins/list?" + getStringfy($_GET);
+    argList["html.navbar"] = fetchNavBar(argList["language.skins"], checkLogin(request)).output();
+    string sonolusUrl = "sonolus://" + appConfig["server.rootUrl"].asString() + "/skins/list?" + getStringfy($_GET);
     $_GET["page"] = "0"; string topUrl = "/skins/list?" + getStringfy($_GET);
     $_GET["page"] = to_string(page - 1); string previousUrl = "/skins/list?" + getStringfy($_GET);
     $_GET["page"] = to_string(page + 1); string nextUrl = "/skins/list?" + getStringfy($_GET);

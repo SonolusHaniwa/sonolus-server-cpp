@@ -8,8 +8,8 @@ auto web_index = [](client_conn conn, http_request request, param argv) {
 
     // TODO: add the argList here
     argList["page.title"] = appConfig["server.title"].asString();
-    argList["html.navbar"] = fetchNavBar(appConfig["server.title"].asString()).output();
-    argList["html.open_in_sonolus"] = fetchOpenInSonolus("sonolus:" + appConfig["server.rootUrl"].asString()).output();
+    argList["html.navbar"] = fetchNavBar(appConfig["server.title"].asString(), checkLogin(request)).output();
+    argList["html.open_in_sonolus"] = fetchOpenInSonolus("sonolus://" + appConfig["server.rootUrl"].asString()).output();
 
     argList["html.levelsTitle"] = fetchIndexTitle("/levels/create", "/levels/search", "/levels/list", "levels").output();
     Section<LevelItem> levels = levelList("", 1, 5);

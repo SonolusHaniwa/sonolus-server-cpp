@@ -11,8 +11,8 @@ auto web_levels_list = [](client_conn conn, http_request request, param argv) {
     if (page < 0) page = 0;
     auto section = levelList(levelFilter($_GET), page * 20 + 1, (page + 1) * 20);
     argList["page.title"] = argList["language.levels"] + " | " + appConfig["server.title"].asString();
-    argList["html.navbar"] = fetchNavBar(argList["language.levels"]).output();
-    string sonolusUrl = "sonolus:" + appConfig["server.rootUrl"].asString() + "/levels/list?" + getStringfy($_GET);
+    argList["html.navbar"] = fetchNavBar(argList["language.levels"], checkLogin(request)).output();
+    string sonolusUrl = "sonolus://" + appConfig["server.rootUrl"].asString() + "/levels/list?" + getStringfy($_GET);
     $_GET["page"] = "0"; string topUrl = "/levels/list?" + getStringfy($_GET);
     $_GET["page"] = to_string(page - 1); string previousUrl = "/levels/list?" + getStringfy($_GET);
     $_GET["page"] = to_string(page + 1); string nextUrl = "/levels/list?" + getStringfy($_GET);

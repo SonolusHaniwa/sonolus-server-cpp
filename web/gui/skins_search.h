@@ -8,7 +8,7 @@ auto web_skins_search = [](client_conn conn, http_request request, param argv) {
 
     // TODO: add the argList here
     argList["page.title"] = argList["language.search"] + " | " + appConfig["server.title"].asString();
-    argList["html.navbar"] = fetchNavBar("{{language.search}}").output();
+    argList["html.navbar"] = fetchNavBar("{{language.search}}", checkLogin(request)).output();
     argList["html.skinsSearchOption"] = ""; auto $_GET = getParam(request);
     for (int i = 0; i < SkinSearch.options.size(); i++) {
         auto v = SkinSearch.options[i];

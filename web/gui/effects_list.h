@@ -11,8 +11,8 @@ auto web_effects_list = [](client_conn conn, http_request request, param argv) {
     if (page < 0) page = 0;
     auto section = effectList(effectFilter($_GET), page * 20 + 1, (page + 1) * 20);
     argList["page.title"] = argList["language.effects"] + " | " + appConfig["server.title"].asString();
-    argList["html.navbar"] = fetchNavBar(argList["language.effects"]).output();
-    string sonolusUrl = "sonolus:" + appConfig["server.rootUrl"].asString() + "/effects/list?" + getStringfy($_GET);
+    argList["html.navbar"] = fetchNavBar(argList["language.effects"], checkLogin(request)).output();
+    string sonolusUrl = "sonolus://" + appConfig["server.rootUrl"].asString() + "/effects/list?" + getStringfy($_GET);
     $_GET["page"] = "0"; string topUrl = "/effects/list?" + getStringfy($_GET);
     $_GET["page"] = to_string(page - 1); string previousUrl = "/effects/list?" + getStringfy($_GET);
     $_GET["page"] = to_string(page + 1); string nextUrl = "/effects/list?" + getStringfy($_GET);

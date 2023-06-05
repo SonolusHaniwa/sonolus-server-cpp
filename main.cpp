@@ -20,6 +20,7 @@ int exportEngineId[] = {};
 #include"web/import.h"
 #include"modules/import.h"
 #include"modules/export.h"
+#include"auth/auth.h"
 using namespace std;
 
 pluma::Pluma plugins;
@@ -108,6 +109,13 @@ void routerRegister(int argc, char** argv) {
     app.addRoute("/effects/%s", web_effects);
     app.addRoute("/particles/%s", web_particles);
     app.addRoute("/engines/%s", web_engines);
+    app.addRoute("/login", web_login);
+
+    app.addRoute("/auth/data/%s", downloader);
+    app.addRoute("/auth/sonolus/info", auth_sonolus_info);
+    app.addRoute("/auth/sonolus/levels/list", auth_sonolus_list);
+    app.addRoute("/auth/sonolus/levels/%s", auth_sonolus_levels);
+    app.addRoute("/auth/sonolus/authenticate", auth_sonolus_authenticate);
 
     app.addRoute("/uploader", uploader);
 
@@ -350,7 +358,7 @@ void preload() {
     http_code[503] = "Service Unavailable";
     http_code[504] = "Gateway Time-out";
     http_code[505] = "HTTP Version not supported";
-    writeLog(LOG_LEVEL_DEBUG, "Successfully initialize HTTP Code!");
+    // writeLog(LOG_LEVEL_DEBUG, "Successfully initialize HTTP Code!");
 }
 
 void MKDIR(string path, int mode = 0777) {

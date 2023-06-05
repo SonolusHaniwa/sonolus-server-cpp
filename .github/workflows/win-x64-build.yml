@@ -69,6 +69,7 @@ jobs:
           cp ./mingw/bin/libwinpthread-1.dll ./packages
           mv ./sources/config ./packages/config -Force
           mv ./sources/i18n ./packages/i18n -Force
+          mv ./sources/data ./packages/data -Force
           mkdir ./packages/web
           mv ./sources/web/css ./packages/web/ -Force
           mv ./sources/web/js ./packages/web/ -Force

@@ -15,6 +15,7 @@ Use httpd core developed by myself, which also support you to build HTTPS server
 - [Catalog](#Catalog)
 - [Links](#Links)
 - [Screenshots](#Screenshots)
+- [Install](#Install)
 - [Building](#Building)
 - [Configuration](#Configuration)
 - [Endpoints](#Endpoints)
@@ -37,15 +38,13 @@ Use httpd core developed by myself, which also support you to build HTTPS server
 ![](http://pic.littleyang.ml/sonolus-server-screenshot/pic4.png)
 ![](http://pic.littleyang.ml/sonolus-server-screenshot/pic5.png)
 
-<!-- ## Install
+## Install
 
-We provide an installation package for Windows users, including MySQL v5.7.37. Download link: [Latest Release](https://github.com/LittleYang0531/sonolus-server-cpp/releases/latest).
+We provide executable file compression packages for each version, with SQLite database selected by default.
 
-The first use after installation requires to run the `Setup Sonolus Database` program in the startup menu **as an administrator**, and then you can run the `Sonolus Server for Windows` to start the service.
+For `Windows` users, there's no need to configure the environment, just enter `./main serve`.
 
-To import data, you need to run the `Import Sonolus Data` program and enter relevant information according to the prompts.
-
-We have not provided the installation package for Linux users. Please refer to the following tutorial to build it. -->
+For `Linux` users, you need to prepare dependencies by yourself. The installation instructions can be found in [Install Dependencies](#Install%20Dependencies).
 
 ## Building
 
@@ -303,9 +302,15 @@ string levelSearch(map<string, string> $_GET) {
 
 ## Tips
 
+### 2023.6.5
+
+Accroding to the implementation of [sevenc-nanashi/chart_cyanvas](https://github.com/sevenc-nanashi/chart_cyanvas), we implemented the interface for logging in using Sonolus users.At present, the upper right part of the webpage is the login entry for the webpage.
+
+We have rewritten the automatic compilation scripts for each environment, adding pre-compiled version of the executable file for `Linux` users. And for `Windows` users, we have changed the installation package to a compressed package containing executable files and runtime environment.
+
 ### 2023.1.21
 
-Windows users need to execute program "Setup Sonolus Database" as administrator firstly, and then execute "Sonolus Server for Windows" to open the service. 
+~~Windows users need to execute program "Setup Sonolus Database" as administrator firstly, and then execute "Sonolus Server for Windows" to open the service. ~~
 
 ### 2023.1.19
 
@@ -313,7 +318,7 @@ If you want set port to `80/443`, you must have the administrator privilege.
 
 ### 2023.1.18
 
-These days, the official wiki website has added an endpoint `/sonolus/authenticate` and an object `UserProfile`, but I couldn't find the interactive way with the Sonolus app. So I didn't add this function into the application.
+~~These days, the official wiki website has added an endpoint `/sonolus/authenticate` and an object `UserProfile`, but I couldn't find the interactive way with the Sonolus app. So I didn't add this function into the application.~~
 
 ## Third-party Repo
 
@@ -332,10 +337,17 @@ These days, the official wiki website has added an endpoint `/sonolus/authentica
 
 ## Upload Log
 
+### v1.4.0 2023.6.5
+
+1. Add a Sonolus user login interface and discard the old login interface.
+2. Fixed some Windows compilation issues.
+3. Update workflows scripts.
+
 ### v1.3.0 2023.5.21
 
 1. Add plugin functionality.
 2. Allow custom Sonolus Server version.
+3. Update workflows scripts.
 
 ### v1.2.3 2023.4.16
 

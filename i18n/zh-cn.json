@@ -27,5 +27,11 @@
     "particleCreate": "创建粒子效果",
     "engineCreate": "创建引擎",
     "createButton": "创建",
-    "savePasswordButton": "保存密码"
+    "savePasswordButton": "保存密码",
+    "loginTitle": "登录 {{server.title}}",
+    "loginSubtitle": "请不要将验证码告诉其他人!",
+    "loginTipTitle": "如何登录?",
+    "loginTipStep1": "1. 添加登录服务器 <code>{{server.auth.url}}</code> 至 Sonolus。",
+    "loginTipStep2": "2. 在登录服务器搜索界面中输入 <code>{{login.code}}</code>。",
+    "loginTipAlternative": "或者，如果您的设备上安装了 Sonolus，您可以通过点击上面的 <code>在 Sonolus 中打开</code> 按钮直接进行登录。"
 }

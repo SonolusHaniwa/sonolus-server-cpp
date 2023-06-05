@@ -6,8 +6,11 @@ auto sonolus_engines_create = [](client_conn conn, http_request request, param a
         send(conn, json_encode(msg[405]));
         exitRequest(conn);
     }
-
-    checkSecret(cookieParam(request)["passwd"], conn);
+    if (!checkLogin(request)) {
+        putRequest(conn, 401, __api_default_response);
+        send(conn, json_encode(msg[401]));
+        exitRequest(conn);
+    }
 
     auto $_POST = postParam(request);
     int id = engineNumber("") + 1;

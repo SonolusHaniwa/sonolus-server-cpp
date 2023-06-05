@@ -109,7 +109,7 @@ class LevelItem {
         args["data"] = data.url;
         args["preview"] = preview.url;
         args["url"] = "/levels/" + name;
-        args["sonolus.url"] = "sonolus:" + appConfig["server.rootUrl"].asString() + "/levels/" + name;
+        args["sonolus.url"] = "sonolus://" + appConfig["server.rootUrl"].asString() + "/levels/" + name;
         return args;
     }
 

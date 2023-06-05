@@ -56,7 +56,7 @@ class SkinItem {
         args["data"] = data.url;
         args["texture"] = texture.url;
         args["url"] = "/skins/" + name;
-        args["sonolus.url"] = "sonolus:" + appConfig["server.rootUrl"].asString() + "/skins/" + name;
+        args["sonolus.url"] = "sonolus://" + appConfig["server.rootUrl"].asString() + "/skins/" + name;
         return args;
     }
 

@@ -8,7 +8,7 @@ auto studios_backgrounds_edit = [](client_conn conn, http_request request, param
 
     // TODO: add the argList here
     argList["page.title"] = argList["language.backgroundCreate"] + " | " + appConfig["server.title"].asString();
-    argList["html.navbar"] = fetchNavBar(argList["language.backgroundCreate"]).output();
+    argList["html.navbar"] = fetchNavBar(argList["language.backgroundCreate"], checkLogin(request)).output();
     argList["html.backgroundsCreateOption"] = "";
     for (int i = 0; i < BackgroundStudios.options.size(); i++) {
         auto v = BackgroundStudios.options[i];

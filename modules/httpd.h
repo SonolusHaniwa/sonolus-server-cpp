@@ -34,6 +34,7 @@ const std::string httpd_version = "1.0.4";
 #error("We only support Windows & Linux system! Sorry for that your system wasn't supported!")
 #endif
 #include<openssl/ssl.h>
+#include<openssl/aes.h>
 #include<openssl/err.h>
 #include<pthread.h>
 using namespace std;

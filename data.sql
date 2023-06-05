@@ -77,40 +77,27 @@ CREATE TABLE Engine (
     configuration text, 
     rom text
 );
-
-CREATE TABLE Studios_Skin (
-    id int,
+CREATE TABLE UserProfile (
+    id text,
+    handle text,
     name text,
-    version int,
-    title text,
-    subtitle text,
-    author text,
-    thumbnail text,
-    interpolation boolean,
-    sprites text
+    avatarForegroundColor text,
+    avatarBackgroundColor text,
+    aboutMe text,
+    socialLinks text,
+    favorites text
 );
-CREATE TABLE Studios_Background (
-    id int,
-    name text,
-    version int,
-    title text,
-    subtitle text,
-    author text,
-    thumbnail text,
-    image text,
-    aspectRadio int,
-    fit text,
-    color text,
-    blur int,
-    mask text
+CREATE TABLE UserSession (
+    id text,
+    aes_key text,
+    aes_iv text,
+    time int
 );
-CREATE TABLE Studios_Effect (
-    id int,
-    name text,
-    version int,
-    title text,
-    subtitle text,
-    author text,
-    thumbnail text,
-    clips text
-);
+CREATE TABLE LoginRequest (
+    code text,
+    session text,
+    time int,
+    userId text,
+    userAgent text,
+    ip text
+)

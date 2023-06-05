@@ -8,7 +8,7 @@ auto studios_index = [](client_conn conn, http_request request, param argv) {
 
     // TODO: add the argList here
     argList["page.title"] = studiosConfig["server.title"].asString();
-    argList["html.navbar"] = fetchNavBar(studiosConfig["server.title"].asString()).output();
+    argList["html.navbar"] = fetchNavBar(studiosConfig["server.title"].asString(), checkLogin(request)).output();
 
     argList["html.skinsTitle"] = fetchIndexTitle("javascript: displayStudiosSkin();", "/studios/skins/search", "/studios/skins/list", "skins").output();
     Section<StudiosSkinItem> skins = studios_skinList("", 1, 5);

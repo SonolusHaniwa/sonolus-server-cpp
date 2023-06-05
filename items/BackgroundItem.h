@@ -61,7 +61,7 @@ class BackgroundItem {
         args["image"] = image.url;
         args["configuration"] = configuration.url;
         args["url"] = "/backgrounds/" + name;
-        args["sonolus.url"] = "sonolus:" + appConfig["server.rootUrl"].asString() + "/backgrounds/" + name;
+        args["sonolus.url"] = "sonolus://" + appConfig["server.rootUrl"].asString() + "/backgrounds/" + name;
         return args;
     }
 

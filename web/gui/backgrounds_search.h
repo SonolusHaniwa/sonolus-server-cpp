@@ -8,7 +8,7 @@ auto web_backgrounds_search = [](client_conn conn, http_request request, param a
 
     // TODO: add the argList here
     argList["page.title"] = argList["language.search"] + " | " + appConfig["server.title"].asString();
-    argList["html.navbar"] = fetchNavBar("{{language.search}}").output();
+    argList["html.navbar"] = fetchNavBar("{{language.search}}", checkLogin(request)).output();
     argList["html.backgroundsSearchOption"] = ""; auto $_GET = getParam(request);
     for (int i = 0; i < BackgroundSearch.options.size(); i++) {
         auto v = BackgroundSearch.options[i];

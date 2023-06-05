@@ -1,6 +1,12 @@
 using namespace std;
 
 auto web_particles_create = [](client_conn conn, http_request request, param argv){
+    if (!checkLogin(request)) {
+        putRequest(conn, 401, __default_response);
+        send(conn, "<script>alert('Permission Denied: 401 Unauthorized'); window.history.back(-1);</script>");
+        exitRequest(conn);
+    }
+    
     string header = readFile("./web/html/components/header.html");
     string body = readFile("./web/html/pages/particles_create.html");
     auto cookie = cookieParam(request);
@@ -8,7 +14,7 @@ auto web_particles_create = [](client_conn conn, http_request request, param arg
 
     // TODO: add the argList here
     argList["page.title"] = argList["language.particleCreate"] + " | " + appConfig["server.title"].asString();
-    argList["html.navbar"] = fetchNavBar(argList["language.particleCreate"]).output();
+    argList["html.navbar"] = fetchNavBar(argList["language.particleCreate"], checkLogin(request)).output();
     argList["html.particlesCreateOption"] = "";
     for (int i = 0; i < ParticleCreate.options.size(); i++) {
         auto v = ParticleCreate.options[i];

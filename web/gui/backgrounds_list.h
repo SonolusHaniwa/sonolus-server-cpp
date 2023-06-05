@@ -11,8 +11,8 @@ auto web_backgrounds_list = [](client_conn conn, http_request request, param arg
     if (page < 0) page = 0;
     auto section = backgroundList(backgroundFilter($_GET), page * 20 + 1, (page + 1) * 20);
     argList["page.title"] = argList["language.backgrounds"] + " | " + appConfig["server.title"].asString();
-    argList["html.navbar"] = fetchNavBar(argList["language.backgrounds"]).output();
-    string sonolusUrl = "sonolus:" + appConfig["server.rootUrl"].asString() + "/backgrounds/list?" + getStringfy($_GET);
+    argList["html.navbar"] = fetchNavBar(argList["language.backgrounds"], checkLogin(request)).output();
+    string sonolusUrl = "sonolus://" + appConfig["server.rootUrl"].asString() + "/backgrounds/list?" + getStringfy($_GET);
     $_GET["page"] = "0"; string topUrl = "/backgrounds/list?" + getStringfy($_GET);
     $_GET["page"] = to_string(page - 1); string previousUrl = "/backgrounds/list?" + getStringfy($_GET);
     $_GET["page"] = to_string(page + 1); string nextUrl = "/backgrounds/list?" + getStringfy($_GET);

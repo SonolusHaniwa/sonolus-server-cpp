@@ -8,7 +8,7 @@ auto web_particles_jump = [](client_conn conn, http_request request, param argv)
 
     // TODO: add the argList here
     argList["page.title"] = argList["language.jumpTitle"] + " | " + appConfig["server.title"].asString();
-    argList["html.navbar"] = fetchNavBar("{{language.jumpTitle}}").output();
+    argList["html.navbar"] = fetchNavBar("{{language.jumpTitle}}", checkLogin(request)).output();
     argList["pages.current"] = to_string(atoi(argv[0].c_str()) + 1);
     argList["url.base"] = "/particles/list?" + getStringfy(getParam(request));
 

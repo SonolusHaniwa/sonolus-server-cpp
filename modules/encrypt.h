@@ -103,4 +103,54 @@ unsigned char* sha1(char* data, int len) {
     return sSHA;
 }
 
+// aes256cbc编码部分
+std::string aes_256_cbc_decode(std::string key, std::string iv, std::string data) {
+    EVP_CIPHER_CTX* ctx = EVP_CIPHER_CTX_new();
+    EVP_CIPHER_CTX_init(ctx);
+    EVP_CIPHER_CTX_set_padding(ctx, 0);
+    EVP_DecryptInit_ex(ctx, EVP_aes_256_cbc(), NULL, (unsigned char*)key.c_str(), (unsigned char*)iv.c_str());
+    int len = data.length();
+    int outlen = len + 32;
+    unsigned char* out = new unsigned char[outlen];
+    EVP_DecryptUpdate(ctx, out, &outlen, (unsigned char*)data.c_str(), len);
+    int tmplen = 0;
+    EVP_DecryptFinal_ex(ctx, out + outlen, &tmplen);
+    EVP_CIPHER_CTX_cleanup(ctx);
+    std::string res = std::string((char*)out, outlen + tmplen);
+    delete[] out;
+    return res;
+}
+
+// rsa-oaep-sha1编码部分
+string rsa_encode(string source, string key) {
+    RSA* rsa = RSA_new();
+    BIO* keybio;
+    keybio = BIO_new_mem_buf((unsigned char*)key.c_str(), -1);
+    rsa = PEM_read_bio_RSA_PUBKEY(keybio, &rsa, NULL, NULL);
+    if (!rsa) {
+        printf("PEM_read_bio_RSA_PUBKEY failed...\n");
+        return "";
+    }
+    int len = RSA_size(rsa);
+    char* pEncode = new char[len + 1];
+    int ret = RSA_public_encrypt(source.length(), (const unsigned char*)source.c_str(), (unsigned char*)pEncode, rsa, RSA_PKCS1_OAEP_PADDING);
+    if (ret >= 0) {
+        cerr << 1 << endl;
+        string strRet = base64_encode(pEncode, ret);
+        delete[] pEncode;
+        RSA_free(rsa);
+        return strRet;
+    }
+    else {
+        delete[] pEncode;
+        RSA_free(rsa);
+        return "";
+    }
+}
+
+// 引号编码
+string quote_encode(string source) {
+    return str_replace("\"", "\\\"", source);
+}
+
 #endif

@@ -27,5 +27,11 @@
     "particleCreate": "Create a Particle",
     "engineCreate": "Create an Engine",
     "createButton": "Create",
-    "savePasswordButton": "Save Password"
+    "savePasswordButton": "Save Password",
+    "loginTitle": "Login to {{server.title}}",
+    "loginSubtitle": "Do not use code by other people!",
+    "loginTipTitle": "How to login?",
+    "loginTipStep1": "1. Register the login server <code>{{server.auth.url}}</code> to Sonolus.",
+    "loginTipStep2": "2. Enter the code <code>{{login.code}}</code> in the login server.",
+    "loginTipAlternative": "Alternatively, if Sonolus was installed on this device, you can login by pressing <code>Open in Sonolus</code> button above."
 }

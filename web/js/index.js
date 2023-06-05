@@ -32,6 +32,13 @@ async function uploader(context) {
             console.log(msg);
             hash = msg["hash"];
             finish = 1;
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+            if (XMLHttpRequest["responseJSON"] != null) alert("Upload Failed, " + XMLHttpRequest["responseJSON"]["msg"]);
+            else alert("Upload Failed, " + XMLHttpRequest["status"] + " " + XMLHttpRequest["statusText"]);
+            e = document.getElementsByClassName("uploader-progress")[0];
+            e.style.opacity = 0;
+            return false;
         }
     });
     while(!finish) await sleep(10);
@@ -86,31 +93,6 @@ async function hideLanguage() {
 function changeLanguage(name) {
     setCookie("lang", name);
     location.href = location.href;
-}
-
-async function displayPassword() {
-    document.getElementById("passwordOptions").style.display = "flex";
-    await sleep(10);
-    document.getElementById("passwordOptions").style.opacity = "1";
-}
-
-async function hidePassword() {
-    var mouseX = window.event.clientX, mouseY = window.event.clientY;
-    var divL = document.getElementById("passwordInline").offsetLeft;
-    var divT = document.getElementById("passwordInline").offsetTop;
-    var divR = document.getElementById("passwordInline").offsetWidth + divL;
-    var divD = document.getElementById("passwordInline").offsetHeight + divT;
-    if (divL <= mouseX && mouseX <= divR && divT <= mouseY && mouseY <= divD) return false;
-    document.getElementById("passwordOptions").style.opacity = "0";
-    await sleep(150);
-    document.getElementById("passwordOptions").style.display = "none";
-}
-
-async function savePassword() {
-    setCookie("passwd", searchConfig["password"]);
-    document.getElementById("passwordOptions").style.opacity = "0";
-    await sleep(150);
-    document.getElementById("passwordOptions").style.display = "none";
 }
 
 async function displayOpenInSonolus(e) {

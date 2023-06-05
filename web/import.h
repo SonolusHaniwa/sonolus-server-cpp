@@ -31,6 +31,7 @@
 #include"./gui/effects_create.h"
 #include"./gui/particles_create.h"
 #include"./gui/engines_create.h"
+#include"./gui/login.h"
 #include"./studios/index.h"
 #include"./studios/backgrounds_edit.h"
 using namespace std;
