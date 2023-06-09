@@ -150,7 +150,7 @@ string rsa_encode(string source, string key) {
 
 // 引号编码
 string quote_encode(string source) {
-    return str_replace("\"", "\\\"", source);
+    return str_replace("\"", "\\\"", str_replace("\n", "\\n", source));
 }
 
 #endif
