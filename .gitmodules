@@ -4,3 +4,6 @@
 [submodule "plugins/libsonolusjs"]
 	path = plugins/libsonolusjs
 	url = https://github.com/SonolusHaniwa/sonolus-server-plugin-libsonolusjs
+[submodule "plugins/libonedrive"]
+	path = plugins/libonedrive
+	url = https://github.com/SonolusHaniwa/sonolus-server-plugin-libonedrive

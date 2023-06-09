@@ -27,7 +27,7 @@ jobs:
             apt update -y
             apt install sudo git -y
             git clone --recursive https://github.com/SonolusHaniwa/sonolus-server-cpp sources
-            sudo apt install g++ libjsoncpp-dev libmysqlclient-dev libssl-dev libsqlite3-dev sqlite3 -y
+            sudo apt install g++ libjsoncpp-dev libmysqlclient-dev libssl-dev libsqlite3-dev sqlite3 libcurl4 -y
             g++ --version
             mkdir packages
             cd sources
@@ -39,6 +39,8 @@ jobs:
             mv plugins/libsonolush ../packages/plugins
             g++ plugins/libsonolusjs/libsonolusjs.cpp -o ../packages/plugins/libsonolusjs.so -ldl -fPIC -shared -lmysqlclient -lpthread -lcrypto -lssl -ljsoncpp -lsqlite3 -std=c++17 -O2 -DENABLE_MYSQL -DENABLE_SQLITE
             mv plugins/libsonolusjs ../packages/plugins
+            g++ plugins/libonedrive/libonedrive.cpp -o ../packages/plugins/libonedrive.so -fPIC -shared -ldl -lmysqlclient -lpthread -lcrypto -lssl -ljsoncpp -lsqlite3 -std=c++17 -lcurl -DENABLE_MYSQL -DENABLE_SQLITE
+            mv plugins/libonedrive ../packages/plugins
             cd ..
             mv ./sources/config ./packages/config
             mv ./sources/i18n ./packages/i18n
@@ -54,6 +56,7 @@ jobs:
             cd packages
             sed -i 's/"mysql"/"sqlite"/g' ./config/config.json
             sqlite3 sonolus.db ".read ../data.sql"
+            ./sonolus plugin disable libonedrive
             ./sonolus help
           
       - name: Packaging Sonolus Server for Linux aarch64

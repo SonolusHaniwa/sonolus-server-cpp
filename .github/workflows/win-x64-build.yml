@@ -52,6 +52,8 @@ jobs:
           mv plugins/libsonolush ../packages/plugins -Force
           ../mingw/bin/g++ plugins/libsonolusjs/libsonolusjs.cpp -o ../packages/plugins/libsonolusjs.dll -fPIC -shared -lmysql -lpthread -lcrypto -lssl -lwsock32 -ljson -lsqlite3 -std=c++17 -O2 -DENABLE_MYSQL -DENABLE_SQLITE
           mv plugins/libsonolusjs ../packages/plugins -Force
+          ../mingw/bin/g++ plugins/libonedrive/libonedrive.cpp -o ../packages/plugins/libonedrive.dll -fPIC -shared -lmysql -lpthread -lcrypto -lssl -lwsock32 -ljson -lsqlite3 -lcurl -lcurldll -std=c++17 -O2 -DENABLE_MYSQL -DENABLE_SQLITE
+          mv plugins/libonedrive ../packages/plugins -Force
       
       - name: Preparing Package Environment
         run: |
@@ -60,6 +62,7 @@ jobs:
           cp ./mingw/dll/libmysql.dll ./packages
           cp ./mingw/dll/libssl-1_1-x64.dll ./packages
           cp ./mingw/dll/sqlite3.dll ./packages
+          cp ./mingw/dll/libcurl.dll ./packages
           cp ./mingw/bin/libatomic-1.dll ./packages
           cp ./mingw/bin/libgcc_s_seh-1.dll ./packages
           cp ./mingw/bin/libgfortran-5.dll ./packages
@@ -86,6 +89,7 @@ jobs:
       - name: Checking Sonolus Server for Windows
         run: |
           cd packages
+          ./sonolus plugin disable libonedrive
           ./sonolus help
           
       - name: Packaging Sonolus Server for Windows

@@ -334,8 +334,14 @@ If you want set port to `80/443`, you must have the administrator privilege.
 
 - [libsonolush](https://github.com/SonolusHaniwa/sonolus-server-plugin-libsonolush)
 - [libsonolusjs](https://github.com/SonolusHaniwa/sonolus-server-plugin-libsonolusjs)
+- [libonedrive](https://github.com/SonolusHaniwa/sonolus-server-plugin-libonedrive) (Default: Disable)
 
 ## Upload Log
+
+### v1.4.1 2023.6.9
+
+1. Add a OneDrive upload and download interface.
+2. Update workflows script
 
 ### v1.4.0 2023.6.5
 

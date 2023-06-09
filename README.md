@@ -334,8 +334,14 @@ string levelSearch(map<string, string> $_GET) {
 
 - [libsonolush](https://github.com/SonolusHaniwa/sonolus-server-plugin-libsonolush)
 - [libsonolusjs](https://github.com/SonolusHaniwa/sonolus-server-plugin-libsonolusjs)
+- [libonedrive](https://github.com/SonolusHaniwa/sonolus-server-plugin-libonedrive) (Default: Disable)
 
 ## 更新日志
+
+### v1.4.1 2023.6.9
+
+1. 新增 OneDrive 上传与下载接口。
+2. 更新 workflows 脚本
 
 ### v1.4.0 2023.6.5
 
