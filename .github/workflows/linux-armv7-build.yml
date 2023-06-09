@@ -28,7 +28,7 @@ jobs:
             apt update -y
             apt install sudo git -y
             git clone --recursive https://github.com/SonolusHaniwa/sonolus-server-cpp sources
-            sudo apt install g++ libjsoncpp-dev libmysqlclient-dev libssl-dev libsqlite3-dev sqlite3 libcurl4 -y
+            sudo apt install g++ libjsoncpp-dev libmysqlclient-dev libssl-dev libsqlite3-dev sqlite3 libcurl4-openssl-dev -y
             g++ --version
             mkdir packages
             cd sources

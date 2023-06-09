@@ -25,7 +25,7 @@ jobs:
             
       - name: Preparing C/C++ Compiler
         run: |
-          sudo apt install g++ libjsoncpp-dev libmysqlclient-dev libssl-dev libsqlite3-dev sqlite3 libcurl4 -y
+          sudo apt install g++ libjsoncpp-dev libmysqlclient-dev libssl-dev libsqlite3-dev sqlite3 libcurl4-openssl-dev -y
       
       - name: Checking C/C++ Compiler
         run: |
