@@ -1,8 +1,9 @@
 #include<bits/stdc++.h>
+using namespace std;
 #include<jsoncpp/json/json.h>
 
-std::string sonolus_server_version = "1.3.0";
-std::string Sonolus_Version = "0.6.5";
+std::string sonolus_server_version = "1.4.2";
+std::string Sonolus_Version = "0.7.0";
 Json::Value appConfig, studiosConfig;
 Json::Value i18n, i18n_raw;
 Json::Value enableListJson;
@@ -13,21 +14,35 @@ int exportEffectId[] = {};
 int exportParticleId[] = {};
 int exportEngineId[] = {};
 
+int levelVersion = 1;
+int skinVersion = 3;
+int backgroundVersion = 2;
+int effectVersion = 5;
+int particleVersion = 2;
+int engineVersion = 8;
+
+vector<string> levelVersionList = {"0.0.0"};
+vector<string> skinVersionList = {"0.0.0", "0.5.8", "0.7.0"};
+vector<string> backgroundVersionList = {"0.0.0", "0.5.8"};
+vector<string> effectVersionList = {"0.0.0", "0.5.8", "0.6.0", "0.6.4", "0.7.0"};
+vector<string> particleVersionList = {"0.0.0", "0.7.0"};
+vector<string> engineVersionList = {"0.0.0", "0.0.0", "0.0.0", "0.5.8", "0.5.13", "0.6.0", "0.6.4", "0.7.0"};
+
 #include"modules/modules.h"
 #include"items/Items.h"
-#include"sonolus/sonolus.h"
-#include"api/import.h"
 #include"web/import.h"
 #include"modules/import.h"
 #include"modules/export.h"
-#include"auth/auth.h"
-using namespace std;
 
 pluma::Pluma plugins;
 vector<SonolusServerPluginProvider*> providers;
 stringstream usage;
 
 void initUsage(char** argv) {
+    usage << "Sonolus Server v" << sonolus_server_version << " (WebServer Core v" << httpd_version << ")" << endl;
+    usage << "The highest supported version of Sonolus: " << Sonolus_Version << endl;
+    usage << "Copyright (c) 2023 LittleYang0531, all rights reserved." << endl;
+    usage << endl;
     usage << "Usage: " << argv[0] << " [command]" << endl;
     usage << "commands: " << endl;
     usage << "    help: " << argv[0] << " help" << endl;
@@ -39,7 +54,10 @@ void initUsage(char** argv) {
     usage << "Plugin commands: " << endl;
     for (int i = 0; i < providers.size(); i++) {
         SonolusServerPlugin* plugin = providers[i]->create();
-        vector<string> res = plugin->onPluginHelp(argv);
+        if (plugin->onPluginPlatformVersion() != sonolus_server_version) {
+            delete plugin;
+            continue;
+        } vector<string> res = plugin->onPluginHelp(argv);
         for (int j = 0; j < res.size(); j++) usage << "    " << res[j] << endl;
         delete plugin;
     }
@@ -121,7 +139,10 @@ void routerRegister(int argc, char** argv) {
 
     for (int i = 0; i < providers.size(); i++) {
         SonolusServerPlugin* plugin = providers[i]->create();
-        plugin->onPluginRouter(argc, argv, &app);
+        if (plugin->onPluginPlatformVersion() != sonolus_server_version) {
+            delete plugin;
+            continue;
+        } plugin->onPluginRouter(argc, argv, &app);
         delete plugin;
     }
 }
@@ -204,8 +225,7 @@ void listPlugin() {
         if (platformVersion != sonolus_server_version) {
             delete plugin;
             continue;
-        }
-        cout << "    " << plugin->onPluginName() << " v" << plugin->onPluginVersion() << " (Loaded from \"./plugins/" << fileName << "\")" << endl;
+        } cout << "    " << plugin->onPluginName() << " v" << plugin->onPluginVersion() << " (Loaded from \"./plugins/" << fileName << "\")" << endl;
         delete plugin;
     }
     cout << "Disabled Plugins:" << endl;
@@ -223,8 +243,7 @@ void listPlugin() {
         if (platformVersion != sonolus_server_version) {
             delete plugin;
             continue;
-        }
-        cout << "    " << plugin->onPluginName() << " v" << plugin->onPluginVersion() << " (Source from \"./plugins/" << fileName << "\")" << endl;
+        } cout << "    " << plugin->onPluginName() << " v" << plugin->onPluginVersion() << " (Source from \"./plugins/" << fileName << "\")" << endl;
         delete plugin;
     }
     cout << "Unsuitable Plugins:" << endl;
@@ -241,8 +260,7 @@ void listPlugin() {
         if (platformVersion == sonolus_server_version) {
             delete plugin;
             continue;
-        }
-        cout << "    ./plugins/" << fileName << "(Expected platform version v" << platformVersion << ")" << endl;
+        } cout << "    ./plugins/" << fileName << "(Expected platform version v" << platformVersion << ")" << endl;
         delete plugin;
     }
 }
@@ -359,6 +377,14 @@ void preload() {
     http_code[504] = "Gateway Time-out";
     http_code[505] = "HTTP Version not supported";
     // writeLog(LOG_LEVEL_DEBUG, "Successfully initialize HTTP Code!");
+
+    // 适配 Resource Version
+    levelVersion = lower_bound(levelVersionList.begin(), levelVersionList.end(), Sonolus_Version) - levelVersionList.begin() + 1;
+    skinVersion = lower_bound(skinVersionList.begin(), skinVersionList.end(), Sonolus_Version) - skinVersionList.begin() + 1;
+    backgroundVersion = lower_bound(backgroundVersionList.begin(), backgroundVersionList.end(), Sonolus_Version) - backgroundVersionList.begin() + 1;
+    effectVersion = lower_bound(effectVersionList.begin(), effectVersionList.end(), Sonolus_Version) - effectVersionList.begin() + 1;
+    particleVersion = lower_bound(particleVersionList.begin(), particleVersionList.end(), Sonolus_Version) - particleVersionList.begin() + 1;
+    engineVersion = lower_bound(engineVersionList.begin(), engineVersionList.end(), Sonolus_Version) - engineVersionList.begin() + 1;
 }
 
 void MKDIR(string path, int mode = 0777) {
@@ -417,7 +443,10 @@ int main(int argc, char** argv) {
     } 
     for (int i = 0; i < providers.size(); i++) {
         SonolusServerPlugin* plugin = providers[i]->create();
-        plugin->onPluginRunner(argc, argv);
+        if (plugin->onPluginPlatformVersion() != sonolus_server_version) {
+            delete plugin;
+            continue;
+        } plugin->onPluginRunner(argc, argv);
         delete plugin;
     }
     invalidUsage();

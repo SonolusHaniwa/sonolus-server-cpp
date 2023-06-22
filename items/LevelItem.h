@@ -30,7 +30,7 @@ class LevelItem {
 
     int id;
     string name;
-    int version = 1;
+    int version = levelVersion;
     int rating;
     string title;
     string artists;

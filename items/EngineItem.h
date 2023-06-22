@@ -8,7 +8,7 @@ class EngineItem {
 
     int id;
     string name;
-    int version = 7;
+    int version = engineVersion;
     string title;
     string subtitle;
     string author;

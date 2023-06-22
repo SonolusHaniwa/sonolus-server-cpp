@@ -15,6 +15,6 @@
     "logSystem.debug": false,
     "logSystem.target": 1,
     "logSystem.targetFile": "./log.txt",
-    "sonolus.version": "0.6.5",
+    "sonolus.version": "0.7.0",
     "session.expireTime": 30
 }

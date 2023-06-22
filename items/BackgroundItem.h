@@ -8,7 +8,7 @@ class BackgroundItem {
 
     int id;
     string name;
-    int version = 2;
+    int version = backgroundVersion;
     string title;
     string subtitle;
     string author;

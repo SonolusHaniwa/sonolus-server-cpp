@@ -8,7 +8,7 @@ class ParticleItem {
 
     int id;
     string name;
-    int version = 1;
+    int version = particleVersion;
     string title;
     string subtitle;
     string author;

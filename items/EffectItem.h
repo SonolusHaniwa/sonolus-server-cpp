@@ -8,7 +8,7 @@ class EffectItem {
 
     int id;
     string name;
-    int version = 4;
+    int version = effectVersion;
     string title;
     string subtitle;
     string author;
