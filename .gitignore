@@ -9,8 +9,8 @@ main
 make
 sonolus-server.zip
 items/UserProfile.h
-bandori.bin
 sonolus.*
+bandori.bin
 sonolus-hwpl-engine
 sonolus-pjsekai-engine
 hwpl
@@ -23,3 +23,4 @@ plugins/enableList.json
 !data/18d418a036faf35bbd17c9d265a782e32723356c
 !data/9d364cdf72de5709f16eae90e1be7f023946f007
 !data/0273968035abcd9bfe8f6b8fa913bb356dd202f2
+!web/sonolus/sonolus.h

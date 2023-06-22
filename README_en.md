@@ -99,12 +99,12 @@ Take Bandori's data package `bandori.bin` as an example.
 ./main import bandori.bin
 ```
 
-We provide data package download of all official engines: [Data Packages for v1.1.1+](https://github.com/LittleYang0531/sonolus-server-cpp/releases/tag/data)
+We provide data package download of all official engines: [Data Packages for v1.2.1+](https://github.com/LittleYang0531/sonolus-server-cpp/releases/tag/v1.2.1-data)
 
 ### Run
 
 ```bash
-./main
+./main serve
 ```
 
 ### Export Data
