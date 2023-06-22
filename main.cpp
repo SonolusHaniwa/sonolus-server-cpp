@@ -379,12 +379,12 @@ void preload() {
     // writeLog(LOG_LEVEL_DEBUG, "Successfully initialize HTTP Code!");
 
     // 适配 Resource Version
-    levelVersion = lower_bound(levelVersionList.begin(), levelVersionList.end(), Sonolus_Version) - levelVersionList.begin() + 1;
-    skinVersion = lower_bound(skinVersionList.begin(), skinVersionList.end(), Sonolus_Version) - skinVersionList.begin() + 1;
-    backgroundVersion = lower_bound(backgroundVersionList.begin(), backgroundVersionList.end(), Sonolus_Version) - backgroundVersionList.begin() + 1;
-    effectVersion = lower_bound(effectVersionList.begin(), effectVersionList.end(), Sonolus_Version) - effectVersionList.begin() + 1;
-    particleVersion = lower_bound(particleVersionList.begin(), particleVersionList.end(), Sonolus_Version) - particleVersionList.begin() + 1;
-    engineVersion = lower_bound(engineVersionList.begin(), engineVersionList.end(), Sonolus_Version) - engineVersionList.begin() + 1;
+    levelVersion = upper_bound(levelVersionList.begin(), levelVersionList.end(), Sonolus_Version) - levelVersionList.begin();
+    skinVersion = upper_bound(skinVersionList.begin(), skinVersionList.end(), Sonolus_Version) - skinVersionList.begin();
+    backgroundVersion = upper_bound(backgroundVersionList.begin(), backgroundVersionList.end(), Sonolus_Version) - backgroundVersionList.begin();
+    effectVersion = upper_bound(effectVersionList.begin(), effectVersionList.end(), Sonolus_Version) - effectVersionList.begin();
+    particleVersion = upper_bound(particleVersionList.begin(), particleVersionList.end(), Sonolus_Version) - particleVersionList.begin();
+    engineVersion = upper_bound(engineVersionList.begin(), engineVersionList.end(), Sonolus_Version) - engineVersionList.begin();
 }
 
 void MKDIR(string path, int mode = 0777) {
