@@ -71,26 +71,3 @@ auto auth_sonolus_levels = [](client_conn conn, http_request request, param argv
     send(conn, json_encode(val));
     exitRequest(conn);
 };
-
-/*
-{
-    "address" : "http://192.168.0.102:8080/auth",
-    "userProfile" : 
-    {
-        "aboutMe" : "A sonolus api website developer\nproject address: https://github.com/LittleYang0531/sonolus-server-cpp",
-        "avatarBackgroundColor" : "#000020ff",
-        "avatarForegroundColor" : "#ffffffff",
-        "favorites" : [],
-        "handle" : "84718",
-        "id" : "398d54edc7f22aab8934cf020a7cb0cdaa6532f3c6b4e0e3a043eb2d89633ba0",
-        "name" : "LittleYang0531",
-        "socialLinks" : 
-        [
-            {
-                "address" : "https://github.com/LittleYang0531/sonolus-server-cpp",
-                "title" : "Sonolus Server"
-            }
-        ]
-    }
-}
-*/

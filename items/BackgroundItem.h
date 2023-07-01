@@ -113,13 +113,19 @@ string backgroundFilter(argvar arg) {
 int backgroundCreate(BackgroundItem item) {
     stringstream sqlbuffer;
     auto res = (new DB_Controller)->query("SELECT id FROM Background WHERE name = \"" + item.name + "\"");
-    if (res.size() != 0) return 0;
-    int id = atoi((new DB_Controller)->query("SELECT COUNT(*) AS sum FROM Background;")[0]["sum"].c_str()) + 1;
-    sqlbuffer << "INSERT INTO Background (id, name, version, title, subtitle, author, thumbnail, data, image, configuration) VALUES (";
-    sqlbuffer << id << ", \"" << item.name << "\", " << item.version << ", \"" << item.title << "\", ";
-    sqlbuffer << "\"" << item.subtitle << "\", \"" << item.author << "\", \"" << item.thumbnail.hash << "\", ";
-    sqlbuffer << "\"" << item.data.hash << "\", \"" << item.image.hash << "\", \"" << item.configuration.hash << "\");";
-    return (new DB_Controller)->execute(sqlbuffer.str());
+    if (res.size() != 0) {
+        int id = atoi(res[0]["id"].c_str());
+        sqlbuffer << "UPDATE Background SET name = \"" << item.name << "\", version = " << item.version << ", title = \"" << item.title << "\", ";
+        sqlbuffer << "subtitle = \"" << item.subtitle << "\", author = \"" << item.author << "\", thumbnail = \"" << item.thumbnail.hash << "\", ";
+        sqlbuffer << "data = \"" << item.data.hash << "\", image = \"" << item.image.hash << "\", configuration = \"" << item.configuration.hash << "\" ";
+        sqlbuffer << "WHERE id = " << id << ";";
+    } else {
+        int id = atoi((new DB_Controller)->query("SELECT COUNT(*) AS sum FROM Background;")[0]["sum"].c_str()) + 1;
+        sqlbuffer << "INSERT INTO Background (id, name, version, title, subtitle, author, thumbnail, data, image, configuration) VALUES (";
+        sqlbuffer << id << ", \"" << item.name << "\", " << item.version << ", \"" << item.title << "\", ";
+        sqlbuffer << "\"" << item.subtitle << "\", \"" << item.author << "\", \"" << item.thumbnail.hash << "\", ";
+        sqlbuffer << "\"" << item.data.hash << "\", \"" << item.image.hash << "\", \"" << item.configuration.hash << "\");";
+    } return (new DB_Controller)->execute(sqlbuffer.str());
 }
 
 #endif

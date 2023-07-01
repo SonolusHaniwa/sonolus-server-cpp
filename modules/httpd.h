@@ -89,7 +89,7 @@ void __writeLog(LOG_LEVEL loglevel, string fileName, int lineNumber, string dat)
     if (!isDebug && loglevel == LOG_LEVEL_DEBUG) return;
 
     /** 获取当前时间 */
-    stringstream buffer;
+    stringstream buffer, buffer2;
 	time_t timep = time(&timep);
     char tmp[1024] = "";
     strftime(tmp, sizeof(tmp), "%Y-%m-%d %H:%M:%S", localtime(&timep));
@@ -114,10 +114,15 @@ void __writeLog(LOG_LEVEL loglevel, string fileName, int lineNumber, string dat)
     #endif
 
     /** 输出日志 */
+    if (loglevel == LOG_LEVEL_ERROR) buffer << "\e[31m";
+    else if (loglevel == LOG_LEVEL_WARNING) buffer << "\e[33m";
+    else buffer << "\e[97m";
     buffer << "[" << tmp << "] [" << level_str << "] [tid:" << tid << "] [" << fileName << ":" << lineNumber << "] " << dat;
+    buffer2 << "[" << tmp << "] [" << level_str << "] [tid:" << tid << "] [" << fileName << ":" << lineNumber << "] " << dat;
+    buffer << "\e[0m";
     pthread_mutex_lock(&g_mutex_lock);
     if (target_id & LOG_TARGET_CONSOLE) cout << buffer.str() << endl;
-    if (target_id & LOG_TARGET_FILE) log_fout << buffer.str() << endl;
+    if (target_id & LOG_TARGET_FILE) log_fout << buffer2.str() << endl;
     pthread_mutex_unlock(&g_mutex_lock);
 }
 

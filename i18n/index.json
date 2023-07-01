@@ -7,5 +7,9 @@
         "name": "en-us",
         "title": "English (United States)",
         "path": "./i18n/en-us.json"
-    }
+    },{
+        "name": "ja-jp",
+        "title": "日本語 (Japanese)",
+        "path": "./i18n/ja-jp.json"
+    } 
 ]

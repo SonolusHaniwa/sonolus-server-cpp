@@ -108,13 +108,20 @@ string effectFilter(argvar arg) {
 int effectCreate(EffectItem item) {
     stringstream sqlbuffer;
     auto res = (new DB_Controller)->query("SELECT id FROM Effect WHERE name = \"" + item.name + "\"");
-    if (res.size() != 0) return 0;
-    int id = atoi((new DB_Controller)->query("SELECT COUNT(*) AS sum FROM Effect;")[0]["sum"].c_str()) + 1;
-    sqlbuffer << "INSERT INTO Effect (id, name, version, title, subtitle, author, thumbnail, data, audio) VALUES (";
-    sqlbuffer << id << ", \"" << item.name << "\", " << item.version << ", \"" << item.title << "\", ";
-    sqlbuffer << "\"" << item.subtitle << "\", \"" << item.author << "\", \"" << item.thumbnail.hash << "\", ";
-    sqlbuffer << "\"" << item.data.hash << "\", \"" << item.audio.hash << "\")";
-    return (new DB_Controller)->execute(sqlbuffer.str());
+    if (res.size() != 0) {
+        int id = atoi(res[0]["id"].c_str());
+        sqlbuffer << "UPDATE Effect SET name = \"" << item.name << "\", version = " << item.version << ", ";
+        sqlbuffer << "title = \"" << item.title << "\", subtitle = \"" << item.subtitle << "\", ";
+        sqlbuffer << "author = \"" << item.author << "\", thumbnail = \"" << item.thumbnail.hash << "\", ";
+        sqlbuffer << "data = \"" << item.data.hash << "\", audio = \"" << item.audio.hash << "\" ";
+        sqlbuffer << "WHERE id = " << id;
+    } else {
+        int id = atoi((new DB_Controller)->query("SELECT COUNT(*) AS sum FROM Effect;")[0]["sum"].c_str()) + 1;
+        sqlbuffer << "INSERT INTO Effect (id, name, version, title, subtitle, author, thumbnail, data, audio) VALUES (";
+        sqlbuffer << id << ", \"" << item.name << "\", " << item.version << ", \"" << item.title << "\", ";
+        sqlbuffer << "\"" << item.subtitle << "\", \"" << item.author << "\", \"" << item.thumbnail.hash << "\", ";
+        sqlbuffer << "\"" << item.data.hash << "\", \"" << item.audio.hash << "\")";
+    } return (new DB_Controller)->execute(sqlbuffer.str());
 }
 
 #endif

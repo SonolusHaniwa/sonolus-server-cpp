@@ -107,12 +107,18 @@ string skinFilter(argvar arg) {
 int skinCreate(SkinItem item) {
     stringstream sqlbuffer;
     auto res = (new DB_Controller)->query("SELECT id FROM Skin WHERE name = \"" + item.name + "\"");
-    if (res.size() != 0) return 0;
-    int id = atoi((new DB_Controller)->query("SELECT COUNT(*) AS sum FROM Skin;")[0]["sum"].c_str()) + 1;
-    sqlbuffer << "INSERT INTO Skin (id, name, version, title, subtitle, author, thumbnail, data, texture) VALUES (";
-    sqlbuffer << id << ", \"" << item.name << "\", " << item.version << ", \"" << item.title << "\", ";
-    sqlbuffer << "\"" << item.subtitle << "\", \"" << item.author << "\", \"" << item.thumbnail.hash << "\", ";
-    sqlbuffer << "\"" << item.data.hash << "\", \"" << item.texture.hash << "\")";
+    if (res.size() > 0) {
+        int id = atoi(res[0]["id"].c_str());
+        sqlbuffer << "UPDATE Skin SET name = \"" << item.name << "\", version = " << item.version << ", title = \"" << item.title << "\", ";
+        sqlbuffer << "subtitle = \"" << item.subtitle << "\", author = \"" << item.author << "\", thumbnail = \"" << item.thumbnail.hash << "\", ";
+        sqlbuffer << "data = \"" << item.data.hash << "\", texture = \"" << item.texture.hash << "\" WHERE id = " << id;
+    } else {
+        int id = atoi((new DB_Controller)->query("SELECT COUNT(*) AS sum FROM Skin;")[0]["sum"].c_str()) + 1;
+        sqlbuffer << "INSERT INTO Skin (id, name, version, title, subtitle, author, thumbnail, data, texture) VALUES (";
+        sqlbuffer << id << ", \"" << item.name << "\", " << item.version << ", \"" << item.title << "\", ";
+        sqlbuffer << "\"" << item.subtitle << "\", \"" << item.author << "\", \"" << item.thumbnail.hash << "\", ";
+        sqlbuffer << "\"" << item.data.hash << "\", \"" << item.texture.hash << "\")";
+    }
     return (new DB_Controller)->execute(sqlbuffer.str());
 }
 

@@ -136,19 +136,24 @@ string engineFilter(argvar arg) {
 int engineCreate(EngineItem item, bool strong = false) {
     stringstream sqlbuffer;
     auto res = (new DB_Controller)->query("SELECT id FROM Engine WHERE name = \"" + item.name + "\"");
-    if (res.size() != 0 && !strong) return 0;
-    if (res.size() != 0) (new DB_Controller)->execute("DELETE FROM Engine WHERE name = \"" + item.name + "\"");
-    int id = res.size() ? atoi(res[0]["id"].c_str()) : (atoi((new DB_Controller)->query("SELECT COUNT(*) AS sum FROM Engine;")[0]["sum"].c_str()) + 1);
     int skinId = atoi((new DB_Controller)->query("SELECT id FROM Skin WHERE name = \"" + item.skin.name + "\";")[0]["id"].c_str());
     int backgroundId = atoi((new DB_Controller)->query("SELECT id FROM Background WHERE name = \"" + item.background.name + "\";")[0]["id"].c_str());
     int effectId = atoi((new DB_Controller)->query("SELECT id FROM Effect WHERE name = \"" + item.effect.name + "\";")[0]["id"].c_str());
     int particleId = atoi((new DB_Controller)->query("SELECT id FROM Particle WHERE name = \"" + item.particle.name + "\";")[0]["id"].c_str());
-    sqlbuffer << "INSERT INTO Engine (id, name, version, title, subtitle, author, skin, background, effect, particle, thumbnail, data, configuration, rom) VALUES (";
-    sqlbuffer << id << ", \"" << item.name << "\", " << item.version << ", \"" << item.title << "\", ";
-    sqlbuffer << "\"" << item.subtitle << "\", \"" << item.author << "\", " << skinId << ", " << backgroundId << ", " << effectId << ", " << particleId << ", ";
-    sqlbuffer << "\"" << item.thumbnail.hash << "\", \"" << item.data.hash << "\", \"" << item.configuration.hash << "\", ";
-    sqlbuffer << "\"" << item.rom.hash << "\");";
-    return (new DB_Controller)->execute(sqlbuffer.str());
+    if (res.size() != 0) {
+        int id = atoi(res[0]["id"].c_str());
+        sqlbuffer << "UPDATE Engine SET name = \"" << item.name << "\", version = " << item.version << ", title = \"" << item.title << "\", ";
+        sqlbuffer << "subtitle = \"" << item.subtitle << "\", author = \"" << item.author << "\", skin = " << skinId << ", background = " << backgroundId << ", ";
+        sqlbuffer << "effect = " << effectId << ", particle = " << particleId << ", thumbnail = \"" << item.thumbnail.hash << "\", data = \"" << item.data.hash << "\", ";
+        sqlbuffer << "configuration = \"" << item.configuration.hash << "\", rom = \"" << item.rom.hash << "\" WHERE id = " << id << ";";
+    } else {
+        int id = atoi((new DB_Controller)->query("SELECT COUNT(*) AS sum FROM Engine;")[0]["sum"].c_str()) + 1;
+        sqlbuffer << "INSERT INTO Engine (id, name, version, title, subtitle, author, skin, background, effect, particle, thumbnail, data, configuration, rom) VALUES (";
+        sqlbuffer << id << ", \"" << item.name << "\", " << item.version << ", \"" << item.title << "\", ";
+        sqlbuffer << "\"" << item.subtitle << "\", \"" << item.author << "\", " << skinId << ", " << backgroundId << ", " << effectId << ", " << particleId << ", ";
+        sqlbuffer << "\"" << item.thumbnail.hash << "\", \"" << item.data.hash << "\", \"" << item.configuration.hash << "\", ";
+        sqlbuffer << "\"" << item.rom.hash << "\");";
+    } return (new DB_Controller)->execute(sqlbuffer.str());
 }
 
 #endif
