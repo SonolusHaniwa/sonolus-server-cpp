@@ -49,7 +49,7 @@ void initUsage(char** argv) {
     usage << "Basic commands: " << endl;
     usage << "    help: " << argv[0] << " help" << endl;
     usage << "    serve: " << argv[0] << " serve" << endl;
-    usage << "Import & Export commands :" << endl;
+    usage << "Import & Export commands: " << endl;
     usage << "    import: " << argv[0] << " import [file]" << endl;
     usage << "    export: " << argv[0] << " export <level/skin/background/effect/particle/engine> [name] [file]" << endl;
     usage << "    export remote: " << argv[0] << " export remote [url] [file]" << endl;
