@@ -107,9 +107,7 @@ string formatSize(double size, int precision = 2) {
 }
 
 time_t getMillSeconds() {
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
-    return tv.tv_sec * 1000 + tv.tv_usec / 1000;
+    return chrono::duration_cast<chrono::milliseconds>(chrono::system_clock::now().time_since_epoch()).count();
 }
 
 void exportData(string path) {
