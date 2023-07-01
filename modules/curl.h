@@ -6,6 +6,7 @@ string shortenUrl(string url) {
     return url;
 }
 
+#ifdef ENABLE_CURL
 size_t WriteCallback(void *contents, size_t size, size_t nmemb, void *userp) {
     ((string*)userp)->append((char*)contents, size * nmemb);
     return size * nmemb;
@@ -27,7 +28,9 @@ CURLcode __get_url(string url, string& response) {
     response = readBuffer;
     return res;
 }
+#endif
 int getRemoteFileLength(string url) {
+    #ifdef ENABLE_CURL
     CURL *curl;
     CURLcode res;
     curl = curl_easy_init();
@@ -45,8 +48,13 @@ int getRemoteFileLength(string url) {
     curl_easy_getinfo(curl, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &length);
     curl_easy_cleanup(curl);
     return (int)length;
+    #else
+    writeLog(LOG_LEVEL_ERROR, "This program doesn't support libcurl. You need to compile this program with the option `-DENABLE_CURL -lcurl`.");
+    exit(3);
+    #endif
 }
 string get_url(string url, int retry_time = appConfig["export.retryTime"].asInt()) {
+    #ifdef ENABLE_CURL
     string response;
     CURLcode res = __get_url(url, response);
     while (res != CURLE_OK) {
@@ -59,4 +67,8 @@ string get_url(string url, int retry_time = appConfig["export.retryTime"].asInt(
             return "";
         }
     } return response;
+    #else
+    writeLog(LOG_LEVEL_ERROR, "This program doesn't support libcurl. You need to compile this program with the option `-DENABLE_CURL -lcurl`.");
+    exit(3);
+    #endif
 }

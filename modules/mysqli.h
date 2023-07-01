@@ -53,7 +53,7 @@ class DB_Controller {
 		mysql_free_result(res2); mysql_close(&mysql);
 		return res;
 		#else 
-		writeLog(LOG_LEVEL_ERROR, "This program doesn't support MySQL/MariaDB server. You need to compile this program with the option -DENABLE_MYSQL");
+		writeLog(LOG_LEVEL_ERROR, "This program doesn't support MySQL/MariaDB server. You need to compile this program with the option `-DENABLE_MYSQL -lmysqlclient`");
 		exit(3);
 		#endif
 	}
@@ -70,7 +70,7 @@ class DB_Controller {
 		mysql_close(&mysql);
 		return rows;
 		#else 
-		writeLog(LOG_LEVEL_ERROR, "This program doesn't support MySQL/MariaDB server. You need to compile this program with the option -DENABLE_MYSQL");
+		writeLog(LOG_LEVEL_ERROR, "This program doesn't support MySQL/MariaDB server. You need to compile this program with the option `-DENABLE_MYSQL -lmysqlclient`");
 		exit(3);
 		#endif
 	}
@@ -103,7 +103,7 @@ class DB_Controller {
         sqlite3_close(db);
         return res;
 		#else 
-		writeLog(LOG_LEVEL_ERROR, "This program doesn't support SQLite. You need to compile this program with the option -DENABLE_SQLITE");
+		writeLog(LOG_LEVEL_ERROR, "This program doesn't support SQLite. You need to compile this program with the option `-DENABLE_SQLITE -lsqlite3`");
 		exit(3);
 		#endif
 	}
@@ -129,7 +129,7 @@ class DB_Controller {
         sqlite3_close(db);
 		return sqlite3_changes(db);
 		#else 
-		writeLog(LOG_LEVEL_ERROR, "This program doesn't support SQLite. You need to compile this program with the option -DENABLE_SQLITE");
+		writeLog(LOG_LEVEL_ERROR, "This program doesn't support SQLite. You need to compile this program with the option `-DENABLE_SQLITE -lsqlite3`");
 		exit(3);
 		#endif
     }

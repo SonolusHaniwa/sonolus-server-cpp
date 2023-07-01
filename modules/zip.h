@@ -2,6 +2,7 @@
 using namespace std;
 
 string getFileFromZip(string zipPath, string filePath) {
+    #ifdef ENABLE_ZIP
     zip* z = zip_open(zipPath.c_str(), 0, NULL);
     if (z == NULL) {
         writeLog(LOG_LEVEL_ERROR, "Cannot open zip file.");
@@ -22,4 +23,8 @@ string getFileFromZip(string zipPath, string filePath) {
     string ret = string(contents, st.size);
     delete[] contents;
     return ret;
+    #else
+    writeLog(LOG_LEVEL_ERROR, "This program doesn't support libzip. You need to compile this program with the option `-DENABLE_ZIP -lzip`.");
+	exit(3);
+    #endif
 }
