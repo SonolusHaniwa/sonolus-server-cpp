@@ -25,7 +25,7 @@ jobs:
             
       - name: Preparing C/C++ Compiler
         run: |
-          sudo apt install g++ libjsoncpp-dev libmysqlclient-dev libssl-dev libsqlite3-dev sqlite3 libcurl4-openssl-dev -y
+          sudo apt install g++ libjsoncpp-dev libmysqlclient-dev libssl-dev libsqlite3-dev sqlite3 libcurl4-openssl-dev libzip-dev libcurl4 -y
       
       - name: Checking C/C++ Compiler
         run: |
@@ -35,7 +35,7 @@ jobs:
         run: |
           mkdir packages
           cd sources
-          g++ main.cpp -o../packages/sonolus -ldl -lmysqlclient -lpthread -lcrypto -lssl -ljsoncpp -lsqlite3 -DENABLE_SQLITE -DENABLE_MYSQL -std=c++14 -O2 -w
+          g++ main.cpp -o../packages/sonolus -ldl -lmysqlclient -lpthread -lcrypto -lssl -ljsoncpp -lsqlite3 -DENABLE_SQLITE -DENABLE_MYSQL -std=c++14 -O2 -w -DENABLE_CURL -lcurl -DENABLE_ZIP -lzip
       
       - name: Compiling Plugins
         run: |

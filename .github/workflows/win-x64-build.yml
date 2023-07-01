@@ -41,7 +41,7 @@ jobs:
       - name: Compiling Sonolus Server for Windows
         run: |
           cd sources
-          ../mingw/bin/g++ main.cpp -osonolus -lmysql -lpthread -lcrypto -lssl -lwsock32 -ljson -lsqlite3 -DENABLE_SQLITE -DENABLE_MYSQL -std=c++14 -O2 -w
+          ../mingw/bin/g++ main.cpp -osonolus -lmysql -lpthread -lcrypto -lssl -lwsock32 -ljson -lsqlite3 -DENABLE_SQLITE -DENABLE_MYSQL -std=c++14 -O2 -w -DENABLE_CURL -lcurl -lcurldll -DENABLE_ZIP -lzip "-lzip.dll"
       
       - name: Compiling Plugins
         run: |
@@ -63,6 +63,11 @@ jobs:
           cp ./mingw/dll/libssl-1_1-x64.dll ./packages
           cp ./mingw/dll/sqlite3.dll ./packages
           cp ./mingw/dll/libcurl.dll ./packages
+          cp ./mingw/dll/libbz2-1.dll ./packages
+          cp ./mingw/dll/liblzma-5.dll ./packages
+          cp ./mingw/dll/libzstd.dll ./packages
+          cp ./mingw/dll/libzip.dll ./packages
+          cp ./mingw/dll/zlib1.dll ./packages
           cp ./mingw/bin/libatomic-1.dll ./packages
           cp ./mingw/bin/libgcc_s_seh-1.dll ./packages
           cp ./mingw/bin/libgfortran-5.dll ./packages
