@@ -20,7 +20,10 @@ jobs:
       
       - name: Preparing Sonolus Server Source Code
         run: |
+          git config --global core.autocrlf false
           git clone --recursive https://github.com/SonolusHaniwa/sonolus-server-cpp sources
+          cd sources
+          git checkout ${{ env.VERSION }}
             
       - name: Preparing C/C++ Compiler
         run: |
