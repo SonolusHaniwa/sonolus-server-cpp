@@ -23,7 +23,7 @@ auto sonolus_particles_create = [](client_conn conn, http_request request, param
     string texture = $_POST["texture"];
 
     int raws = particleCreate(ParticleItem(id, name, title, subtitle, author,
-        SRL<ParticleThumbnail>(thumbnail, thumbnail), SRL<ParticleData>(data, data), SRL<ParticleTexture>(texture, texture)));
+        SRL<ParticleThumbnail>(thumbnail, thumbnail), SRL<ParticleData>(data, data), SRL<ParticleTexture>(texture, texture), $_POST["description"]));
     if (raws == 0) putRequest(conn, 400, __api_default_response), send(conn, json_encode(msg[400])), exitRequest(conn);
 
     putRequest(conn, 200, __api_default_response);

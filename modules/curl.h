@@ -1,6 +1,7 @@
 #include<curl/curl.h>
 using namespace std;
 
+int curl_code = 0;
 string shortenUrl(string url) {
     if (url.size() > 80) return url.substr(0, 40) + "..." + url.substr(url.size() - 40, 40);
     return url;
@@ -25,6 +26,7 @@ CURLcode __get_url(string url, string& response) {
     curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, false);
     res = curl_easy_perform(curl);
     curl_easy_cleanup(curl);
+    curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &curl_code);
     response = readBuffer;
     return res;
 }

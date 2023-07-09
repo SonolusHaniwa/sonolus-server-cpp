@@ -15,12 +15,13 @@ class ParticleItem {
     SRL<ParticleThumbnail> thumbnail;
     SRL<ParticleData> data;
     SRL<ParticleTexture> texture;
+    string description;
 
     ParticleItem(){}
     ParticleItem(int id, string name, string title, string subtitle, string author,
-        SRL<ParticleThumbnail> thumbnail, SRL<ParticleData> data, SRL<ParticleTexture> texture):
+        SRL<ParticleThumbnail> thumbnail, SRL<ParticleData> data, SRL<ParticleTexture> texture, string description = ""):
         id(id), name(name), title(title), subtitle(subtitle), author(author),
-        thumbnail(thumbnail), data(data), texture(texture){}
+        thumbnail(thumbnail), data(data), texture(texture), description(description){}
     ParticleItem(int particle_id, Json::Value arr) {
         id = particle_id;
         name = arr["name"].asString();
@@ -31,6 +32,7 @@ class ParticleItem {
         thumbnail = SRL<ParticleThumbnail>(arr["thumbnail"]);
         data = SRL<ParticleData>(arr["data"]);
         texture = SRL<ParticleTexture>(arr["texture"]);
+        description = arr["description"].asString();
     }
 
     Json::Value toJsonObject() {
@@ -43,6 +45,7 @@ class ParticleItem {
         res["thumbnail"] = thumbnail.toJsonObject();
         res["data"] = data.toJsonObject();
         res["texture"] = texture.toJsonObject();
+        res["description"] = description;
         return res;
     }
 
@@ -58,6 +61,7 @@ class ParticleItem {
         args["texture"] = texture.url;
         args["url"] = "/particles/" + name;
         args["sonolus.url"] = "sonolus://" + appConfig["server.rootUrl"].asString() + "/particles/" + name;
+        args["description"] = description;
         return args;
     }
 
@@ -94,7 +98,8 @@ Section<ParticleItem> particleList(string filter, int st = 1, int en = 20) {
             res[i]["author"],
             SRL<ParticleThumbnail>(res[i]["thumbnail"], "/data/" + res[i]["thumbnail"]),
             SRL<ParticleData>(res[i]["data"], "/data/" + res[i]["data"]),
-            SRL<ParticleTexture>(res[i]["texture"], "/data/" + res[i]["texture"])
+            SRL<ParticleTexture>(res[i]["texture"], "/data/" + res[i]["texture"]),
+            res[i]["description"]
         ); list.append(data);
     } return list;
 }
@@ -113,14 +118,14 @@ int particleCreate(ParticleItem item) {
         sqlbuffer << "UPDATE Particle SET name = \"" << item.name << "\", version = " << item.version << ", ";
         sqlbuffer << "title = \"" << item.title << "\", subtitle = \"" << item.subtitle << "\", ";
         sqlbuffer << "author = \"" << item.author << "\", thumbnail = \"" << item.thumbnail.hash << "\", ";
-        sqlbuffer << "data = \"" << item.data.hash << "\", texture = \"" << item.texture.hash << "\" ";
-        sqlbuffer << "WHERE id = " << id << ";";
+        sqlbuffer << "data = \"" << item.data.hash << "\", texture = \"" << item.texture.hash << "\", ";
+        sqlbuffer << "description = \"" << str_replace("\n", "\\n", item.description) << "\" WHERE id = " << id << ";";
     } else {
         int id = atoi((new DB_Controller)->query("SELECT COUNT(*) AS sum FROM Particle;")[0]["sum"].c_str()) + 1;
-        sqlbuffer << "INSERT INTO Particle (id, name, version, title, subtitle, author, thumbnail, data, texture) VALUES (";
+        sqlbuffer << "INSERT INTO Particle (id, name, version, title, subtitle, author, thumbnail, data, texture, description) VALUES (";
         sqlbuffer << id << ", \"" << item.name << "\", " << item.version << ", \"" << item.title << "\", ";
         sqlbuffer << "\"" << item.subtitle << "\", \"" << item.author << "\", \"" << item.thumbnail.hash << "\", ";
-        sqlbuffer << "\"" << item.data.hash << "\", \"" << item.texture.hash << "\");";
+        sqlbuffer << "\"" << item.data.hash << "\", \"" << item.texture.hash << "\", \"" << str_replace("\n", "\\n", item.description) << "\");";
     } return (new DB_Controller)->execute(sqlbuffer.str());
 }
 

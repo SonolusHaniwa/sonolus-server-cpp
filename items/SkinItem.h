@@ -15,11 +15,12 @@ class SkinItem {
     SRL<SkinThumbnail> thumbnail;
     SRL<SkinData> data;
     SRL<SkinTexture> texture;
+    string description;
 
     SkinItem(){}
     SkinItem(int id, string name, string title, string subtitle, string author, 
-        SRL<SkinThumbnail> thumbnail, SRL<SkinData> data, SRL<SkinTexture> texture):
-        id(id), name(name), title(title), subtitle(subtitle), author(author), thumbnail(thumbnail), data(data), texture(texture){}
+        SRL<SkinThumbnail> thumbnail, SRL<SkinData> data, SRL<SkinTexture> texture, string description = ""):
+        id(id), name(name), title(title), subtitle(subtitle), author(author), thumbnail(thumbnail), data(data), texture(texture), description(description){}
     SkinItem(int skin_id, Json::Value arr) {
         id = skin_id;
         name = arr["name"].asString();
@@ -30,6 +31,7 @@ class SkinItem {
         thumbnail = SRL<SkinThumbnail>(arr["thumbnail"]);
         data = SRL<SkinData>(arr["data"]);
         texture = SRL<SkinTexture>(arr["texture"]);
+        description = arr["description"].asString();
     }
 
     Json::Value toJsonObject() {
@@ -42,6 +44,7 @@ class SkinItem {
         res["thumbnail"] = thumbnail.toJsonObject();
         res["data"] = data.toJsonObject();
         res["texture"] = texture.toJsonObject();
+        res["description"] = description;
         return res;
     }
 
@@ -57,6 +60,7 @@ class SkinItem {
         args["texture"] = texture.url;
         args["url"] = "/skins/" + name;
         args["sonolus.url"] = "sonolus://" + appConfig["server.rootUrl"].asString() + "/skins/" + name;
+        args["description"] = description;
         return args;
     }
 
@@ -93,7 +97,8 @@ Section<SkinItem> skinList(string filter, int st = 1, int en = 20) {
             res[i]["author"],
             SRL<SkinThumbnail>(res[i]["thumbnail"], "/data/" + res[i]["thumbnail"]),
             SRL<SkinData>(res[i]["data"], "/data/" + res[i]["data"]),
-            SRL<SkinTexture>(res[i]["texture"], "/data/" + res[i]["texture"])
+            SRL<SkinTexture>(res[i]["texture"], "/data/" + res[i]["texture"]),
+            res[i]["description"]
         ); list.append(data);
     } return list;
 }
@@ -111,13 +116,13 @@ int skinCreate(SkinItem item) {
         int id = atoi(res[0]["id"].c_str());
         sqlbuffer << "UPDATE Skin SET name = \"" << item.name << "\", version = " << item.version << ", title = \"" << item.title << "\", ";
         sqlbuffer << "subtitle = \"" << item.subtitle << "\", author = \"" << item.author << "\", thumbnail = \"" << item.thumbnail.hash << "\", ";
-        sqlbuffer << "data = \"" << item.data.hash << "\", texture = \"" << item.texture.hash << "\" WHERE id = " << id;
+        sqlbuffer << "data = \"" << item.data.hash << "\", texture = \"" << item.texture.hash << "\", description = \"" << str_replace("\n", "\\n", item.description) << "\" WHERE id = " << id;
     } else {
         int id = atoi((new DB_Controller)->query("SELECT COUNT(*) AS sum FROM Skin;")[0]["sum"].c_str()) + 1;
-        sqlbuffer << "INSERT INTO Skin (id, name, version, title, subtitle, author, thumbnail, data, texture) VALUES (";
+        sqlbuffer << "INSERT INTO Skin (id, name, version, title, subtitle, author, thumbnail, data, texture, description) VALUES (";
         sqlbuffer << id << ", \"" << item.name << "\", " << item.version << ", \"" << item.title << "\", ";
         sqlbuffer << "\"" << item.subtitle << "\", \"" << item.author << "\", \"" << item.thumbnail.hash << "\", ";
-        sqlbuffer << "\"" << item.data.hash << "\", \"" << item.texture.hash << "\")";
+        sqlbuffer << "\"" << item.data.hash << "\", \"" << item.texture.hash << "\", \"" << str_replace("\n", "\\n", item.description) << "\")";
     }
     return (new DB_Controller)->execute(sqlbuffer.str());
 }

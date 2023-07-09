@@ -100,4 +100,16 @@ CREATE TABLE LoginRequest (
     userId text,
     userAgent text,
     ip text
-)
+);
+ALTER TABLE Level ADD COLUMN description text;
+ALTER TABLE Skin ADD COLUMN description text;
+ALTER TABLE Background ADD COLUMN description text;
+ALTER TABLE Effect ADD COLUMN description text;
+ALTER TABLE Particle ADD COLUMN description text;
+ALTER TABLE Engine ADD COLUMN description text;
+ALTER TABLE Level ADD COLUMN localization text;
+ALTER TABLE Skin ADD COLUMN localization text;
+ALTER TABLE Background ADD COLUMN localization text;
+ALTER TABLE Effect ADD COLUMN localization text;
+ALTER TABLE Particle ADD COLUMN localization text;
+ALTER TABLE Engine ADD COLUMN localization text;

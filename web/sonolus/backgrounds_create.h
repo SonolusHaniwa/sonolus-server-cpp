@@ -24,7 +24,7 @@ auto sonolus_backgrounds_create = [](client_conn conn, http_request request, par
     string configuration = $_POST["configuration"];
 
     int raws = backgroundCreate(BackgroundItem(id, name, title, subtitle, author, SRL<BackgroundThumbnail>(thumbnail, thumbnail), 
-        SRL<BackgroundData>(data, data), SRL<BackgroundImage>(image, image), SRL<BackgroundConfiguration>(configuration, configuration)));
+        SRL<BackgroundData>(data, data), SRL<BackgroundImage>(image, image), SRL<BackgroundConfiguration>(configuration, configuration), $_POST["description"]));
     if (raws == 0) putRequest(conn, 400, __api_default_response), send(conn, json_encode(msg[400])), exitRequest(conn);
 
     putRequest(conn, 200, __api_default_response);

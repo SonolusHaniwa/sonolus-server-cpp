@@ -23,7 +23,7 @@ auto sonolus_effects_create = [](client_conn conn, http_request request, param a
     string audio = $_POST["audio"];
 
     int raws = effectCreate(EffectItem(id, name, title, subtitle, author, 
-        SRL<EffectThumbnail>(thumbnail, thumbnail), SRL<EffectData>(data, data), SRL<EffectAudio>(audio, audio)));
+        SRL<EffectThumbnail>(thumbnail, thumbnail), SRL<EffectData>(data, data), SRL<EffectAudio>(audio, audio), $_POST["description"]));
     if (raws == 0) putRequest(conn, 400, __api_default_response), send(conn, json_encode(msg[400])), exitRequest(conn);
 
     putRequest(conn, 200, __api_default_response);

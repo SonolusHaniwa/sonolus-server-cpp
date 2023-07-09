@@ -2,8 +2,8 @@
 using namespace std;
 #include<jsoncpp/json/json.h>
 
-std::string sonolus_server_version = "1.4.3";
-std::string Sonolus_Version = "0.7.0";
+std::string sonolus_server_version = "1.4.4";
+std::string Sonolus_Version = "0.7.1";
 Json::Value appConfig, studiosConfig;
 Json::Value i18n, i18n_raw;
 Json::Value enableListJson;
@@ -33,8 +33,6 @@ vector<string> engineVersionList = {"0.0.0", "0.0.0", "0.0.0", "0.5.8", "0.5.13"
 #include"modules/modules.h"
 #include"items/Items.h"
 #include"web/import.h"
-#include"modules/import.h"
-#include"modules/export.h"
 
 pluma::Pluma plugins;
 vector<SonolusServerPluginProvider*> providers;
@@ -51,11 +49,14 @@ void initUsage(char** argv) {
     usage << "    serve: " << argv[0] << " serve" << endl;
     usage << "Import & Export commands: " << endl;
     usage << "    import: " << argv[0] << " import [file]" << endl;
-    usage << "    export: " << argv[0] << " export <level/skin/background/effect/particle/engine> [name] [file]" << endl;
-    usage << "    export remote: " << argv[0] << " export remote [url] [file]" << endl;
-    usage << "    export all: " << argv[0] << " export all [file]" << endl;
-    usage << "    export remote all: " << argv[0] << " export remote-all [file]" << endl;
-    usage << "    export filelist: " << argv[0] << " export filelist [source] [target]" << endl;
+    usage << "    export: " << argv[0] << " export <level/skin/background/effect/particle/engine> [name] [file] (name)" << endl;
+    usage << "    export remote: " << argv[0] << " export remote [url] [file] (name)" << endl;
+    usage << "    export all: " << argv[0] << " export all [file] (name)" << endl;
+    usage << "    export remote all: " << argv[0] << " export remote-all [url] [file] (name)" << endl;
+    usage << "    export filelist: " << argv[0] << " export filelist [source] [target] (name)" << endl;
+    usage << "    list tasks: " << argv[0] << " task list" << endl;
+    usage << "    manage task: " << argv[0] << " task <confinue/terminate/info> [name]" << endl;
+    usage << "    test package: " << argv[0] << " test [file]" << endl;
     usage << "Plugin commands: " << endl;
     usage << "    list plugin: " << argv[0] << " plugin list" << endl;
     usage << "    manage plugin: " << argv[0] << " plugin <info/enable/disable> [plugin]" << endl;
@@ -75,6 +76,9 @@ void invalidUsage() {
     cerr << usage.str();
     exit(0);
 }
+
+#include"modules/export.h"
+#include"modules/import.h"
 
 void routerRegister(int argc, char** argv) {
     app.route.clear();
@@ -403,74 +407,6 @@ void MKDIR(string path, int mode = 0777) {
     #endif
 }
 
-void remoteExport(string origUrl) {
-    string url = solveUrl(origUrl);
-    auto path = explode("/", url.c_str());
-    if (path.size() < 2) {
-        writeLog(LOG_LEVEL_INFO, "Invalid resource link.");
-        writeLog(LOG_LEVEL_DEBUG, "0 files were written");
-        exit(0);
-    } int retry_time = appConfig["export.retryTime"].asInt();
-    startget:
-    string json = get_url(url); Json::Value obj;
-    if (json_decode(json, obj) == false) {
-        if (retry_time > 0) {
-            writeLog(LOG_LEVEL_ERROR, "Failed to visit \"" + url + "\". retrying...(" + to_string(retry_time) + ")");
-            retry_time--;
-            goto startget;
-        } writeLog(LOG_LEVEL_ERROR, "Failed to visit \"" + url + "\".");
-        writeLog(LOG_LEVEL_DEBUG, "0 files were written");
-        exit(0);
-    } string type = path[path.size() - 2];
-    string rootUrl = getRootUrl(origUrl);
-    changeUrl(rootUrl, obj);
-    if (type == "levels") exportLevel(LevelItem(-1, obj["item"]));
-    if (type == "skins") exportSkin(SkinItem(-1, obj["item"]));
-    if (type == "backgrounds") exportBackground(BackgroundItem(-1, obj["item"]));
-    if (type == "effects") exportEffect(EffectItem(-1, obj["item"]));
-    if (type == "particles") exportParticle(ParticleItem(-1, obj["item"]));
-    if (type == "engines") exportEngine(EngineItem(-1, obj["item"]));
-}
-
-void remoteFull(string url) {
-    string components[] = {"levels", "skins", "backgrounds", "effects", "particles", "engines"};
-    if (url.back() == '/') url.pop_back();
-    for (int i = 0; i < 6; i++) {
-        int retry_time = appConfig["export.retryTime"].asInt();
-        getjson1:
-        string url1 = url + "/sonolus/" + components[i] + "/list";
-        string json = get_url(url1);
-        Json::Value obj; 
-        if (json_decode(json, obj) == false) {
-            if (retry_time > 0) {
-                writeLog(LOG_LEVEL_ERROR, "Failed to visit \"" + url1 + "\". retrying...(" + to_string(retry_time) + ")");
-                retry_time--;
-                goto getjson1;
-            } writeLog(LOG_LEVEL_ERROR, "Failed to visit \"" + url1 + "\".");
-            exit(0);
-        } int page = obj["pageCount"].asInt();
-        if (page == -1) page = 1;
-        for (int j = 0; j < page; j++) {
-            int retry_time = appConfig["export.retryTime"].asInt();
-            getjson2:
-            string listUrl = url + "/sonolus/" + components[i] + "/list?page=" + to_string(j);
-            string json = get_url(listUrl);
-            if (json_decode(json, obj) == false) {
-                if (retry_time > 0) {
-                    writeLog(LOG_LEVEL_ERROR, "Failed to visit \"" + listUrl + "\". retrying...(" + to_string(retry_time) + ")");
-                    retry_time--;
-                    goto getjson2;
-                } writeLog(LOG_LEVEL_ERROR, "Failed to visit \"" + listUrl + "\".");
-                exit(0);
-            } for (int k = 0; k < obj["items"].size(); k++) {
-                string origUrl = url + "/sonolus/" + components[i] + "/" + obj["items"][k]["name"].asString();
-                writeLog(LOG_LEVEL_INFO, "Add \"" + shortenUrl(origUrl) + "\" to package queue.");
-                remoteExport(origUrl);
-            }
-        }
-    }
-}
-
 int main(int argc, char** argv) {
     MKDIR("./data");
     preload();
@@ -484,128 +420,13 @@ int main(int argc, char** argv) {
         return 0;
     }
     else if (string(argv[1]) == "export") {
-        if (string(argv[2]) == "level") {
-            if (argc < 5) invalidUsage();
-            if (levelNumber("name = \"" + string(argv[3]) + "\"") == 0) {
-                writeLog(LOG_LEVEL_ERROR, "Level \"" + string(argv[3]) + "\" not found.");
-                return 0;
-            } exportLevel(levelList("name = \"" + string(argv[3]) + "\"").items[0]);
-            exportData(argv[4]);
-            return 0;
-        } else if (string(argv[2]) == "skin") {
-            if (argc < 5) invalidUsage();
-            if (skinNumber("name = \"" + string(argv[3]) + "\"") == 0) {
-                writeLog(LOG_LEVEL_ERROR, "Skin \"" + string(argv[3]) + "\" not found.");
-                return 0;
-            } exportSkin(skinList("name = \"" + string(argv[3]) + "\"").items[0]);
-            exportData(argv[4]);
-            return 0;
-        } else if (string(argv[2]) == "background") {
-            if (argc < 5) invalidUsage();
-            if (backgroundNumber("name = \"" + string(argv[3]) + "\"") == 0) {
-                writeLog(LOG_LEVEL_ERROR, "Background \"" + string(argv[3]) + "\" not found.");
-                return 0;
-            } exportBackground(backgroundList("name = \"" + string(argv[3]) + "\"").items[0]);
-            exportData(argv[4]);
-            return 0;
-        } else if (string(argv[2]) == "effect") {
-            if (argc < 5) invalidUsage();
-            if (effectNumber("name = \"" + string(argv[3]) + "\"") == 0) {
-                writeLog(LOG_LEVEL_ERROR, "Effect \"" + string(argv[3]) + "\" not found.");
-                return 0;
-            } exportEffect(effectList("name = \"" + string(argv[3]) + "\"").items[0]);
-            exportData(argv[4]);
-            return 0;
-        } else if (string(argv[2]) == "particle") {
-            if (argc < 5) invalidUsage();
-            if (particleNumber("name = \"" + string(argv[3]) + "\"") == 0) {
-                writeLog(LOG_LEVEL_ERROR, "Particle \"" + string(argv[3]) + "\" not found.");
-                return 0;
-            } exportParticle(particleList("name = \"" + string(argv[3]) + "\"").items[0]);
-            exportData(argv[4]);
-            return 0;
-        } else if (string(argv[2]) == "engine") {
-            if (argc < 5) invalidUsage();
-            if (engineNumber("name = \"" + string(argv[3]) + "\"") == 0) {
-                writeLog(LOG_LEVEL_ERROR, "Engine \"" + string(argv[3]) + "\" not found.");
-                return 0;
-            } exportEngine(engineList("name = \"" + string(argv[3]) + "\"").items[0]);  
-            exportData(argv[4]);
-            return 0;
-        } else if (string(argv[2]) == "remote") {
-            if (argc < 5) invalidUsage();
-            remoteExport(argv[3]);
-            exportData(argv[4]);
-            return 0;
-        } else if (string(argv[2]) == "all") {
-            if (argc < 4) invalidUsage();
-            Section<LevelItem> levels = levelList("", 1, 1e9);
-            for (int i = 0; i < levels.items.size(); i++) exportLevel(levels.items[i]);
-            Section<SkinItem> skins = skinList("", 1, 1e9);
-            for (int i = 0; i < skins.items.size(); i++) exportSkin(skins.items[i]);
-            Section<BackgroundItem> backgrounds = backgroundList("", 1, 1e9);
-            for (int i = 0; i < backgrounds.items.size(); i++) exportBackground(backgrounds.items[i]);
-            Section<EffectItem> effects = effectList("", 1, 1e9);
-            for (int i = 0; i < effects.items.size(); i++) exportEffect(effects.items[i]);
-            Section<ParticleItem> particles = particleList("", 1, 1e9);
-            for (int i = 0; i < particles.items.size(); i++) exportParticle(particles.items[i]);
-            Section<EngineItem> engines = engineList("", 1, 1e9);
-            for (int i = 0; i < engines.items.size(); i++) exportEngine(engines.items[i]);
-            exportData(argv[3]);
-            return 0;
-        } else if (string(argv[2]) == "remote-all") {
-            if (argc < 5) invalidUsage();
-            remoteFull(argv[3]);
-            writeLog(LOG_LEVEL_INFO, "Start to process package queue.");
-            exportData(argv[4]);
-            return 0;
-        } else if (string(argv[2]) == "filelist") {
-            if (argc < 5) invalidUsage();
-            ifstream fin(argv[3]);
-            while (!fin.eof()) {
-                string type; fin >> type;
-                if (isUrl(type)) {
-                    remoteExport(type);
-                    continue;
-                } string name; fin >> name;
-                if (type == "level") {
-                    if (levelNumber("name = \"" + name + "\"") == 0) {
-                        writeLog(LOG_LEVEL_WARNING, "Level \"" + name + "\" not found.");
-                        continue;
-                    } exportLevel(levelList("name = \"" + name + "\"").items[0]);
-                } else if (type == "skin") {
-                    if (skinNumber("name = \"" + name + "\"") == 0) {
-                        writeLog(LOG_LEVEL_WARNING, "Skin \"" + name + "\" not found.");
-                        continue;
-                    } exportSkin(skinList("name = \"" + name + "\"").items[0]);
-                } else if (type == "background") {
-                    if (backgroundNumber("name = \"" + name + "\"") == 0) {
-                        writeLog(LOG_LEVEL_WARNING, "Background \"" + name + "\" not found.");
-                        continue;
-                    } exportBackground(backgroundList("name = \"" + name + "\"").items[0]);
-                } else if (type == "effect") {
-                    if (effectNumber("name = \"" + name + "\"") == 0) {
-                        writeLog(LOG_LEVEL_WARNING, "Effect \"" + name + "\" not found.");
-                        continue;
-                    } exportEffect(effectList("name = \"" + name + "\"").items[0]);
-                } else if (type == "particle") {
-                    if (particleNumber("name = \"" + name + "\"") == 0) {
-                        writeLog(LOG_LEVEL_WARNING, "Particle \"" + name + "\" not found.");
-                        continue;
-                    } exportParticle(particleList("name = \"" + name + "\"").items[0]);
-                } else if (type == "engine") {
-                    if (engineNumber("name = \"" + name + "\"") == 0) {
-                        writeLog(LOG_LEVEL_WARNING, "Engine \"" + name + "\" not found.");
-                        continue;
-                    } exportEngine(engineList("name = \"" + name + "\"").items[0]);
-                } else {
-                    writeLog(LOG_LEVEL_WARNING, "Invalid resource type \"" + type + "\".");
-                    continue;
-                }
-            } writeLog(LOG_LEVEL_INFO, "Start to process package queue.");
-            exportData(argv[4]);
-            return 0;
-        } else invalidUsage();
+        MKDIR("./.tmp");
+        exportData(argc, argv);
+        return 0;
+    } else if (string(argv[1]) == "task") {
+        MKDIR("./.tmp");
+        taskManage(argc, argv);
+        return 0;
     } else if (string(argv[1]) == "help") invalidUsage();
     else if (string(argv[1]) == "serve") {
         serverRunner(argc, argv);
@@ -628,8 +449,11 @@ int main(int argc, char** argv) {
             disablePlugin(argv[3]);
             return 0;
         } else invalidUsage();
-    } 
-    for (int i = 0; i < providers.size(); i++) {
+    } else if (string(argv[1]) == "test") {
+        if (argc < 3) invalidUsage();
+        testPackage(argv[2]);
+        return 0;
+    } for (int i = 0; i < providers.size(); i++) {
         SonolusServerPlugin* plugin = providers[i]->create();
         if (plugin->onPluginPlatformVersion() != sonolus_server_version) {
             delete plugin;

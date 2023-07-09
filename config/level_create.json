@@ -34,6 +34,12 @@
             "placeholder": "Enter chart author..."
         },
         {
+            "query": "description",
+            "name": "Description",
+            "type": "text",
+            "placeholder": "Enter description..."
+        },
+        {
             "query": "engine",
             "name": "Engine",
             "type": "select",

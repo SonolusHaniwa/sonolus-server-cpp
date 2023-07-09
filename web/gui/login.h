@@ -49,7 +49,7 @@ auto web_login = [](client_conn conn, http_request request, param argv) {
     root.append(header);
     root.append(body);
     auto response = __default_response;
-    response["Set-Cookie"] = "sessionId=" + session + "; Path=/; Expire=" + to_string(time(NULL) + appConfig["session.expireTime"].asInt64() * 24 * 60 * 60);
+    response["Set-Cookie"] = "sessionId=" + session + "; Path=/; Expires=" + to_string(time(NULL) + appConfig["session.expireTime"].asInt64() * 24 * 60 * 60);
     putRequest(conn, 200, response);
     send(conn, root.output());
     exitRequest(conn);

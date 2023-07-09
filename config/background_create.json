@@ -25,6 +25,12 @@
             "placeholder": "Enter background author..."
         },
         {
+            "query": "description",
+            "name": "Description",
+            "type": "text",
+            "placeholder": "Enter description..."
+        },
+        {
             "query": "thumbnail",
             "name": "Thumbnail",
             "type": "file"

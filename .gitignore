@@ -25,3 +25,5 @@ plugins
 !data/0273968035abcd9bfe8f6b8fa913bb356dd202f2
 !web/sonolus/sonolus.h
 *.srp
+releases
+.tmp

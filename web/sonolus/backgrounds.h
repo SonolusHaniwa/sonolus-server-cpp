@@ -9,7 +9,7 @@ auto sonolus_backgrounds = [](client_conn conn, http_request request, param argv
     }
     BackgroundItem item = section.items[0];
     Section<BackgroundItem> recommended = backgroundList("author = \"" + str_replace("\"", "\\\"", item.author) + "\"", 1, 10);
-    ItemDetails<BackgroundItem> detail = ItemDetails<BackgroundItem>(item, item.title);
+    ItemDetails<BackgroundItem> detail = ItemDetails<BackgroundItem>(item, item.description);
     detail.recommended = recommended.items;
     Json::Value val = detail.toJsonObject();
     putRequest(conn, 200, __api_default_response);

@@ -15,12 +15,13 @@ class EffectItem {
     SRL<EffectThumbnail> thumbnail;
     SRL<EffectData> data;
     SRL<EffectAudio> audio;
+    string description;
 
     EffectItem(){}
     EffectItem(int id, string name, string title, string subtitle, string author,
-        SRL<EffectThumbnail> thumbnail, SRL<EffectData> data, SRL<EffectAudio> audio):
+        SRL<EffectThumbnail> thumbnail, SRL<EffectData> data, SRL<EffectAudio> audio, string description = ""):
         id(id), name(name), title(title), subtitle(subtitle), author(author),
-        thumbnail(thumbnail), data(data), audio(audio){}
+        thumbnail(thumbnail), data(data), audio(audio), description(description){}
     EffectItem(int effect_id, Json::Value arr) {
         id = effect_id;
         name = arr["name"].asString();
@@ -31,6 +32,7 @@ class EffectItem {
         thumbnail = SRL<EffectThumbnail>(arr["thumbnail"]);
         data = SRL<EffectData>(arr["data"]);
         audio = SRL<EffectAudio>(arr["audio"]);
+        description = arr["description"].asString();
     }
     
     Json::Value toJsonObject() {
@@ -43,6 +45,7 @@ class EffectItem {
         res["thumbnail"] = thumbnail.toJsonObject();
         res["data"] = data.toJsonObject();
         res["audio"] = audio.toJsonObject();
+        res["description"] = description;
         return res;
     }
 
@@ -58,6 +61,7 @@ class EffectItem {
         args["audio"] = audio.url;
         args["url"] = "/effects/" + name;
         args["sonolus.url"] = "sonolus://" + appConfig["server.rootUrl"].asString() + "/effects/" + name;
+        args["description"] = description;
         return args;
     }
 
@@ -94,7 +98,8 @@ Section<EffectItem> effectList(string filter, int st = 1, int en = 20) {
             res[i]["author"],
             SRL<EffectThumbnail>(res[i]["thumbnail"], "/data/" + res[i]["thumbnail"]),
             SRL<EffectData>(res[i]["data"], "/data/" + res[i]["data"]),
-            SRL<EffectAudio>(res[i]["audio"], "/data/" + res[i]["audio"])
+            SRL<EffectAudio>(res[i]["audio"], "/data/" + res[i]["audio"]),
+            res[i]["description"]
         ); list.append(data);
     } return list;
 }
@@ -113,14 +118,14 @@ int effectCreate(EffectItem item) {
         sqlbuffer << "UPDATE Effect SET name = \"" << item.name << "\", version = " << item.version << ", ";
         sqlbuffer << "title = \"" << item.title << "\", subtitle = \"" << item.subtitle << "\", ";
         sqlbuffer << "author = \"" << item.author << "\", thumbnail = \"" << item.thumbnail.hash << "\", ";
-        sqlbuffer << "data = \"" << item.data.hash << "\", audio = \"" << item.audio.hash << "\" ";
-        sqlbuffer << "WHERE id = " << id;
+        sqlbuffer << "data = \"" << item.data.hash << "\", audio = \"" << item.audio.hash << "\", ";
+        sqlbuffer << "description = \"" << str_replace("\n", "\\n", item.description) << "\" WHERE id = " << id;
     } else {
         int id = atoi((new DB_Controller)->query("SELECT COUNT(*) AS sum FROM Effect;")[0]["sum"].c_str()) + 1;
-        sqlbuffer << "INSERT INTO Effect (id, name, version, title, subtitle, author, thumbnail, data, audio) VALUES (";
+        sqlbuffer << "INSERT INTO Effect (id, name, version, title, subtitle, author, thumbnail, data, audio, description) VALUES (";
         sqlbuffer << id << ", \"" << item.name << "\", " << item.version << ", \"" << item.title << "\", ";
         sqlbuffer << "\"" << item.subtitle << "\", \"" << item.author << "\", \"" << item.thumbnail.hash << "\", ";
-        sqlbuffer << "\"" << item.data.hash << "\", \"" << item.audio.hash << "\")";
+        sqlbuffer << "\"" << item.data.hash << "\", \"" << item.audio.hash << "\", \"" << str_replace("\n", "\\n", item.description) << "\")";
     } return (new DB_Controller)->execute(sqlbuffer.str());
 }
 

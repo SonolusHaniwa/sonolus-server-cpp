@@ -16,12 +16,13 @@ class BackgroundItem {
     SRL<BackgroundData> data;
     SRL<BackgroundImage> image;
     SRL<BackgroundConfiguration> configuration;
+    string description;
 
     BackgroundItem(){}
     BackgroundItem(int id, string name, string title, string subtitle, string author, 
-        SRL<BackgroundThumbnail> thumbnail, SRL<BackgroundData> data, SRL<BackgroundImage> image, SRL<BackgroundConfiguration> configuration):
+        SRL<BackgroundThumbnail> thumbnail, SRL<BackgroundData> data, SRL<BackgroundImage> image, SRL<BackgroundConfiguration> configuration, string description = ""):
         id(id), name(name), title(title), subtitle(subtitle), author(author),
-        thumbnail(thumbnail), data(data), image(image), configuration(configuration){}
+        thumbnail(thumbnail), data(data), image(image), configuration(configuration), description(description){}
     BackgroundItem(int background_id, Json::Value arr) {
         id = background_id;
         name = arr["name"].asString();
@@ -33,6 +34,7 @@ class BackgroundItem {
         data = SRL<BackgroundData>(arr["data"]);
         image = SRL<BackgroundImage>(arr["image"]);
         configuration = SRL<BackgroundConfiguration>(arr["configuration"]);
+        description = arr["description"].asString();
     }
     
     Json::Value toJsonObject() {
@@ -46,6 +48,7 @@ class BackgroundItem {
         res["data"] = data.toJsonObject();
         res["image"] = image.toJsonObject();
         res["configuration"] = configuration.toJsonObject();
+        res["description"] = description;
         return res;
     }
 
@@ -62,6 +65,7 @@ class BackgroundItem {
         args["configuration"] = configuration.url;
         args["url"] = "/backgrounds/" + name;
         args["sonolus.url"] = "sonolus://" + appConfig["server.rootUrl"].asString() + "/backgrounds/" + name;
+        args["description"] = description;
         return args;
     }
 
@@ -99,7 +103,8 @@ Section<BackgroundItem> backgroundList(string filter, int st = 1, int en = 20) {
             SRL<BackgroundThumbnail>(res[i]["thumbnail"], "/data/" + res[i]["thumbnail"]),
             SRL<BackgroundData>(res[i]["data"], "/data/" + res[i]["data"]),
             SRL<BackgroundImage>(res[i]["image"], "/data/" + res[i]["image"]),
-            SRL<BackgroundConfiguration>(res[i]["configuration"], "/data/" + res[i]["configuration"])
+            SRL<BackgroundConfiguration>(res[i]["configuration"], "/data/" + res[i]["configuration"]),
+            res[i]["description"]
         ); list.append(data);
     } return list;
 }
@@ -117,14 +122,14 @@ int backgroundCreate(BackgroundItem item) {
         int id = atoi(res[0]["id"].c_str());
         sqlbuffer << "UPDATE Background SET name = \"" << item.name << "\", version = " << item.version << ", title = \"" << item.title << "\", ";
         sqlbuffer << "subtitle = \"" << item.subtitle << "\", author = \"" << item.author << "\", thumbnail = \"" << item.thumbnail.hash << "\", ";
-        sqlbuffer << "data = \"" << item.data.hash << "\", image = \"" << item.image.hash << "\", configuration = \"" << item.configuration.hash << "\" ";
-        sqlbuffer << "WHERE id = " << id << ";";
+        sqlbuffer << "data = \"" << item.data.hash << "\", image = \"" << item.image.hash << "\", configuration = \"" << item.configuration.hash << "\", ";
+        sqlbuffer << "description = \"" << str_replace("\n", "\\n", item.description) << "\" WHERE id = " << id << ";";
     } else {
         int id = atoi((new DB_Controller)->query("SELECT COUNT(*) AS sum FROM Background;")[0]["sum"].c_str()) + 1;
-        sqlbuffer << "INSERT INTO Background (id, name, version, title, subtitle, author, thumbnail, data, image, configuration) VALUES (";
+        sqlbuffer << "INSERT INTO Background (id, name, version, title, subtitle, author, thumbnail, data, image, configuration, description) VALUES (";
         sqlbuffer << id << ", \"" << item.name << "\", " << item.version << ", \"" << item.title << "\", ";
         sqlbuffer << "\"" << item.subtitle << "\", \"" << item.author << "\", \"" << item.thumbnail.hash << "\", ";
-        sqlbuffer << "\"" << item.data.hash << "\", \"" << item.image.hash << "\", \"" << item.configuration.hash << "\");";
+        sqlbuffer << "\"" << item.data.hash << "\", \"" << item.image.hash << "\", \"" << item.configuration.hash << "\", \"" << str_replace("\n", "\\n", item.description) << "\");";
     } return (new DB_Controller)->execute(sqlbuffer.str());
 }
 

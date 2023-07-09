@@ -71,7 +71,7 @@ auto sonolus_levels_create = [](client_conn conn, http_request request, param ar
     int raws = levelCreate(LevelItem(
         id, name, rating, title, artists, author, 
         engineItem, skinItem, backgroundItem, effectItem, particleItem, 
-        SRL<LevelCover>(cover, cover), SRL<LevelBgm>(bgm, bgm), SRL<LevelData>(data, data), SRL<LevelPreview>(preview, preview)));
+        SRL<LevelCover>(cover, cover), SRL<LevelBgm>(bgm, bgm), SRL<LevelData>(data, data), SRL<LevelPreview>(preview, preview), $_POST["description"]));
     if (raws == 0) putRequest(conn, 400, __api_default_response), send(conn, json_encode(msg[400])), exitRequest(conn);
 
     putRequest(conn, 200, __api_default_response);

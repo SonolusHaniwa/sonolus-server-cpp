@@ -9,7 +9,7 @@ auto sonolus_particles = [](client_conn conn, http_request request, param argv){
     }
     ParticleItem item = section.items[0];
     Section<ParticleItem> recommended = particleList("author = \"" + str_replace("\"", "\\\"", item.author) + "\"", 1, 10);
-    ItemDetails<ParticleItem> detail = ItemDetails<ParticleItem>(item, item.title);
+    ItemDetails<ParticleItem> detail = ItemDetails<ParticleItem>(item, item.description);
     detail.recommended = recommended.items;
     Json::Value val = detail.toJsonObject();
     putRequest(conn, 200, __api_default_response);

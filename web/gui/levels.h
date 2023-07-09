@@ -21,7 +21,6 @@ auto web_levels = [](client_conn conn, http_request request, param argv) {
         argList["recommended"] += recommended.items[i].toHTMLObject().output();
     argList["html.navbar"] = fetchNavBar(item.title, checkLogin(request)).output();
     argList["html.open_in_sonolus"] = fetchOpenInSonolus(argList["sonolus.url"]).output();
-    argList["description"] = item.title;
 
     header = str_replace(header, argList);
     body = str_replace(body, argList);

@@ -9,7 +9,7 @@ auto sonolus_levels = [](client_conn conn, http_request request, param argv){
     }
     LevelItem item = section.items[0];
     Section<LevelItem> recommended = levelList("author = \"" + str_replace("\"", "\\\"", item.author) + "\"", 1, 10);
-    ItemDetails<LevelItem> detail = ItemDetails<LevelItem>(item, item.title);
+    ItemDetails<LevelItem> detail = ItemDetails<LevelItem>(item, item.description);
     detail.recommended = recommended.items;
     Json::Value val = detail.toJsonObject();
     putRequest(conn, 200, __api_default_response);

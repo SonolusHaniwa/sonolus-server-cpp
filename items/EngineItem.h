@@ -20,14 +20,15 @@ class EngineItem {
     SRL<EngineData> data;
     SRL<EngineConfiguration> configuration;
     SRL<EngineRom> rom;
+    string description;
 
     EngineItem(){}
     EngineItem(int id, string name, string title, string subtitle, string author,
         SkinItem skin, BackgroundItem background, EffectItem effect, ParticleItem particle,
-        SRL<EngineThumbnail> thumbnail, SRL<EngineData> data, SRL<EngineConfiguration> configuration, SRL<EngineRom> rom = SRL<EngineRom>("", "")):
+        SRL<EngineThumbnail> thumbnail, SRL<EngineData> data, SRL<EngineConfiguration> configuration, SRL<EngineRom> rom = SRL<EngineRom>("", ""), string description = ""):
         id(id), name(name), title(title), subtitle(subtitle), author(author),
         skin(skin), background(background), effect(effect), particle(particle),
-        thumbnail(thumbnail), data(data), configuration(configuration), rom(rom){}
+        thumbnail(thumbnail), data(data), configuration(configuration), rom(rom), description(description){}
     EngineItem(int engine_id, Json::Value arr) {
         id = engine_id;
         name = arr["name"].asString();
@@ -43,6 +44,7 @@ class EngineItem {
         data = SRL<EngineData>(arr["data"]);
         configuration = SRL<EngineConfiguration>(arr["configuration"]);
         rom = SRL<EngineRom>(arr["rom"]);
+        description = arr["description"].asString();
     }
     
     Json::Value toJsonObject() {
@@ -60,6 +62,7 @@ class EngineItem {
         res["data"] = data.toJsonObject();
         res["configuration"] = configuration.toJsonObject();
         if (rom.hash != "") res["rom"] = rom.toJsonObject();
+        res["description"] = description;
         return res;
     }
 
@@ -80,6 +83,7 @@ class EngineItem {
         args["rom"] = rom.url;
         args["url"] = "/engines/" + name;
         args["sonolus.url"] = "sonolus://" + appConfig["server.rootUrl"].asString() + "/engines/" + name;
+        args["description"] = description;
         return args;
     }
 
@@ -122,7 +126,8 @@ Section<EngineItem> engineList(string filter, int st = 1, int en = 20) {
             SRL<EngineThumbnail>(res[i]["thumbnail"], "/data/" + res[i]["thumbnail"]),
             SRL<EngineData>(res[i]["data"], "/data/" + res[i]["data"]),
             SRL<EngineConfiguration>(res[i]["configuration"], "/data/" + res[i]["configuration"]),
-            SRL<EngineRom>(res[i]["rom"], "/data/" + res[i]["rom"])
+            SRL<EngineRom>(res[i]["rom"], "/data/" + res[i]["rom"]),
+            res[i]["description"]
         ); list.append(data);
     } return list;
 }
@@ -145,14 +150,14 @@ int engineCreate(EngineItem item, bool strong = false) {
         sqlbuffer << "UPDATE Engine SET name = \"" << item.name << "\", version = " << item.version << ", title = \"" << item.title << "\", ";
         sqlbuffer << "subtitle = \"" << item.subtitle << "\", author = \"" << item.author << "\", skin = " << skinId << ", background = " << backgroundId << ", ";
         sqlbuffer << "effect = " << effectId << ", particle = " << particleId << ", thumbnail = \"" << item.thumbnail.hash << "\", data = \"" << item.data.hash << "\", ";
-        sqlbuffer << "configuration = \"" << item.configuration.hash << "\", rom = \"" << item.rom.hash << "\" WHERE id = " << id << ";";
+        sqlbuffer << "configuration = \"" << item.configuration.hash << "\", rom = \"" << item.rom.hash << "\", description = \"" << str_replace("\n", "\\n", item.description) << "\" WHERE id = " << id << ";";
     } else {
         int id = atoi((new DB_Controller)->query("SELECT COUNT(*) AS sum FROM Engine;")[0]["sum"].c_str()) + 1;
-        sqlbuffer << "INSERT INTO Engine (id, name, version, title, subtitle, author, skin, background, effect, particle, thumbnail, data, configuration, rom) VALUES (";
+        sqlbuffer << "INSERT INTO Engine (id, name, version, title, subtitle, author, skin, background, effect, particle, thumbnail, data, configuration, rom, description) VALUES (";
         sqlbuffer << id << ", \"" << item.name << "\", " << item.version << ", \"" << item.title << "\", ";
         sqlbuffer << "\"" << item.subtitle << "\", \"" << item.author << "\", " << skinId << ", " << backgroundId << ", " << effectId << ", " << particleId << ", ";
         sqlbuffer << "\"" << item.thumbnail.hash << "\", \"" << item.data.hash << "\", \"" << item.configuration.hash << "\", ";
-        sqlbuffer << "\"" << item.rom.hash << "\");";
+        sqlbuffer << "\"" << item.rom.hash << "\", \"" << str_replace("\n", "\\n", item.description) << "\");";
     } return (new DB_Controller)->execute(sqlbuffer.str());
 }
 

@@ -25,6 +25,12 @@
             "placeholder": "Enter engine author..."
         },
         {
+            "query": "description",
+            "name": "Description",
+            "type": "text",
+            "placeholder": "Enter description..."
+        },
+        {
             "query": "skin",
             "name": "Skin",
             "type": "select",
