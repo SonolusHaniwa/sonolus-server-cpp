@@ -1,4 +1,4 @@
-e<p align="center"><img src="http://pic.littleyang.ml/sonolus-server-screenshot/favicon.png"/></p>
+<p align="center"><img src="http://pic.littleyang.ml/sonolus-server-screenshot/favicon.png"/></p>
 
 <h1 align="center">Sonolus Server for C++</h1>
 
