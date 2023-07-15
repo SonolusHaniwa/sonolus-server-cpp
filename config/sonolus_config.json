@@ -5,10 +5,10 @@
     "server.logo": "/data/9d364cdf72de5709f16eae90e1be7f023946f007",
     "server.bannerUrl": "/data/0273968035abcd9bfe8f6b8fa913bb356dd202f2",
     "server.bannerHash": "0273968035abcd9bfe8f6b8fa913bb356dd202f2",
-    "server.rootUrl": "192.168.0.102:8080",
+    "server.rootUrl": "127.0.0.1:8080",
     "server.auth.title": "Auth Server for Hanipure",
     "server.auth.logo": "/data/9d364cdf72de5709f16eae90e1be7f023946f007",
     "server.auth.bannerUrl": "/data/0273968035abcd9bfe8f6b8fa913bb356dd202f2",
     "server.auth.bannerHash": "0273968035abcd9bfe8f6b8fa913bb356dd202f2",
-    "language.default": "zh-cn"
+    "language.default": "zhs"
 }
