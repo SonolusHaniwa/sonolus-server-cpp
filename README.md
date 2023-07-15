@@ -16,4 +16,6 @@
 
 目前预计在 8.1 ~ 8.20 期间集中更新，其余时间 **每两周** 更新一个版本。
 
+# 开始使用
+
 [点我](https://github.com/SonolusHaniwa/sonolus-server-cpp/wiki) 前往 Wiki 界面查看全部信息。
