@@ -31,6 +31,16 @@
             "placeholder": "Enter description..."
         },
         {
+            "query": "localization",
+            "name": "Localization",
+            "type": "select",
+            "def": 0,
+            "values": [
+                "default",
+                "{{jsonArray.languageList}}"
+            ]
+        },
+        {
             "query": "skin",
             "name": "Skin",
             "type": "select",

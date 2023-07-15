@@ -1,14 +1,14 @@
 [
     {
-        "name": "zh-cn",
+        "name": "zhs",
         "title": "简体中文 (Simplified Chinese)",
         "path": "./i18n/zh-cn.json"
     },{
-        "name": "en-us",
+        "name": "en",
         "title": "English (United States)",
         "path": "./i18n/en-us.json"
     },{
-        "name": "ja-jp",
+        "name": "ja",
         "title": "日本語 (Japanese)",
         "path": "./i18n/ja-jp.json"
     } 

@@ -21,9 +21,12 @@ auto sonolus_skins_create = [](client_conn conn, http_request request, param arg
     string thumbnail = $_POST["thumbnail"];
     string data = $_POST["data"];
     string texture = $_POST["texture"];
+    string localization = $_POST["localization"];
+    if (localization == "0") localization = "default";
+    else localization = i18n_index[atoi(localization.c_str()) - 1];
     
     int raws = skinCreate(SkinItem(id, name, title, subtitle, author, 
-        SRL<SkinThumbnail>(thumbnail, thumbnail), SRL<SkinData>(data, data), SRL<SkinTexture>(texture, texture), $_POST["description"]));
+        SRL<SkinThumbnail>(thumbnail, thumbnail), SRL<SkinData>(data, data), SRL<SkinTexture>(texture, texture), $_POST["description"]), localization);
     if (raws == 0) putRequest(conn, 400, __api_default_response), send(conn, json_encode(msg[400])), exitRequest(conn);
 
     putRequest(conn, 200, __api_default_response);

@@ -36,6 +36,8 @@ auto web_backgrounds_create = [](client_conn conn, http_request request, param a
                 } else if (v.select.values[i] == "{{jsonArray.engineList}}") {
                     auto arr = (new DB_Controller)->query("SELECT title FROM Engine ORDER BY id ASC");
                     for (int j = 0; j < arr.size(); j++) values.push_back(arr[j]["title"]);
+                } else if (v.select.values[i] == "{{jsonArray.languageList}}") {
+                    for (int j = 0; j < i18n_index.size(); j++) values.push_back(i18n_index[j]);
                 } else values.push_back(v.select.values[i]);
             } v.select.values = values;
         }

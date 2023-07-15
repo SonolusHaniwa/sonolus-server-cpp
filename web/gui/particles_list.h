@@ -8,6 +8,7 @@ auto web_particles_list = [](client_conn conn, http_request request, param argv)
 
     // TODO: add the argList here
     argvar $_GET = getParam(request); int page = atoi($_GET["page"].c_str());
+    $_GET["localization"] = cookie["lang"];
     if (page < 0) page = 0;
     auto section = particleList(particleFilter($_GET), page * 20 + 1, (page + 1) * 20);
     argList["page.title"] = argList["language.particles"] + " | " + appConfig["server.title"].asString();
@@ -18,6 +19,7 @@ auto web_particles_list = [](client_conn conn, http_request request, param argv)
     $_GET["page"] = to_string(page + 1); string nextUrl = "/particles/list?" + getStringfy($_GET);
     $_GET["page"] = to_string(section.pageCount - 1); string bottomUrl = "/particles/list?" + getStringfy($_GET);
     $_GET.erase("page"); string jumpUrl = "/particles/jump/" + to_string(page) + "?" + getStringfy($_GET);
+    $_GET.erase("localization");
     string searchUrl = "/particles/search?" + getStringfy($_GET);
     argList["html.particlesBottom"] = fetchBottomBar(sonolusUrl, topUrl, previousUrl, nextUrl, bottomUrl, searchUrl, jumpUrl, page, section.pageCount).output();
     argList["html.particlesList"] = "";
@@ -26,6 +28,7 @@ auto web_particles_list = [](client_conn conn, http_request request, param argv)
     argList["search.filterWords"] = "";
     for (auto v : $_GET) {
         if (v.first == "page") continue;
+        if (v.first == "localization") continue;
         argList["search.filterWords"] += v.first + ": " + urldecode(v.second) + ", ";
     } if (argList["search.filterWords"].size() >= 2) {
         argList["search.filterWords"].pop_back();

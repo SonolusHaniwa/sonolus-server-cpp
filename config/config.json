@@ -1,11 +1,11 @@
 {
-    "database": "mysql",
+    "database": "sqlite",
     "mysql.hostname": "127.0.0.1",
     "mysql.port": 3306,
     "mysql.username": "root",
     "mysql.password": "root",
     "mysql.database": "sonolus",
-    "sqlite.dbfile": "sonolus.db",
+    "sqlite.dbfile": "test.db",
     "server.listenHost": "0.0.0.0",
     "server.listenPort": 8080,
     "server.enableSSL": false,
@@ -15,7 +15,7 @@
     "logSystem.debug": false,
     "logSystem.target": 1,
     "logSystem.targetFile": "./log.txt",
-    "sonolus.version": "0.7.0",
+    "sonolus.version": "0.7.1",
     "session.expireTime": 30,
     "export.retryTime": 5,
     "export.hashCheckTime": 5

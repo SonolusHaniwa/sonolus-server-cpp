@@ -8,6 +8,7 @@ auto web_backgrounds_list = [](client_conn conn, http_request request, param arg
 
     // TODO: add the argList here
     argvar $_GET = getParam(request); int page = atoi($_GET["page"].c_str());
+    $_GET["localization"] = cookie["lang"];
     if (page < 0) page = 0;
     auto section = backgroundList(backgroundFilter($_GET), page * 20 + 1, (page + 1) * 20);
     argList["page.title"] = argList["language.backgrounds"] + " | " + appConfig["server.title"].asString();
@@ -18,6 +19,7 @@ auto web_backgrounds_list = [](client_conn conn, http_request request, param arg
     $_GET["page"] = to_string(page + 1); string nextUrl = "/backgrounds/list?" + getStringfy($_GET);
     $_GET["page"] = to_string(section.pageCount - 1); string bottomUrl = "/backgrounds/list?" + getStringfy($_GET);
     $_GET.erase("page"); string jumpUrl = "/backgrounds/jump/" + to_string(page) + "?" + getStringfy($_GET);
+    $_GET.erase("localization");
     string searchUrl = "/backgrounds/search?" + getStringfy($_GET);
     argList["html.backgroundsBottom"] = fetchBottomBar(sonolusUrl, topUrl, previousUrl, nextUrl, bottomUrl, searchUrl, jumpUrl, page, section.pageCount).output();
     argList["html.backgroundsList"] = "";
@@ -26,6 +28,7 @@ auto web_backgrounds_list = [](client_conn conn, http_request request, param arg
     argList["search.filterWords"] = "";
     for (auto v : $_GET) {
         if (v.first == "page") continue;
+        if (v.first == "localization") continue;
         argList["search.filterWords"] += v.first + ": " + urldecode(v.second) + ", ";
     } if (argList["search.filterWords"].size() >= 2) {
         argList["search.filterWords"].pop_back();

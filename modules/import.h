@@ -1,5 +1,12 @@
 using namespace std;
 
+int importedLevelNumber = 0;
+int importedSkinNumber = 0;
+int importedBackgroundNumber = 0;
+int importedEffectNumber = 0;
+int importedParticleNumber = 0;
+int importedEngineNumber = 0;
+
 void serverPackageImport(FileStream& fin) {
     int filenum = fin.getInteger();
     for (int i = 1; i <= filenum; i++) {
@@ -21,20 +28,27 @@ void serverPackageImport(FileStream& fin) {
     } int jsonnum = fin.getInteger(), effected_raws = 0;
     for (int i = 1; i <= jsonnum; i++) {
         int jsonsize = 0; string json; int type = fin.getBuffer(1)[0] - '0';
-        jsonsize = fin.getInteger(); json = fin.getBuffer(jsonsize);
+        jsonsize = fin.getInteger();
+        json = fin.getBuffer(jsonsize);
         Json::Value arr; json_decode(json, arr);
         switch(type) {
-            case 1: effected_raws += levelCreate(LevelItem(-1, arr)); break;
-            case 2: effected_raws += skinCreate(SkinItem(-1, arr)); break;
-            case 3: effected_raws += backgroundCreate(BackgroundItem(-1, arr)); break;
-            case 4: effected_raws += effectCreate(EffectItem(-1, arr)); break;
-            case 5: effected_raws += particleCreate(ParticleItem(-1, arr)); break;
-            case 6: effected_raws += engineCreate(EngineItem(-1, arr)); break;
+            case 1: effected_raws += levelCreate(LevelItem(-1, arr)); importedLevelNumber++; break;
+            case 2: effected_raws += skinCreate(SkinItem(-1, arr)); importedSkinNumber++; break;
+            case 3: effected_raws += backgroundCreate(BackgroundItem(-1, arr)); importedBackgroundNumber++; break;
+            case 4: effected_raws += effectCreate(EffectItem(-1, arr)); importedEffectNumber++; break;
+            case 5: effected_raws += particleCreate(ParticleItem(-1, arr)); importedParticleNumber++; break;
+            case 6: effected_raws += engineCreate(EngineItem(-1, arr)); importedEngineNumber++; break;
         }
     }
     writeLog(LOG_LEVEL_INFO, "Import data successfully.");
     writeLog(LOG_LEVEL_DEBUG, to_string(filenum) + " files were written.");
     writeLog(LOG_LEVEL_DEBUG, to_string(effected_raws) + " raws were affected.");
+    writeLog(LOG_LEVEL_DEBUG, to_string(importedLevelNumber) + " levels were imported.");
+    writeLog(LOG_LEVEL_DEBUG, to_string(importedSkinNumber) + " skins were imported.");
+    writeLog(LOG_LEVEL_DEBUG, to_string(importedBackgroundNumber) + " backgrounds were imported.");
+    writeLog(LOG_LEVEL_DEBUG, to_string(importedEffectNumber) + " effects were imported.");
+    writeLog(LOG_LEVEL_DEBUG, to_string(importedParticleNumber) + " particles were imported.");
+    writeLog(LOG_LEVEL_DEBUG, to_string(importedEngineNumber) + " engines were imported.");
 }
 
 void importDataFromOfficialPackage(string path, Json::Value obj, int& fileCnt) {
@@ -78,7 +92,7 @@ void officialPackageImport(string path) {
 
 void import(const char* path) {
     if (!fileExist(path)) {
-        writeLog(LOG_LEVEL_ERROR, "Failed to test: Couldn't open binary file!");
+        writeLog(LOG_LEVEL_ERROR, "Failed to import: Couldn't open binary file!");
         exit(3);
     } FileStream fin(path, 0);
     string head = fin.getBuffer(4);

@@ -29,6 +29,9 @@ auto sonolus_levels_create = [](client_conn conn, http_request request, param ar
     string bgm = $_POST["bgm"];
     string data = $_POST["data"];
     string preview = $_POST["preview"];
+    string localization = $_POST["localization"];
+    if (localization == "0") localization = "default";
+    else localization = i18n_index[atoi(localization.c_str()) - 1];
 
     auto tmp = engineList("id = " + to_string(engine));
     if (tmp.items.size() == 0) 
@@ -71,7 +74,7 @@ auto sonolus_levels_create = [](client_conn conn, http_request request, param ar
     int raws = levelCreate(LevelItem(
         id, name, rating, title, artists, author, 
         engineItem, skinItem, backgroundItem, effectItem, particleItem, 
-        SRL<LevelCover>(cover, cover), SRL<LevelBgm>(bgm, bgm), SRL<LevelData>(data, data), SRL<LevelPreview>(preview, preview), $_POST["description"]));
+        SRL<LevelCover>(cover, cover), SRL<LevelBgm>(bgm, bgm), SRL<LevelData>(data, data), SRL<LevelPreview>(preview, preview), $_POST["description"]), localization);
     if (raws == 0) putRequest(conn, 400, __api_default_response), send(conn, json_encode(msg[400])), exitRequest(conn);
 
     putRequest(conn, 200, __api_default_response);

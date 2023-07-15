@@ -26,6 +26,9 @@ auto sonolus_engines_create = [](client_conn conn, http_request request, param a
     string data = $_POST["data"];
     string configuration = $_POST["configuration"];
     string rom = $_POST["rom"];
+    string localization = $_POST["localization"];
+    if (localization == "0") localization = "default";
+    else localization = i18n_index[atoi(localization.c_str()) - 1];
     SkinItem skinItem; BackgroundItem backgroundItem; EffectItem effectItem; ParticleItem particleItem;
     auto tmp = skinList("id = " + to_string(skin));
     if (tmp.items.size() == 0) putRequest(conn, 404, __api_default_response), send(conn, json_encode(msg[404])), exitRequest(conn);
@@ -42,7 +45,7 @@ auto sonolus_engines_create = [](client_conn conn, http_request request, param a
 
     int raws = engineCreate(EngineItem(id, name, title, subtitle, author, 
         skinItem, backgroundItem, effectItem, particleItem, SRL<EngineThumbnail>(thumbnail, thumbnail), 
-        SRL<EngineData>(data, data), SRL<EngineConfiguration>(configuration, configuration), SRL<EngineRom>(rom, rom), $_POST["description"]));
+        SRL<EngineData>(data, data), SRL<EngineConfiguration>(configuration, configuration), SRL<EngineRom>(rom, rom), $_POST["description"]), localization);
     if (raws == 0) putRequest(conn, 400, __api_default_response), send(conn, json_encode(msg[400])), exitRequest(conn);
 
     putRequest(conn, 200, __api_default_response);

@@ -142,7 +142,13 @@ Section<LevelItem> levelList(string filter, int st = 1, int en = 20) {
     sql += " ORDER BY id DESC LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);
     auto res = (new DB_Controller)->query(sql.c_str());
     Section<LevelItem> list = Section<LevelItem>(pageCount, LevelSearch);
+    sort(res.begin(), res.end(), [](argvar a, argvar b){
+        if (a["name"] == b["name"]) return (a["localization"] == "default") < (b["localization"] == "default");
+        else return atoi(a["id"].c_str()) > atoi(b["id"].c_str());
+    }); map<string, bool> nameUsed;
     for (int i = 0; i < res.size(); i++) {
+        if (nameUsed[res[i]["name"]]) continue;
+        nameUsed[res[i]["name"]] = true;
         EngineItem engine = engineList("id = " + res[i]["engine"], 1, 1).items[0];
         UseItem<SkinItem> useSkin = UseItem<SkinItem>(
             res[i]["skin"] == "0", res[i]["skin"] == "0" ? SkinItem() : skinList("id = " + res[i]["skin"], 1, 1).items[0]);
@@ -174,18 +180,18 @@ Section<LevelItem> levelList(string filter, int st = 1, int en = 20) {
 }
 
 string levelFilter(argvar arg) {
-    string filter = ""; bool pre = false;
-    if (arg["keywords"] != "") filter += (pre ? "AND " : "") + string("title like \"%") + str_replace("\"", "\\\"", urldecode(arg["keywords"])) + "%\" ", pre = true;
-    if (arg["artist"] != "") filter += (pre ? "AND " : "") + string("artists like \"%") + str_replace("\"", "\\\"", urldecode(arg["artist"])) + "%\" ", pre = true;
-    if (arg["author"] != "") filter += (pre ? "AND " : "") + string("author like \"%") + str_replace("\"", "\\\"", urldecode(arg["author"])) + "%\" ", pre = true;
-    if (arg["minRating"] != "") filter += (pre ? "AND " : "") + string("rating >= ") + arg["minRating"] + " ", pre = true;
-    if (arg["maxRating"] != "") filter += (pre ? "AND " : "") + string("rating <= ") + arg["maxRating"] + " ", pre = true;
+    string filter = "(localization = \"" + arg["localization"] + "\" OR localization = \"default\")";
+    if (arg["keywords"] != "") filter += string(" AND title like \"%") + str_replace("\"", "\\\"", urldecode(arg["keywords"])) + "%\"";
+    if (arg["artist"] != "") filter += string(" AND artists like \"%") + str_replace("\"", "\\\"", urldecode(arg["artist"])) + "%\"";
+    if (arg["author"] != "") filter += string(" AND author like \"%") + str_replace("\"", "\\\"", urldecode(arg["author"])) + "%\"";
+    if (arg["minRating"] != "") filter += string(" AND rating >= ") + arg["minRating"];
+    if (arg["maxRating"] != "") filter += string(" AND rating <= ") + arg["maxRating"];
     return filter;
 }
 
-int levelCreate(LevelItem item) {
+int levelCreate(LevelItem item, string localization = "default") {
     stringstream sqlbuffer;
-    auto res = (new DB_Controller)->query("SELECT id FROM Level WHERE name = \"" + item.name + "\"");
+    auto res = (new DB_Controller)->query("SELECT id FROM Level WHERE name = \"" + item.name + "\" AND localization = \"" + localization + "\"");
     int skinId = 0, backgroundId = 0, effectId = 0, particleId = 0, engineId = 0;
     if (item.useSkin.useDefault == false)
         skinId = atoi((new DB_Controller)->query("SELECT id FROM Skin WHERE name = \"" + item.useSkin.item.name + "\";")[0]["id"].c_str());
@@ -202,13 +208,13 @@ int levelCreate(LevelItem item) {
         sqlbuffer << "\", title=\"" << item.title << "\", artists=\"" << item.artists << "\", author=\"" << item.author;
         sqlbuffer << "\", engine=" << engineId << ", skin=" << skinId << ", background=" << backgroundId << ", effect=" << effectId << ", particle=" << particleId;
         sqlbuffer << ", cover=\"" << item.cover.hash << "\", bgm=\"" << item.bgm.hash << "\", data=\"" << item.data.hash << "\", preview=\"" << item.preview.hash << "\", ";
-        sqlbuffer << "\"" << str_replace("\n", "\\n", item.description) << "\" WHERE id=" << id;
+        sqlbuffer << "description=\"" << str_replace("\n", "\\n", item.description) << "\", localization=\"" << localization << "\" WHERE id=" << id;
     } else {
         int id = atoi((new DB_Controller)->query("SELECT COUNT(*) AS sum FROM Level;")[0]["sum"].c_str()) + 1;
-        sqlbuffer << "INSERT INTO Level (id, name, version, rating, title, artists, author, engine, skin, background, effect, particle, cover, bgm, data, preview, description) VALUES (";
+        sqlbuffer << "INSERT INTO Level (id, name, version, rating, title, artists, author, engine, skin, background, effect, particle, cover, bgm, data, preview, description, localization) VALUES (";
         sqlbuffer << id << ", \"" << item.name << "\", " << item.version << ", " << item.rating << ", \"" << item.title << "\", ";
         sqlbuffer << "\"" << item.artists << "\", \"" << item.author << "\", " << engineId << ", " << skinId << ", " << backgroundId << ", " << effectId << ", " << particleId << ", ";
-        sqlbuffer << "\"" << item.cover.hash << "\", \"" << item.bgm.hash << "\", \"" << item.data.hash << "\", \"" << item.preview.hash << "\", \"" << str_replace("\n", "\\n", item.description) << "\")";
+        sqlbuffer << "\"" << item.cover.hash << "\", \"" << item.bgm.hash << "\", \"" << item.data.hash << "\", \"" << item.preview.hash << "\", \"" << str_replace("\n", "\\n", item.description) << "\", \"" << localization << "\")";
     } return (new DB_Controller)->execute(sqlbuffer.str());
 }
 

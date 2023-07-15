@@ -22,9 +22,12 @@ auto sonolus_backgrounds_create = [](client_conn conn, http_request request, par
     string data = $_POST["data"];
     string image = $_POST["image"];
     string configuration = $_POST["configuration"];
+    string localization = $_POST["localization"];
+    if (localization == "0") localization = "default";
+    else localization = i18n_index[atoi(localization.c_str()) - 1];
 
     int raws = backgroundCreate(BackgroundItem(id, name, title, subtitle, author, SRL<BackgroundThumbnail>(thumbnail, thumbnail), 
-        SRL<BackgroundData>(data, data), SRL<BackgroundImage>(image, image), SRL<BackgroundConfiguration>(configuration, configuration), $_POST["description"]));
+        SRL<BackgroundData>(data, data), SRL<BackgroundImage>(image, image), SRL<BackgroundConfiguration>(configuration, configuration), $_POST["description"]), localization);
     if (raws == 0) putRequest(conn, 400, __api_default_response), send(conn, json_encode(msg[400])), exitRequest(conn);
 
     putRequest(conn, 200, __api_default_response);

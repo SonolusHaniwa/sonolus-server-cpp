@@ -40,6 +40,16 @@
             "placeholder": "Enter description..."
         },
         {
+            "query": "localization",
+            "name": "Localization",
+            "type": "select",
+            "def": 0,
+            "values": [
+                "default",
+                "{{jsonArray.languageList}}"
+            ]
+        },
+        {
             "query": "engine",
             "name": "Engine",
             "type": "select",

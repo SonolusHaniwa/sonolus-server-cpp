@@ -4,16 +4,17 @@ using namespace std;
 
 std::string sonolus_server_version = "1.4.4";
 std::string Sonolus_Version = "0.7.1";
+std::string Maximum_Sonolus_Version = "0.7.1";
 Json::Value appConfig, studiosConfig;
 Json::Value i18n, i18n_raw;
 Json::Value enableListJson;
 
-int exportLevelId = 1;
-int exportSkinId = 2;
-int exportBackgroundId = 3;
-int exportEffectId = 4;
-int exportParticleId = 5;
-int exportEngineId = 6;
+const int exportLevelId = 1;
+const int exportSkinId = 2;
+const int exportBackgroundId = 3;
+const int exportEffectId = 4;
+const int exportParticleId = 5;
+const int exportEngineId = 6;
 string fileHeader = ".srp"; // Sonolus Resources Package
 
 int levelVersion = 1;
@@ -40,7 +41,7 @@ stringstream usage;
 
 void initUsage(char** argv) {
     usage << "Sonolus Server v" << sonolus_server_version << " (WebServer Core v" << httpd_version << ")" << endl;
-    usage << "The highest supported version of Sonolus: " << Sonolus_Version << endl;
+    usage << "The highest supported version of Sonolus: " << Maximum_Sonolus_Version << endl;
     usage << "Copyright (c) 2023 LittleYang0531, all rights reserved." << endl;
     usage << endl;
     usage << "Usage: " << argv[0] << " [command]" << endl;

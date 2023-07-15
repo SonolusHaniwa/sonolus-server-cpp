@@ -100,6 +100,8 @@ Search readJson(string path) {
     return search;
 }
 
+vector<string> i18n_index;
+
 void loadConfig() {
     LevelSearch = readJson("./config/level_search.json");
     LevelCreate = readJson("./config/level_create.json");
@@ -119,6 +121,7 @@ void loadConfig() {
     for (int i = 0; i < index.size(); i++) {
         json = readFile(index[i]["path"].asString());
         json_decode(json, i18n[index[i]["name"].asString()]);
+        i18n_index.push_back(index[i]["name"].asString());
     } i18n_raw = index;
 }
 

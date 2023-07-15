@@ -21,9 +21,12 @@ auto sonolus_effects_create = [](client_conn conn, http_request request, param a
     string thumbnail = $_POST["thumbnail"];
     string data = $_POST["data"];
     string audio = $_POST["audio"];
+    string localization = $_POST["localization"];
+    if (localization == "0") localization = "default";
+    else localization = i18n_index[atoi(localization.c_str()) - 1];
 
     int raws = effectCreate(EffectItem(id, name, title, subtitle, author, 
-        SRL<EffectThumbnail>(thumbnail, thumbnail), SRL<EffectData>(data, data), SRL<EffectAudio>(audio, audio), $_POST["description"]));
+        SRL<EffectThumbnail>(thumbnail, thumbnail), SRL<EffectData>(data, data), SRL<EffectAudio>(audio, audio), $_POST["description"]), localization);
     if (raws == 0) putRequest(conn, 400, __api_default_response), send(conn, json_encode(msg[400])), exitRequest(conn);
 
     putRequest(conn, 200, __api_default_response);

@@ -1,5 +1,12 @@
 using namespace std;
 
+string toGMTDate(time_t t) {
+    struct tm *tm = gmtime(&t);
+    char buf[1024];
+    strftime(buf, sizeof(buf), "%a, %d %b %Y %H:%M:%S GMT", tm);
+    return buf;
+}
+
 auto web_login = [](client_conn conn, http_request request, param argv) {
     string header = readFile("./web/html/components/header.html");
     string body = readFile("./web/html/pages/levels.html");
@@ -49,7 +56,7 @@ auto web_login = [](client_conn conn, http_request request, param argv) {
     root.append(header);
     root.append(body);
     auto response = __default_response;
-    response["Set-Cookie"] = "sessionId=" + session + "; Path=/; Expires=" + to_string(time(NULL) + appConfig["session.expireTime"].asInt64() * 24 * 60 * 60);
+    response["Set-Cookie"] = "sessionId=" + session + "; Path=/; Expires=" + toGMTDate(time(NULL) + appConfig["session.expireTime"].asInt64() * 24 * 60 * 60);
     putRequest(conn, 200, response);
     send(conn, root.output());
     exitRequest(conn);

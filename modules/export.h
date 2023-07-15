@@ -83,6 +83,13 @@ bool fileExist(string path) {
     return res;
 }
 
+int exportLevelNumber = 0;
+int exportSkinNumber = 0;
+int exportBackgroundNumber = 0;
+int exportEffectNumber = 0;
+int exportParticleNumber = 0;
+int exportEngineNumber = 0;
+
 // 临时文件类
 class tmpFile {
     string path;
@@ -111,8 +118,15 @@ class tmpFile {
         jsonNumberPt = fin.get(); jsonNumber = fin.getInteger();
         for (int i = 0; i < jsonNumber; i++) {
             jsonPt.push_back(fin.get());
-            fin.move(fin.get() + 1);
-            fin.move(fin.getInteger() + fin.get());
+            int type = fin.getBuffer(1)[0] - '0';
+            switch(type) {
+                case exportLevelId: exportLevelNumber++; break;
+                case exportSkinId: exportSkinNumber++; break;
+                case exportBackgroundId: exportBackgroundNumber++; break;
+                case exportEffectId: exportEffectNumber++; break;
+                case exportParticleId: exportParticleNumber++; break;
+                case exportEngineId: exportEngineNumber++; break;
+            } fin.move(fin.getInteger() + fin.get());
         } jsonPt.push_back(fin.get());
     }
 
@@ -236,18 +250,22 @@ map<string, string> hashMap;
 
 void exportSkin(SkinItem skin, tmpFile& tmp) {
     tmp.writeJson(exportSkinId, json_encode(skin.toJsonObject()));
+    exportSkinNumber++;
 }
 
 void exportBackground(BackgroundItem background, tmpFile& tmp) {
     tmp.writeJson(exportBackgroundId, json_encode(background.toJsonObject()));
+    exportBackgroundNumber++;
 }
 
 void exportEffect(EffectItem effect, tmpFile& tmp) {
     tmp.writeJson(exportEffectId, json_encode(effect.toJsonObject()));
+    exportEffectNumber++;
 }
 
 void exportParticle(ParticleItem particle, tmpFile& tmp) {
     tmp.writeJson(exportParticleId, json_encode(particle.toJsonObject()));
+    exportParticleNumber++;
 }
 
 void exportEngine(EngineItem engine, tmpFile& tmp) {
@@ -256,6 +274,7 @@ void exportEngine(EngineItem engine, tmpFile& tmp) {
     exportEffect(engine.effect, tmp);
     exportParticle(engine.particle, tmp);
     tmp.writeJson(exportEngineId, json_encode(engine.toJsonObject()));
+    exportEngineNumber++;
 }
 
 void exportLevel(LevelItem level, tmpFile& tmp) {
@@ -265,6 +284,7 @@ void exportLevel(LevelItem level, tmpFile& tmp) {
     if (level.useEffect.useDefault == false) exportEffect(level.useEffect.item, tmp);
     if (level.useParticle.useDefault == false) exportParticle(level.useParticle.item, tmp);
     tmp.writeJson(exportLevelId, json_encode(level.toJsonObject()));
+    exportLevelNumber++;
 }
 
 string solveUrl(string url) {
@@ -719,12 +739,21 @@ void exportCore(tmpFile& tmp) {
     __writeJson(tmp);
     writeLog(LOG_LEVEL_INFO, "Export data successfully!");
     writeLog(LOG_LEVEL_DEBUG, to_string(fileSize) + " files were written");
+    writeLog(LOG_LEVEL_DEBUG, to_string(exportLevelNumber) + " levels were written");
+    writeLog(LOG_LEVEL_DEBUG, to_string(exportSkinNumber) + " skins were written");
+    writeLog(LOG_LEVEL_DEBUG, to_string(exportBackgroundNumber) + " backgrounds were written");
+    writeLog(LOG_LEVEL_DEBUG, to_string(exportEffectNumber) + " effects were written");
+    writeLog(LOG_LEVEL_DEBUG, to_string(exportParticleNumber) + " particles were written");
+    writeLog(LOG_LEVEL_DEBUG, to_string(exportEngineNumber) + " engines were written");
 }
 
 void exportData(int argc, char** argv) {
     vector<string> args = exportPreload(argc, argv);
     if (fileExist("./.tmp/" + args.back() + ".bin")) {
         writeLog(LOG_LEVEL_ERROR, "Task " + args.back() + " is already exist.");
+        exit(3);
+    } if (fileExist(args[args.size() - 2])) {
+        writeLog(LOG_LEVEL_ERROR, "File " + args[args.size() - 2] + " is already exist.");
         exit(3);
     } initializeTemporary("./.tmp/" + args.back() + ".bin", args);
     tmpFile tmp(args.back() + ".bin");

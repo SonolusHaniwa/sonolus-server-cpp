@@ -8,6 +8,7 @@ auto web_skins_list = [](client_conn conn, http_request request, param argv) {
 
     // TODO: add the argList here
     argvar $_GET = getParam(request); int page = atoi($_GET["page"].c_str());
+    $_GET["localization"] = cookie["lang"];
     if (page < 0) page = 0;
     auto section = skinList(skinFilter($_GET), page * 20 + 1, (page + 1) * 20);
     argList["page.title"] = argList["language.skins"] + " | " + appConfig["server.title"].asString();
@@ -18,6 +19,7 @@ auto web_skins_list = [](client_conn conn, http_request request, param argv) {
     $_GET["page"] = to_string(page + 1); string nextUrl = "/skins/list?" + getStringfy($_GET);
     $_GET["page"] = to_string(section.pageCount - 1); string bottomUrl = "/skins/list?" + getStringfy($_GET);
     $_GET.erase("page"); string jumpUrl = "/skins/jump/" + to_string(page) + "?" + getStringfy($_GET);
+    $_GET.erase("localization");
     string searchUrl = "/skins/search?" + getStringfy($_GET);
     argList["html.skinsBottom"] = fetchBottomBar(sonolusUrl, topUrl, previousUrl, nextUrl, bottomUrl, searchUrl, jumpUrl, page, section.pageCount).output();
     argList["html.skinsList"] = "";
@@ -26,6 +28,7 @@ auto web_skins_list = [](client_conn conn, http_request request, param argv) {
     argList["search.filterWords"] = "";
     for (auto v : $_GET) {
         if (v.first == "page") continue;
+        if (v.first == "localization") continue;
         argList["search.filterWords"] += v.first + ": " + urldecode(v.second) + ", ";
     } if (argList["search.filterWords"].size() >= 2) {
         argList["search.filterWords"].pop_back();
