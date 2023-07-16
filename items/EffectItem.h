@@ -105,7 +105,7 @@ Section<EffectItem> effectList(string filter, int st = 1, int en = 20) {
             SRL<EffectThumbnail>(res[i]["thumbnail"], "/data/" + res[i]["thumbnail"]),
             SRL<EffectData>(res[i]["data"], "/data/" + res[i]["data"]),
             SRL<EffectAudio>(res[i]["audio"], "/data/" + res[i]["audio"]),
-            res[i]["description"]
+            str_replace("\\n", "\n", res[i]["description"])
         ); list.append(data);
     } return list;
 }

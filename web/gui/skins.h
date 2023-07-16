@@ -8,6 +8,7 @@ auto web_skins = [](client_conn conn, http_request request, param argv) {
     Section<SkinItem> skin = skinList("name = \"" + str_replace("\"", "\\\"", argv[0]) + "\" AND localization = \"" + cookie["lang"] + "\"", 1, 1);
     if (skin.items.size() == 0) skin = skinList("name = \"" + str_replace("\"", "\\\"", argv[0]) + "\"", 1, 1);
     if (skin.items.size() == 0) {
+        __api_default_response["Content-Length"] = to_string(json_encode(msg[404]).size());
         putRequest(conn, 404, __api_default_response);
         send(conn, json_encode(msg[404]));
         exitRequest(conn);
@@ -29,6 +30,7 @@ auto web_skins = [](client_conn conn, http_request request, param argv) {
     H root = H(true, "html");
     root.append(header);
     root.append(body);
+    __default_response["Content-Length"] = to_string(root.output().size());
     putRequest(conn, 200, __default_response);
     send(conn, root.output());
     exitRequest(conn);

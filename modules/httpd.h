@@ -1127,11 +1127,15 @@ void thread_pool::work_thread() {
     }
 }
 
-string str_replace(string from, string to, string source) {
+string str_replace(string from, string to, string source, bool supportTranfer = false) {
     string result = source;
 	int st = 0, wh = result.find(from.c_str(), st);
 	while (wh != string::npos) {
-		result.replace(wh, from.size(), to.c_str());
+        if (supportTranfer && wh >= 1 && result[wh - 1] == '\\') {
+            st = wh + 1;
+            wh = result.find(from.c_str(), st);
+            continue;
+        } result.replace(wh, from.size(), to.c_str());
 		st = wh + to.size();
 		wh = result.find(from.c_str(), st);
 	} 
@@ -1140,7 +1144,11 @@ string str_replace(string from, string to, string source) {
 
 string str_replace(string source, argvar argv) {
     for (auto it : argv) {
-        source = str_replace("{{" + it.first + "}}", it.second, source);
+        source = str_replace("{{" + it.first + "}}", it.second, source, true);
+    } for (auto it = argv.rbegin(); it != argv.rend(); it++) {
+        if ((*it).first.size() < 9) continue;
+        if ((*it).first.substr(0, 9) != "language.") continue;
+        source = str_replace("#" + (*it).first.substr(9), (*it).second, source, true);
     } return source;
 }
 

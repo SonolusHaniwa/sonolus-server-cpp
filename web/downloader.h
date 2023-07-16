@@ -5,8 +5,9 @@ auto downloader = [](client_conn conn, http_request request, param argv){
     /** 打开文件 */
     ifstream fin(("./data/" + argv[0]).c_str(), ios::binary);
     if (!fin) {
+        __api_default_response["Content-Length"] = to_string(json_encode(msg[404]).size());
         putRequest(conn, 404, __default_response);
-        send(conn, json_encode(Json::Value()));
+        send(conn, json_encode(msg[404]));
         exitRequest(conn);
     }
 

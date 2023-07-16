@@ -17,6 +17,7 @@ auto auth_sonolus_info = [](client_conn conn, http_request request, param argv){
     res["effects"] = Section<EffectItem>(0, {}, Search()).toJsonObject();
     res["particles"] = Section<ParticleItem>(0, {}, Search()).toJsonObject();
     res["engines"] = Section<EngineItem>(0, {}, Search()).toJsonObject();
+    __api_default_response["Content-Length"] = to_string(json_encode(res).size());
     putRequest(conn, 200, __api_default_response);
     send(conn, json_encode(res));
     exitRequest(conn);

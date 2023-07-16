@@ -133,7 +133,7 @@ Section<EngineItem> engineList(string filter, int st = 1, int en = 20) {
             SRL<EngineData>(res[i]["data"], "/data/" + res[i]["data"]),
             SRL<EngineConfiguration>(res[i]["configuration"], "/data/" + res[i]["configuration"]),
             SRL<EngineRom>(res[i]["rom"], "/data/" + res[i]["rom"]),
-            res[i]["description"]
+            str_replace("\\n", "\n", res[i]["description"])
         ); list.append(data);
     } return list;
 }

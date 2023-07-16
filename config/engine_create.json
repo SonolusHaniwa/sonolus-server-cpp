@@ -2,31 +2,31 @@
     "options": [
         {
             "query": "name",
-            "name": "Name",
+            "name": "#NAME",
             "type": "text",
             "placeholder": "Enter engine name..."
         },
         {
             "query": "title",
-            "name": "Title",
+            "name": "#TITLE",
             "type": "text",
             "placeholder": "Enter engine title..."
         },
         {
             "query": "subtitle",
-            "name": "Subtitle",
+            "name": "#SUBTITLE",
             "type": "text",
             "placeholder": "Enter engine subtitle..."
         },
         {
             "query": "author",
-            "name": "Author",
+            "name": "#AUTHOR",
             "type": "text",
             "placeholder": "Enter engine author..."
         },
         {
             "query": "description",
-            "name": "Description",
+            "name": "#description",
             "type": "text",
             "placeholder": "Enter description..."
         },
@@ -42,7 +42,7 @@
         },
         {
             "query": "skin",
-            "name": "Skin",
+            "name": "#skins",
             "type": "select",
             "def": 0,
             "values": [
@@ -52,7 +52,7 @@
         },
         {
             "query": "background",
-            "name": "Background",
+            "name": "#backgrounds",
             "type": "select",
             "def": 0,
             "values": [
@@ -62,7 +62,7 @@
         },
         {
             "query": "effect",
-            "name": "Effect",
+            "name": "#effects",
             "type": "select",
             "def": 0,
             "values": [
@@ -72,7 +72,7 @@
         },
         {
             "query": "particle",
-            "name": "Particle",
+            "name": "#particles",
             "type": "select",
             "def": 0,
             "values": [

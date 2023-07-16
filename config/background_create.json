@@ -2,31 +2,31 @@
     "options": [
         {
             "query": "name",
-            "name": "Name",
+            "name": "#NAME",
             "type": "text",
             "placeholder": "Enter background name..."
         },
         {
             "query": "title",
-            "name": "Title",
+            "name": "#TITLE",
             "type": "text",
             "placeholder": "Enter background title..."
         },
         {
             "query": "subtitle",
-            "name": "Subtitle",
+            "name": "#SUBTITLE",
             "type": "text",
             "placeholder": "Enter background subtitle..."
         },
         {
             "query": "author",
-            "name": "Author",
+            "name": "#AUTHOR",
             "type": "text",
             "placeholder": "Enter background author..."
         },
         {
             "query": "description",
-            "name": "Description",
+            "name": "#description",
             "type": "text",
             "placeholder": "Enter description..."
         },

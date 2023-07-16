@@ -13,7 +13,7 @@
     "server.httpsPrivkey": "privkey.pem",
     "server.threadNumber": 8,
     "logSystem.debug": false,
-    "logSystem.target": 1,
+    "logSystem.target": 3,
     "logSystem.targetFile": "./log.txt",
     "sonolus.version": "0.7.1",
     "session.expireTime": 30,

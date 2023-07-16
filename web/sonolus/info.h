@@ -19,6 +19,7 @@ auto sonolus_info = [](client_conn conn, http_request request, param argv){
     ServerInfo["effects"] = effects.toJsonObject();
     ServerInfo["particles"] = particles.toJsonObject();
     ServerInfo["engines"] = engines.toJsonObject();
+    __api_default_response["Content-Length"] = to_string(json_encode(ServerInfo).size());
     putRequest(conn, 200, __api_default_response);
     send(conn, json_encode(ServerInfo));
     exitRequest(conn);

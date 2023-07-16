@@ -104,7 +104,7 @@ Section<SkinItem> skinList(string filter, int st = 1, int en = 20) {
             SRL<SkinThumbnail>(res[i]["thumbnail"], "/data/" + res[i]["thumbnail"]),
             SRL<SkinData>(res[i]["data"], "/data/" + res[i]["data"]),
             SRL<SkinTexture>(res[i]["texture"], "/data/" + res[i]["texture"]),
-            res[i]["description"]
+            str_replace("\\n", "\n", res[i]["description"])
         ); list.append(data);
     } return list;
 }

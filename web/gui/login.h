@@ -12,6 +12,7 @@ auto web_login = [](client_conn conn, http_request request, param argv) {
     string body = readFile("./web/html/pages/levels.html");
 
     if (checkLogin(request)) {
+        __default_response["Content-Length"] = "75";
         putRequest(conn, 302, __default_response);
         send(conn, "<script>alert(\"Login Success!\"); location.href=document.referrer;</script>");
         exitRequest(conn);
@@ -57,6 +58,7 @@ auto web_login = [](client_conn conn, http_request request, param argv) {
     root.append(body);
     auto response = __default_response;
     response["Set-Cookie"] = "sessionId=" + session + "; Path=/; Expires=" + toGMTDate(time(NULL) + appConfig["session.expireTime"].asInt64() * 24 * 60 * 60);
+    response["Content-Length"] = to_string(root.output().size());
     putRequest(conn, 200, response);
     send(conn, root.output());
     exitRequest(conn);

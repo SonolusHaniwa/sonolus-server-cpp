@@ -174,7 +174,7 @@ Section<LevelItem> levelList(string filter, int st = 1, int en = 20) {
             SRL<LevelBgm>(res[i]["bgm"], "/data/" + res[i]["bgm"]),
             SRL<LevelData>(res[i]["data"], "/data/" + res[i]["data"]),
             SRL<LevelPreview>(res[i]["preview"], "/data/" + res[i]["preview"]),
-            res[i]["description"]
+            str_replace("\\n", "\n", res[i]["description"])
         ); list.append(data);
     } return list;
 }

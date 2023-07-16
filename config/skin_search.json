@@ -2,7 +2,7 @@
     "options": [
         {
             "query": "keywords",
-            "name": "Keywords",
+            "name": "#KEYWORDS",
             "type": "text",
             "placeholder": "Enter keywords..."
         }

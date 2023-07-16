@@ -2,36 +2,36 @@
     "options": [
         {
             "query": "keywords",
-            "name": "Keywords",
+            "name": "#KEYWORDS",
             "type": "text",
             "placeholder": "Enter keywords..."
         },
         {
             "query": "artist",
-            "name": "Artist",
+            "name": "#ARTISTS",
             "type": "text",
             "placeholder": "Enter artist name..."
         },
         {
             "query": "author",
-            "name": "Author",
+            "name": "#AUTHOR",
             "type": "text",
             "placeholder": "Enter author name..."
         },
         {
-            "query": "maxRating",
-            "name": "Maximum Rating",
+            "query": "minRating",
+            "name": "#RATING_MINIMUM",
             "type": "slider",
-            "def": 50,
+            "def": 5,
             "min": 5,
             "max": 50,
             "step": 1
         },
         {
-            "query": "minRating",
-            "name": "Minimal Rating",
+            "query": "maxRating",
+            "name": "#RATING_MAXIMUM",
             "type": "slider",
-            "def": 5,
+            "def": 50,
             "min": 5,
             "max": 50,
             "step": 1

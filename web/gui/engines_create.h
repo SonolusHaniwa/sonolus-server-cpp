@@ -2,6 +2,7 @@ using namespace std;
 
 auto web_engines_create = [](client_conn conn, http_request request, param argv){
     if (!checkLogin(request)) {
+        __default_response["Content-Length"] = "88";
         putRequest(conn, 401, __default_response);
         send(conn, "<script>alert('Permission Denied: 401 Unauthorized'); window.history.back(-1);</script>");
         exitRequest(conn);
@@ -53,6 +54,7 @@ auto web_engines_create = [](client_conn conn, http_request request, param argv)
     H root = H(true, "html");
     root.append(header);
     root.append(body);
+    __default_response["Content-Length"] = to_string(root.output().size());
     putRequest(conn, 200, __default_response);
     send(conn, root.output());
     exitRequest(conn);

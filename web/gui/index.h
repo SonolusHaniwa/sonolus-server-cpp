@@ -33,7 +33,7 @@ auto web_index = [](client_conn conn, http_request request, param argv) {
         argList["html.backgroundsList"] += backgrounds.items[i].toHTMLObject().output();
     argList["html.backgroundsBottom"] = fetchIndexBottom("/backgrounds/search", "/backgrounds/list").output();
     
-    argList["html.effectsTitle"] = fetchIndexTitle("/effects/create", "/effects/search", "/effect/list", "effects").output();
+    argList["html.effectsTitle"] = fetchIndexTitle("/effects/create", "/effects/search", "/effects/list", "effects").output();
     Section<EffectItem> effects = effectList(effectFilter(filter), 1, 5);
     argList["html.effectsList"] = "";
     for (int i = 0; i < effects.items.size(); i++) 
@@ -59,6 +59,7 @@ auto web_index = [](client_conn conn, http_request request, param argv) {
     H root = H(true, "html");
     root.append(header);
     root.append(body);
+    __default_response["Content-Length"] = to_string(root.output().size());
     putRequest(conn, 200, __default_response);
     send(conn, root.output());
     exitRequest(conn);

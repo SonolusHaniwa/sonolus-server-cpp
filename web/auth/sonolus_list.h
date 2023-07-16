@@ -15,6 +15,7 @@ auto auth_sonolus_list = [](client_conn conn, http_request request, param argv){
     );
     ItemList<LevelItem> levels = ItemList<LevelItem>(-1, authLevelSearch);
     levels.append(level);
+    __api_default_response["Content-Length"] = to_string(json_encode(levels.toJsonObject()).size());
     putRequest(conn, 200, __api_default_response);
     send(conn, json_encode(levels.toJsonObject()));
     exitRequest(conn);

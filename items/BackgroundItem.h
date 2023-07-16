@@ -110,7 +110,7 @@ Section<BackgroundItem> backgroundList(string filter, int st = 1, int en = 20) {
             SRL<BackgroundData>(res[i]["data"], "/data/" + res[i]["data"]),
             SRL<BackgroundImage>(res[i]["image"], "/data/" + res[i]["image"]),
             SRL<BackgroundConfiguration>(res[i]["configuration"], "/data/" + res[i]["configuration"]),
-            res[i]["description"]
+            str_replace("\\n", "\n", res[i]["description"])
         ); list.append(data);
     } return list;
 }

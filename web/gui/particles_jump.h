@@ -17,6 +17,7 @@ auto web_particles_jump = [](client_conn conn, http_request request, param argv)
     H root = H(true, "html");
     root.append(header);
     root.append(body);
+    __default_response["Content-Length"] = to_string(root.output().size());
     putRequest(conn, 200, __default_response);
     send(conn, root.output());
     exitRequest(conn);

@@ -7,6 +7,7 @@ auto auth_sonolus_levels = [](client_conn conn, http_request request, param argv
     // 身份验证
     if (request.argv.find("Sonolus-Session-Id") == request.argv.end()
         || request.argv.find("Sonolus-Session-Data") == request.argv.end()) {
+        __api_default_response["Content-Length"] = to_string(json_encode(msg[401]).size());
         putRequest(conn, 401, __api_default_response);
         send(conn, json_encode(msg[401]));
         exitRequest(conn);
@@ -22,6 +23,7 @@ auto auth_sonolus_levels = [](client_conn conn, http_request request, param argv
         SRL<LevelCover>(no_sha1, "/data/" + no_sha1), SRL<LevelBgm>(), SRL<LevelData>(), SRL<LevelPreview>()
     );
     if (res.size() == 0) {
+        __api_default_response["Content-Length"] = to_string(json_encode(msg[401]).size());
         putRequest(conn, 401, __api_default_response);
         send(conn, json_encode(msg[401]));
         exitRequest(conn);
@@ -34,6 +36,7 @@ auto auth_sonolus_levels = [](client_conn conn, http_request request, param argv
     if (res.size() == 0) {
         ItemDetails<LevelItem> detail = ItemDetails<LevelItem>(errorItem, "Invalid Login Request Key!");
         Json::Value val = detail.toJsonObject();
+        __api_default_response["Content-Length"] = to_string(json_encode(val).size());
         putRequest(conn, 200, __api_default_response);
         send(conn, json_encode(val));
         exitRequest(conn);
@@ -67,6 +70,7 @@ auto auth_sonolus_levels = [](client_conn conn, http_request request, param argv
 
     ItemDetails<LevelItem> detail = ItemDetails<LevelItem>(item, "");
     Json::Value val = detail.toJsonObject();
+    __api_default_response["Content-Length"] = to_string(json_encode(val).size());
     putRequest(conn, 200, __api_default_response);
     send(conn, json_encode(val));
     exitRequest(conn);

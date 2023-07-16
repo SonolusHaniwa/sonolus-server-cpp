@@ -160,9 +160,7 @@ void routerRegister(int argc, char** argv) {
     }
 }
 
-void serverRunner(int argc, char** argv) {
-    (new DB_Controller)->query("SELECT COUNT(*) FROM Level");
-
+void setConfiguration() {
     app.setopt(HTTP_ENABLE_SSL, appConfig["server.enableSSL"].asBool());
     app.setopt(HTTP_LISTEN_HOST, appConfig["server.listenHost"].asString().c_str());
     app.setopt(HTTP_LISTEN_PORT, appConfig["server.listenPort"].asInt());
@@ -172,7 +170,12 @@ void serverRunner(int argc, char** argv) {
     app.setopt(LOG_FILE_PATH, appConfig["logSystem.targetFile"].asString().c_str());
     app.setopt(LOG_TARGET_TYPE, appConfig["logSystem.target"].asInt());
     app.setopt(OPEN_DEBUG, appConfig["logSystem.debug"].asInt());
+}
 
+void serverRunner(int argc, char** argv) {
+    (new DB_Controller)->query("SELECT COUNT(*) FROM Level");
+
+    setConfiguration();
     routerRegister(argc, argv);
 
     app.run();
@@ -340,6 +343,8 @@ void preload() {
     Json::Value tmpConfig; json_decode(configJson, tmpConfig);
     json_merge(appConfig, tmpConfig); json_merge(studiosConfig, tmpConfig);
     Sonolus_Version = appConfig["sonolus.version"].asString();
+    setConfiguration();
+    log_init(log_target_type);
     loadConfig();
     loadDefaultVariable();
 

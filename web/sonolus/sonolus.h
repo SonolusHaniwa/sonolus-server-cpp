@@ -52,6 +52,7 @@ void loadDefaultVariable() {
 
 void checkSecret(string token, client_conn conn) {
     if (token != appConfig["admin.password"].asString()) {
+        __api_default_response["Content-Length"] = to_string(json_encode(msg[401]).size());
         putRequest(conn, 401, __api_default_response);
         send(conn, json_encode(msg[401]));
         exitRequest(conn);

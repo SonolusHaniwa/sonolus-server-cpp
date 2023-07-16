@@ -2,31 +2,31 @@
     "options": [
         {
             "query": "name",
-            "name": "Name",
+            "name": "#NAME",
             "type": "text",
             "placeholder": "Enter effect name..."
         },
         {
             "query": "title",
-            "name": "Title",
+            "name": "#TITLE",
             "type": "text",
             "placeholder": "Enter effect title..."
         },
         {
             "query": "subtitle",
-            "name": "Subtitle",
+            "name": "#SUBTITLE",
             "type": "text",
             "placeholder": "Enter effect subtitle..."
         },
         {
             "query": "author",
-            "name": "Author",
+            "name": "#AUTHOR",
             "type": "text",
             "placeholder": "Enter effect author..."
         },
         {
             "query": "description",
-            "name": "Description",
+            "name": "#description",
             "type": "text",
             "placeholder": "Enter description..."
         },

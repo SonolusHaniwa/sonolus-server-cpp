@@ -105,7 +105,7 @@ Section<ParticleItem> particleList(string filter, int st = 1, int en = 20) {
             SRL<ParticleThumbnail>(res[i]["thumbnail"], "/data/" + res[i]["thumbnail"]),
             SRL<ParticleData>(res[i]["data"], "/data/" + res[i]["data"]),
             SRL<ParticleTexture>(res[i]["texture"], "/data/" + res[i]["texture"]),
-            res[i]["description"]
+            str_replace("\\n", "\n", res[i]["description"])
         ); list.append(data);
     } return list;
 }
