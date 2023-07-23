@@ -2,7 +2,7 @@ using namespace std;
 auto uploader = [](client_conn conn, http_request request, param argv){
     if (!checkLogin(request)) {
         __api_default_response["Content-Length"] = to_string(json_encode(msg[401]).size());
-        putRequest(conn, 401, __default_response);
+        putRequest(conn, 401, __api_default_response);
         send(conn, json_encode(msg[401]));
         exitRequest(conn);
     }
@@ -20,7 +20,7 @@ auto uploader = [](client_conn conn, http_request request, param argv){
     res["hash"] = buffer.str();
     res["url"] = "/data/" + buffer.str();
     __api_default_response["Content-Length"] = to_string(json_encode(res).size());
-    putRequest(conn, 200, __default_response);
+    putRequest(conn, 200, __api_default_response);
     send(conn, json_encode(res));
     exitRequest(conn);
 };

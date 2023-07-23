@@ -28,7 +28,6 @@ async function uploader(context) {
             inner.style.width = per + "%";
         }),
         success: function(msg) {
-            msg = JSON.parse(msg);
             console.log(msg);
             hash = msg["hash"];
             finish = 1;
