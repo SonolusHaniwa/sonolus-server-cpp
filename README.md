@@ -1,4 +1,6 @@
-<p align="center"><img src="http://pic.littleyang.ml/sonolus-server-screenshot/favicon.png"/></p>
+<p align="center"><img src="https://github.com/SonolusHaniwa/sonolus-server-cpp/assets/63852815/e7f00aea-cc1b-428b-8611-0c1844dcd15a"/></p>
+
+
 
 <h1 align="center">Sonolus Server for C++</h1>
 
