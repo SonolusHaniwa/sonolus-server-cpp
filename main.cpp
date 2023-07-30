@@ -4,7 +4,7 @@ using namespace std;
 
 std::string sonolus_server_version = "1.4.4";
 std::string Sonolus_Version = "0.7.1";
-std::string Maximum_Sonolus_Version = "0.7.1";
+std::string Maximum_Sonolus_Version = "0.7.2";
 Json::Value appConfig, studiosConfig;
 Json::Value i18n, i18n_raw;
 Json::Value enableListJson;
@@ -29,7 +29,7 @@ vector<string> skinVersionList = {"0.0.0", "0.5.8", "0.7.0"};
 vector<string> backgroundVersionList = {"0.0.0", "0.5.8"};
 vector<string> effectVersionList = {"0.0.0", "0.5.8", "0.6.0", "0.6.4", "0.7.0"};
 vector<string> particleVersionList = {"0.0.0", "0.7.0"};
-vector<string> engineVersionList = {"0.0.0", "0.0.0", "0.0.0", "0.5.8", "0.5.13", "0.6.0", "0.6.4", "0.7.0"};
+vector<string> engineVersionList = {"0.0.0", "0.0.0", "0.0.0", "0.5.8", "0.5.13", "0.6.0", "0.6.4", "0.7.0", "0.7.2"};
 
 #include"modules/modules.h"
 #include"items/Items.h"

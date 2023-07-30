@@ -20,15 +20,16 @@ class EngineItem {
     SRL<EngineData> data;
     SRL<EngineConfiguration> configuration;
     SRL<EngineRom> rom;
+	SRL<EngineTutorialData> tutorialData;
     string description;
 
     EngineItem(){}
     EngineItem(int id, string name, string title, string subtitle, string author,
         SkinItem skin, BackgroundItem background, EffectItem effect, ParticleItem particle,
-        SRL<EngineThumbnail> thumbnail, SRL<EngineData> data, SRL<EngineConfiguration> configuration, SRL<EngineRom> rom = SRL<EngineRom>("", ""), string description = ""):
+        SRL<EngineThumbnail> thumbnail, SRL<EngineData> data, SRL<EngineConfiguration> configuration, SRL<EngineRom> rom = SRL<EngineRom>("", ""), SRL<EngineTutorialData> tutorialData = {"", ""}, string description = ""):
         id(id), name(name), title(title), subtitle(subtitle), author(author),
         skin(skin), background(background), effect(effect), particle(particle),
-        thumbnail(thumbnail), data(data), configuration(configuration), rom(rom), description(description){}
+        thumbnail(thumbnail), data(data), configuration(configuration), rom(rom), description(description), tutorialData(tutorialData){}
     EngineItem(int engine_id, Json::Value arr) {
         id = engine_id;
         name = arr["name"].asString();
@@ -44,6 +45,7 @@ class EngineItem {
         data = SRL<EngineData>(arr["data"]);
         configuration = SRL<EngineConfiguration>(arr["configuration"]);
         rom = SRL<EngineRom>(arr["rom"]);
+		tutorialData = SRL<EngineTutorialData>(arr["tutorialData"]);
         description = arr["description"].asString();
     }
     
@@ -60,7 +62,11 @@ class EngineItem {
         res["particle"] = particle.toJsonObject();
         res["thumbnail"] = thumbnail.toJsonObject();
         res["data"] = data.toJsonObject();
+		SRL<EnginePlayData> playData;
+		playData.url = data.url; playData.hash = data.hash;
+		res["playData"] = playData.toJsonObject();
         res["configuration"] = configuration.toJsonObject();
+		res["tutorialData"] = tutorialData.toJsonObject();
         if (rom.hash != "") res["rom"] = rom.toJsonObject();
         res["description"] = description;
         return res;
@@ -133,6 +139,7 @@ Section<EngineItem> engineList(string filter, int st = 1, int en = 20) {
             SRL<EngineData>(res[i]["data"], "/data/" + res[i]["data"]),
             SRL<EngineConfiguration>(res[i]["configuration"], "/data/" + res[i]["configuration"]),
             SRL<EngineRom>(res[i]["rom"], "/data/" + res[i]["rom"]),
+			{res[i]["tutorialData"], "/data/" + res[i]["tutorialData"]},
             str_replace("\\n", "\n", res[i]["description"])
         ); list.append(data);
     } return list;
@@ -155,15 +162,15 @@ int engineCreate(EngineItem item, string localization = "default") {
         int id = atoi(res[0]["id"].c_str());
         sqlbuffer << "UPDATE Engine SET name = \"" << item.name << "\", version = " << item.version << ", title = \"" << item.title << "\", ";
         sqlbuffer << "subtitle = \"" << item.subtitle << "\", author = \"" << item.author << "\", skin = " << skinId << ", background = " << backgroundId << ", ";
-        sqlbuffer << "effect = " << effectId << ", particle = " << particleId << ", thumbnail = \"" << item.thumbnail.hash << "\", data = \"" << item.data.hash << "\", ";
+        sqlbuffer << "effect = " << effectId << ", particle = " << particleId << ", thumbnail = \"" << item.thumbnail.hash << "\", data = \"" << item.data.hash << "\", tutorialData = \"" << item.tutorialData.hash << "\", ";
         sqlbuffer << "configuration = \"" << item.configuration.hash << "\", rom = \"" << item.rom.hash << "\", description = \"" << str_replace("\n", "\\n", item.description) << "\", localization = \"" << localization << "\" WHERE id = " << id << ";";
     } else {
         int id = atoi((new DB_Controller)->query("SELECT COUNT(*) AS sum FROM Engine;")[0]["sum"].c_str()) + 1;
-        sqlbuffer << "INSERT INTO Engine (id, name, version, title, subtitle, author, skin, background, effect, particle, thumbnail, data, configuration, rom, description, localization) VALUES (";
+        sqlbuffer << "INSERT INTO Engine (id, name, version, title, subtitle, author, skin, background, effect, particle, thumbnail, data, configuration, rom, description, localization, tutorialData) VALUES (";
         sqlbuffer << id << ", \"" << item.name << "\", " << item.version << ", \"" << item.title << "\", ";
         sqlbuffer << "\"" << item.subtitle << "\", \"" << item.author << "\", " << skinId << ", " << backgroundId << ", " << effectId << ", " << particleId << ", ";
         sqlbuffer << "\"" << item.thumbnail.hash << "\", \"" << item.data.hash << "\", \"" << item.configuration.hash << "\", ";
-        sqlbuffer << "\"" << item.rom.hash << "\", \"" << str_replace("\n", "\\n", item.description) << "\", \"" << localization << "\");";
+        sqlbuffer << "\"" << item.rom.hash << "\", \"" << str_replace("\n", "\\n", item.description) << "\", \"" << localization << "\", \"" << item.tutorialData.hash << "\");";
     } return (new DB_Controller)->execute(sqlbuffer.str());
 }
 

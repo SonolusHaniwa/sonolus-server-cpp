@@ -55,7 +55,7 @@ auto sonolus_engines_create = [](client_conn conn, http_request request, param a
 
     int raws = engineCreate(EngineItem(id, name, title, subtitle, author, 
         skinItem, backgroundItem, effectItem, particleItem, SRL<EngineThumbnail>(thumbnail, thumbnail), 
-        SRL<EngineData>(data, data), SRL<EngineConfiguration>(configuration, configuration), SRL<EngineRom>(rom, rom), $_POST["description"]), localization);
+        SRL<EngineData>(data, data), SRL<EngineConfiguration>(configuration, configuration), SRL<EngineRom>(rom, rom), {"", ""}, $_POST["description"]), localization);
     if (raws == 0) {
         __api_default_response["Content-Length"] = to_string(json_encode(msg[400]).size());
         putRequest(conn, 400, __api_default_response), send(conn, json_encode(msg[400])), exitRequest(conn);

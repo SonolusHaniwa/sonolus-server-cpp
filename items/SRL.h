@@ -25,10 +25,12 @@ enum ResourceType {
     EngineData,
     EngineRom,
     EngineConfiguration,
-    ServerBanner
+    ServerBanner,
+	EnginePlayData,
+	EngineTutorialData
 };
 
-string ResourceTypeString[22] = {
+string ResourceTypeString[] = {
     "LevelCover",
     "LevelBgm",
     "LevelPreview",
@@ -50,7 +52,9 @@ string ResourceTypeString[22] = {
     "EngineData",
     "EngineRom",
     "EngineConfiguration",
-    "ServerBanner"
+    "ServerBanner",
+	"EnginePlayData",
+	"EngineTutorialData"
 };
 
 template<ResourceType T>
