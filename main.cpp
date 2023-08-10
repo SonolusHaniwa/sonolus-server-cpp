@@ -2,7 +2,7 @@
 using namespace std;
 #include<jsoncpp/json/json.h>
 
-std::string sonolus_server_version = "1.4.4";
+std::string sonolus_server_version = "1.4.5";
 std::string Maximum_Sonolus_Version = "0.7.2";
 std::string Sonolus_Version = Maximum_Sonolus_Version;
 Json::Value appConfig, studiosConfig;
