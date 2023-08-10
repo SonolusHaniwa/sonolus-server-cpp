@@ -87,7 +87,12 @@
         },
         {
             "query": "data",
-            "name": "Data",
+            "name": "Play Data",
+            "type": "file"
+        },
+        {
+            "query": "tutorialData",
+            "name": "Tutorial Data",
             "type": "file"
         },
         {

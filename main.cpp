@@ -3,8 +3,8 @@ using namespace std;
 #include<jsoncpp/json/json.h>
 
 std::string sonolus_server_version = "1.4.4";
-std::string Sonolus_Version = "0.7.1";
 std::string Maximum_Sonolus_Version = "0.7.2";
+std::string Sonolus_Version = Maximum_Sonolus_Version;
 Json::Value appConfig, studiosConfig;
 Json::Value i18n, i18n_raw;
 Json::Value enableListJson;
@@ -394,7 +394,6 @@ void preload() {
     http_code[503] = "Service Unavailable";
     http_code[504] = "Gateway Time-out";
     http_code[505] = "HTTP Version not supported";
-    // writeLog(LOG_LEVEL_DEBUG, "Successfully initialize HTTP Code!");
 
     // 适配 Resource Version
     levelVersion = upper_bound(levelVersionList.begin(), levelVersionList.end(), Sonolus_Version) - levelVersionList.begin();

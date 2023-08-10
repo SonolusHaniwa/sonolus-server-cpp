@@ -15,7 +15,7 @@
     "logSystem.debug": false,
     "logSystem.target": 3,
     "logSystem.targetFile": "./log.txt",
-    "sonolus.version": "0.7.1",
+    "sonolus.version": "0.7.2",
     "session.expireTime": 30,
     "export.retryTime": 5,
     "export.hashCheckTime": 5
