@@ -53,8 +53,6 @@ jobs:
           cd sources
           ../mingw/bin/g++ plugins/libsonolush/libsonolush.cpp -o ../packages/plugins/libsonolush.dll -fPIC -shared -lmysql -lpthread -lcrypto -lssl -lwsock32 -ljson -lsqlite3 -std=c++17 -O2 -DENABLE_MYSQL -DENABLE_SQLITE
           mv plugins/libsonolush ../packages/plugins -Force
-          ../mingw/bin/g++ plugins/libsonolusjs/libsonolusjs.cpp -o ../packages/plugins/libsonolusjs.dll -fPIC -shared -lmysql -lpthread -lcrypto -lssl -lwsock32 -ljson -lsqlite3 -std=c++17 -O2 -DENABLE_MYSQL -DENABLE_SQLITE
-          mv plugins/libsonolusjs ../packages/plugins -Force
           ../mingw/bin/g++ plugins/libonedrive/libonedrive.cpp -o ../packages/plugins/libonedrive.dll -fPIC -shared -lmysql -lpthread -lcrypto -lssl -lwsock32 -ljson -lsqlite3 -lcurl -lcurldll -std=c++17 -O2 -DENABLE_MYSQL -DENABLE_SQLITE
           mv plugins/libonedrive ../packages/plugins -Force
       
