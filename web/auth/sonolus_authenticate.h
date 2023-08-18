@@ -40,7 +40,7 @@ auto auth_sonolus_authenticate = [](client_conn conn, http_request request, para
     iv = base64_encode(const_cast<char*>(iv.c_str()), iv.size());
     Json::Value session; session["id"] = id; session["key"] = key; session["iv"] = iv;
     val["session"] = rsa_encode(json_encode(session), sonolus_public_key);
-    val["expiration"] = (long long)((time(NULL) + 3600) * 1000);
+    val["expiration"] = (Json::Int64)((time(NULL) + 3600LL) * 1000LL);
     __api_default_response["Content-Length"] = to_string(json_encode(val).size());
     putRequest(conn, 200, __api_default_response);
     send(conn, json_encode(val));
