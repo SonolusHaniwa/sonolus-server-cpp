@@ -2,8 +2,8 @@
 using namespace std;
 #include<jsoncpp/json/json.h>
 
-std::string sonolus_server_version = "1.4.5";
-std::string Maximum_Sonolus_Version = "0.7.2";
+std::string sonolus_server_version = "1.4.6";
+std::string Maximum_Sonolus_Version = "0.7.3";
 std::string Sonolus_Version = Maximum_Sonolus_Version;
 Json::Value appConfig, studiosConfig;
 Json::Value i18n, i18n_raw;
@@ -25,11 +25,11 @@ int particleVersion = 2;
 int engineVersion = 8;
 
 vector<string> levelVersionList = {"0.0.0"};
-vector<string> skinVersionList = {"0.0.0", "0.5.8", "0.7.0"};
+vector<string> skinVersionList = {"0.0.0", "0.5.8", "0.7.0", "0.7.2"};
 vector<string> backgroundVersionList = {"0.0.0", "0.5.8"};
 vector<string> effectVersionList = {"0.0.0", "0.5.8", "0.6.0", "0.6.4", "0.7.0"};
 vector<string> particleVersionList = {"0.0.0", "0.7.0"};
-vector<string> engineVersionList = {"0.0.0", "0.0.0", "0.0.0", "0.5.8", "0.5.13", "0.6.0", "0.6.4", "0.7.0", "0.7.2"};
+vector<string> engineVersionList = {"0.0.0", "0.0.0", "0.0.0", "0.5.8", "0.5.13", "0.6.0", "0.6.4", "0.7.0", "0.7.2", "0.7.2"};
 
 #include"modules/modules.h"
 #include"items/Items.h"

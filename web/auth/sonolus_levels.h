@@ -18,7 +18,7 @@ auto auth_sonolus_levels = [](client_conn conn, http_request request, param argv
     LevelItem errorItem = LevelItem(
         0, "sonolus-server-auth", 0, "Login Failed",
         "Please see the error info below!", "System",
-        EngineItem(0, "sonolus-server-auth", "(Message)", "", "", {}, {}, {}, {}, {}, {}, {}, {}), 
+        EngineItem(0, "sonolus-server-auth", "(Message)", "", "", {}, {}, {}, {}, {}, {}, {}, {}, {}), 
         UseItem<SkinItem>(), UseItem<BackgroundItem>(), UseItem<EffectItem>(), UseItem<ParticleItem>(),
         SRL<LevelCover>(no_sha1, "/data/" + no_sha1), SRL<LevelBgm>(), SRL<LevelData>(), SRL<LevelPreview>()
     );
@@ -63,7 +63,7 @@ auto auth_sonolus_levels = [](client_conn conn, http_request request, param argv
     LevelItem item = LevelItem(
         0, "sonolus-server-auth", 0, "Login Success",
         "You can refresh the browser to see the result!", "System",
-        EngineItem(0, "sonolus-server-auth", "(Message)", "", "", {}, {}, {}, {}, {}, {}, {}, {}), 
+        EngineItem(0, "sonolus-server-auth", "(Message)", "", "", {}, {}, {}, {}, {}, {}, {}, {}, {}), 
         UseItem<SkinItem>(), UseItem<BackgroundItem>(), UseItem<EffectItem>(), UseItem<ParticleItem>(),
         SRL<LevelCover>(yes_sha1, "/data/" + yes_sha1), SRL<LevelBgm>(), SRL<LevelData>(), SRL<LevelPreview>()
     );

@@ -95,6 +95,11 @@
             "name": "Tutorial Data",
             "type": "file"
         },
+		{
+			"query": "previewData",
+			"name": "Preview Data",
+			"type": "file"
+		},
         {
             "query": "configuration",
             "name": "Configuration",

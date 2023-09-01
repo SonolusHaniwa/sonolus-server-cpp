@@ -114,3 +114,4 @@ ALTER TABLE Effect ADD COLUMN localization text DEFAULT 'default';
 ALTER TABLE Particle ADD COLUMN localization text DEFAULT 'default';
 ALTER TABLE Engine ADD COLUMN localization text DEFAULT 'default';
 ALTER TABLE Engine ADD COLUMN tutorialData text;
+ALTER TABLE Engine ADD COLUMN PreviewData text;

@@ -9,7 +9,7 @@ auto auth_sonolus_list = [](client_conn conn, http_request request, param argv){
     LevelItem level = LevelItem(
         0, code, 0, "Login with [" + code + "]?",  
         "Do not use code by other people!", "System",
-        EngineItem(0, "sonolus-server-auth", "(Message)", "", "", {}, {}, {}, {}, {}, {}, {}, {}),
+        EngineItem(0, "sonolus-server-auth", "(Message)", "", "", {}, {}, {}, {}, {}, {}, {}, {}, {}),
         UseItem<SkinItem>(), UseItem<BackgroundItem>(), UseItem<EffectItem>(), UseItem<ParticleItem>(),
         SRL<LevelCover>(warn_sha1, "/data/" + warn_sha1), SRL<LevelBgm>(), SRL<LevelData>(), SRL<LevelPreview>()
     );
