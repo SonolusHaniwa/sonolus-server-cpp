@@ -25,11 +25,11 @@ int particleVersion = 2;
 int engineVersion = 8;
 
 vector<string> levelVersionList = {"0.0.0"};
-vector<string> skinVersionList = {"0.0.0", "0.5.8", "0.7.0", "0.7.2"};
+vector<string> skinVersionList = {"0.0.0", "0.5.8", "0.7.0", "0.7.3"};
 vector<string> backgroundVersionList = {"0.0.0", "0.5.8"};
 vector<string> effectVersionList = {"0.0.0", "0.5.8", "0.6.0", "0.6.4", "0.7.0"};
 vector<string> particleVersionList = {"0.0.0", "0.7.0"};
-vector<string> engineVersionList = {"0.0.0", "0.0.0", "0.0.0", "0.5.8", "0.5.13", "0.6.0", "0.6.4", "0.7.0", "0.7.2", "0.7.2"};
+vector<string> engineVersionList = {"0.0.0", "0.0.0", "0.0.0", "0.5.8", "0.5.13", "0.6.0", "0.6.4", "0.7.0", "0.7.2", "0.7.3"};
 
 #include"modules/modules.h"
 #include"items/Items.h"

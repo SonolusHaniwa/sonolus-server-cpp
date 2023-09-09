@@ -15,6 +15,7 @@ bandori.bin
 sonolus-hwpl-engine
 sonolus-pjsekai-engine
 hwpl
+sirius
 *.bin
 .vscode
 plugins
