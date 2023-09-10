@@ -129,7 +129,7 @@ H fetchSearchSelect(string query, string name, vector<string> options, int def, 
         optionsObject["class"] = "bg-sonolus-ui-surface";
         optionsObject["id"] = "search-" + query + "-" + to_string(i);
         optionsObject["value"] = to_string(i);
-        if (i == def) optionsObject["default"] = "default";
+        if (i == def) optionsObject["selected"] = "selected";
         args["search.options"] += optionsObject.output();
     }
     args["search.isMargin"] = isMargin ? "style=\"margin-top: 12px;\"" : "";
@@ -149,12 +149,13 @@ H fetchSearchSlider(string query, string name, int def, int min, int max, int st
     return str_replace(source, args);
 }
 
-H fetchSearchFile(string query, string name, bool isMargin) {
+H fetchSearchFile(string query, string name, string def, bool isMargin) {
     string source = readFile("./web/html/components/searchFile.html");
     argvar args;
     args["search.query"] = query;
     args["search.name"] = name;
     args["search.isMargin"] = isMargin ? "style=\"margin-top: 12px;\"" : "";
+    args["search.def"] = def;
     return str_replace(source, args);
 }
 

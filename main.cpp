@@ -134,6 +134,12 @@ void routerRegister(int argc, char** argv) {
     app.addRoute("/effects/jump/%d", web_effects_jump);
     app.addRoute("/particles/jump/%d", web_particles_jump);
     app.addRoute("/engines/jump/%d", web_engines_jump);
+    app.addRoute("/levels/%s/edit", web_levels_edit);
+    app.addRoute("/skins/%s/edit", web_skins_edit);
+    app.addRoute("/backgrounds/%s/edit", web_backgrounds_edit);
+    app.addRoute("/effects/%s/edit", web_effects_edit);
+    app.addRoute("/particles/%s/edit", web_particles_edit);
+    app.addRoute("/engines/%s/edit", web_engines_edit);
     app.addRoute("/levels/%s", web_levels);
     app.addRoute("/skins/%s", web_skins);
     app.addRoute("/backgrounds/%s", web_backgrounds);
@@ -174,6 +180,14 @@ void setConfiguration() {
 
 void serverRunner(int argc, char** argv) {
     (new DB_Controller)->query("SELECT COUNT(*) FROM Level");
+
+    // 适配 Resource Version
+    levelVersion = upper_bound(levelVersionList.begin(), levelVersionList.end(), Sonolus_Version) - levelVersionList.begin();
+    skinVersion = upper_bound(skinVersionList.begin(), skinVersionList.end(), Sonolus_Version) - skinVersionList.begin();
+    backgroundVersion = upper_bound(backgroundVersionList.begin(), backgroundVersionList.end(), Sonolus_Version) - backgroundVersionList.begin();
+    effectVersion = upper_bound(effectVersionList.begin(), effectVersionList.end(), Sonolus_Version) - effectVersionList.begin();
+    particleVersion = upper_bound(particleVersionList.begin(), particleVersionList.end(), Sonolus_Version) - particleVersionList.begin();
+    engineVersion = upper_bound(engineVersionList.begin(), engineVersionList.end(), Sonolus_Version) - engineVersionList.begin();
 
     setConfiguration();
     routerRegister(argc, argv);
@@ -394,14 +408,6 @@ void preload() {
     http_code[503] = "Service Unavailable";
     http_code[504] = "Gateway Time-out";
     http_code[505] = "HTTP Version not supported";
-
-    // 适配 Resource Version
-    levelVersion = upper_bound(levelVersionList.begin(), levelVersionList.end(), Sonolus_Version) - levelVersionList.begin();
-    skinVersion = upper_bound(skinVersionList.begin(), skinVersionList.end(), Sonolus_Version) - skinVersionList.begin();
-    backgroundVersion = upper_bound(backgroundVersionList.begin(), backgroundVersionList.end(), Sonolus_Version) - backgroundVersionList.begin();
-    effectVersion = upper_bound(effectVersionList.begin(), effectVersionList.end(), Sonolus_Version) - effectVersionList.begin();
-    particleVersion = upper_bound(particleVersionList.begin(), particleVersionList.end(), Sonolus_Version) - particleVersionList.begin();
-    engineVersion = upper_bound(engineVersionList.begin(), engineVersionList.end(), Sonolus_Version) - engineVersionList.begin();
 }
 
 void MKDIR(string path, int mode = 0777) {

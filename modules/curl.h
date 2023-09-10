@@ -21,7 +21,7 @@ CURLcode __get_url(string url, string& response) {
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
     curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
-    curl_easy_setopt(curl, CURLOPT_USERAGENT, "Sonolus Server/" + sonolus_server_version);
+    curl_easy_setopt(curl, CURLOPT_USERAGENT, ("Sonolus Server/" + sonolus_server_version).c_str());
     curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, false);
     curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, false);
     res = curl_easy_perform(curl);
@@ -39,7 +39,7 @@ int getRemoteFileLength(string url) {
     curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
     curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
     curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
-    curl_easy_setopt(curl, CURLOPT_USERAGENT, "Sonolus Server/" + sonolus_server_version);
+    curl_easy_setopt(curl, CURLOPT_USERAGENT, ("Sonolus Server/" + sonolus_server_version).c_str());
     curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, false);
     curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, false);
     res = curl_easy_perform(curl);

@@ -16,7 +16,7 @@ auto studios_backgrounds_edit = [](client_conn conn, http_request request, param
         if (v.type == "toggle") argList["html.backgroundsCreateOption"] += fetchSearchToggle(v.toggle.query, v.toggle.name, v.toggle.def, i != 0).output();
         if (v.type == "select") argList["html.backgroundsCreateOption"] += fetchSearchSelect(v.select.query, v.select.name, v.select.values, v.select.def, i != 0).output();
         if (v.type == "slider") argList["html.backgroundsCreateOption"] += fetchSearchSlider(v.slider.query, v.slider.name, v.slider.def, v.slider.min, v.slider.max, v.slider.step, i != 0).output();
-        if (v.type == "file") argList["html.backgroundsCreateOption"] += fetchSearchFile(v.file.query, v.file.name, i != 0).output();
+        if (v.type == "file") argList["html.backgroundsCreateOption"] += fetchSearchFile(v.file.query, v.file.name, "", i != 0).output();
         if (v.type == "title") argList["html.backgroundsCreateOption"] += fetchSearchTitle(v.title.name, v.title.level, i != 0).output();
         if (v.type == "color") argList["html.backgroundsCreateOption"] += fetchSearchColor(v.color.query, v.color.name, "", i != 0).output();
     }

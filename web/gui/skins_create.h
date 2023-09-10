@@ -46,7 +46,7 @@ auto web_skins_create = [](client_conn conn, http_request request, param argv){
         if (v.type == "toggle") argList["html.skinsCreateOption"] += fetchSearchToggle(v.toggle.query, v.toggle.name, v.toggle.def, i != 0).output();
         if (v.type == "select") argList["html.skinsCreateOption"] += fetchSearchSelect(v.select.query, v.select.name, v.select.values, v.select.def, i != 0).output();
         if (v.type == "slider") argList["html.skinsCreateOption"] += fetchSearchSlider(v.slider.query, v.slider.name, v.slider.def, v.slider.min, v.slider.max, v.slider.step, i != 0).output();
-        if (v.type == "file") argList["html.skinsCreateOption"] += fetchSearchFile(v.file.query, v.file.name, i != 0).output();
+        if (v.type == "file") argList["html.skinsCreateOption"] += fetchSearchFile(v.file.query, v.file.name, "", i != 0).output();
     }
 
     header = str_replace(header, argList);
