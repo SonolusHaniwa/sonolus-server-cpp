@@ -2,7 +2,7 @@
 using namespace std;
 #include<jsoncpp/json/json.h>
 
-std::string sonolus_server_version = "1.4.6";
+std::string sonolus_server_version = "1.4.7";
 std::string Maximum_Sonolus_Version = "0.7.3";
 std::string Sonolus_Version = Maximum_Sonolus_Version;
 Json::Value appConfig, studiosConfig;
@@ -48,6 +48,7 @@ void initUsage(char** argv) {
     usage << "Basic commands: " << endl;
     usage << "    help: " << argv[0] << " help" << endl;
     usage << "    serve: " << argv[0] << " serve" << endl;
+	usage << "    cgi: " << argv[0] << " cgi [request] [response]" << endl;
     usage << "Import & Export commands: " << endl;
     usage << "    import: " << argv[0] << " import [file]" << endl;
     usage << "    export: " << argv[0] << " export <level/skin/background/effect/particle/engine> [name] [file] (name)" << endl;
@@ -193,6 +194,23 @@ void serverRunner(int argc, char** argv) {
     routerRegister(argc, argv);
 
     app.run();
+}
+
+void cgiRunner(int argc, char** argv) {
+	(new DB_Controller)->query("SELECT COUNT(*) FROM Level");
+
+	// 适配 Resource Version
+	levelVersion = upper_bound(levelVersionList.begin(), levelVersionList.end(), Sonolus_Version) - levelVersionList.begin();
+	skinVersion = upper_bound(skinVersionList.begin(), skinVersionList.end(), Sonolus_Version) - skinVersionList.begin();
+	backgroundVersion = upper_bound(backgroundVersionList.begin(), backgroundVersionList.end(), Sonolus_Version) - backgroundVersionList.begin();
+	effectVersion = upper_bound(effectVersionList.begin(), effectVersionList.end(), Sonolus_Version) - effectVersionList.begin();
+	particleVersion = upper_bound(particleVersionList.begin(), particleVersionList.end(), Sonolus_Version) - particleVersionList.begin();
+	engineVersion = upper_bound(engineVersionList.begin(), engineVersionList.end(), Sonolus_Version) - engineVersionList.begin();
+
+	setConfiguration();
+	routerRegister(argc, argv);
+
+	app.cgiRun(argv[2], argv[3]);
 }
 
 #if __windows__
@@ -430,6 +448,11 @@ int main(int argc, char** argv) {
         import(argv[2]);
         return 0;
     }
+	else if(string(argv[1]) == "cgi") {
+		if (argc < 4) invalidUsage();
+		cgiRunner(argc, argv);
+		return 0;
+	}
     else if (string(argv[1]) == "export") {
         MKDIR("./.tmp");
         exportData(argc, argv);
