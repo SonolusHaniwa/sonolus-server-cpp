@@ -9,7 +9,7 @@ auto auth_sonolus_info = [](client_conn conn, http_request request, param argv){
     res["levels"] = Section<LevelItem>(-1, {
         LevelItem(0, "sonolus-server-auth", 0, "Welcome to " + appConfig["server.title"].asString(), 
         "Please enter the [Search] button to enter the code", "System", 
-        EngineItem(0, "sonolus-server-auth", "(Message)", "", "", {}, {}, {}, {}, {}, {}, {}, {}, {}),
+        EngineItem(0, "sonolus-server-auth", "(Message)", "", "", {}, {}, {}, {}, {}, {}, {}, {}, {}, {}),
         UseItem<SkinItem>(), UseItem<BackgroundItem>(), UseItem<EffectItem>(), UseItem<ParticleItem>(),
         SRL<LevelCover>("", appConfig["server.auth.logo"].asString()), SRL<LevelBgm>(), SRL<LevelData>(), SRL<LevelPreview>())}, authLevelSearch).toJsonObject();
     res["skins"] = Section<SkinItem>(0, {}, Search()).toJsonObject();

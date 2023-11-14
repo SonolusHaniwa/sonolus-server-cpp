@@ -2,13 +2,13 @@
  * @file httpd.h
  * @author LittleYang0531 (dev@lyoj.ml)
  * @brief Web服务器核心头文件
- * @version 1.0.4
+ * @version 1.0.5
  * @date 2022-09-18
  * 
- * @copyright Copyright (c) 2022 LittleYang0531
+ * @copyright Copyright (c) 2023 LittleYang0531
  * 
  */
-const std::string httpd_version = "1.0.4";
+const std::string httpd_version = "1.0.5";
 
 #ifndef _HTTPD_H_
 #define _HTTPD_H_
@@ -163,6 +163,9 @@ struct client_conn {
 
 void exitRequest(client_conn&);
 void putRequest(client_conn&, int, argvar);
+bool isCgi = false;
+string cgiRequest, cgiResponse;
+ofstream responseOut;
 
 /**
  * @brief 发送信息
@@ -172,6 +175,7 @@ void putRequest(client_conn&, int, argvar);
  * @return ssize_t 
  */
 ssize_t send(client_conn __fd, string __buf) {
+	if (isCgi) return cgiResponse += __buf, __buf.size();
     int s = -1;
     char* ch = new char[__buf.size()];
     for (int i = 0; i < __buf.size(); i++) ch[i] = __buf[i];
@@ -193,7 +197,10 @@ ssize_t send(client_conn __fd, string __buf) {
  * @return ssize_t 
  */
 ssize_t send(client_conn __fd, char* __buf, int len) {
-    int s = -1;
+	if (isCgi) {
+		for (int i = 0; i < len; i++) cgiResponse.push_back(__buf[i]);
+		return len;
+	} int s = -1;
     if (!https) return send(__fd.conn, __buf, len, 0);
     else return SSL_write(__fd.ssl, __buf, len); 
     if (s == -1) writeLog(LOG_LEVEL_WARNING, "Failed to send data to client!");
@@ -209,7 +216,11 @@ ssize_t send(client_conn __fd, char* __buf, int len) {
  * @return char
 */
 char recvchar(client_conn __fd) {
-    const int length = 1;
+	if (isCgi) {
+		if (cgiRequest.size() == 0) return -1;
+		char ch = cgiRequest.front();
+		cgiRequest = cgiRequest.substr(1); return ch;
+	} const int length = 1;
     char* __buf = new char[length];
     int s = -1;
     if (!https) s = recv(__fd.conn, __buf, 1, 0);
@@ -418,6 +429,12 @@ vector<string> explode(const char* seperator, const char* source) {
  * @param conn 客户端连接符
  */
 void exitRequest(client_conn& conn) {
+	if (isCgi) {
+		responseOut << cgiResponse;
+		responseOut.close();
+		exit(0);
+	}
+
     #ifdef __linux__
     close(conn.conn);
     #elif __windows__
@@ -965,6 +982,54 @@ class application {
                 pool.addConn(conn, client_addr);
             }
         }
+
+		void cgiRun(string requestFile, string responseFile) {
+			isCgi = true;
+			ifstream fin(requestFile);
+			responseOut.open(responseFile);
+			fin.seekg(0, ios::end);
+			int len = fin.tellg();
+			char* ch = new char[len];
+			fin.seekg(0, ios::beg);
+			fin.read(ch, len);
+			for (int i = 0; i < len; i++) cgiRequest.push_back(ch[i]);
+			delete[] ch;
+
+			client_conn conn;
+			conn.thread_id = 0;
+			http_request request = getRequest(conn);
+//			writeLog(LOG_LEVEL_INFO, "New Connection: " + request.method + " " + request.path +
+//					                 " [" + inet_ntoa(client_addr.sin_addr) + ":" + to_string(client_addr.sin_port) + "]");
+
+			/** 提取路径 */
+			string rlpath = request.path;
+			if (rlpath.find("?") != string::npos) rlpath = rlpath.substr(0, rlpath.find("?"));
+
+			/** 分发路由 */
+			for (int i = 0; i < route.size(); i++) {
+				if (matchPath(route[i], rlpath)) {
+					writeLog(LOG_LEVEL_DEBUG, "Matched route \"" + route[i].path + "\"");
+
+					/** 参数提取 */
+					param argv;
+					string __goal = route[i].path;
+					string __path = rlpath;
+					vector<string> __a1 = explode("/", __goal.c_str());
+					vector<string> __a2 = explode("/", __path.c_str());
+					for (int j = 0; j < __a1.size(); j++)
+						if (__a1[j] == "%d" || __a1[j] == "%D" ||
+							__a1[j] == "%f" || __a1[j] == "%F" ||
+							__a1[j] == "%s" || __a1[j] == "%S") argv.push_back(__a2[j]);
+
+					/** 主函数执行 */
+					route[i].main(conn, request, argv);
+					putRequest(conn, 200, __default_response);
+					send(conn, "");
+					exitRequest(conn);
+					break;
+				}
+			}
+		}
 
         /**
          * @brief 设置服务端选项

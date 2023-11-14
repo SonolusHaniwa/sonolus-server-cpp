@@ -28,6 +28,7 @@ auto sonolus_engines_create = [](client_conn conn, http_request request, param a
     string data = $_POST["data"];
     string tutorialData = $_POST["tutorialData"];
 	string previewData = $_POST["previewData"];
+	string watchData = $_POST["watchData"];
     string configuration = $_POST["configuration"];
     string rom = $_POST["rom"];
     string localization = $_POST["localization"];
@@ -57,7 +58,7 @@ auto sonolus_engines_create = [](client_conn conn, http_request request, param a
 
     int raws = engineCreate(EngineItem(id, name, title, subtitle, author, 
         skinItem, backgroundItem, effectItem, particleItem, SRL<EngineThumbnail>(thumbnail, thumbnail), 
-        SRL<EngineData>(data, data), SRL<EngineTutorialData>(tutorialData, tutorialData), SRL<EnginePreviewData>(previewData, previewData),
+        SRL<EngineData>(data, data), SRL<EngineTutorialData>(tutorialData, tutorialData), SRL<EnginePreviewData>(previewData, previewData), SRL<EngineWatchData>(watchData, watchData),
 		SRL<EngineConfiguration>(configuration, configuration), SRL<EngineRom>(rom, rom), $_POST["description"]), localization);
     if (raws == 0) {
         __api_default_response["Content-Length"] = to_string(json_encode(msg[400]).size());

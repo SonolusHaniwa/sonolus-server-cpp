@@ -101,6 +101,7 @@ CREATE TABLE LoginRequest (
     userAgent text,
     ip text
 );
+/* Sonolus Server v1.4.4 */
 ALTER TABLE Level ADD COLUMN description text;
 ALTER TABLE Skin ADD COLUMN description text;
 ALTER TABLE Background ADD COLUMN description text;
@@ -113,5 +114,9 @@ ALTER TABLE Background ADD COLUMN localization text DEFAULT 'default';
 ALTER TABLE Effect ADD COLUMN localization text DEFAULT 'default';
 ALTER TABLE Particle ADD COLUMN localization text DEFAULT 'default';
 ALTER TABLE Engine ADD COLUMN localization text DEFAULT 'default';
+/* Sonolus v0.7.2 */
 ALTER TABLE Engine ADD COLUMN tutorialData text;
-ALTER TABLE Engine ADD COLUMN PreviewData text;
+/* Sonolus v0.7.3 */
+ALTER TABLE Engine ADD COLUMN previewData text;
+/* Sonolus v0.7.4 */
+ALTER TABLE Engine ADD COLUMN watchData text;

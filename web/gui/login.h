@@ -36,7 +36,7 @@ auto web_login = [](client_conn conn, http_request request, param argv) {
         0, "sonolus-server-auth", 0,
         str_replace("{{language.loginTitle}}", argList),
         str_replace("{{language.loginSubtitle}}", argList),
-        "System", EngineItem(0, "sonolus-server-auth", "(Message)", "", "", {}, {}, {}, {}, {}, {}, {}, {}, {}),
+        "System", EngineItem(0, "sonolus-server-auth", "(Message)", "", "", {}, {}, {}, {}, {}, {}, {}, {}, {}, {}),
         UseItem<SkinItem>(), UseItem<BackgroundItem>(), UseItem<EffectItem>(), UseItem<ParticleItem>(),
         SRL<LevelCover>("", appConfig["server.auth.logo"].asString()), SRL<LevelBgm>(), SRL<LevelData>(), SRL<LevelPreview>()
     );

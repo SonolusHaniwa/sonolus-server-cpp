@@ -28,7 +28,8 @@ enum ResourceType {
     ServerBanner,
 	EnginePlayData,
 	EngineTutorialData,
-	EnginePreviewData
+	EnginePreviewData,
+	EngineWatchData
 };
 
 string ResourceTypeString[] = {
@@ -56,7 +57,8 @@ string ResourceTypeString[] = {
     "ServerBanner",
 	"EnginePlayData",
 	"EngineTutorialData",
-	"EnginePreviewData"
+	"EnginePreviewData",
+	"EngineWatchData"
 };
 
 template<ResourceType T>

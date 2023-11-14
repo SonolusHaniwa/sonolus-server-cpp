@@ -135,7 +135,6 @@ string rsa_encode(string source, string key) {
     char* pEncode = new char[len + 1];
     int ret = RSA_public_encrypt(source.length(), (const unsigned char*)source.c_str(), (unsigned char*)pEncode, rsa, RSA_PKCS1_OAEP_PADDING);
     if (ret >= 0) {
-        cerr << 1 << endl;
         string strRet = base64_encode(pEncode, ret);
         delete[] pEncode;
         RSA_free(rsa);
