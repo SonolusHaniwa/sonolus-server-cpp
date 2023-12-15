@@ -13,9 +13,9 @@
     "server.httpsPrivkey": "privkey.pem",
     "server.threadNumber": 8,
     "logSystem.debug": false,
-    "logSystem.target": 3,
+    "logSystem.target": 1,
     "logSystem.targetFile": "./log.txt",
-    "sonolus.version": "0.7.3",
+    "sonolus.version": "0.7.4",
     "session.expireTime": 30,
     "export.retryTime": 5,
     "export.hashCheckTime": 5
