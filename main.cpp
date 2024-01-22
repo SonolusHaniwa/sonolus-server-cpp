@@ -2,8 +2,8 @@
 using namespace std;
 #include<jsoncpp/json/json.h>
 
-std::string sonolus_server_version = "1.4.7";
-std::string Maximum_Sonolus_Version = "0.7.4";
+std::string sonolus_server_version = "1.4.8";
+std::string Maximum_Sonolus_Version = "0.8.0";
 std::string Sonolus_Version = Maximum_Sonolus_Version;
 Json::Value appConfig, studiosConfig;
 Json::Value i18n, i18n_raw;
@@ -23,13 +23,15 @@ int backgroundVersion = 2;
 int effectVersion = 5;
 int particleVersion = 2;
 int engineVersion = 8;
+int replayVersion = 1;
 
 vector<string> levelVersionList = {"0.0.0"};
 vector<string> skinVersionList = {"0.0.0", "0.5.8", "0.7.0", "0.7.3"};
 vector<string> backgroundVersionList = {"0.0.0", "0.5.8"};
 vector<string> effectVersionList = {"0.0.0", "0.5.8", "0.6.0", "0.6.4", "0.7.0"};
 vector<string> particleVersionList = {"0.0.0", "0.7.0"};
-vector<string> engineVersionList = {"0.0.0", "0.0.0", "0.0.0", "0.5.8", "0.5.13", "0.6.0", "0.6.4", "0.7.0", "0.7.2", "0.7.3", "0.7.4"};
+vector<string> engineVersionList = {"0.0.0", "0.0.0", "0.0.0", "0.5.8", "0.5.13", "0.6.0", "0.6.4", "0.7.0", "0.7.2", "0.7.3", "0.7.4", "0.7.5"};
+vector<string> replayVersionList = {"0.0.0"};
 
 #include"modules/modules.h"
 #include"items/Items.h"
@@ -96,18 +98,21 @@ void routerRegister(int argc, char** argv) {
     app.addRoute("/sonolus/effects/create", sonolus_effects_create);
     app.addRoute("/sonolus/particles/create", sonolus_particles_create);
     app.addRoute("/sonolus/engines/create", sonolus_engines_create);
+    app.addRoute("/sonolus/replays/create", sonolus_replays_create);
     app.addRoute("/sonolus/levels/list", sonolus_levels_list);
     app.addRoute("/sonolus/skins/list", sonolus_skins_list);
     app.addRoute("/sonolus/backgrounds/list", sonolus_backgrounds_list);
     app.addRoute("/sonolus/effects/list", sonolus_effects_list);
     app.addRoute("/sonolus/particles/list", sonolus_particles_list);
     app.addRoute("/sonolus/engines/list", sonolus_engines_list);
+    app.addRoute("/sonolus/replays/list", sonolus_replays_list);
     app.addRoute("/sonolus/levels/%s", sonolus_levels);
     app.addRoute("/sonolus/skins/%s", sonolus_skins);
     app.addRoute("/sonolus/backgrounds/%s", sonolus_backgrounds);
     app.addRoute("/sonolus/effects/%s", sonolus_effects);
     app.addRoute("/sonolus/particles/%s", sonolus_particles);
     app.addRoute("/sonolus/engines/%s", sonolus_engines);
+    app.addRoute("/sonolus/replays/%s", sonolus_replays);
 
     app.addRoute("/", web_index);
     app.addRoute("/index", web_index);
@@ -117,36 +122,42 @@ void routerRegister(int argc, char** argv) {
     app.addRoute("/effects/create", web_effects_create);
     app.addRoute("/particles/create", web_particles_create);
     app.addRoute("/engines/create", web_engines_create);
+    app.addRoute("/replays/create", web_replays_create);
     app.addRoute("/levels/list", web_levels_list);
     app.addRoute("/skins/list", web_skins_list);
     app.addRoute("/backgrounds/list", web_backgrounds_list);
     app.addRoute("/effects/list", web_effects_list);
     app.addRoute("/particles/list", web_particles_list);
     app.addRoute("/engines/list", web_engines_list);
+    app.addRoute("/replays/list", web_replays_list);
     app.addRoute("/levels/search", web_levels_search);
     app.addRoute("/skins/search", web_skins_search);
     app.addRoute("/backgrounds/search", web_backgrounds_search);
     app.addRoute("/effects/search", web_effects_search);
     app.addRoute("/particles/search", web_particles_search);
     app.addRoute("/engines/search", web_engines_search);
+    app.addRoute("/replays/search", web_replays_search);
     app.addRoute("/levels/jump/%d", web_levels_jump);
     app.addRoute("/skins/jump/%d", web_skins_jump);
     app.addRoute("/backgrounds/jump/%d", web_backgrounds_jump);
     app.addRoute("/effects/jump/%d", web_effects_jump);
     app.addRoute("/particles/jump/%d", web_particles_jump);
     app.addRoute("/engines/jump/%d", web_engines_jump);
+    app.addRoute("/replays/jump/%d", web_replays_jump);
     app.addRoute("/levels/%s/edit", web_levels_edit);
     app.addRoute("/skins/%s/edit", web_skins_edit);
     app.addRoute("/backgrounds/%s/edit", web_backgrounds_edit);
     app.addRoute("/effects/%s/edit", web_effects_edit);
     app.addRoute("/particles/%s/edit", web_particles_edit);
     app.addRoute("/engines/%s/edit", web_engines_edit);
+    app.addRoute("/replays/%s/edit", web_replays_edit);
     app.addRoute("/levels/%s", web_levels);
     app.addRoute("/skins/%s", web_skins);
     app.addRoute("/backgrounds/%s", web_backgrounds);
     app.addRoute("/effects/%s", web_effects);
     app.addRoute("/particles/%s", web_particles);
     app.addRoute("/engines/%s", web_engines);
+    app.addRoute("/replays/%s", web_replays);
     app.addRoute("/login", web_login);
 
     app.addRoute("/auth/data/%s", downloader);
@@ -189,6 +200,7 @@ void serverRunner(int argc, char** argv) {
     effectVersion = upper_bound(effectVersionList.begin(), effectVersionList.end(), Sonolus_Version) - effectVersionList.begin();
     particleVersion = upper_bound(particleVersionList.begin(), particleVersionList.end(), Sonolus_Version) - particleVersionList.begin();
     engineVersion = upper_bound(engineVersionList.begin(), engineVersionList.end(), Sonolus_Version) - engineVersionList.begin();
+    replayVersion = upper_bound(replayVersionList.begin(), replayVersionList.end(), Sonolus_Version) - replayVersionList.begin();
 
     setConfiguration();
     routerRegister(argc, argv);
@@ -206,6 +218,7 @@ void cgiRunner(int argc, char** argv) {
 	effectVersion = upper_bound(effectVersionList.begin(), effectVersionList.end(), Sonolus_Version) - effectVersionList.begin();
 	particleVersion = upper_bound(particleVersionList.begin(), particleVersionList.end(), Sonolus_Version) - particleVersionList.begin();
 	engineVersion = upper_bound(engineVersionList.begin(), engineVersionList.end(), Sonolus_Version) - engineVersionList.begin();
+    replayVersion = upper_bound(replayVersionList.begin(), replayVersionList.end(), Sonolus_Version) - replayVersionList.begin();
 
 	setConfiguration();
 	routerRegister(argc, argv);

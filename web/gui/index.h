@@ -53,6 +53,13 @@ auto web_index = [](client_conn conn, http_request request, param argv) {
     for (int i = 0; i < engines.items.size(); i++) 
         argList["html.enginesList"] += engines.items[i].toHTMLObject().output();
     argList["html.enginesBottom"] = fetchIndexBottom("/engines/search", "/engines/list").output();
+    
+    argList["html.replaysTitle"] = fetchIndexTitle("/replays/create", "/replays/search", "/replays/list", "replays").output();
+    Section<ReplayItem> replays = replayList(replayFilter(filter), 1, 5);
+    argList["html.replaysList"] = "";
+    for (int i = 0; i < replays.items.size(); i++) 
+        argList["html.replaysList"] += replays.items[i].toHTMLObject().output();
+    argList["html.replaysBottom"] = fetchIndexBottom("/replays/search", "/replays/list").output();
 
     header = str_replace(header, argList);
     body = str_replace(body, argList);

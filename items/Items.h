@@ -1,8 +1,8 @@
 #include"SRL.h"
 #include"Search.h"
 
-Search LevelSearch, SkinSearch, BackgroundSearch, EffectSearch, ParticleSearch, EngineSearch;
-Search LevelCreate, SkinCreate, BackgroundCreate, EffectCreate, ParticleCreate, EngineCreate;
+Search LevelSearch, SkinSearch, BackgroundSearch, EffectSearch, ParticleSearch, EngineSearch, ReplaySearch;
+Search LevelCreate, SkinCreate, BackgroundCreate, EffectCreate, ParticleCreate, EngineCreate, ReplayCreate;
 Search SkinStudios, BackgroundStudios, EffectStudios;
 
 #include"Section.h"
@@ -14,6 +14,7 @@ Search SkinStudios, BackgroundStudios, EffectStudios;
 #include"ParticleItem.h"
 #include"EngineItem.h"
 #include"LevelItem.h"
+#include"ReplayItem.h"
 // #include"UserProfile.h"
 #include"StudiosSkinItem.h"
 #include"StudiosBackgroundItem.h"
@@ -115,6 +116,8 @@ void loadConfig() {
     ParticleCreate = readJson("./config/particle_create.json");
     EngineSearch = readJson("./config/engine_search.json");
     EngineCreate = readJson("./config/engine_create.json");
+    ReplaySearch = readJson("./config/replay_search.json");
+    ReplayCreate = readJson("./config/replay_create.json");
     BackgroundStudios = readJson("./config/background_studios.json");
     string json = readFile("./i18n/index.json");
     Json::Value index; json_decode(json, index);

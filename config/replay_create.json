@@ -1,0 +1,64 @@
+{
+    "options": [
+        {
+            "query": "name",
+            "name": "#NAME",
+            "type": "text",
+            "placeholder": "Enter replay name..."
+        },
+        {
+            "query": "title",
+            "name": "#TITLE",
+            "type": "text",
+            "placeholder": "Enter replay title..."
+        },
+        {
+            "query": "subtitle",
+            "name": "#SUBTITLE",
+            "type": "text",
+            "placeholder": "Enter subtitle name..."
+        },
+        {
+            "query": "author",
+            "name": "#AUTHOR",
+            "type": "text",
+            "placeholder": "Enter replay author..."
+        },
+        {
+            "query": "description",
+            "name": "#description",
+            "type": "text",
+            "placeholder": "Enter description..."
+        },
+        {
+            "query": "localization",
+            "name": "Localization",
+            "type": "select",
+            "def": 0,
+            "values": [
+                "default",
+                "{{jsonArray.languageList}}"
+            ]
+        },
+        {
+            "query": "level",
+            "name": "#levels",
+            "type": "select",
+            "def": 0,
+            "values": [
+                "Choose a Level",
+                "{{jsonArray.levelList}}"
+            ]
+        },
+        {
+            "query": "data",
+            "name": "Data",
+            "type": "file"
+        },
+        {
+            "query": "configuration",
+            "name": "Configuration",
+            "type": "file"
+        }
+    ]
+}

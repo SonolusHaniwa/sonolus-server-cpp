@@ -120,3 +120,17 @@ ALTER TABLE Engine ADD COLUMN tutorialData text;
 ALTER TABLE Engine ADD COLUMN previewData text;
 /* Sonolus v0.7.4 */
 ALTER TABLE Engine ADD COLUMN watchData text;
+/* Sonolus v0.8.0 */
+CREATE TABLE Replay (
+    id int, 
+    name text, 
+    version int,
+    title text, 
+    subtitle text, 
+    author text, 
+    level int,
+    data text, 
+    configuration text,
+    description text,
+    localization text DEFAULT 'default'
+);
