@@ -6,6 +6,7 @@ int importedBackgroundNumber = 0;
 int importedEffectNumber = 0;
 int importedParticleNumber = 0;
 int importedEngineNumber = 0;
+int importedReplayNumber = 0;
 
 void serverPackageImport(FileStream& fin) {
     int filenum = fin.getInteger();
@@ -38,6 +39,7 @@ void serverPackageImport(FileStream& fin) {
             case 4: effected_raws += effectCreate(EffectItem(-1, arr)); importedEffectNumber++; break;
             case 5: effected_raws += particleCreate(ParticleItem(-1, arr)); importedParticleNumber++; break;
             case 6: effected_raws += engineCreate(EngineItem(-1, arr)); importedEngineNumber++; break;
+            case 7: effected_raws += replayCreate(ReplayItem(-1, arr)); importedReplayNumber++; break;
         }
     }
     writeLog(LOG_LEVEL_INFO, "Import data successfully.");
@@ -49,11 +51,15 @@ void serverPackageImport(FileStream& fin) {
     writeLog(LOG_LEVEL_DEBUG, to_string(importedEffectNumber) + " effects were imported.");
     writeLog(LOG_LEVEL_DEBUG, to_string(importedParticleNumber) + " particles were imported.");
     writeLog(LOG_LEVEL_DEBUG, to_string(importedEngineNumber) + " engines were imported.");
+    writeLog(LOG_LEVEL_DEBUG, to_string(importedReplayNumber) + " replays were imported.");
 }
 
 void importDataFromOfficialPackage(string path, Json::Value obj, int& fileCnt) {
     if (obj.isObject() && obj.isMember("url") && obj.isMember("hash")) {
-        string fileContent = getFileFromZip(path, obj["url"].asString().substr(1));
+    	if (obj["url"].asString().size() == 0) {
+    		writeLog(LOG_LEVEL_WARNING, "Empty file info.");
+    		return;
+    	} string fileContent = getFileFromZip(path, obj["url"].asString().substr(1));
         ofstream fout("./data/" + obj["hash"].asString());
         fout.write(const_cast<char*>(fileContent.c_str()), fileContent.size());
         fout.close();
@@ -69,9 +75,9 @@ void detectDataFromOfficialPackage(string path, Json::Value obj, set<string>& da
 }
 
 void officialPackageImport(string path) {
-    string supportComponents[] = {"skins", "backgrounds", "effects", "particles"};
+    string supportComponents[] = {"levels", "skins", "backgrounds", "effects", "particles", "engines", "replays"};
     int files = 0, raws = 0;
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 7; i++) {
         string filePath = "sonolus/" + supportComponents[i] + "/list";
         string json = getFileFromZip(path, filePath);
         Json::Value obj; json_decode(json, obj); int fileCnt = 0;
@@ -79,10 +85,46 @@ void officialPackageImport(string path) {
         for (int j = 0; j < obj["items"].size(); j++) {
             Json::Value arr = obj["items"][j];
             switch(i) {
-                case 0: raws += skinCreate(SkinItem(-1, arr)); break;
-                case 1: raws += backgroundCreate(BackgroundItem(-1, arr)); break;
-                case 2: raws += effectCreate(EffectItem(-1, arr)); break;
-                case 3: raws += particleCreate(ParticleItem(-1, arr)); break;
+            	case 0: {
+            		LevelItem level = LevelItem(-1, arr);
+            		raws += skinCreate(level.engine.skin);
+            		raws += backgroundCreate(level.engine.background);
+            		raws += effectCreate(level.engine.effect);
+            		raws += particleCreate(level.engine.particle);
+            		raws += engineCreate(level.engine);
+            		if (level.useSkin.useDefault == false) raws += skinCreate(level.useSkin.item);
+            		if (level.useBackground.useDefault == false) raws += backgroundCreate(level.useBackground.item);
+            		if (level.useEffect.useDefault == false) raws += effectCreate(level.useEffect.item);
+            		if (level.useParticle.useDefault == false) raws += particleCreate(level.useParticle.item);
+            		raws += levelCreate(level);
+            	} break;
+                case 1: raws += skinCreate(SkinItem(-1, arr)); break;
+                case 2: raws += backgroundCreate(BackgroundItem(-1, arr)); break;
+                case 3: raws += effectCreate(EffectItem(-1, arr)); break;
+                case 4: raws += particleCreate(ParticleItem(-1, arr)); break;
+            	case 5: {
+            		EngineItem engine = EngineItem(-1, arr);
+            		raws += skinCreate(engine.skin);
+            		raws += backgroundCreate(engine.background);
+            		raws += effectCreate(engine.effect);
+            		raws += particleCreate(engine.particle);
+            		raws += engineCreate(engine);
+            	} break;
+            	case 6: {
+            		ReplayItem replay = ReplayItem(-1, arr);
+            		LevelItem level = replay.level;
+            		raws += skinCreate(level.engine.skin);
+            		raws += backgroundCreate(level.engine.background);
+            		raws += effectCreate(level.engine.effect);
+            		raws += particleCreate(level.engine.particle);
+            		raws += engineCreate(level.engine);
+            		if (level.useSkin.useDefault == false) raws += skinCreate(level.useSkin.item);
+            		if (level.useBackground.useDefault == false) raws += backgroundCreate(level.useBackground.item);
+            		if (level.useEffect.useDefault == false) raws += effectCreate(level.useEffect.item);
+            		if (level.useParticle.useDefault == false) raws += particleCreate(level.useParticle.item);
+            		raws += levelCreate(level);
+            		raws += replayCreate(replay);
+            	} break;
             }
         } files += fileCnt;
     } writeLog(LOG_LEVEL_INFO, "Import data successfully.");
@@ -127,8 +169,8 @@ void serverPackageTest(FileStream& fin) {
 
 void officialPackageTest(string path) {
     set<string> data; int jsonSize = 0;
-    string supportComponents[] = {"skins", "backgrounds", "effects", "particles"};
-    for (int i = 0; i < 4; i++) {
+    string supportComponents[] = {"levels", "skins", "backgrounds", "effects", "particles", "engines", "replays"};
+    for (int i = 0; i < 7; i++) {
         string filePath = "sonolus/" + supportComponents[i] + "/list";
         string json = getFileFromZip(path, filePath);
         Json::Value obj; json_decode(json, obj); 

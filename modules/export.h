@@ -89,6 +89,7 @@ int exportBackgroundNumber = 0;
 int exportEffectNumber = 0;
 int exportParticleNumber = 0;
 int exportEngineNumber = 0;
+int exportReplayNumber = 0;
 
 // 临时文件类
 class tmpFile {
@@ -126,6 +127,7 @@ class tmpFile {
                 case exportEffectId: exportEffectNumber++; break;
                 case exportParticleId: exportParticleNumber++; break;
                 case exportEngineId: exportEngineNumber++; break;
+                case exportReplayId: exportReplayNumber++; break;
             } fin.move(fin.getInteger() + fin.get());
         } jsonPt.push_back(fin.get());
     }
@@ -287,6 +289,12 @@ void exportLevel(LevelItem level, tmpFile& tmp) {
     exportLevelNumber++;
 }
 
+void exportReplay(ReplayItem replay, tmpFile& tmp) {
+	exportLevel(replay.level, tmp);
+    tmp.writeJson(exportReplayId, json_encode(replay.toJsonObject()));
+    exportReplayNumber++;
+}
+
 string solveUrl(string url) {
     auto path = explode("/", url.c_str());
     if (path.size() < 3) return "";
@@ -392,12 +400,13 @@ void remoteExport(string origUrl, tmpFile& tmp) {
     if (type == "effects") exportEffect(EffectItem(-1, obj["item"]), tmp);
     if (type == "particles") exportParticle(ParticleItem(-1, obj["item"]), tmp);
     if (type == "engines") exportEngine(EngineItem(-1, obj["item"]), tmp);
+    if (type == "replays") exportReplay(ReplayItem(-1, obj["item"]), tmp);
 }
 
 void remoteFull(string url, tmpFile& tmp) {
-    string components[] = {"levels", "skins", "backgrounds", "effects", "particles", "engines"}; int pt = 1;
+    string components[] = {"levels", "skins", "backgrounds", "effects", "particles", "engines", "replays"}; int pt = 1;
     if (url.back() == '/') url.pop_back();
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 7; i++) {
         int retry_time = appConfig["export.retryTime"].asInt();
         getjson1:
         string url1 = url + "/sonolus/" + components[i] + "/list";
@@ -454,6 +463,9 @@ vector<string> exportPreload(int argc, char** argv) {
     } else if (string(argv[2]) == "engine") {
         if (argc < 5) invalidUsage();
         return {"5", argv[3], argv[4], (argc >= 6 ? argv[5] : to_string(time(NULL)))};
+    } else if (string(argv[2]) == "replay") {
+        if (argc < 5) invalidUsage();
+        return {"A", argv[3], argv[4], (argc >= 6 ? argv[5] : to_string(time(NULL)))};
     } else if (string(argv[2]) == "remote") {
         if (argc < 5) invalidUsage();
         return {"6", argv[3], argv[4], (argc >= 6 ? argv[5] : to_string(time(NULL)))};
@@ -515,6 +527,13 @@ void loadTemporaryData(tmpFile& tmp) {
             exportEngine(engineList("name = \"" + string(tmp.argv(1)) + "\"").items[0], tmp),
             tmp.updateProcess();
         } return;
+    } else if (tmp.argv(0) == "A") {
+        if (tmp.getProcess() < 1) {
+            if (replayNumber("name = \"" + string(tmp.argv(1)) + "\"") == 0) 
+                callExportError("Replay \"" + string(tmp.argv(1)) + "\" not found.");
+            exportReplay(replayList("name = \"" + string(tmp.argv(1)) + "\"").items[0], tmp),
+            tmp.updateProcess();
+        } return;
     } else if (tmp.argv(0) == "6") {
         if (tmp.getProcess() < 1) {
             remoteExport(tmp.argv(1), tmp);
@@ -540,6 +559,9 @@ void loadTemporaryData(tmpFile& tmp) {
         Section<EngineItem> engines = engineList("", 1, 1e9);
         for (int i = 0; i < engines.items.size(); i++, pt++) 
             if (tmp.getProcess() < pt) exportEngine(engines.items[i], tmp), tmp.updateProcess();
+        Section<ReplayItem> replays = replayList("", 1, 1e9);
+        for (int i = 0; i < replays.items.size(); i++, pt++) 
+            if (tmp.getProcess() < pt) exportReplay(replays.items[i], tmp), tmp.updateProcess();
     } else if (tmp.argv(0) == "8") {
         remoteFull(tmp.argv(1), tmp);
         writeLog(LOG_LEVEL_INFO, "Start to process package queue.");
@@ -590,6 +612,12 @@ void loadTemporaryData(tmpFile& tmp) {
                     tmp.updateProcess();
                     continue;
                 } exportEngine(engineList("name = \"" + name + "\"").items[0], tmp);
+            } else if (type == "replay") {
+                if (replayNumber("name = \"" + name + "\"") == 0) {
+                    writeLog(LOG_LEVEL_WARNING, "Replay \"" + name + "\" not found.");
+                    tmp.updateProcess();
+                    continue;
+                } exportReplay(replayList("name = \"" + name + "\"").items[0], tmp);
             } else {
                 writeLog(LOG_LEVEL_WARNING, "Invalid resource type \"" + type + "\".");
                 tmp.updateProcess();
@@ -639,6 +667,10 @@ set<pair<string, string> > getFileList(tmpFile& tmp) {
             fileSha.insert({engine.data.hash, engine.data.url});
             fileSha.insert({engine.configuration.hash, engine.configuration.url});
             fileSha.insert({engine.rom.hash, engine.rom.url});
+        } else if (jsonType == exportReplayId) {
+            ReplayItem replay(-1, arr);
+            fileSha.insert({replay.data.hash, replay.data.url});
+            fileSha.insert({replay.configuration.hash, replay.configuration.url});
         }
     } return fileSha;
 }
@@ -745,6 +777,7 @@ void exportCore(tmpFile& tmp) {
     writeLog(LOG_LEVEL_DEBUG, to_string(exportEffectNumber) + " effects were written");
     writeLog(LOG_LEVEL_DEBUG, to_string(exportParticleNumber) + " particles were written");
     writeLog(LOG_LEVEL_DEBUG, to_string(exportEngineNumber) + " engines were written");
+    writeLog(LOG_LEVEL_DEBUG, to_string(exportReplayNumber) + " replays were written");
 }
 
 void exportData(int argc, char** argv) {
