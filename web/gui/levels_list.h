@@ -10,7 +10,7 @@ auto web_levels_list = [](client_conn conn, http_request request, param argv) {
     argvar $_GET = getParam(request); int page = atoi($_GET["page"].c_str());
     $_GET["localization"] = cookie["lang"];
     if (page < 0) page = 0;
-    auto section = levelList(levelFilter($_GET), page * 20 + 1, (page + 1) * 20);
+    auto section = levelsList(levelFilter($_GET), page * 20 + 1, (page + 1) * 20);
     argList["page.title"] = argList["language.levels"] + " | " + appConfig["server.title"].asString();
     argList["html.navbar"] = fetchNavBar(argList["language.levels"], checkLogin(request)).output();
     string sonolusUrl = "sonolus://" + appConfig["server.rootUrl"].asString() + "/levels/list?" + getStringfy($_GET);

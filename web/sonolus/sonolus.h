@@ -50,37 +50,49 @@ void loadDefaultVariable() {
     msg[505]["msg"] = "505 HTTP Version not supported";
 }
 
-void checkSecret(string token, client_conn conn) {
-    if (token != appConfig["admin.password"].asString()) {
-        __api_default_response["Content-Length"] = to_string(json_encode(msg[401]).size());
-        putRequest(conn, 401, __api_default_response);
-        send(conn, json_encode(msg[401]));
-        exitRequest(conn);
-    }
+#define defineToString(str) #str
+
+#define quickSendMsg(code) {\
+    __api_default_response["Content-Length"] = to_string(json_encode(msg[code]).size()); \
+    putRequest(conn, code, __api_default_response); \
+    send(conn, json_encode(msg[code])); \
+    exitRequest(conn); \
 }
 
-#include"info.h"
-#include"levels_list.h"
-#include"skins_list.h"
-#include"backgrounds_list.h"
-#include"effects_list.h"
-#include"particles_list.h"
-#include"engines_list.h"
-#include"replays_list.h"
-#include"levels.h"
-#include"skins.h"
-#include"backgrounds.h"
-#include"effects.h"
-#include"particles.h"
-#include"engines.h"
-#include"replays.h"
-#include"levels_create.h"
-#include"skins_create.h"
-#include"backgrounds_create.h"
-#include"effects_create.h"
-#include"particles_create.h"
-#include"engines_create.h"
-#include"replays_create.h"
-#include"./studios/skins_create.h"
-#include"./studios/backgrounds_create.h"
-#include"./studios/effects_create.h"
+#define quickSendObj(obj) {\
+    __api_default_response["Content-Length"] = to_string(json_encode(obj).size()); \
+    putRequest(conn, 200, __api_default_response); \
+    send(conn, json_encode(obj)); \
+    exitRequest(conn); \
+}
+
+void checkSecret(string token, client_conn conn) {
+    if (token != appConfig["admin.password"].asString()) quickSendMsg(401);
+}
+
+#include"ServerInfo.h"
+#include"ItemInfo.h"
+// #include"levels_list.h"
+// #include"skins_list.h"
+// #include"backgrounds_list.h"
+// #include"effects_list.h"
+// #include"particles_list.h"
+// #include"engines_list.h"
+// #include"replays_list.h"
+// #include"levels.h"
+// #include"skins.h"
+// #include"backgrounds.h"
+// #include"effects.h"
+// #include"particles.h"
+// #include"engines.h"
+// #include"replays.h"
+// #include"levels_create.h"
+// #include"skins_create.h"
+// #include"backgrounds_create.h"
+// #include"effects_create.h"
+// #include"particles_create.h"
+// #include"engines_create.h"
+// #include"replays_create.h"
+// #include"./studios/skins_create.h"
+// #include"./studios/backgrounds_create.h"
+// #include"./studios/effects_create.h"

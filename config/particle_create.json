@@ -1,59 +1,61 @@
-{
-    "options": [
-        {
-            "query": "name",
-            "name": "#NAME",
-            "type": "text",
-            "placeholder": "Enter particle name..."
-        },
-        {
-            "query": "title",
-            "name": "#TITLE",
-            "type": "text",
-            "placeholder": "Enter particle title..."
-        },
-        {
-            "query": "subtitle",
-            "name": "#SUBTITLE",
-            "type": "text",
-            "placeholder": "Enter particle subtitle..."
-        },
-        {
-            "query": "author",
-            "name": "#AUTHOR",
-            "type": "text",
-            "placeholder": "Enter particle author..."
-        },
-        {
-            "query": "description",
-            "name": "#description",
-            "type": "text",
-            "placeholder": "Enter description..."
-        },
-        {
-            "query": "localization",
-            "name": "Localization",
-            "type": "select",
-            "def": 0,
-            "values": [
-                "default",
-                "{{jsonArray.languageList}}"
-            ]
-        },
-        {
-            "query": "thumbnail",
-            "name": "Thumbnail",
-            "type": "file"
-        },
-        {
-            "query": "data",
-            "name": "Data",
-            "type": "file"
-        },
-        {
-            "query": "texture",
-            "name": "Texture",
-            "type": "file"
-        }
-    ]
-}
+[    
+    {
+        "options": [
+            {
+                "query": "name",
+                "name": "#NAME",
+                "type": "text",
+                "placeholder": "Enter particle name..."
+            },
+            {
+                "query": "title",
+                "name": "#TITLE",
+                "type": "text",
+                "placeholder": "Enter particle title..."
+            },
+            {
+                "query": "subtitle",
+                "name": "#SUBTITLE",
+                "type": "text",
+                "placeholder": "Enter particle subtitle..."
+            },
+            {
+                "query": "author",
+                "name": "#AUTHOR",
+                "type": "text",
+                "placeholder": "Enter particle author..."
+            },
+            {
+                "query": "description",
+                "name": "#description",
+                "type": "text",
+                "placeholder": "Enter description..."
+            },
+            {
+                "query": "localization",
+                "name": "Localization",
+                "type": "select",
+                "def": 0,
+                "values": [
+                    "default",
+                    "{{jsonArray.languageList}}"
+                ]
+            },
+            {
+                "query": "thumbnail",
+                "name": "Thumbnail",
+                "type": "file"
+            },
+            {
+                "query": "data",
+                "name": "Data",
+                "type": "file"
+            },
+            {
+                "query": "texture",
+                "name": "Texture",
+                "type": "file"
+            }
+        ]
+    }
+]

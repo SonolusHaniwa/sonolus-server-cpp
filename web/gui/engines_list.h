@@ -10,7 +10,7 @@ auto web_engines_list = [](client_conn conn, http_request request, param argv) {
     argvar $_GET = getParam(request); int page = atoi($_GET["page"].c_str());
     $_GET["localization"] = cookie["lang"];
     if (page < 0) page = 0;
-    auto section = engineList(engineFilter($_GET), page * 20 + 1, (page + 1) * 20);
+    auto section = enginesList(engineFilter($_GET), page * 20 + 1, (page + 1) * 20);
     argList["page.title"] = argList["language.engines"] + " | " + appConfig["server.title"].asString();
     argList["html.navbar"] = fetchNavBar(argList["language.engines"], checkLogin(request)).output();
     string sonolusUrl = "sonolus://" + appConfig["server.rootUrl"].asString() + "/engines/list?" + getStringfy($_GET);

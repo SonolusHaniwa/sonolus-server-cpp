@@ -15,13 +15,17 @@ class ReplayItem {
     LevelItem level;
     SRL<ReplayData> data;
     SRL<ReplayConfiguration> configuration;
+    vector<Tag> tags;
     string description;
+    string source;
 
     ReplayItem(){}
     ReplayItem(int id, string name, string title, string subtitle, string author, LevelItem level, 
-        SRL<ReplayData> data, SRL<ReplayConfiguration> configuration, string description = ""):
+        SRL<ReplayData> data, SRL<ReplayConfiguration> configuration, 
+        vector<Tag> tags, string description = "", string source = ""):
         id(id), name(name), title(title), subtitle(subtitle), author(author), level(level), 
-        data(data), configuration(configuration), description(description){}
+        data(data), configuration(configuration), 
+        tags(tags), description(description), source(source){}
     ReplayItem(int replay_id, Json::Value arr) {
         id = replay_id;
         name = arr["name"].asString();
@@ -32,7 +36,9 @@ class ReplayItem {
         level = LevelItem(-1, arr["level"]);
         data = SRL<ReplayData>(arr["data"]);
         configuration = SRL<ReplayConfiguration>(arr["configuration"]);
+        for (int i = 0; i < arr["tags"].size(); i++) tags.push_back(Tag(arr["tags"][i]));
         description = arr["description"].asString();
+        source = arr["source"].asString();
     }
 
     Json::Value toJsonObject() {
@@ -45,7 +51,10 @@ class ReplayItem {
         res["level"] = level.toJsonObject();
         res["data"] = data.toJsonObject();
         res["configuration"] = configuration.toJsonObject();
+        res["tags"].resize(0);
+        for (int i = 0; i < tags.size(); i++) res["tags"].append(tags[i].toJsonObject());
         res["description"] = description;
+        res["source"] = source;
         return res;
     }
 
@@ -65,6 +74,7 @@ class ReplayItem {
         args["url"] = "/replays/" + name;
         args["sonolus.url"] = "sonolus://" + appConfig["server.rootUrl"].asString() + "/replays/" + name;
         args["description"] = description;
+        args["source"] = source;
         return args;
     }
 
@@ -83,16 +93,13 @@ int replayNumber(string filter) {
     return atoi(res[0]["sum"].c_str());
 }
 
-Section<ReplayItem> replayList(string filter, int st = 1, int en = 20) {
-    // 获取数据条数
-    int pageCount = ceil(1.0 * levelNumber(filter) / 20);
-
-    // 获取数据
+vector<ReplayItem> replaysList(string filter, string order, int st = 1, int en = 20) {
     string sql = "SELECT * FROM Replay";
     if (filter != "") sql += " WHERE (" + filter + ")";
-    sql += " ORDER BY id DESC LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);
+    if (order != "") sql += " ORDER BY " + order;
+    sql += " LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);
     auto res = (new DB_Controller)->query(sql.c_str());
-    Section<ReplayItem> list = Section<ReplayItem>(pageCount, ReplaySearch);
+    vector<ReplayItem> list = {};
     sort(res.begin(), res.end(), [](argvar a, argvar b){
         if (a["name"] == b["name"]) return (a["localization"] == "default") < (b["localization"] == "default");
         else return atoi(a["id"].c_str()) > atoi(b["id"].c_str());
@@ -100,7 +107,7 @@ Section<ReplayItem> replayList(string filter, int st = 1, int en = 20) {
     for (int i = 0; i < res.size(); i++) {
         if (nameUsed[res[i]["name"]]) continue;
         nameUsed[res[i]["name"]] = true;
-        LevelItem level = levelList("id = " + res[i]["level"], 1, 1).items[0];
+        LevelItem level = levelsList("id = " + res[i]["level"], "", 1, 1)[0];
         ReplayItem data = ReplayItem(
             atoi(res[i]["id"].c_str()),
             res[i]["name"],
@@ -110,8 +117,10 @@ Section<ReplayItem> replayList(string filter, int st = 1, int en = 20) {
             level,
             SRL<ReplayData>(res[i]["data"], "/data/" + res[i]["data"]),
             SRL<ReplayConfiguration>(res[i]["configuration"], "/data/" + res[i]["configuration"]),
-            str_replace("\\n", "\n", res[i]["description"])
-        ); list.append(data);
+            {},
+            str_replace("\\n", "\n", res[i]["description"]),
+            res[i]["source"]
+        ); list.push_back(data);
     } return list;
 }
 

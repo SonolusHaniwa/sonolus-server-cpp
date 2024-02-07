@@ -1,123 +1,125 @@
-{
-    "options": [
-        {
-            "query": "name",
-            "name": "#NAME",
-            "type": "text",
-            "placeholder": "Enter level name..."
-        },
-        {
-            "query": "rating",
-            "name": "#RATING",
-            "type": "slider",
-            "def": 5,
-            "min": 5,
-            "max": 50,
-            "step": 1
-        },
-        {
-            "query": "title",
-            "name": "#TITLE",
-            "type": "text",
-            "placeholder": "Enter level title..."
-        },
-        {
-            "query": "artists",
-            "name": "#ARTISTS",
-            "type": "text",
-            "placeholder": "Enter artists name..."
-        },
-        {
-            "query": "author",
-            "name": "#AUTHOR",
-            "type": "text",
-            "placeholder": "Enter chart author..."
-        },
-        {
-            "query": "description",
-            "name": "#description",
-            "type": "text",
-            "placeholder": "Enter description..."
-        },
-        {
-            "query": "localization",
-            "name": "Localization",
-            "type": "select",
-            "def": 0,
-            "values": [
-                "default",
-                "{{jsonArray.languageList}}"
-            ]
-        },
-        {
-            "query": "engine",
-            "name": "#engines",
-            "type": "select",
-            "def": 0,
-            "values": [
-                "Choose an Engine",
-                "{{jsonArray.engineList}}"
-            ]
-        },
-        {
-            "query": "skin",
-            "name": "#skins",
-            "type": "select",
-            "def": 0,
-            "values": [
-                "Default Skin",
-                "{{jsonArray.skinList}}"
-            ]
-        },
-        {
-            "query": "background",
-            "name": "#backgrounds",
-            "type": "select",
-            "def": 0,
-            "values": [
-                "Default Background",
-                "{{jsonArray.backgroundList}}"
-            ]
-        },
-        {
-            "query": "effect",
-            "name": "#effects",
-            "type": "select",
-            "def": 0,
-            "values": [
-                "Default Effect",
-                "{{jsonArray.effectList}}"
-            ]
-        },
-        {
-            "query": "particle",
-            "name": "#particles",
-            "type": "select",
-            "def": 0,
-            "values": [
-                "Default Particle", 
-                "{{jsonArray.particleList}}"
-            ]
-        },
-        {
-            "query": "cover",
-            "name": "Cover",
-            "type": "file"
-        },
-        {
-            "query": "bgm",
-            "name": "BGM",
-            "type": "file"
-        },
-        {
-            "query": "data",
-            "name": "Data",
-            "type": "file"
-        },
-        {
-            "query": "preview",
-            "name": "Preview",
-            "type": "file"
-        }
-    ]
-}
+[
+    {
+        "options": [
+            {
+                "query": "name",
+                "name": "#NAME",
+                "type": "text",
+                "placeholder": "Enter level name..."
+            },
+            {
+                "query": "rating",
+                "name": "#RATING",
+                "type": "slider",
+                "def": 5,
+                "min": 5,
+                "max": 50,
+                "step": 1
+            },
+            {
+                "query": "title",
+                "name": "#TITLE",
+                "type": "text",
+                "placeholder": "Enter level title..."
+            },
+            {
+                "query": "artists",
+                "name": "#ARTISTS",
+                "type": "text",
+                "placeholder": "Enter artists name..."
+            },
+            {
+                "query": "author",
+                "name": "#AUTHOR",
+                "type": "text",
+                "placeholder": "Enter chart author..."
+            },
+            {
+                "query": "description",
+                "name": "#description",
+                "type": "text",
+                "placeholder": "Enter description..."
+            },
+            {
+                "query": "localization",
+                "name": "Localization",
+                "type": "select",
+                "def": 0,
+                "values": [
+                    "default",
+                    "{{jsonArray.languageList}}"
+                ]
+            },
+            {
+                "query": "engine",
+                "name": "#engines",
+                "type": "select",
+                "def": 0,
+                "values": [
+                    "Choose an Engine",
+                    "{{jsonArray.engineList}}"
+                ]
+            },
+            {
+                "query": "skin",
+                "name": "#skins",
+                "type": "select",
+                "def": 0,
+                "values": [
+                    "Default Skin",
+                    "{{jsonArray.skinList}}"
+                ]
+            },
+            {
+                "query": "background",
+                "name": "#backgrounds",
+                "type": "select",
+                "def": 0,
+                "values": [
+                    "Default Background",
+                    "{{jsonArray.backgroundList}}"
+                ]
+            },
+            {
+                "query": "effect",
+                "name": "#effects",
+                "type": "select",
+                "def": 0,
+                "values": [
+                    "Default Effect",
+                    "{{jsonArray.effectList}}"
+                ]
+            },
+            {
+                "query": "particle",
+                "name": "#particles",
+                "type": "select",
+                "def": 0,
+                "values": [
+                    "Default Particle", 
+                    "{{jsonArray.particleList}}"
+                ]
+            },
+            {
+                "query": "cover",
+                "name": "Cover",
+                "type": "file"
+            },
+            {
+                "query": "bgm",
+                "name": "BGM",
+                "type": "file"
+            },
+            {
+                "query": "data",
+                "name": "Data",
+                "type": "file"
+            },
+            {
+                "query": "preview",
+                "name": "Preview",
+                "type": "file"
+            }
+        ]
+    }
+]

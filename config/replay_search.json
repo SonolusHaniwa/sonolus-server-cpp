@@ -1,22 +1,24 @@
-{
-    "options": [
-        {
-            "query": "keywords",
-            "name": "#KEYWORDS",
-            "type": "text",
-            "placeholder": "Enter keywords..."
-        },
-        {
-            "query": "subtitle",
-            "name": "#SUBTITLE",
-            "type": "text",
-            "placeholder": "Enter subtitle..."
-        },
-        {
-            "query": "author",
-            "name": "#AUTHOR",
-            "type": "text",
-            "placeholder": "Enter author name..."
-        }
-    ]
-}
+[    
+    {
+        "options": [
+            {
+                "query": "keywords",
+                "name": "#KEYWORDS",
+                "type": "text",
+                "placeholder": "Enter keywords..."
+            },
+            {
+                "query": "subtitle",
+                "name": "#SUBTITLE",
+                "type": "text",
+                "placeholder": "Enter subtitle..."
+            },
+            {
+                "query": "author",
+                "name": "#AUTHOR",
+                "type": "text",
+                "placeholder": "Enter author name..."
+            }
+        ]
+    }
+]

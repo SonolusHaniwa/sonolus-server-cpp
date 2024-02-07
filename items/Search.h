@@ -191,6 +191,9 @@ class SearchOption {
 class Search {
     public:
 
+    string type = "quick";
+    string title;
+    string icon;
     vector<SearchOption> options;
 
     void append(SearchOption option) {
@@ -199,6 +202,9 @@ class Search {
 
     Json::Value toJsonObject() {
         Json::Value res;
+        res["type"] = type;
+        res["title"] = title;
+        res["icon"] = icon;
         res["options"].resize(0);
         for (int i = 0; i < options.size(); i++) {
             if (options[i].type == "text") res["options"].append(options[i].text.toJsonObject());

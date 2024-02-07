@@ -224,16 +224,16 @@ void initBuild(string path) {
     string package_json = readFile((path + "/package.json").c_str());
     Json::Value arr; json_decode(package_json, arr);
     SkinItem skin; BackgroundItem background; EffectItem effect; ParticleItem particle;
-    auto tmp = skinList("name = \"" + arr["skin"].asString() + "\"");
+    auto tmp = skinsList("name = \"" + arr["skin"].asString() + "\"");
     if (tmp.items.size() == 0) writeLog(LOG_LEVEL_ERROR, "Failed to find skin \"" + arr["skin"].asString() + "\""), exit(0);
     skin = tmp.items[0];
-    auto tmp2 = backgroundList("name = \"" + arr["background"].asString() + "\"");
+    auto tmp2 = backgroundsList("name = \"" + arr["background"].asString() + "\"");
     if (tmp2.items.size() == 0) writeLog(LOG_LEVEL_ERROR, "Failed to find background \"" + arr["background"].asString() + "\""), exit(0);
     background = tmp2.items[0];
-    auto tmp3 = effectList("name = \"" + arr["effect"].asString() + "\"");
+    auto tmp3 = effectsList("name = \"" + arr["effect"].asString() + "\"");
     if (tmp3.items.size() == 0) writeLog(LOG_LEVEL_ERROR, "Failed to find effect \"" + arr["effect"].asString() + "\""), exit(0);
     effect = tmp3.items[0];
-    auto tmp4 = particleList("name = \"" + arr["particle"].asString() + "\"");
+    auto tmp4 = particlesList("name = \"" + arr["particle"].asString() + "\"");
     if (tmp4.items.size() == 0) writeLog(LOG_LEVEL_ERROR, "Failed to find particle \"" + arr["particle"].asString() + "\""), exit(0);
     particle = tmp4.items[0];
 

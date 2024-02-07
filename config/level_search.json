@@ -1,40 +1,46 @@
-{
-    "options": [
-        {
-            "query": "keywords",
-            "name": "#KEYWORDS",
-            "type": "text",
-            "placeholder": "Enter keywords..."
-        },
-        {
-            "query": "artist",
-            "name": "#ARTISTS",
-            "type": "text",
-            "placeholder": "Enter artist name..."
-        },
-        {
-            "query": "author",
-            "name": "#AUTHOR",
-            "type": "text",
-            "placeholder": "Enter author name..."
-        },
-        {
-            "query": "minRating",
-            "name": "#RATING_MINIMUM",
-            "type": "slider",
-            "def": 5,
-            "min": 5,
-            "max": 50,
-            "step": 1
-        },
-        {
-            "query": "maxRating",
-            "name": "#RATING_MAXIMUM",
-            "type": "slider",
-            "def": 50,
-            "min": 5,
-            "max": 50,
-            "step": 1
-        }
-    ]
-}
+[    
+    {
+        "title": "quick",
+        "icon": "search",
+        "type": "quick",
+        "options": [
+            {
+                "query": "keywords",
+                "name": "#KEYWORDS",
+                "type": "text",
+                "placeholder": "Enter keywords..."
+            },
+            {
+                "query": "artist",
+                "name": "#ARTISTS",
+                "type": "text",
+                "placeholder": "Enter artist name..."
+            },
+            {
+                "query": "author",
+                "name": "#AUTHOR",
+                "type": "text",
+                "placeholder": "Enter author name..."
+            },
+            {
+                "query": "minRating",
+                "name": "#RATING_MINIMUM",
+                "type": "slider",
+                "def": 5,
+                "min": 5,
+                "max": 50,
+                "step": 1
+            },
+            {
+                "query": "maxRating",
+                "name": "#RATING_MAXIMUM",
+                "type": "slider",
+                "def": 50,
+                "min": 5,
+                "max": 50,
+                "step": 1
+            }
+        ],
+        "filter": ""
+    }
+]

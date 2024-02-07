@@ -16,13 +16,17 @@ class BackgroundItem {
     SRL<BackgroundData> data;
     SRL<BackgroundImage> image;
     SRL<BackgroundConfiguration> configuration;
+    vector<Tag> tags;
     string description;
+    string source;
 
     BackgroundItem(){}
     BackgroundItem(int id, string name, string title, string subtitle, string author, 
-        SRL<BackgroundThumbnail> thumbnail, SRL<BackgroundData> data, SRL<BackgroundImage> image, SRL<BackgroundConfiguration> configuration, string description = ""):
+        SRL<BackgroundThumbnail> thumbnail, SRL<BackgroundData> data, SRL<BackgroundImage> image, SRL<BackgroundConfiguration> configuration, 
+        vector<Tag> tags, string description = "", string source = ""):
         id(id), name(name), title(title), subtitle(subtitle), author(author),
-        thumbnail(thumbnail), data(data), image(image), configuration(configuration), description(description){}
+        thumbnail(thumbnail), data(data), image(image), configuration(configuration), 
+        tags(tags), description(description), source(source){}
     BackgroundItem(int background_id, Json::Value arr) {
         id = background_id;
         name = arr["name"].asString();
@@ -34,7 +38,9 @@ class BackgroundItem {
         data = SRL<BackgroundData>(arr["data"]);
         image = SRL<BackgroundImage>(arr["image"]);
         configuration = SRL<BackgroundConfiguration>(arr["configuration"]);
+        for (int i = 0; i < arr["tags"].size(); i++) tags.push_back(Tag(arr["tags"][i]));
         description = arr["description"].asString();
+        source = arr["source"].asString();
     }
     
     Json::Value toJsonObject() {
@@ -48,7 +54,10 @@ class BackgroundItem {
         res["data"] = data.toJsonObject();
         res["image"] = image.toJsonObject();
         res["configuration"] = configuration.toJsonObject();
+        res["tags"].resize(0);
+        for (int i = 0; i < tags.size(); i++) res["tags"].append(tags[i].toJsonObject());
         res["description"] = description;
+        res["source"] = source;
         return res;
     }
 
@@ -66,6 +75,7 @@ class BackgroundItem {
         args["url"] = "/backgrounds/" + name;
         args["sonolus.url"] = "sonolus://" + appConfig["server.rootUrl"].asString() + "/backgrounds/" + name;
         args["description"] = description;
+        args["source"] = source;
         return args;
     }
 
@@ -83,16 +93,13 @@ int backgroundNumber(string filter) {
     return atoi(res[0]["sum"].c_str());
 }
 
-Section<BackgroundItem> backgroundList(string filter, int st = 1, int en = 20) {
-    // 获取数据条数
-    int pageCount = ceil(1.0 * backgroundNumber(filter) / 20);
-
-    // 获取数据
+vector<BackgroundItem> backgroundsList(string filter, string order, int st = 1, int en = 20) {
     string sql = "SELECT * FROM Background";
     if (filter != "") sql += " WHERE (" + filter + ")";
-    sql += " ORDER BY id DESC LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);
+    if (order != "") sql += " ORDER BY " + order;
+    sql += " LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);
     auto res = (new DB_Controller)->query(sql.c_str());
-    Section<BackgroundItem> list = Section<BackgroundItem>(pageCount, BackgroundSearch);
+    vector<BackgroundItem> list = {};
     sort(res.begin(), res.end(), [](argvar a, argvar b){
         if (a["name"] == b["name"]) return (a["localization"] == "default") < (b["localization"] == "default");
         else return atoi(a["id"].c_str()) > atoi(b["id"].c_str());
@@ -110,8 +117,10 @@ Section<BackgroundItem> backgroundList(string filter, int st = 1, int en = 20) {
             SRL<BackgroundData>(res[i]["data"], "/data/" + res[i]["data"]),
             SRL<BackgroundImage>(res[i]["image"], "/data/" + res[i]["image"]),
             SRL<BackgroundConfiguration>(res[i]["configuration"], "/data/" + res[i]["configuration"]),
-            str_replace("\\n", "\n", res[i]["description"])
-        ); list.append(data);
+            {},
+            str_replace("\\n", "\n", res[i]["description"]),
+            res[i]["source"]
+        ); list.push_back(data);
     } return list;
 }
 

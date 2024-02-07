@@ -1,64 +1,66 @@
-{
-    "options": [
-        {
-            "query": "name",
-            "name": "#NAME",
-            "type": "text",
-            "placeholder": "Enter background name..."
-        },
-        {
-            "query": "title",
-            "name": "#TITLE",
-            "type": "text",
-            "placeholder": "Enter background title..."
-        },
-        {
-            "query": "subtitle",
-            "name": "#SUBTITLE",
-            "type": "text",
-            "placeholder": "Enter background subtitle..."
-        },
-        {
-            "query": "author",
-            "name": "#AUTHOR",
-            "type": "text",
-            "placeholder": "Enter background author..."
-        },
-        {
-            "query": "description",
-            "name": "#description",
-            "type": "text",
-            "placeholder": "Enter description..."
-        },
-        {
-            "query": "localization",
-            "name": "Localization",
-            "type": "select",
-            "def": 0,
-            "values": [
-                "default",
-                "{{jsonArray.languageList}}"
-            ]
-        },
-        {
-            "query": "thumbnail",
-            "name": "Thumbnail",
-            "type": "file"
-        },
-        {
-            "query": "data",
-            "name": "Data",
-            "type": "file"
-        },
-        {
-            "query": "image",
-            "name": "Image",
-            "type": "file"
-        },
-        {
-            "query": "configuration",
-            "name": "Configuration",
-            "type": "file"
-        }
-    ]
-}
+[
+    {
+        "options": [
+            {
+                "query": "name",
+                "name": "#NAME",
+                "type": "text",
+                "placeholder": "Enter background name..."
+            },
+            {
+                "query": "title",
+                "name": "#TITLE",
+                "type": "text",
+                "placeholder": "Enter background title..."
+            },
+            {
+                "query": "subtitle",
+                "name": "#SUBTITLE",
+                "type": "text",
+                "placeholder": "Enter background subtitle..."
+            },
+            {
+                "query": "author",
+                "name": "#AUTHOR",
+                "type": "text",
+                "placeholder": "Enter background author..."
+            },
+            {
+                "query": "description",
+                "name": "#description",
+                "type": "text",
+                "placeholder": "Enter description..."
+            },
+            {
+                "query": "localization",
+                "name": "Localization",
+                "type": "select",
+                "def": 0,
+                "values": [
+                    "default",
+                    "{{jsonArray.languageList}}"
+                ]
+            },
+            {
+                "query": "thumbnail",
+                "name": "Thumbnail",
+                "type": "file"
+            },
+            {
+                "query": "data",
+                "name": "Data",
+                "type": "file"
+            },
+            {
+                "query": "image",
+                "name": "Image",
+                "type": "file"
+            },
+            {
+                "query": "configuration",
+                "name": "Configuration",
+                "type": "file"
+            }
+        ]
+    }
+]

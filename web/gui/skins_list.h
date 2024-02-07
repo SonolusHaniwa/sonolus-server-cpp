@@ -10,7 +10,7 @@ auto web_skins_list = [](client_conn conn, http_request request, param argv) {
     argvar $_GET = getParam(request); int page = atoi($_GET["page"].c_str());
     $_GET["localization"] = cookie["lang"];
     if (page < 0) page = 0;
-    auto section = skinList(skinFilter($_GET), page * 20 + 1, (page + 1) * 20);
+    auto section = skinsList(skinFilter($_GET), page * 20 + 1, (page + 1) * 20);
     argList["page.title"] = argList["language.skins"] + " | " + appConfig["server.title"].asString();
     argList["html.navbar"] = fetchNavBar(argList["language.skins"], checkLogin(request)).output();
     string sonolusUrl = "sonolus://" + appConfig["server.rootUrl"].asString() + "/skins/list?" + getStringfy($_GET);

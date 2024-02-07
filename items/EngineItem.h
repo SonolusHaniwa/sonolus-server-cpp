@@ -23,15 +23,21 @@ class EngineItem {
 	SRL<EngineTutorialData> tutorialData;
 	SRL<EnginePreviewData> previewData;
 	SRL<EngineWatchData> watchData;
+    vector<Tag> tags;
     string description;
+    string source;
 
     EngineItem(){}
     EngineItem(int id, string name, string title, string subtitle, string author,
         SkinItem skin, BackgroundItem background, EffectItem effect, ParticleItem particle,
-        SRL<EngineThumbnail> thumbnail, SRL<EngineData> data, SRL<EngineTutorialData> tutorialData, SRL<EnginePreviewData> previewData, SRL<EngineWatchData> watchData, SRL<EngineConfiguration> configuration, SRL<EngineRom> rom = SRL<EngineRom>("", ""), string description = ""):
+        SRL<EngineThumbnail> thumbnail, SRL<EngineData> data, SRL<EngineTutorialData> tutorialData, SRL<EnginePreviewData> previewData, 
+        SRL<EngineWatchData> watchData, SRL<EngineConfiguration> configuration, vector<Tag> tags, SRL<EngineRom> rom = SRL<EngineRom>("", ""), 
+        string description = "", string source = ""):
         id(id), name(name), title(title), subtitle(subtitle), author(author),
         skin(skin), background(background), effect(effect), particle(particle),
-        thumbnail(thumbnail), data(data), tutorialData(tutorialData), previewData(previewData), watchData(watchData), configuration(configuration), rom(rom), description(description){}
+        thumbnail(thumbnail), data(data), tutorialData(tutorialData), previewData(previewData), 
+        watchData(watchData), configuration(configuration), rom(rom), 
+        tags(tags), description(description), source(source){}
     EngineItem(int engine_id, Json::Value arr) {
         id = engine_id;
         name = arr["name"].asString();
@@ -50,7 +56,9 @@ class EngineItem {
 		tutorialData = SRL<EngineTutorialData>(arr["tutorialData"]);
 		previewData = SRL<EnginePreviewData>(arr["previewData"]);
 		watchData = SRL<EngineWatchData>(arr["watchData"]);
+        for (int i = 0; i < arr["tags"].size(); i++) tags.push_back(Tag(arr["tags"][i]));
         description = arr["description"].asString();
+        source = arr["source"].asString();
     }
     
     Json::Value toJsonObject() {
@@ -74,7 +82,10 @@ class EngineItem {
 		res["previewData"] = previewData.toJsonObject();
 		res["watchData"] = watchData.toJsonObject();
         if (rom.hash != "") res["rom"] = rom.toJsonObject();
+        res["tags"].resize(0);
+        for (int i = 0; i < tags.size(); i++) res["tags"].append(tags[i].toJsonObject());
         res["description"] = description;
+        res["source"] = source;
         return res;
     }
 
@@ -100,6 +111,7 @@ class EngineItem {
         args["url"] = "/engines/" + name;
         args["sonolus.url"] = "sonolus://" + appConfig["server.rootUrl"].asString() + "/engines/" + name;
         args["description"] = description;
+        args["source"] = source;
         return args;
     }
 
@@ -117,16 +129,13 @@ int engineNumber(string filter) {
     return atoi(res[0]["sum"].c_str());
 }
 
-Section<EngineItem> engineList(string filter, int st = 1, int en = 20) {
-    // 获取数据条数
-    int pageCount = ceil(1.0 * engineNumber(filter) / 20);
-
-    // 获取数据
+vector<EngineItem> enginesList(string filter, string order, int st = 1, int en = 20) {
     string sql = "SELECT * FROM Engine";
     if (filter != "") sql += " WHERE (" + filter + ")";
-    sql += " ORDER BY id DESC LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);
+    if (order != "") sql += " ORDER BY " + order;
+    sql += " LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);
     dbres res = (new DB_Controller)->query(sql.c_str());
-    Section<EngineItem> list = Section<EngineItem>(pageCount, EngineSearch);
+    vector<EngineItem> list = {};
     sort(res.begin(), res.end(), [](argvar a, argvar b){
         if (a["name"] == b["name"]) return (a["localization"] == "default") < (b["localization"] == "default");
         else return atoi(a["id"].c_str()) > atoi(b["id"].c_str());
@@ -134,10 +143,10 @@ Section<EngineItem> engineList(string filter, int st = 1, int en = 20) {
     for (int i = 0; i < res.size(); i++) {
         if (nameUsed[res[i]["name"]]) continue;
         nameUsed[res[i]["name"]] = true;
-        SkinItem skin = skinList("id = " + res[i]["skin"], 1, 1).items[0];
-        BackgroundItem background = backgroundList("id = " + res[i]["background"], 1, 1).items[0];
-        EffectItem effect = effectList("id = " + res[i]["effect"], 1, 1).items[0];
-        ParticleItem particle = particleList("id = " + res[i]["particle"], 1, 1).items[0];
+        SkinItem skin = skinsList("id = " + res[i]["skin"], "", 1, 1)[0];
+        BackgroundItem background = backgroundsList("id = " + res[i]["background"], "", 1, 1)[0];
+        EffectItem effect = effectsList("id = " + res[i]["effect"], "", 1, 1)[0];
+        ParticleItem particle = particlesList("id = " + res[i]["particle"], "", 1, 1)[0];
         EngineItem data = EngineItem(
             atoi(res[i]["id"].c_str()),
             res[i]["name"],
@@ -151,9 +160,11 @@ Section<EngineItem> engineList(string filter, int st = 1, int en = 20) {
 			SRL<EnginePreviewData>(res[i]["previewData"], "/data/" + res[i]["previewData"]),
 			SRL<EngineWatchData>(res[i]["watchData"], "/data/" + res[i]["watchData"]),
             SRL<EngineConfiguration>(res[i]["configuration"], "/data/" + res[i]["configuration"]),
+            {},
             SRL<EngineRom>(res[i]["rom"], "/data/" + res[i]["rom"]),
-            str_replace("\\n", "\n", res[i]["description"])
-        ); list.append(data);
+            str_replace("\\n", "\n", res[i]["description"]),
+            res[i]["source"]
+        ); list.push_back(data);
     } return list;
 }
 

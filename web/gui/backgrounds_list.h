@@ -10,7 +10,7 @@ auto web_backgrounds_list = [](client_conn conn, http_request request, param arg
     argvar $_GET = getParam(request); int page = atoi($_GET["page"].c_str());
     $_GET["localization"] = cookie["lang"];
     if (page < 0) page = 0;
-    auto section = backgroundList(backgroundFilter($_GET), page * 20 + 1, (page + 1) * 20);
+    auto section = backgroundsList(backgroundFilter($_GET), page * 20 + 1, (page + 1) * 20);
     argList["page.title"] = argList["language.backgrounds"] + " | " + appConfig["server.title"].asString();
     argList["html.navbar"] = fetchNavBar(argList["language.backgrounds"], checkLogin(request)).output();
     string sonolusUrl = "sonolus://" + appConfig["server.rootUrl"].asString() + "/backgrounds/list?" + getStringfy($_GET);

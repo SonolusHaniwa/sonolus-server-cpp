@@ -15,13 +15,17 @@ class EffectItem {
     SRL<EffectThumbnail> thumbnail;
     SRL<EffectData> data;
     SRL<EffectAudio> audio;
+    vector<Tag> tags;
     string description;
+    string source;
 
     EffectItem(){}
     EffectItem(int id, string name, string title, string subtitle, string author,
-        SRL<EffectThumbnail> thumbnail, SRL<EffectData> data, SRL<EffectAudio> audio, string description = ""):
+        SRL<EffectThumbnail> thumbnail, SRL<EffectData> data, SRL<EffectAudio> audio, 
+        vector<Tag> tags, string description = "", string source = ""):
         id(id), name(name), title(title), subtitle(subtitle), author(author),
-        thumbnail(thumbnail), data(data), audio(audio), description(description){}
+        thumbnail(thumbnail), data(data), audio(audio), 
+        tags(tags), description(description), source(source){}
     EffectItem(int effect_id, Json::Value arr) {
         id = effect_id;
         name = arr["name"].asString();
@@ -32,7 +36,9 @@ class EffectItem {
         thumbnail = SRL<EffectThumbnail>(arr["thumbnail"]);
         data = SRL<EffectData>(arr["data"]);
         audio = SRL<EffectAudio>(arr["audio"]);
+        for (int i = 0; i < arr["tags"].size(); i++) tags.push_back(Tag(arr["tags"][i]));
         description = arr["description"].asString();
+        source = arr["source"].asString();
     }
     
     Json::Value toJsonObject() {
@@ -45,7 +51,10 @@ class EffectItem {
         res["thumbnail"] = thumbnail.toJsonObject();
         res["data"] = data.toJsonObject();
         res["audio"] = audio.toJsonObject();
+        res["tags"].resize(0);
+        for (int i = 0; i < tags.size(); i++) res["tags"].append(tags[i].toJsonObject());
         res["description"] = description;
+        res["source"] = source;
         return res;
     }
 
@@ -62,6 +71,7 @@ class EffectItem {
         args["url"] = "/effects/" + name;
         args["sonolus.url"] = "sonolus://" + appConfig["server.rootUrl"].asString() + "/effects/" + name;
         args["description"] = description;
+        args["source"] = source;
         return args;
     }
 
@@ -79,16 +89,13 @@ int effectNumber(string filter) {
     return atoi(res[0]["sum"].c_str());
 }
 
-Section<EffectItem> effectList(string filter, int st = 1, int en = 20) {
-    // 获取数据条数
-    int pageCount = ceil(1.0 * effectNumber(filter) / 20);
-
-    // 获取数据
+vector<EffectItem> effectsList(string filter, string order, int st = 1, int en = 20) {
     string sql = "SELECT * FROM Effect";
     if (filter != "") sql += " WHERE (" + filter + ")";
-    sql += " ORDER BY id DESC LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);
+    if (order != "") sql += " ORDER BY " + order;
+    sql += " LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);
     dbres res = (new DB_Controller)->query(sql.c_str());
-    Section<EffectItem> list = Section<EffectItem>(pageCount, EffectSearch);
+    vector<EffectItem> list = {};
     sort(res.begin(), res.end(), [](argvar a, argvar b){
         if (a["name"] == b["name"]) return (a["localization"] == "default") < (b["localization"] == "default");
         else return atoi(a["id"].c_str()) > atoi(b["id"].c_str());
@@ -105,8 +112,10 @@ Section<EffectItem> effectList(string filter, int st = 1, int en = 20) {
             SRL<EffectThumbnail>(res[i]["thumbnail"], "/data/" + res[i]["thumbnail"]),
             SRL<EffectData>(res[i]["data"], "/data/" + res[i]["data"]),
             SRL<EffectAudio>(res[i]["audio"], "/data/" + res[i]["audio"]),
-            str_replace("\\n", "\n", res[i]["description"])
-        ); list.append(data);
+            {},
+            str_replace("\\n", "\n", res[i]["description"]),
+            res[i]["source"]
+        ); list.push_back(data);
     } return list;
 }
 

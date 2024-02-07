@@ -489,49 +489,49 @@ void loadTemporaryData(tmpFile& tmp) {
         if (tmp.getProcess() < 1) {
             if (levelNumber("name = \"" + string(tmp.argv(1)) + "\"") == 0) 
                 callExportError("Level \"" + string(tmp.argv(1)) + "\" not found.");
-            exportLevel(levelList("name = \"" + string(tmp.argv(1)) + "\"").items[0], tmp),
+            exportLevel(levelsList("name = \"" + string(tmp.argv(1)) + "\"", "")[0], tmp),
             tmp.updateProcess();
         } return;
     } else if (tmp.argv(0) == "1") {
         if (tmp.getProcess() < 1) {
             if (skinNumber("name = \"" + string(tmp.argv(1)) + "\"") == 0) 
                 callExportError("Skin \"" + string(tmp.argv(1)) + "\" not found.");
-            exportSkin(skinList("name = \"" + string(tmp.argv(1)) + "\"").items[0], tmp),
+            exportSkin(skinsList("name = \"" + string(tmp.argv(1)) + "\"", "")[0], tmp),
             tmp.updateProcess();
         } return;
     } else if (tmp.argv(0) == "2") {
         if (tmp.getProcess() < 1) {
             if (backgroundNumber("name = \"" + string(tmp.argv(1)) + "\"") == 0) 
                 callExportError("Background \"" + string(tmp.argv(1)) + "\" not found.");
-            exportBackground(backgroundList("name = \"" + string(tmp.argv(1)) + "\"").items[0], tmp),
+            exportBackground(backgroundsList("name = \"" + string(tmp.argv(1)) + "\"", "")[0], tmp),
             tmp.updateProcess();
         } return;
     } else if (tmp.argv(0) == "3") {
         if (tmp.getProcess() < 1) {
             if (effectNumber("name = \"" + string(tmp.argv(1)) + "\"") == 0) 
                 callExportError("Effect \"" + string(tmp.argv(1)) + "\" not found.");
-            exportEffect(effectList("name = \"" + string(tmp.argv(1)) + "\"").items[0], tmp),
+            exportEffect(effectsList("name = \"" + string(tmp.argv(1)) + "\"", "")[0], tmp),
             tmp.updateProcess();
         } return;
     } else if (tmp.argv(0) == "4") {
         if (tmp.getProcess() < 1) {
             if (particleNumber("name = \"" + string(tmp.argv(1)) + "\"") == 0) 
                 callExportError("Particle \"" + string(tmp.argv(1)) + "\" not found.");
-            exportParticle(particleList("name = \"" + string(tmp.argv(1)) + "\"").items[0], tmp),
+            exportParticle(particlesList("name = \"" + string(tmp.argv(1)) + "\"", "")[0], tmp),
             tmp.updateProcess();
         } return;
     } else if (tmp.argv(0) == "5") {
         if (tmp.getProcess() < 1) {
             if (engineNumber("name = \"" + string(tmp.argv(1)) + "\"") == 0) 
                 callExportError("Engine \"" + string(tmp.argv(1)) + "\" not found.");
-            exportEngine(engineList("name = \"" + string(tmp.argv(1)) + "\"").items[0], tmp),
+            exportEngine(enginesList("name = \"" + string(tmp.argv(1)) + "\"", "")[0], tmp),
             tmp.updateProcess();
         } return;
     } else if (tmp.argv(0) == "A") {
         if (tmp.getProcess() < 1) {
             if (replayNumber("name = \"" + string(tmp.argv(1)) + "\"") == 0) 
                 callExportError("Replay \"" + string(tmp.argv(1)) + "\" not found.");
-            exportReplay(replayList("name = \"" + string(tmp.argv(1)) + "\"").items[0], tmp),
+            exportReplay(replaysList("name = \"" + string(tmp.argv(1)) + "\"", "")[0], tmp),
             tmp.updateProcess();
         } return;
     } else if (tmp.argv(0) == "6") {
@@ -541,27 +541,27 @@ void loadTemporaryData(tmpFile& tmp) {
         } return;
     } else if (tmp.argv(0) == "7") {
         int pt = 1;
-        Section<LevelItem> levels = levelList("", 1, 1e9);
-        for (int i = 0; i < levels.items.size(); i++, pt++) 
-            if (tmp.getProcess() < pt) exportLevel(levels.items[i], tmp), tmp.updateProcess();
-        Section<SkinItem> skins = skinList("", 1, 1e9);
-        for (int i = 0; i < skins.items.size(); i++, pt++) 
-            if (tmp.getProcess() < pt) exportSkin(skins.items[i], tmp), tmp.updateProcess();
-        Section<BackgroundItem> backgrounds = backgroundList("", 1, 1e9);
-        for (int i = 0; i < backgrounds.items.size(); i++, pt++)
-            if (tmp.getProcess() < pt) exportBackground(backgrounds.items[i], tmp), tmp.updateProcess();
-        Section<EffectItem> effects = effectList("", 1, 1e9);
-        for (int i = 0; i < effects.items.size(); i++, pt++)
-            if (tmp.getProcess() < pt) exportEffect(effects.items[i], tmp), tmp.updateProcess();
-        Section<ParticleItem> particles = particleList("", 1, 1e9);
-        for (int i = 0; i < particles.items.size(); i++, pt++) 
-            if (tmp.getProcess() < pt) exportParticle(particles.items[i], tmp), tmp.updateProcess();
-        Section<EngineItem> engines = engineList("", 1, 1e9);
-        for (int i = 0; i < engines.items.size(); i++, pt++) 
-            if (tmp.getProcess() < pt) exportEngine(engines.items[i], tmp), tmp.updateProcess();
-        Section<ReplayItem> replays = replayList("", 1, 1e9);
-        for (int i = 0; i < replays.items.size(); i++, pt++) 
-            if (tmp.getProcess() < pt) exportReplay(replays.items[i], tmp), tmp.updateProcess();
+        vector<LevelItem> levels = levelsList("", "", 1, 1e9);
+        for (int i = 0; i < levels.size(); i++, pt++) 
+            if (tmp.getProcess() < pt) exportLevel(levels[i], tmp), tmp.updateProcess();
+        vector<SkinItem> skins = skinsList("", "", 1, 1e9);
+        for (int i = 0; i < skins.size(); i++, pt++) 
+            if (tmp.getProcess() < pt) exportSkin(skins[i], tmp), tmp.updateProcess();
+        vector<BackgroundItem> backgrounds = backgroundsList("", "", 1, 1e9);
+        for (int i = 0; i < backgrounds.size(); i++, pt++)
+            if (tmp.getProcess() < pt) exportBackground(backgrounds[i], tmp), tmp.updateProcess();
+        vector<EffectItem> effects = effectsList("", "", 1, 1e9);
+        for (int i = 0; i < effects.size(); i++, pt++)
+            if (tmp.getProcess() < pt) exportEffect(effects[i], tmp), tmp.updateProcess();
+        vector<ParticleItem> particles = particlesList("", "", 1, 1e9);
+        for (int i = 0; i < particles.size(); i++, pt++) 
+            if (tmp.getProcess() < pt) exportParticle(particles[i], tmp), tmp.updateProcess();
+        vector<EngineItem> engines = enginesList("", "", 1, 1e9);
+        for (int i = 0; i < engines.size(); i++, pt++) 
+            if (tmp.getProcess() < pt) exportEngine(engines[i], tmp), tmp.updateProcess();
+        vector<ReplayItem> replays = replaysList("", "", 1, 1e9);
+        for (int i = 0; i < replays.size(); i++, pt++) 
+            if (tmp.getProcess() < pt) exportReplay(replays[i], tmp), tmp.updateProcess();
     } else if (tmp.argv(0) == "8") {
         remoteFull(tmp.argv(1), tmp);
         writeLog(LOG_LEVEL_INFO, "Start to process package queue.");
@@ -581,43 +581,43 @@ void loadTemporaryData(tmpFile& tmp) {
                     writeLog(LOG_LEVEL_WARNING, "Level \"" + name + "\" not found.");
                     tmp.updateProcess();
                     continue;
-                } exportLevel(levelList("name = \"" + name + "\"").items[0], tmp);
+                } exportLevel(levelsList("name = \"" + name + "\"", "")[0], tmp);
             } else if (type == "skin") {
                 if (skinNumber("name = \"" + name + "\"") == 0) {
                     writeLog(LOG_LEVEL_WARNING, "Skin \"" + name + "\" not found.");
                     tmp.updateProcess();
                     continue;
-                } exportSkin(skinList("name = \"" + name + "\"").items[0], tmp);
+                } exportSkin(skinsList("name = \"" + name + "\"", "")[0], tmp);
             } else if (type == "background") {
                 if (backgroundNumber("name = \"" + name + "\"") == 0) {
                     writeLog(LOG_LEVEL_WARNING, "Background \"" + name + "\" not found.");
                     tmp.updateProcess();
                     continue;
-                } exportBackground(backgroundList("name = \"" + name + "\"").items[0], tmp);
+                } exportBackground(backgroundsList("name = \"" + name + "\"", "")[0], tmp);
             } else if (type == "effect") {
                 if (effectNumber("name = \"" + name + "\"") == 0) {
                     writeLog(LOG_LEVEL_WARNING, "Effect \"" + name + "\" not found.");
                     tmp.updateProcess();
                     continue;
-                } exportEffect(effectList("name = \"" + name + "\"").items[0], tmp);
+                } exportEffect(effectsList("name = \"" + name + "\"", "")[0], tmp);
             } else if (type == "particle") {
                 if (particleNumber("name = \"" + name + "\"") == 0) {
                     writeLog(LOG_LEVEL_WARNING, "Particle \"" + name + "\" not found.");
                     tmp.updateProcess();
                     continue;
-                } exportParticle(particleList("name = \"" + name + "\"").items[0], tmp);
+                } exportParticle(particlesList("name = \"" + name + "\"", "")[0], tmp);
             } else if (type == "engine") {
                 if (engineNumber("name = \"" + name + "\"") == 0) {
                     writeLog(LOG_LEVEL_WARNING, "Engine \"" + name + "\" not found.");
                     tmp.updateProcess();
                     continue;
-                } exportEngine(engineList("name = \"" + name + "\"").items[0], tmp);
+                } exportEngine(enginesList("name = \"" + name + "\"", "")[0], tmp);
             } else if (type == "replay") {
                 if (replayNumber("name = \"" + name + "\"") == 0) {
                     writeLog(LOG_LEVEL_WARNING, "Replay \"" + name + "\" not found.");
                     tmp.updateProcess();
                     continue;
-                } exportReplay(replayList("name = \"" + name + "\"").items[0], tmp);
+                } exportReplay(replaysList("name = \"" + name + "\"", "")[0], tmp);
             } else {
                 writeLog(LOG_LEVEL_WARNING, "Invalid resource type \"" + type + "\".");
                 tmp.updateProcess();

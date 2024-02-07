@@ -1,10 +1,15 @@
-{
-    "options": [
-        {
-            "query": "keywords",
-            "name": "#KEYWORDS",
-            "type": "text",
-            "placeholder": "Enter keywords..."
-        }
-    ]
-}
+[    
+    {
+        "type": "quick",
+        "title": "快速搜索",
+        "icon": "search",
+        "options": [
+            {
+                "query": "keywords",
+                "name": "#KEYWORDS",
+                "type": "text",
+                "placeholder": "Enter keywords..."
+            }
+        ]
+    }
+]

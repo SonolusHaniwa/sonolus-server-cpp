@@ -28,7 +28,7 @@ auto sonolus_replays_create = [](client_conn conn, http_request request, param a
     if (localization == "0") localization = "default";
     else localization = i18n_index[atoi(localization.c_str()) - 1];
 
-    auto tmp = levelList("id = " + to_string(level));
+    auto tmp = levelsList("id = " + to_string(level));
     if (tmp.items.size() == 0) {
         __api_default_response["Content-Length"] = to_string(json_encode(msg[404]).size());
         putRequest(conn, 404, __api_default_response), send(conn, json_encode(msg[404])), exitRequest(conn);

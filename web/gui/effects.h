@@ -5,8 +5,8 @@ auto web_effects = [](client_conn conn, http_request request, param argv) {
     string body = readFile("./web/html/pages/effects.html");
     auto cookie = cookieParam(request);
 
-    Section<EffectItem> effect = effectList("name = \"" + str_replace("\"", "\\\"", argv[0]) + "\" AND localization = \"" + cookie["lang"] + "\"", 1, 1);
-    if (effect.items.size() == 0) effect = effectList("name = \"" + str_replace("\"", "\\\"", argv[0]) + "\"", 1, 1);
+    Section<EffectItem> effect = effectsList("name = \"" + str_replace("\"", "\\\"", argv[0]) + "\" AND localization = \"" + cookie["lang"] + "\"", 1, 1);
+    if (effect.items.size() == 0) effect = effectsList("name = \"" + str_replace("\"", "\\\"", argv[0]) + "\"", 1, 1);
     if (effect.items.size() == 0) {
         __api_default_response["Content-Length"] = to_string(json_encode(msg[404]).size());
         putRequest(conn, 404, __api_default_response);
@@ -14,7 +14,7 @@ auto web_effects = [](client_conn conn, http_request request, param argv) {
         exitRequest(conn);
     }
     EffectItem item = effect.items[0];
-    Section<EffectItem> recommended = effectList("author = \"" + str_replace("\"", "\\\"", item.author) + "\" AND (localization = \"" + cookie["lang"] + "\" OR localization = \"default\")", 1, 5);
+    Section<EffectItem> recommended = effectsList("author = \"" + str_replace("\"", "\\\"", item.author) + "\" AND (localization = \"" + cookie["lang"] + "\" OR localization = \"default\")", 1, 5);
     argvar argList = item.fetchParamList();
     argList = merge(argList, transfer(appConfig));
     argList = merge(argList, transfer(i18n[cookie["lang"] == "" ? appConfig["language.default"].asString() : cookie["lang"]], "language."));

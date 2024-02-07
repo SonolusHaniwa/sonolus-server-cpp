@@ -1,5 +1,5 @@
 {
-    "database": "mysql",
+    "database": "sqlite",
     "mysql.hostname": "127.0.0.1",
     "mysql.port": 3306,
     "mysql.username": "root",
@@ -15,8 +15,65 @@
     "logSystem.debug": false,
     "logSystem.target": 1,
     "logSystem.targetFile": "./log.txt",
-    "sonolus.version": "0.7.4",
+    "sonolus.version": "0.7.5",
     "session.expireTime": 30,
     "export.retryTime": 5,
-    "export.hashCheckTime": 5
+    "export.hashCheckTime": 5,
+
+    "levels.sections": [
+        {
+            "title": "#NEWEST",
+            "icon": "level",
+            "filter": "",
+            "order": "id DESC"
+        }
+    ],
+    "skins.sections": [
+        {
+            "title": "#NEWEST",
+            "icon": "skin",
+            "filter": "",
+            "order": "id DESC"
+        }
+    ],
+    "backgrounds.sections": [
+        {
+            "title": "#NEWEST",
+            "icon": "background",
+            "filter": "",
+            "order": "id DESC"
+        }
+    ],
+    "effects.sections": [
+        {
+            "title": "#NEWEST",
+            "icon": "effect",
+            "filter": "",
+            "order": "id DESC"
+        }
+    ],
+    "particles.sections": [
+        {
+            "title": "#NEWEST",
+            "icon": "particle",
+            "filter": "",
+            "order": "id DESC"
+        }
+    ],
+    "engines.sections": [
+        {
+            "title": "#NEWEST",
+            "icon": "engine",
+            "filter": "",
+            "order": "id DESC"
+        }
+    ],
+    "replays.sections": [
+        {
+            "title": "#NEWEST",
+            "icon": "replay",
+            "filter": "",
+            "order": "id DESC"
+        }
+    ]
 }

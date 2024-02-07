@@ -10,7 +10,7 @@ auto web_replays_list = [](client_conn conn, http_request request, param argv) {
     argvar $_GET = getParam(request); int page = atoi($_GET["page"].c_str());
     $_GET["localization"] = cookie["lang"];
     if (page < 0) page = 0;
-    auto section = replayList(replayFilter($_GET), page * 20 + 1, (page + 1) * 20);
+    auto section = replaysList(replayFilter($_GET), page * 20 + 1, (page + 1) * 20);
     argList["page.title"] = argList["language.replays"] + " | " + appConfig["server.title"].asString();
     argList["html.navbar"] = fetchNavBar(argList["language.replays"], checkLogin(request)).output();
     string sonolusUrl = "sonolus://" + appConfig["server.rootUrl"].asString() + "/replays/list?" + getStringfy($_GET);

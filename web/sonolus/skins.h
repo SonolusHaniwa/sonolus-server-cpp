@@ -2,8 +2,8 @@ using namespace std;
 
 auto sonolus_skins = [](client_conn conn, http_request request, param argv){
     auto $_GET = getParam(request);
-    Section<SkinItem> section = skinList("name = \"" + str_replace("\"", "\\\"", argv[0]) + "\" AND localization = \"" + $_GET["localization"] + "\"", 1, 1);
-    if (section.items.size() == 0) section = skinList("name = \"" + str_replace("\"", "\\\"", argv[0]) + "\"", 1, 1);
+    Section<SkinItem> section = skinsList("name = \"" + str_replace("\"", "\\\"", argv[0]) + "\" AND localization = \"" + $_GET["localization"] + "\"", 1, 1);
+    if (section.items.size() == 0) section = skinsList("name = \"" + str_replace("\"", "\\\"", argv[0]) + "\"", 1, 1);
     if (section.items.size() == 0) {
         __api_default_response["Content-Length"] = to_string(json_encode(msg[404]).size());
         putRequest(conn, 404, __api_default_response);
@@ -11,7 +11,7 @@ auto sonolus_skins = [](client_conn conn, http_request request, param argv){
         exitRequest(conn);
     }
     SkinItem item = section.items[0];
-    Section<SkinItem> recommended = skinList("author = \"" + str_replace("\"", "\\\"", item.author) + "\" AND (localization = \"" + $_GET["localization"] + "\" OR localization = \"default\")", 1, 10);
+    Section<SkinItem> recommended = skinsList("author = \"" + str_replace("\"", "\\\"", item.author) + "\" AND (localization = \"" + $_GET["localization"] + "\" OR localization = \"default\")", 1, 10);
     ItemDetails<SkinItem> detail = ItemDetails<SkinItem>(item, item.description);
     detail.recommended = recommended.items;
     Json::Value val = detail.toJsonObject();

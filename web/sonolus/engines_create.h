@@ -35,22 +35,22 @@ auto sonolus_engines_create = [](client_conn conn, http_request request, param a
     if (localization == "0") localization = "default";
     else localization = i18n_index[atoi(localization.c_str()) - 1];
     SkinItem skinItem; BackgroundItem backgroundItem; EffectItem effectItem; ParticleItem particleItem;
-    auto tmp = skinList("id = " + to_string(skin));
+    auto tmp = skinsList("id = " + to_string(skin));
     if (tmp.items.size() == 0) {
         __api_default_response["Content-Length"] = to_string(json_encode(msg[404]).size());
         putRequest(conn, 404, __api_default_response), send(conn, json_encode(msg[404])), exitRequest(conn);
     } skinItem = tmp.items[0];
-    auto tmp2 = backgroundList("id = " + to_string(background));
+    auto tmp2 = backgroundsList("id = " + to_string(background));
     if (tmp2.items.size() == 0) {
         __api_default_response["Content-Length"] = to_string(json_encode(msg[404]).size());
         putRequest(conn, 404, __api_default_response), send(conn, json_encode(msg[404])), exitRequest(conn);
     } backgroundItem = tmp2.items[0];
-    auto tmp3 = effectList("id = " + to_string(effect));
+    auto tmp3 = effectsList("id = " + to_string(effect));
     if (tmp3.items.size() == 0) {
         __api_default_response["Content-Length"] = to_string(json_encode(msg[404]).size());
         putRequest(conn, 404, __api_default_response), send(conn, json_encode(msg[404])), exitRequest(conn);
     } effectItem = tmp3.items[0];
-    auto tmp4 = particleList("id = " + to_string(particle));
+    auto tmp4 = particlesList("id = " + to_string(particle));
     if (tmp4.items.size() == 0) {
         __api_default_response["Content-Length"] = to_string(json_encode(msg[404]).size());
         putRequest(conn, 404, __api_default_response), send(conn, json_encode(msg[404])), exitRequest(conn);

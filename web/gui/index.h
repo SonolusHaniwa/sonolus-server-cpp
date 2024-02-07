@@ -13,49 +13,49 @@ auto web_index = [](client_conn conn, http_request request, param argv) {
     argvar filter; filter["localization"] = cookie["lang"];
 
     argList["html.levelsTitle"] = fetchIndexTitle("/levels/create", "/levels/search", "/levels/list", "levels").output();
-    Section<LevelItem> levels = levelList(levelFilter(filter), 1, 5);
+    Section<LevelItem> levels = levelsList(levelFilter(filter), 1, 5);
     argList["html.levelsList"] = "";
     for (int i = 0; i < levels.items.size(); i++) 
         argList["html.levelsList"] += levels.items[i].toHTMLObject().output();
     argList["html.levelsBottom"] = fetchIndexBottom("/levels/search", "/levels/list").output();
 
     argList["html.skinsTitle"] = fetchIndexTitle("/skins/create", "/skins/search", "/skins/list", "skins").output();
-    Section<SkinItem> skins = skinList(skinFilter(filter), 1, 5);
+    Section<SkinItem> skins = skinsList(skinFilter(filter), 1, 5);
     argList["html.skinsList"] = "";
     for (int i = 0; i < skins.items.size(); i++) 
         argList["html.skinsList"] += skins.items[i].toHTMLObject().output();
     argList["html.skinsBottom"] = fetchIndexBottom("/skins/search", "/skins/list").output();
 
     argList["html.backgroundsTitle"] = fetchIndexTitle("/backgrounds/create", "/backgrounds/search", "/backgrounds/list", "backgrounds").output();
-    Section<BackgroundItem> backgrounds = backgroundList(backgroundFilter(filter), 1, 5);
+    Section<BackgroundItem> backgrounds = backgroundsList(backgroundFilter(filter), 1, 5);
     argList["html.backgroundsList"] = "";
     for (int i = 0; i < backgrounds.items.size(); i++) 
         argList["html.backgroundsList"] += backgrounds.items[i].toHTMLObject().output();
     argList["html.backgroundsBottom"] = fetchIndexBottom("/backgrounds/search", "/backgrounds/list").output();
     
     argList["html.effectsTitle"] = fetchIndexTitle("/effects/create", "/effects/search", "/effects/list", "effects").output();
-    Section<EffectItem> effects = effectList(effectFilter(filter), 1, 5);
+    Section<EffectItem> effects = effectsList(effectFilter(filter), 1, 5);
     argList["html.effectsList"] = "";
     for (int i = 0; i < effects.items.size(); i++) 
         argList["html.effectsList"] += effects.items[i].toHTMLObject().output();
     argList["html.effectsBottom"] = fetchIndexBottom("/effects/search", "/effects/list").output();
 
     argList["html.particlesTitle"] = fetchIndexTitle("/particles/create", "/particles/search", "/particles/list", "particles").output();
-    Section<ParticleItem> particles = particleList(particleFilter(filter), 1, 5);
+    Section<ParticleItem> particles = particlesList(particleFilter(filter), 1, 5);
     argList["html.particlesList"] = "";
     for (int i = 0; i < particles.items.size(); i++) 
         argList["html.particlesList"] += particles.items[i].toHTMLObject().output();
     argList["html.particlesBottom"] = fetchIndexBottom("/particles/search", "/particles/list").output();
 
     argList["html.enginesTitle"] = fetchIndexTitle("/engines/create", "/engines/search", "/engines/list", "engines").output();
-    Section<EngineItem> engines = engineList(engineFilter(filter), 1, 5);
+    Section<EngineItem> engines = enginesList(engineFilter(filter), 1, 5);
     argList["html.enginesList"] = "";
     for (int i = 0; i < engines.items.size(); i++) 
         argList["html.enginesList"] += engines.items[i].toHTMLObject().output();
     argList["html.enginesBottom"] = fetchIndexBottom("/engines/search", "/engines/list").output();
     
     argList["html.replaysTitle"] = fetchIndexTitle("/replays/create", "/replays/search", "/replays/list", "replays").output();
-    Section<ReplayItem> replays = replayList(replayFilter(filter), 1, 5);
+    Section<ReplayItem> replays = replaysList(replayFilter(filter), 1, 5);
     argList["html.replaysList"] = "";
     for (int i = 0; i < replays.items.size(); i++) 
         argList["html.replaysList"] += replays.items[i].toHTMLObject().output();

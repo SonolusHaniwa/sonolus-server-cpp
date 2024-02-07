@@ -44,15 +44,18 @@ class LevelItem {
     SRL<LevelBgm> bgm;
     SRL<LevelData> data;
     SRL<LevelPreview> preview;
+    vector<Tag> tags;
     string description;
+    string source;
 
     LevelItem(){}
     LevelItem(int id, string name, int rating, string title, string artists, string author, EngineItem engine, 
         UseItem<SkinItem> useSkin, UseItem<BackgroundItem> useBackground, UseItem<EffectItem> useEffect, UseItem<ParticleItem> useParticle,
-        SRL<LevelCover> cover, SRL<LevelBgm> bgm, SRL<LevelData> data, SRL<LevelPreview> preview, string description = ""):
+        SRL<LevelCover> cover, SRL<LevelBgm> bgm, SRL<LevelData> data, SRL<LevelPreview> preview, 
+        vector<Tag> tags, string description = "", string source = ""):
         id(id), name(name), rating(rating), title(title), artists(artists), author(author), engine(engine), 
         useSkin(useSkin), useBackground(useBackground), useEffect(useEffect), useParticle(useParticle),
-        cover(cover), bgm(bgm), data(data), preview(preview), description(description){}
+        cover(cover), bgm(bgm), data(data), preview(preview), tags(tags), description(description), source(source){}
     LevelItem(int level_id, Json::Value arr) {
         id = level_id;
         name = arr["name"].asString();
@@ -70,7 +73,9 @@ class LevelItem {
         bgm = SRL<LevelBgm>(arr["bgm"]);
         data = SRL<LevelData>(arr["data"]);
         preview = SRL<LevelPreview>(arr["preview"]);
+        for (int i = 0; i < arr["tags"].size(); i++) tags.push_back(Tag(arr["tags"][i]));
         description = arr["description"].asString();
+        source = arr["source"].asString();
     }
 
     Json::Value toJsonObject() {
@@ -90,7 +95,10 @@ class LevelItem {
         res["bgm"] = bgm.toJsonObject();
         res["data"] = data.toJsonObject();
         res["preview"] = preview.toJsonObject();
+        res["tags"].resize(0);
+        for (int i = 0; i < tags.size(); i++) res["tags"].append(tags[i].toJsonObject());
         res["description"] = description;
+        res["source"] = source;
         return res;
     }
 
@@ -127,37 +135,34 @@ class LevelItem {
 int levelNumber(string filter) {
     string sql = "SELECT COUNT(*) AS sum FROM Level";
     if (filter != "") sql += " WHERE (" + filter + ")";
-    sql += " ORDER BY id";
     dbres res = (new DB_Controller)->query(sql.c_str());
     return atoi(res[0]["sum"].c_str());
 }
 
-Section<LevelItem> levelList(string filter, int st = 1, int en = 20) {
-    // 获取数据条数
-    int pageCount = ceil(1.0 * levelNumber(filter) / 20);
-
-    // 获取数据
+vector<LevelItem> levelsList(string filter, string order, int st = 1, int en = 20) { 
     string sql = "SELECT * FROM Level";
     if (filter != "") sql += " WHERE (" + filter + ")";
-    sql += " ORDER BY id DESC LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);
+    if (order != "") sql += " ORDER BY " + order;
+    sql += " LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);
     auto res = (new DB_Controller)->query(sql.c_str());
-    Section<LevelItem> list = Section<LevelItem>(pageCount, LevelSearch);
+    vector<LevelItem> list = {};
     sort(res.begin(), res.end(), [](argvar a, argvar b){
         if (a["name"] == b["name"]) return (a["localization"] == "default") < (b["localization"] == "default");
         else return atoi(a["id"].c_str()) > atoi(b["id"].c_str());
     }); map<string, bool> nameUsed;
+    
     for (int i = 0; i < res.size(); i++) {
         if (nameUsed[res[i]["name"]]) continue;
         nameUsed[res[i]["name"]] = true;
-        EngineItem engine = engineList("id = " + res[i]["engine"], 1, 1).items[0];
+        EngineItem engine = enginesList("id = " + res[i]["engine"], "", 1, 1)[0];
         UseItem<SkinItem> useSkin = UseItem<SkinItem>(
-            res[i]["skin"] == "0", res[i]["skin"] == "0" ? SkinItem() : skinList("id = " + res[i]["skin"], 1, 1).items[0]);
+            res[i]["skin"] == "0", res[i]["skin"] == "0" ? SkinItem() : skinsList("id = " + res[i]["skin"], "", 1, 1)[0]);
         UseItem<BackgroundItem> useBackground = UseItem<BackgroundItem>(
-            res[i]["background"] == "0", res[i]["background"] == "0" ? BackgroundItem() : backgroundList("id = " + res[i]["background"], 1, 1).items[0]);
+            res[i]["background"] == "0", res[i]["background"] == "0" ? BackgroundItem() : backgroundsList("id = " + res[i]["background"], "", 1, 1)[0]);
         UseItem<EffectItem> useEffect = UseItem<EffectItem>(
-            res[i]["effect"] == "0", res[i]["effect"] == "0" ? EffectItem() : effectList("id = " + res[i]["effect"], 1, 1).items[0]);
+            res[i]["effect"] == "0", res[i]["effect"] == "0" ? EffectItem() : effectsList("id = " + res[i]["effect"], "", 1, 1)[0]);
         UseItem<ParticleItem> useParticle = UseItem<ParticleItem>(
-            res[i]["particle"] == "0", res[i]["particle"] == "0" ? ParticleItem() : particleList("id = " + res[i]["particle"], 1, 1).items[0]);
+            res[i]["particle"] == "0", res[i]["particle"] == "0" ? ParticleItem() : particlesList("id = " + res[i]["particle"], "", 1, 1)[0]);
         LevelItem data = LevelItem(
             atoi(res[i]["id"].c_str()),
             res[i]["name"],
@@ -174,8 +179,10 @@ Section<LevelItem> levelList(string filter, int st = 1, int en = 20) {
             SRL<LevelBgm>(res[i]["bgm"], "/data/" + res[i]["bgm"]),
             SRL<LevelData>(res[i]["data"], "/data/" + res[i]["data"]),
             SRL<LevelPreview>(res[i]["preview"], "/data/" + res[i]["preview"]),
-            str_replace("\\n", "\n", res[i]["description"])
-        ); list.append(data);
+            {},
+            str_replace("\\n", "\n", res[i]["description"]),
+            ""
+        ); list.push_back(data);
     } return list;
 }
 

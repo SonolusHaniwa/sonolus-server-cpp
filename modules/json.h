@@ -28,12 +28,12 @@ argvar transfer(Json::Value source, string prefix = "") {
 }
 
 void json_merge(Json::Value& origin, Json::Value source) {
-    if (source.type() != Json::objectValue && source.type() != Json::arrayValue) {
-        assert(origin.type() != Json::objectValue && origin.type() != Json::arrayValue);
-        origin = source; return;
-    } auto mem = source.getMemberNames();
-    assert(origin.type() != Json::objectValue || origin.type() != Json::arrayValue);
-    for (auto it = mem.begin(); it != mem.end(); it++) json_merge(origin[*it], source[*it]);
+    if (source.type() == Json::objectValue) {
+        auto mem = source.getMemberNames();
+        for (auto it = mem.begin(); it != mem.end(); it++) json_merge(origin[*it], source[*it]);
+    } else if (source.type() == Json::arrayValue) 
+        for (int i = 0; i < source.size(); i++) json_merge(origin[i], source[i]);
+    else origin = source;
 }
 
 #endif

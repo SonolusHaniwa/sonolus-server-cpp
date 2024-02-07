@@ -1,10 +1,12 @@
-{
-    "options": [
-        {
-            "query": "keywords",
-            "name": "#KEYWORDS",
-            "type": "text",
-            "placeholder": "Enter keywords..."
-        }
-    ]
-}
+[
+    {
+        "options": [
+            {
+                "query": "keywords",
+                "name": "#KEYWORDS",
+                "type": "text",
+                "placeholder": "Enter keywords..."
+            }
+        ]
+    }
+]

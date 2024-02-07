@@ -9,11 +9,11 @@ class ItemList {
 
     int pageCount;
     vector<T> items;
-    Search search;
+    vector<Search> searches;
 
     ItemList(){}
-    ItemList(int pageCount, Search search):
-        pageCount(pageCount), search(search){}
+    ItemList(int pageCount, vector<Search> searches):
+        pageCount(pageCount), searches(searches){}
     
     void append(T item) {
         items.push_back(item);
@@ -22,9 +22,12 @@ class ItemList {
     Json::Value toJsonObject() {
         Json::Value res;
         res["pageCount"] = pageCount;
+        res["items"].resize(0);
         for (int i = 0; i < items.size(); i++) 
             res["items"].append(items[i].toJsonObject());
-        res["search"] = search.toJsonObject();
+        res["searches"].resize(0);
+        for (int i = 0; i < searches.size(); i++) 
+            res["searches"].append(searches[i].toJsonObject());
         return res;
     }
 };

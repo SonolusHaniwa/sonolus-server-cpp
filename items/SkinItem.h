@@ -15,12 +15,17 @@ class SkinItem {
     SRL<SkinThumbnail> thumbnail;
     SRL<SkinData> data;
     SRL<SkinTexture> texture;
+    vector<Tag> tags;
     string description;
+    string source;
 
     SkinItem(){}
     SkinItem(int id, string name, string title, string subtitle, string author, 
-        SRL<SkinThumbnail> thumbnail, SRL<SkinData> data, SRL<SkinTexture> texture, string description = ""):
-        id(id), name(name), title(title), subtitle(subtitle), author(author), thumbnail(thumbnail), data(data), texture(texture), description(description){}
+        SRL<SkinThumbnail> thumbnail, SRL<SkinData> data, SRL<SkinTexture> texture, 
+        vector<Tag> tags, string description = "", string source = ""):
+        id(id), name(name), title(title), subtitle(subtitle), author(author), 
+        thumbnail(thumbnail), data(data), texture(texture), 
+        tags(tags), description(description), source(source){}
     SkinItem(int skin_id, Json::Value arr) {
         id = skin_id;
         name = arr["name"].asString();
@@ -31,7 +36,9 @@ class SkinItem {
         thumbnail = SRL<SkinThumbnail>(arr["thumbnail"]);
         data = SRL<SkinData>(arr["data"]);
         texture = SRL<SkinTexture>(arr["texture"]);
+        for (int i = 0; i < arr["tags"].size(); i++) tags.push_back(Tag(arr["tags"][i]));
         description = arr["description"].asString();
+        source = arr["source"].asString();
     }
 
     Json::Value toJsonObject() {
@@ -44,7 +51,10 @@ class SkinItem {
         res["thumbnail"] = thumbnail.toJsonObject();
         res["data"] = data.toJsonObject();
         res["texture"] = texture.toJsonObject();
+        res["tags"].resize(0);
+        for (int i = 0; i < tags.size(); i++) res["tags"].append(tags[i].toJsonObject());
         res["description"] = description;
+        res["source"] = source;
         return res;
     }
 
@@ -61,6 +71,7 @@ class SkinItem {
         args["url"] = "/skins/" + name;
         args["sonolus.url"] = "sonolus://" + appConfig["server.rootUrl"].asString() + "/skins/" + name;
         args["description"] = description;
+        args["source"] = source;
         return args;
     }
 
@@ -78,16 +89,13 @@ int skinNumber(string filter) {
     return atoi(res[0]["sum"].c_str());
 }
 
-Section<SkinItem> skinList(string filter, int st = 1, int en = 20) {
-    // 获取数据条数
-    int pageCount = ceil(1.0 * skinNumber(filter) / 20);
-
-    // 获取数据
+vector<SkinItem> skinsList(string filter, string order, int st = 1, int en = 20) {
     string sql = "SELECT * FROM Skin";
     if (filter != "") sql += " WHERE (" + filter + ")";
-    sql += " ORDER BY id DESC LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);
+    if (order != "") sql += " ORDER BY " + order;
+    sql += " LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);
     dbres res = (new DB_Controller)->query(sql.c_str());
-    Section<SkinItem> list = Section<SkinItem>(pageCount, SkinSearch);
+    vector<SkinItem> list = {};
     sort(res.begin(), res.end(), [](argvar a, argvar b){
         if (a["name"] == b["name"]) return (a["localization"] == "default") < (b["localization"] == "default");
         else return atoi(a["id"].c_str()) > atoi(b["id"].c_str());
@@ -104,8 +112,10 @@ Section<SkinItem> skinList(string filter, int st = 1, int en = 20) {
             SRL<SkinThumbnail>(res[i]["thumbnail"], "/data/" + res[i]["thumbnail"]),
             SRL<SkinData>(res[i]["data"], "/data/" + res[i]["data"]),
             SRL<SkinTexture>(res[i]["texture"], "/data/" + res[i]["texture"]),
-            str_replace("\\n", "\n", res[i]["description"])
-        ); list.append(data);
+            {}, 
+            str_replace("\\n", "\n", res[i]["description"]),
+            res[i]["source"]
+        ); list.push_back(data);
     } return list;
 }
 
