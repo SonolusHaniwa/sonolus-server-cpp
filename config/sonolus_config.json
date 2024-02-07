@@ -2,7 +2,7 @@
     "server.name": "Sonolus",
     "server.title": "Sonolus Server for C++",
     "server.description": "A Test Server for Sonolus",
-    "server.hasAuthentication": false,
+    "server.hasAuthentication": true,
     "server.logo": "/data/9d364cdf72de5709f16eae90e1be7f023946f007",
     "server.bannerUrl": "/data/0273968035abcd9bfe8f6b8fa913bb356dd202f2",
     "server.bannerHash": "0273968035abcd9bfe8f6b8fa913bb356dd202f2",

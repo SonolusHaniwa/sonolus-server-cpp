@@ -36,6 +36,9 @@ const std::string httpd_version = "1.0.5";
 #include<openssl/ssl.h>
 #include<openssl/aes.h>
 #include<openssl/err.h>
+#include<openssl/ec.h>
+#include<openssl/ecdsa.h>
+#include<openssl/obj_mac.h>
 #include<pthread.h>
 using namespace std;
 

@@ -52,7 +52,7 @@ std::string base64_encode(char* bytes_to_encode, int in_len) {
     return ret;
 }
 
-char* base64_decode(std::string encoded_string, int& out_len) {
+string base64_decode(std::string encoded_string) {
     size_t in_len = encoded_string.size();
     int i = 0;
     int j = 0;
@@ -86,9 +86,8 @@ char* base64_decode(std::string encoded_string, int& out_len) {
         for (j = 0; (j < i - 1); j++) s.push_back(char_array_3[j]);
     }
 
-    out_len = s.size();
-    char* res = new char[out_len];
-    for (int i = 0; i < out_len; i++) res[i] = s[i];
+    string res;
+    for (int i = 0; i < s.size(); i++) res += s[i];
     return res;
 }
 
@@ -145,6 +144,44 @@ string rsa_encode(string source, string key) {
         RSA_free(rsa);
         return "";
     }
+}
+
+// sha256编码部分
+string sha256(string src) {
+    unsigned char* sSHA = new unsigned char[32];
+    SHA256((const unsigned char*)src.c_str(), src.length(), sSHA);
+    string res;
+    for (int i = 0; i < 32; i++) res += sSHA[i];
+    delete[] sSHA;
+    return res;
+}
+
+// ecdsa-sha256验签部分
+bool ecdsa_sha256_verify(string msg, string sig, string pemKey) {
+    // 信息转为 SHA256
+    msg = sha256(msg);
+
+    // 设置公钥
+    EC_KEY* eckey = EC_KEY_new();
+    BIO* keybio;
+    keybio = BIO_new_mem_buf((unsigned char*)pemKey.c_str(), -1);
+    eckey = PEM_read_bio_EC_PUBKEY(keybio, &eckey, NULL, NULL);
+    if (!eckey) return false;
+
+    // 设置签名
+    ECDSA_SIG* signature = ECDSA_SIG_new();
+    int len = sig.length();
+    unsigned char* pSig = new unsigned char[len];
+    for (int i = 0; i < len; i++) pSig[i] = sig[i];
+    int ret = ECDSA_SIG_set0(signature, BN_bin2bn(pSig, len / 2, NULL), BN_bin2bn(pSig + len / 2, len / 2, NULL));
+
+    // 验证
+    int res = ECDSA_do_verify((const unsigned char*)msg.c_str(), msg.length(), signature, eckey);
+    if (res == -1) writeLog(LOG_LEVEL_ERROR, "Failed to verify signature! Unknwon Error!");
+    EC_KEY_free(eckey);
+    ECDSA_SIG_free(signature);
+    delete[] pSig;
+    return res == 1;
 }
 
 // 引号编码
