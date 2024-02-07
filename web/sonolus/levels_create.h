@@ -15,7 +15,7 @@ auto sonolus_levels_create = [](client_conn conn, http_request request, param ar
     }
     
     auto $_POST = postParam(request);
-    int id = levelNumber("") + 1;
+    int id = levelsNumber("") + 1;
     string name = $_POST["name"];
     int version = LevelItem().version;
     int rating = atoi($_POST["rating"].c_str());

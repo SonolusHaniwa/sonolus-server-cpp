@@ -122,7 +122,7 @@ class EngineItem {
     }
 };
 
-int engineNumber(string filter) {
+int enginesNumber(string filter) {
     string sql = "SELECT COUNT(*) AS sum FROM Engine";
     if (filter != "") sql += " WHERE (" + filter + ")";
     dbres res = (new DB_Controller)->query(sql.c_str());
@@ -160,18 +160,12 @@ vector<EngineItem> enginesList(string filter, string order, int st = 1, int en =
 			SRL<EnginePreviewData>(res[i]["previewData"], "/data/" + res[i]["previewData"]),
 			SRL<EngineWatchData>(res[i]["watchData"], "/data/" + res[i]["watchData"]),
             SRL<EngineConfiguration>(res[i]["configuration"], "/data/" + res[i]["configuration"]),
-            {},
+            deserializeTagString(res[i]["tags"]),
             SRL<EngineRom>(res[i]["rom"], "/data/" + res[i]["rom"]),
             str_replace("\\n", "\n", res[i]["description"]),
-            res[i]["source"]
+            (appConfig["server.enableSSL"].asBool() ? "https://" : "http://") + appConfig["server.rootUrl"].asString() + "/sonolus/backgrounds/" + res[i]["name"]
         ); list.push_back(data);
     } return list;
-}
-
-string engineFilter(argvar arg) {
-    string filter = "(localization = \"" + arg["localization"] + "\" OR localization = \"default\")";
-    if (arg["keywords"] != "") filter += " AND title like \"%" + str_replace("\"", "\\\"", urldecode(arg["keywords"])) + "%\"";
-    return filter;
 }
 
 int engineCreate(EngineItem item, string localization = "default") {

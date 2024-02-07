@@ -72,6 +72,8 @@ void checkSecret(string token, client_conn conn) {
 
 #include"ServerInfo.h"
 #include"ItemInfo.h"
+#include"ItemList.h"
+#include"ItemDetails.h"
 // #include"levels_list.h"
 // #include"skins_list.h"
 // #include"backgrounds_list.h"

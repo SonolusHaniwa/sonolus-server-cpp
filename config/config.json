@@ -16,11 +16,12 @@
     "logSystem.target": 1,
     "logSystem.targetFile": "./log.txt",
     "sonolus.version": "0.7.5",
+    "sonolus.itemsPerPage": 20,
     "session.expireTime": 30,
     "export.retryTime": 5,
     "export.hashCheckTime": 5,
 
-    "levels.sections": [
+    "levels.info.sections": [
         {
             "title": "#NEWEST",
             "icon": "level",
@@ -28,7 +29,7 @@
             "order": "id DESC"
         }
     ],
-    "skins.sections": [
+    "skins.info.sections": [
         {
             "title": "#NEWEST",
             "icon": "skin",
@@ -36,7 +37,7 @@
             "order": "id DESC"
         }
     ],
-    "backgrounds.sections": [
+    "backgrounds.info.sections": [
         {
             "title": "#NEWEST",
             "icon": "background",
@@ -44,7 +45,7 @@
             "order": "id DESC"
         }
     ],
-    "effects.sections": [
+    "effects.info.sections": [
         {
             "title": "#NEWEST",
             "icon": "effect",
@@ -52,7 +53,7 @@
             "order": "id DESC"
         }
     ],
-    "particles.sections": [
+    "particles.info.sections": [
         {
             "title": "#NEWEST",
             "icon": "particle",
@@ -60,7 +61,7 @@
             "order": "id DESC"
         }
     ],
-    "engines.sections": [
+    "engines.info.sections": [
         {
             "title": "#NEWEST",
             "icon": "engine",
@@ -68,12 +69,50 @@
             "order": "id DESC"
         }
     ],
-    "replays.sections": [
+    "replays.info.sections": [
         {
             "title": "#NEWEST",
             "icon": "replay",
             "filter": "",
             "order": "id DESC"
         }
-    ]
+    ],
+    "posts.info.sections": [
+        {
+            "title": "#NEWEST",
+            "icon": "post",
+            "filter": "",
+            "order": "id DESC"
+        }
+    ],
+    "playlists.info.sections": [
+        {
+            "title": "#NEWEST",
+            "icon": "playlist",
+            "filter": "",
+            "order": "id DESC"
+        }
+    ],
+    "levels.details.sections": [
+        {
+            "title": "#RECOMMENDED",
+            "icon": "star",
+            "filter": "title = \"{{title}}\"",
+            "order": "id DESC"
+        },
+        {
+            "title": "#SAME_AUTHOR",
+            "icon": "crown",
+            "filter": "author = \"{{author}}\"",
+            "order": "id DESC"
+        }
+    ],
+    "skins.details.sections": [],
+    "backgrounds.details.sections": [],
+    "effects.details.sections": [],
+    "particles.details.sections": [],
+    "engines.details.sections": [],
+    "replays.details.sections": [],
+    "posts.details.sections": [],
+    "playlists.details.sections": []
 }

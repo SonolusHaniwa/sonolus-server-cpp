@@ -4,6 +4,7 @@ using namespace std;
 
 std::string sonolus_server_version = "1.4.8";
 std::string Maximum_Sonolus_Version = "0.8.0";
+std::string Minimum_Sonolus_Version = "0.8.0";
 std::string Sonolus_Version = Maximum_Sonolus_Version;
 Json::Value appConfig, studiosConfig;
 Json::Value i18n, i18n_raw;
@@ -25,6 +26,8 @@ int effectVersion = 5;
 int particleVersion = 2;
 int engineVersion = 8;
 int replayVersion = 1;
+int postVersion = 1;
+int playlistVersion = 1;
 
 vector<string> levelVersionList = {"0.0.0"};
 vector<string> skinVersionList = {"0.0.0", "0.5.8", "0.7.0", "0.7.3"};
@@ -33,6 +36,8 @@ vector<string> effectVersionList = {"0.0.0", "0.5.8", "0.6.0", "0.6.4", "0.7.0"}
 vector<string> particleVersionList = {"0.0.0", "0.7.0"};
 vector<string> engineVersionList = {"0.0.0", "0.0.0", "0.0.0", "0.5.8", "0.5.13", "0.6.0", "0.6.4", "0.7.0", "0.7.2", "0.7.3", "0.7.4", "0.7.5"};
 vector<string> replayVersionList = {"0.0.0"};
+vector<string> postVersionList = {"0.0.0"};
+vector<string> playlistVersionList = {"0.0.0"};
 
 #include"modules/modules.h"
 #include"items/Items.h"
@@ -44,6 +49,7 @@ stringstream usage;
 
 void initUsage(char** argv) {
     usage << "Sonolus Server v" << sonolus_server_version << " (WebServer Core v" << httpd_version << ")" << endl;
+    usage << "The lowest supported version of Sonolus: " << Minimum_Sonolus_Version << endl;
     usage << "The highest supported version of Sonolus: " << Maximum_Sonolus_Version << endl;
     usage << "Copyright (c) 2023 LittleYang0531, all rights reserved." << endl;
     usage << endl;
@@ -93,7 +99,9 @@ void routerRegister(int argc, char** argv) {
     // app.addRoute("/css/%s", css_import);
 
     app.addRoute("/sonolus/info", ServerInfo);
-    app.addRoute("/sonolus/%s/info", ItemInfo);
+    app.addRoute("/sonolus/%s/info", SonolusInfo);
+    app.addRoute("/sonolus/%s/list", SonolusList);
+    app.addRoute("/sonolus/%s/%s", SonolusDetails);
     // app.addRoute("/sonolus/levels/create", sonolus_levels_create);
     // app.addRoute("/sonolus/skins/create", sonolus_skins_create);
     // app.addRoute("/sonolus/backgrounds/create", sonolus_backgrounds_create);

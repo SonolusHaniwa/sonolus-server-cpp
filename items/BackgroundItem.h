@@ -86,7 +86,7 @@ class BackgroundItem {
     }
 };
 
-int backgroundNumber(string filter) {
+int backgroundsNumber(string filter) {
     string sql = "SELECT COUNT(*) AS sum FROM Background";
     if (filter != "") sql += " WHERE (" + filter + ")";
     dbres res = (new DB_Controller)->query(sql.c_str());
@@ -117,17 +117,11 @@ vector<BackgroundItem> backgroundsList(string filter, string order, int st = 1, 
             SRL<BackgroundData>(res[i]["data"], "/data/" + res[i]["data"]),
             SRL<BackgroundImage>(res[i]["image"], "/data/" + res[i]["image"]),
             SRL<BackgroundConfiguration>(res[i]["configuration"], "/data/" + res[i]["configuration"]),
-            {},
+            deserializeTagString(res[i]["tags"]),
             str_replace("\\n", "\n", res[i]["description"]),
-            res[i]["source"]
+            (appConfig["server.enableSSL"].asBool() ? "https://" : "http://") + appConfig["server.rootUrl"].asString() + "/sonolus/backgrounds/" + res[i]["name"]
         ); list.push_back(data);
     } return list;
-}
-
-string backgroundFilter(argvar arg) {
-    string filter = "(localization = \"" + arg["localization"] + "\" OR localization = \"default\")";
-    if (arg["keywords"] != "") filter += " AND title like \"%" + str_replace("\"", "\\\"", urldecode(arg["keywords"])) + "%\"";
-    return filter;
 }
 
 int backgroundCreate(BackgroundItem item, string localization = "default") {

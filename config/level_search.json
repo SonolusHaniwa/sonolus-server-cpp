@@ -1,8 +1,8 @@
 [    
     {
-        "title": "quick",
+        "title": "#ADVANCED",
         "icon": "search",
-        "type": "quick",
+        "type": "advanced",
         "options": [
             {
                 "query": "keywords",
@@ -41,6 +41,7 @@
                 "step": 1
             }
         ],
-        "filter": ""
+        "filter": "title LIKE \"%{{keywords}}%\" AND artists LIKE \"%{{artist}}%\" AND author LIKE \"%{{author}}%\" AND rating >= {{minRating}} AND rating <= {{maxRating}}",
+        "order": "id DESC"
     }
 ]

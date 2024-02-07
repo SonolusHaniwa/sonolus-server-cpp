@@ -15,7 +15,7 @@ auto sonolus_replays_create = [](client_conn conn, http_request request, param a
     }
     
     auto $_POST = postParam(request);
-    int id = replayNumber("") + 1;
+    int id = replaysNumber("") + 1;
     string name = $_POST["name"];
     int version = ReplayItem().version;
     string title = $_POST["title"];

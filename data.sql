@@ -101,6 +101,7 @@ CREATE TABLE LoginRequest (
     userAgent text,
     ip text
 );
+
 /* Sonolus Server v1.4.4 */
 ALTER TABLE Level ADD COLUMN description text;
 ALTER TABLE Skin ADD COLUMN description text;
@@ -114,13 +115,23 @@ ALTER TABLE Background ADD COLUMN localization text DEFAULT 'default';
 ALTER TABLE Effect ADD COLUMN localization text DEFAULT 'default';
 ALTER TABLE Particle ADD COLUMN localization text DEFAULT 'default';
 ALTER TABLE Engine ADD COLUMN localization text DEFAULT 'default';
+
 /* Sonolus v0.7.2 */
 ALTER TABLE Engine ADD COLUMN tutorialData text;
+
 /* Sonolus v0.7.3 */
 ALTER TABLE Engine ADD COLUMN previewData text;
+
 /* Sonolus v0.7.4 */
 ALTER TABLE Engine ADD COLUMN watchData text;
+
 /* Sonolus v0.8.0 */
+ALTER TABLE Level ADD COLUMN tags text;
+ALTER TABLE Skin ADD COLUMN tags text;
+ALTER TABLE Background ADD COLUMN tags text;
+ALTER TABLE Effect ADD COLUMN tags text;
+ALTER TABLE Particle ADD COLUMN tags text;
+ALTER TABLE Engine ADD COLUMN tags text;
 CREATE TABLE Replay (
     id int, 
     name text, 
@@ -131,6 +142,32 @@ CREATE TABLE Replay (
     level int,
     data text, 
     configuration text,
+    tags text,
+    description text,
+    localization text DEFAULT 'default'
+);
+CREATE TABLE Post (
+    id int,
+    name text,
+    version int,
+    title text,
+    time int,
+    author text,
+    thumbnail text,
+    tags text,
+    description text,
+    localization text DEFAULT 'default'
+);
+CREATE TABLE Playlist (
+    id int,
+    name text,
+    version int,
+    title text,
+    subtitle text,
+    author text,
+    levels text,
+    thumbnail text,
+    tags text,
     description text,
     localization text DEFAULT 'default'
 );

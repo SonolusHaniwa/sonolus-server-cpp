@@ -159,6 +159,33 @@ class SearchColorOption {
     }
 };
 
+class SearchMultiOption {
+    public:
+
+    string query;
+    string name;
+    string type = "multi";
+    vector<bool> defs;
+    vector<string> values;
+
+    SearchMultiOption(){};
+    SearchMultiOption(string query, string name, vector<bool> defs, vector<string> values):
+        query(query), name(name), defs(defs), values(values){};
+    
+    Json::Value toJsonObject() {
+        Json::Value res;
+        res["query"] = query;
+        res["name"] = name;
+        res["type"] = type;
+        res["defs"].resize(0);
+        for (int i = 0; i < defs.size(); i++)
+            res["defs"].append((int)defs[i]);
+        for (int i = 0; i < values.size(); i++)
+            res["values"].append(values[i]);
+        return res;
+    }
+};
+
 class SearchOption {
     public:
 
@@ -170,6 +197,7 @@ class SearchOption {
     SearchFileOption file;
     SearchTitleOption title;
     SearchColorOption color;
+    SearchMultiOption multi;
 
     SearchOption(){}
     SearchOption(SearchTextOption text):
@@ -186,6 +214,8 @@ class SearchOption {
         title(title), type("title"){}
     SearchOption(SearchColorOption color):
         color(color), type("color"){}
+    SearchOption(SearchMultiOption multi):
+        multi(multi), type("multi"){}
 };
 
 class Search {
@@ -194,6 +224,8 @@ class Search {
     string type = "quick";
     string title;
     string icon;
+    string filter;
+    string order;
     vector<SearchOption> options;
 
     void append(SearchOption option) {

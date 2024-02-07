@@ -487,49 +487,49 @@ vector<string> exportPreload(int argc, char** argv) {
 void loadTemporaryData(tmpFile& tmp) {
     if (tmp.argv(0) == "0") {
         if (tmp.getProcess() < 1) {
-            if (levelNumber("name = \"" + string(tmp.argv(1)) + "\"") == 0) 
+            if (levelsNumber("name = \"" + string(tmp.argv(1)) + "\"") == 0) 
                 callExportError("Level \"" + string(tmp.argv(1)) + "\" not found.");
             exportLevel(levelsList("name = \"" + string(tmp.argv(1)) + "\"", "")[0], tmp),
             tmp.updateProcess();
         } return;
     } else if (tmp.argv(0) == "1") {
         if (tmp.getProcess() < 1) {
-            if (skinNumber("name = \"" + string(tmp.argv(1)) + "\"") == 0) 
+            if (skinsNumber("name = \"" + string(tmp.argv(1)) + "\"") == 0) 
                 callExportError("Skin \"" + string(tmp.argv(1)) + "\" not found.");
             exportSkin(skinsList("name = \"" + string(tmp.argv(1)) + "\"", "")[0], tmp),
             tmp.updateProcess();
         } return;
     } else if (tmp.argv(0) == "2") {
         if (tmp.getProcess() < 1) {
-            if (backgroundNumber("name = \"" + string(tmp.argv(1)) + "\"") == 0) 
+            if (backgroundsNumber("name = \"" + string(tmp.argv(1)) + "\"") == 0) 
                 callExportError("Background \"" + string(tmp.argv(1)) + "\" not found.");
             exportBackground(backgroundsList("name = \"" + string(tmp.argv(1)) + "\"", "")[0], tmp),
             tmp.updateProcess();
         } return;
     } else if (tmp.argv(0) == "3") {
         if (tmp.getProcess() < 1) {
-            if (effectNumber("name = \"" + string(tmp.argv(1)) + "\"") == 0) 
+            if (effectsNumber("name = \"" + string(tmp.argv(1)) + "\"") == 0) 
                 callExportError("Effect \"" + string(tmp.argv(1)) + "\" not found.");
             exportEffect(effectsList("name = \"" + string(tmp.argv(1)) + "\"", "")[0], tmp),
             tmp.updateProcess();
         } return;
     } else if (tmp.argv(0) == "4") {
         if (tmp.getProcess() < 1) {
-            if (particleNumber("name = \"" + string(tmp.argv(1)) + "\"") == 0) 
+            if (particlesNumber("name = \"" + string(tmp.argv(1)) + "\"") == 0) 
                 callExportError("Particle \"" + string(tmp.argv(1)) + "\" not found.");
             exportParticle(particlesList("name = \"" + string(tmp.argv(1)) + "\"", "")[0], tmp),
             tmp.updateProcess();
         } return;
     } else if (tmp.argv(0) == "5") {
         if (tmp.getProcess() < 1) {
-            if (engineNumber("name = \"" + string(tmp.argv(1)) + "\"") == 0) 
+            if (enginesNumber("name = \"" + string(tmp.argv(1)) + "\"") == 0) 
                 callExportError("Engine \"" + string(tmp.argv(1)) + "\" not found.");
             exportEngine(enginesList("name = \"" + string(tmp.argv(1)) + "\"", "")[0], tmp),
             tmp.updateProcess();
         } return;
     } else if (tmp.argv(0) == "A") {
         if (tmp.getProcess() < 1) {
-            if (replayNumber("name = \"" + string(tmp.argv(1)) + "\"") == 0) 
+            if (replaysNumber("name = \"" + string(tmp.argv(1)) + "\"") == 0) 
                 callExportError("Replay \"" + string(tmp.argv(1)) + "\" not found.");
             exportReplay(replaysList("name = \"" + string(tmp.argv(1)) + "\"", "")[0], tmp),
             tmp.updateProcess();
@@ -577,43 +577,43 @@ void loadTemporaryData(tmpFile& tmp) {
             } string name; fin >> name;
             if (++pt <= tmp.getProcess()) continue;
             if (type == "level") {
-                if (levelNumber("name = \"" + name + "\"") == 0) {
+                if (levelsNumber("name = \"" + name + "\"") == 0) {
                     writeLog(LOG_LEVEL_WARNING, "Level \"" + name + "\" not found.");
                     tmp.updateProcess();
                     continue;
                 } exportLevel(levelsList("name = \"" + name + "\"", "")[0], tmp);
             } else if (type == "skin") {
-                if (skinNumber("name = \"" + name + "\"") == 0) {
+                if (skinsNumber("name = \"" + name + "\"") == 0) {
                     writeLog(LOG_LEVEL_WARNING, "Skin \"" + name + "\" not found.");
                     tmp.updateProcess();
                     continue;
                 } exportSkin(skinsList("name = \"" + name + "\"", "")[0], tmp);
             } else if (type == "background") {
-                if (backgroundNumber("name = \"" + name + "\"") == 0) {
+                if (backgroundsNumber("name = \"" + name + "\"") == 0) {
                     writeLog(LOG_LEVEL_WARNING, "Background \"" + name + "\" not found.");
                     tmp.updateProcess();
                     continue;
                 } exportBackground(backgroundsList("name = \"" + name + "\"", "")[0], tmp);
             } else if (type == "effect") {
-                if (effectNumber("name = \"" + name + "\"") == 0) {
+                if (effectsNumber("name = \"" + name + "\"") == 0) {
                     writeLog(LOG_LEVEL_WARNING, "Effect \"" + name + "\" not found.");
                     tmp.updateProcess();
                     continue;
                 } exportEffect(effectsList("name = \"" + name + "\"", "")[0], tmp);
             } else if (type == "particle") {
-                if (particleNumber("name = \"" + name + "\"") == 0) {
+                if (particlesNumber("name = \"" + name + "\"") == 0) {
                     writeLog(LOG_LEVEL_WARNING, "Particle \"" + name + "\" not found.");
                     tmp.updateProcess();
                     continue;
                 } exportParticle(particlesList("name = \"" + name + "\"", "")[0], tmp);
             } else if (type == "engine") {
-                if (engineNumber("name = \"" + name + "\"") == 0) {
+                if (enginesNumber("name = \"" + name + "\"") == 0) {
                     writeLog(LOG_LEVEL_WARNING, "Engine \"" + name + "\" not found.");
                     tmp.updateProcess();
                     continue;
                 } exportEngine(enginesList("name = \"" + name + "\"", "")[0], tmp);
             } else if (type == "replay") {
-                if (replayNumber("name = \"" + name + "\"") == 0) {
+                if (replaysNumber("name = \"" + name + "\"") == 0) {
                     writeLog(LOG_LEVEL_WARNING, "Replay \"" + name + "\" not found.");
                     tmp.updateProcess();
                     continue;

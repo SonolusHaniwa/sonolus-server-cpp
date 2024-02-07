@@ -82,7 +82,7 @@ class SkinItem {
     }
 };
 
-int skinNumber(string filter) {
+int skinsNumber(string filter) {
     string sql = "SELECT COUNT(*) AS sum FROM Skin";
     if (filter != "") sql += " WHERE (" + filter + ")";
     dbres res = (new DB_Controller)->query(sql.c_str());
@@ -112,17 +112,11 @@ vector<SkinItem> skinsList(string filter, string order, int st = 1, int en = 20)
             SRL<SkinThumbnail>(res[i]["thumbnail"], "/data/" + res[i]["thumbnail"]),
             SRL<SkinData>(res[i]["data"], "/data/" + res[i]["data"]),
             SRL<SkinTexture>(res[i]["texture"], "/data/" + res[i]["texture"]),
-            {}, 
+            deserializeTagString(res[i]["tags"]), 
             str_replace("\\n", "\n", res[i]["description"]),
-            res[i]["source"]
+            (appConfig["server.enableSSL"].asBool() ? "https://" : "http://") + appConfig["server.rootUrl"].asString() + "/sonolus/backgrounds/" + res[i]["name"]
         ); list.push_back(data);
     } return list;
-}
-
-string skinFilter(argvar arg) {
-    string filter = "(localization = \"" + arg["localization"] + "\" OR localization = \"default\")";
-    if (arg["keywords"] != "") filter += " AND title like \"%" + str_replace("\"", "\\\"", urldecode(arg["keywords"])) + "%\"";
-    return filter;
 }
 
 int skinCreate(SkinItem item, string localization = "default") {

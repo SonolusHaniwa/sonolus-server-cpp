@@ -85,10 +85,9 @@ class ReplayItem {
     }
 };
 
-int replayNumber(string filter) {
+int replaysNumber(string filter) {
     string sql = "SELECT COUNT(*) AS sum FROM Replay";
     if (filter != "") sql += " WHERE (" + filter + ")";
-    sql += " ORDER BY id";
     dbres res = (new DB_Controller)->query(sql.c_str());
     return atoi(res[0]["sum"].c_str());
 }
@@ -117,19 +116,11 @@ vector<ReplayItem> replaysList(string filter, string order, int st = 1, int en =
             level,
             SRL<ReplayData>(res[i]["data"], "/data/" + res[i]["data"]),
             SRL<ReplayConfiguration>(res[i]["configuration"], "/data/" + res[i]["configuration"]),
-            {},
+            deserializeTagString(res[i]["tags"]),
             str_replace("\\n", "\n", res[i]["description"]),
-            res[i]["source"]
+            (appConfig["server.enableSSL"].asBool() ? "https://" : "http://") + appConfig["server.rootUrl"].asString() + "/sonolus/backgrounds/" + res[i]["name"]
         ); list.push_back(data);
     } return list;
-}
-
-string replayFilter(argvar arg) {
-    string filter = "(localization = \"" + arg["localization"] + "\" OR localization = \"default\")";
-    if (arg["keywords"] != "") filter += string(" AND title like \"%") + str_replace("\"", "\\\"", urldecode(arg["keywords"])) + "%\"";
-    if (arg["subtitle"] != "") filter += string(" AND subtitle like \"%") + str_replace("\"", "\\\"", urldecode(arg["subtitle"])) + "%\"";
-    if (arg["author"] != "") filter += string(" AND author like \"%") + str_replace("\"", "\\\"", urldecode(arg["author"])) + "%\"";
-    return filter;
 }
 
 int replayCreate(ReplayItem item, string localization = "default") {

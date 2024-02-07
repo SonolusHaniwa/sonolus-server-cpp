@@ -82,7 +82,7 @@ class EffectItem {
     }
 };
 
-int effectNumber(string filter) {
+int effectsNumber(string filter) {
     string sql = "SELECT COUNT(*) AS sum FROM Effect";
     if (filter != "") sql += " WHERE (" + filter + ")";
     dbres res = (new DB_Controller)->query(sql.c_str());
@@ -112,17 +112,11 @@ vector<EffectItem> effectsList(string filter, string order, int st = 1, int en =
             SRL<EffectThumbnail>(res[i]["thumbnail"], "/data/" + res[i]["thumbnail"]),
             SRL<EffectData>(res[i]["data"], "/data/" + res[i]["data"]),
             SRL<EffectAudio>(res[i]["audio"], "/data/" + res[i]["audio"]),
-            {},
+            deserializeTagString(res[i]["tags"]),
             str_replace("\\n", "\n", res[i]["description"]),
-            res[i]["source"]
+            (appConfig["server.enableSSL"].asBool() ? "https://" : "http://") + appConfig["server.rootUrl"].asString() + "/sonolus/backgrounds/" + res[i]["name"]
         ); list.push_back(data);
     } return list;
-}
-
-string effectFilter(argvar arg) {
-    string filter = "(localization = \"" + arg["localization"] + "\" OR localization = \"default\")";
-    if (arg["keywords"] != "") filter += " AND title like \"%" + str_replace("\"", "\\\"", urldecode(arg["keywords"])) + "%\"";
-    return filter;
 }
 
 int effectCreate(EffectItem item, string localization = "default") {

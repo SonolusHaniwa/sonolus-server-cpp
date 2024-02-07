@@ -82,7 +82,7 @@ class ParticleItem {
     }
 };
 
-int particleNumber(string filter) {
+int particlesNumber(string filter) {
     string sql = "SELECT COUNT(*) AS sum FROM Particle";
     if (filter != "") sql += " WHERE (" + filter + ")";
     dbres res = (new DB_Controller)->query(sql.c_str());
@@ -112,17 +112,11 @@ vector<ParticleItem> particlesList(string filter, string order, int st = 1, int 
             SRL<ParticleThumbnail>(res[i]["thumbnail"], "/data/" + res[i]["thumbnail"]),
             SRL<ParticleData>(res[i]["data"], "/data/" + res[i]["data"]),
             SRL<ParticleTexture>(res[i]["texture"], "/data/" + res[i]["texture"]),
-            {},
+            deserializeTagString(res[i]["tags"]),
             str_replace("\\n", "\n", res[i]["description"]),
-            res[i]["source"]
+            (appConfig["server.enableSSL"].asBool() ? "https://" : "http://") + appConfig["server.rootUrl"].asString() + "/sonolus/backgrounds/" + res[i]["name"]
         ); list.push_back(data);
     } return list;
-}
-
-string particleFilter(argvar arg) {
-    string filter = "(localization = \"" + arg["localization"] + "\" OR localization = \"default\")";
-    if (arg["keywords"] != "") filter += " AND title like \"%" + str_replace("\"", "\\\"", urldecode(arg["keywords"])) + "%\"";
-    return filter;
 }
 
 int particleCreate(ParticleItem item, string localization = "default") {

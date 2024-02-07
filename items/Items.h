@@ -2,8 +2,8 @@
 #include"SRL.h"
 #include"Search.h"
 
-vector<Search> LevelSearch, SkinSearch, BackgroundSearch, EffectSearch, ParticleSearch, EngineSearch, ReplaySearch;
-vector<Search> LevelCreate, SkinCreate, BackgroundCreate, EffectCreate, ParticleCreate, EngineCreate, ReplayCreate;
+vector<Search> LevelSearch, SkinSearch, BackgroundSearch, EffectSearch, ParticleSearch, EngineSearch, ReplaySearch, PostSearch, PlaylistSearch;
+vector<Search> LevelCreate, SkinCreate, BackgroundCreate, EffectCreate, ParticleCreate, EngineCreate, ReplayCreate, PostCreate, PlaylistCreate;
 
 #include"ItemSection.h"
 #include"ItemList.h"
@@ -15,6 +15,8 @@ vector<Search> LevelCreate, SkinCreate, BackgroundCreate, EffectCreate, Particle
 #include"EngineItem.h"
 #include"LevelItem.h"
 #include"ReplayItem.h"
+#include"PostItem.h"
+#include"PlaylistItem.h"
 // #include"UserProfile.h"
 using namespace std;
 
@@ -47,6 +49,8 @@ vector<Search> readJson(string path) {
         search.type = orig[k]["type"].asString();
         search.title = orig[k]["title"].asString();
         search.icon = orig[k]["icon"].asString();
+        search.filter = orig[k]["filter"].asString();
+        search.order = orig[k]["order"].asString();
         for (int i = 0; i < json.size(); i++) {
             if (json[i]["type"].asString() == "text") {
                 SearchTextOption text = SearchTextOption(
@@ -95,6 +99,18 @@ vector<Search> readJson(string path) {
                     json[i]["query"].asString(),
                     json[i]["name"].asString()
                 ); search.append(color);
+            } else if (json[i]["type"].asString() == "multi") {
+                SearchMultiOption multi = SearchMultiOption(
+                    json[i]["query"].asString(),
+                    json[i]["name"].asString(),
+                    vector<bool>(),
+                    vector<string>()
+                ); 
+                for (int j = 0; j < json[i]["defs"].size(); j++) 
+                    multi.values.push_back(json[i]["defs"][j].asString());
+                for (int j = 0; j < json[i]["values"].size(); j++) 
+                    multi.values.push_back(json[i]["values"][j].asString());
+                search.append(multi);
             } else {
                 writeLog(LOG_LEVEL_ERROR, ("Invalid search option type \"" + 
                     json[i]["type"].asString() + "\" in file \"" + path + "\"").c_str());  
@@ -123,6 +139,10 @@ void loadConfig() {
     EngineCreate = readJson("./config/engine_create.json");
     ReplaySearch = readJson("./config/replay_search.json");
     ReplayCreate = readJson("./config/replay_create.json");
+    PostSearch = readJson("./config/post_search.json");
+    PostCreate = readJson("./config/post_create.json");
+    PlaylistSearch = readJson("./config/playlist_search.json");
+    PlaylistCreate = readJson("./config/playlist_create.json");
     string json = readFile("./i18n/index.json");
     Json::Value index; json_decode(json, index);
     for (int i = 0; i < index.size(); i++) {

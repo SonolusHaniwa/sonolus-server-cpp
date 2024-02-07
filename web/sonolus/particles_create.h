@@ -15,7 +15,7 @@ auto sonolus_particles_create = [](client_conn conn, http_request request, param
     }
 
     auto $_POST = postParam(request);
-    int id = particleNumber("") + 1;
+    int id = particlesNumber("") + 1;
     string name = $_POST["name"];
     string title = $_POST["title"];
     string subtitle = $_POST["subtitle"];

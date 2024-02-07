@@ -132,7 +132,7 @@ class LevelItem {
     }
 };
 
-int levelNumber(string filter) {
+int levelsNumber(string filter) {
     string sql = "SELECT COUNT(*) AS sum FROM Level";
     if (filter != "") sql += " WHERE (" + filter + ")";
     dbres res = (new DB_Controller)->query(sql.c_str());
@@ -179,21 +179,11 @@ vector<LevelItem> levelsList(string filter, string order, int st = 1, int en = 2
             SRL<LevelBgm>(res[i]["bgm"], "/data/" + res[i]["bgm"]),
             SRL<LevelData>(res[i]["data"], "/data/" + res[i]["data"]),
             SRL<LevelPreview>(res[i]["preview"], "/data/" + res[i]["preview"]),
-            {},
+            deserializeTagString(res[i]["tags"]),
             str_replace("\\n", "\n", res[i]["description"]),
-            ""
+            (appConfig["server.enableSSL"].asBool() ? "https://" : "http://") + appConfig["server.rootUrl"].asString() + "/sonolus/backgrounds/" + res[i]["name"]
         ); list.push_back(data);
     } return list;
-}
-
-string levelFilter(argvar arg) {
-    string filter = "(localization = \"" + arg["localization"] + "\" OR localization = \"default\")";
-    if (arg["keywords"] != "") filter += string(" AND title like \"%") + str_replace("\"", "\\\"", urldecode(arg["keywords"])) + "%\"";
-    if (arg["artist"] != "") filter += string(" AND artists like \"%") + str_replace("\"", "\\\"", urldecode(arg["artist"])) + "%\"";
-    if (arg["author"] != "") filter += string(" AND author like \"%") + str_replace("\"", "\\\"", urldecode(arg["author"])) + "%\"";
-    if (arg["minRating"] != "") filter += string(" AND rating >= ") + arg["minRating"];
-    if (arg["maxRating"] != "") filter += string(" AND rating <= ") + arg["maxRating"];
-    return filter;
 }
 
 int levelCreate(LevelItem item, string localization = "default") {

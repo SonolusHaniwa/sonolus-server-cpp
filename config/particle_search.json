@@ -1,12 +1,1 @@
-[    
-    {
-        "options": [
-            {
-                "query": "keywords",
-                "name": "#KEYWORDS",
-                "type": "text",
-                "placeholder": "Enter keywords..."
-            }
-        ]
-    }
-]
+[]
