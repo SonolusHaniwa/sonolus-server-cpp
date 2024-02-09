@@ -95,6 +95,7 @@ function changeLanguage(name) {
 }
 
 async function displayOpenInSonolus(e) {
+    generateQRCode();
     document.getElementById("openInSonolus").style.display = "flex";
     await sleep(10);
     document.getElementById("openInSonolus").style.opacity = "1";
@@ -248,6 +249,18 @@ addLoadEvent(async function(){
     });
 });
 
+var qrcode;
+/* 初始化 QRCode 结构 */
+addLoadEvent(async function(){
+    qrcode = new QRCode(document.getElementById("qrcode"), {
+        text: "114514",
+        width: 192,
+        height: 192,
+        colorDark : "#000000",
+        colorLight : "#ffffff",
+    });
+})
+
 async function displayStudiosSkin() {
     document.getElementById("createStudiosSkin").style.display = "flex";
     await sleep(10);
@@ -300,4 +313,14 @@ async function hideStudiosEffect() {
     document.getElementById("createStudiosEffect").style.opacity = "0";
     await sleep(150);
     document.getElementById("createStudiosEffect").style.display = "none";
+}
+
+function generateQRCode() {
+    var qrcode = document.getElementById("qrcode");
+    QRCode.toCanvas(qrcode, qrcode.getAttribute("value"), {
+        width: 192
+    }, function (error) {
+        if (error) console.error(error);
+        console.log('success!');
+    });
 }

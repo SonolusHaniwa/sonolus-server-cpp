@@ -19,13 +19,25 @@ auto Authentication = [](client_conn conn, http_request request, param argv){
         string address = AuthenticateServerRequest["address"].asString();
         time_t times = AuthenticateServerRequest["time"].asInt64();
         auto userProfile = AuthenticateServerRequest["userProfile"];
-        Json::Value checkRequest, AuthenticateServerResponse;
+        Json::Value AuthenticateServerResponse;
         string json = request.postdata;
-        if (!ecdsa_sha256_verify(json, base64_decode(request.argv["Sonolus-Signature"]), SonolusPublicKey)) quickSendMsg(401);
+        if (!ecdsa_sha256_verify(json, base64_decode(request.argv["sonolus-signature"]), SonolusPublicKey)) quickSendMsg(401);
         if (abs(times / 1000 - time(0)) > 60) quickSendMsg(401);
         // if (address.size() < realAddress.size() || address.substr(0, realAddress.size()) != realAddress) quickSendMsg(401);
         AuthenticateServerResponse["session"] = generateSession();
-        AuthenticateServerResponse["expiration"] = (long long)(times += appConfig["session.expireTime"].asInt() * 60 * 1000);
+        AuthenticateServerResponse["expiration"] = (long long)(times += appConfig["session.expireTime"].asInt64() * 24 * 60 * 60 * 1000);
+        quickSendObj(AuthenticateServerResponse);
+    } else if (type == "authenticateExternal") {
+        string address = AuthenticateServerRequest["address"].asString();
+        time_t times = AuthenticateServerRequest["time"].asInt64();
+        auto userProfile = AuthenticateServerRequest["userProfile"];
+        Json::Value AuthenticateServerResponse;
+        string json = request.postdata;
+        if (!ecdsa_sha256_verify(json, base64_decode(request.argv["sonolus-signature"]), SonolusPublicKey)) quickSendMsg(401);
+        if (abs(times / 1000 - time(0)) > 60) quickSendMsg(401);
+        // if (address.size() < realAddress.size() || address.substr(0, realAddress.size()) != realAddress) quickSendMsg(401);
+        AuthenticateServerResponse["session"] = generateSession();
+        AuthenticateServerResponse["expiration"] = (long long)(times += appConfig["session.expireTime"].asInt64() * 24 * 60 * 60 * 1000);
         quickSendObj(AuthenticateServerResponse);
     } else quickSendMsg(404);
 };

@@ -1,8 +1,9 @@
 #include"./sonolus/sonolus.h"
 // #include"uploader.h"
-// #include"downloader.h"
-// #include"./js/import.h"
-// #include"./css/import.h"
+#include"downloader.h"
+#include"./js/import.h"
+#include"./css/import.h"
+#include"./gui/Index.h"
 // #include"./gui/index.h"
 // #include"./gui/levels.h"
 // #include"./gui/skins.h"
@@ -48,4 +49,3 @@
 // #include"./gui/replays_edit.h"
 // #include"./gui/login.h"
 // #include"./auth/auth.h"
-using namespace std;

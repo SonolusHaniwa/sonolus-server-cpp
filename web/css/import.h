@@ -3,12 +3,7 @@ using namespace std;
 auto css_import = [](client_conn conn, http_request request, param argv) {
     string filename = argv[0];
     ifstream fin(("./web/css/" + filename).c_str());
-    if (!fin) {
-        __api_default_response["Content-Length"] = to_string(json_encode(msg[404]).size());
-        putRequest(conn, 404, __api_default_response);
-        send(conn, json_encode(msg[404]));
-        exitRequest(conn);
-    }
+    if (!fin) quickSendMsg(404);
     fin.seekg(0, ios::end);
     int len = fin.tellg();
     fin.seekg(0, ios::beg);

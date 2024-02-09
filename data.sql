@@ -171,3 +171,10 @@ CREATE TABLE Playlist (
     description text,
     localization text DEFAULT 'default'
 );
+DROP TABLE UserSession;
+DROP TABLE LoginRequest;
+CREATE TABLE UserSession (
+    uid text,
+    session text,
+    expire int
+);

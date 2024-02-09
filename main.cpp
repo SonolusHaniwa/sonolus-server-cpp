@@ -94,9 +94,9 @@ void invalidUsage() {
 void routerRegister(int argc, char** argv) {
     app.route.clear();
 
-    // app.addRoute("/data/%s", downloader);
-    // app.addRoute("/js/%s", js_import);
-    // app.addRoute("/css/%s", css_import);
+    app.addRoute("/data/%s", downloader);
+    app.addRoute("/js/%s", js_import);
+    app.addRoute("/css/%s", css_import);
 
     app.addRoute("/sonolus/info", ServerInfo);
     app.addRoute("/sonolus/%s/info", SonolusInfo);
@@ -125,6 +125,8 @@ void routerRegister(int argc, char** argv) {
     // app.addRoute("/sonolus/engines/%s", sonolus_engines);
     // app.addRoute("/sonolus/replays/%s", sonolus_replays);
 
+    app.addRoute("/", GUIIndex);
+    app.addRoute("/index", GUIIndex);
     // app.addRoute("/", web_index);
     // app.addRoute("/index", web_index);
     // app.addRoute("/levels/create", web_levels_create);

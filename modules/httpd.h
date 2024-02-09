@@ -379,7 +379,7 @@ void http_init() {
     /** 设置服务端监听态 */
     ret = listen(sock,1);
     if (ret == -1) {
-        cout << "Failed to listen to client!" << endl;
+        writeLog(LOG_LEVEL_ERROR, "Failed to listen to client!");
         exit(3);
     }
     writeLog(LOG_LEVEL_DEBUG, "Successfully listen to client!");
@@ -515,10 +515,11 @@ http_request getRequest(client_conn& conn) {
         if (__arg[pt].find(": ") == string::npos) break;
         int __wh = __arg[pt].find(": ");
         string key = __arg[pt].substr(0, __wh);
+        for (int i = 0; i < key.size(); i++) if (key[i] >= 'A' && key[i] <= 'Z') key[i] -= 'A', key[i] += 'a';
         string value = __arg[pt].substr(__wh + 2);
         request.argv.insert(make_pair(key, value));
     }
-    if (request.argv["Content-Length"] != "0") request.postdata = recv(conn, atoi(request.argv["Content-Length"].c_str()));
+    if (request.argv["content-length"] != "0") request.postdata = recv(conn, atoi(request.argv["content-length"].c_str()));
     writeLog(LOG_LEVEL_DEBUG, "Request Parameters: " + to_string(request.argv.size()));
 
     /** 返回请求头信息 */
@@ -662,11 +663,11 @@ argvar cookieParam(http_request request) {
     writeLog(LOG_LEVEL_DEBUG, "Analysing COOKIE parameters...");
     
     /**  获取Cookie字符串 */
-    if (request.argv.find("Cookie") == request.argv.end()) {
+    if (request.argv.find("cookie") == request.argv.end()) {
         writeLog(LOG_LEVEL_DEBUG, "Empty COOKIE parameters!");
         return _e;
     }
-    string s = request.argv["Cookie"];
+    string s = request.argv["cookie"];
 
     /** 拆散字符串 */
     vector<string> arr = explode("; ", s.c_str());

@@ -4,12 +4,7 @@ using namespace std;
 auto downloader = [](client_conn conn, http_request request, param argv){
     /** 打开文件 */
     ifstream fin(("./data/" + argv[0]).c_str(), ios::binary);
-    if (!fin) {
-        __api_default_response["Content-Length"] = to_string(json_encode(msg[404]).size());
-        putRequest(conn, 404, __default_response);
-        send(conn, json_encode(msg[404]));
-        exitRequest(conn);
-    }
+    if (!fin) quickSendMsg(404);
 
     /** 构造基础响应头 */
     argvar response = __default_response;
@@ -22,8 +17,8 @@ auto downloader = [](client_conn conn, http_request request, param argv){
     __int64_t st = 0, en = filesize - 1;
 
     /** 获取断点续传范围信息 */
-    if (request.argv.find("Range") != request.argv.end()) {
-        string range = explode("=", request.argv["Range"].c_str())[1];
+    if (request.argv.find("range") != request.argv.end()) {
+        string range = explode("=", request.argv["range"].c_str())[1];
         param val = explode("-", range.c_str());
         st = atoi(val[0].c_str()), en = atoi(val[1].c_str());
         if (en == 0) en = filesize - 1;
@@ -33,7 +28,7 @@ auto downloader = [](client_conn conn, http_request request, param argv){
     __int64_t output_len = en - st + 1;
     response["Content-Length"] = to_string(output_len);
     response["Content-Range"] = "bytes " + to_string(st) + "-" + to_string(en) + "/" + to_string(filesize);
-    putRequest(conn, request.argv.find("Range") != request.argv.end() ? 206 : 200, response);
+    putRequest(conn, request.argv.find("range") != request.argv.end() ? 206 : 200, response);
 
     /** 从st起每次读取len长度的数据并发送 */
     fin.seekg(st, ios::beg);

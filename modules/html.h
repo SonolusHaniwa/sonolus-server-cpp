@@ -57,21 +57,12 @@ H fetchOpenInSonolus(string url) {
     return str_replace(source, args);
 }
 
-H fetchIndexTitle(string createUrl, string searchUrl, string listUrl, string langId, bool login = false) {
-    string source = readFile("./web/html/components/indexTitle.html");
+H indexButton(string icon, string text, string link) {
+    string source = readFile("./web/html/components/indexButton.html");
     argvar args;
-    args["createUrl"] = createUrl;
-    args["searchUrl"] = searchUrl;
-    args["listUrl"] = listUrl;
-    args["title"] = "{{language." + langId + "}}";
-    return str_replace(source, args);
-}
-
-H fetchIndexBottom(string searchUrl, string listUrl) {
-    string source = readFile("./web/html/components/indexBottom.html");
-    argvar args;
-    args["searchUrl"] = searchUrl;
-    args["listUrl"] = listUrl;
+    args["icon"] = icon;
+    args["text"] = text;
+    args["link"] = link;
     return str_replace(source, args);
 }
 
@@ -179,7 +170,7 @@ H fetchSearchColor(string query, string name, string def, bool isMargin) {
     return str_replace(source, args);
 }
 
-H fetchNavBar(string title, bool login = false) {
+H fetchNavBar(string title) {
     string navSource = readFile("./web/html/components/navbar.html");
     string langSource = readFile("./web/html/components/language.html");
     string htmlLangList = "";
@@ -191,12 +182,17 @@ H fetchNavBar(string title, bool login = false) {
     } argvar args;
     args["title"] = title;
     args["html.language"] = htmlLangList;
-    string code = "123456";
-    args["html.login"] = fetchSearchText("code", "Code", code, code, false).output();
-    args["login.open_in_sonolus"] = fetchOpenInSonolus("sonolus://" + appConfig["server.rootUrl"].asString() + "/auth/sonolus/levels/" + code).output();
-    args["args.login"] = login ? "block" : "none";
-    args["args.visitor"] = login ? "none" : "block";
     return str_replace(navSource, args);
 }
+
+vector<string> iconName = {"advanced", "award", "bookmark", "crown", "heart", "medal", "ranking", "search", "shuffle", "star", "thumbsUp", "thumbsDown", "trophy",
+    "home", "global", "post", "playlist", "level", "skin", "background", "effect", "particle", "engine", "replay", "login", "logout"};
+argvar iconList;
+bool iconLoader = [](){
+    for (int i = 0; i < iconName.size(); i++) {
+        string svg = readFile("./web/html/icons/" + iconName[i] + ".svg");
+        iconList["icon." + iconName[i]] = svg;
+    } return true;
+}();
 
 #endif
