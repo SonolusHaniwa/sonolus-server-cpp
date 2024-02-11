@@ -110,25 +110,12 @@ void routerRegister(int argc, char** argv) {
     // app.addRoute("/sonolus/particles/create", sonolus_particles_create);
     // app.addRoute("/sonolus/engines/create", sonolus_engines_create);
     // app.addRoute("/sonolus/replays/create", sonolus_replays_create);
-    // app.addRoute("/sonolus/levels/list", sonolus_levels_list);
-    // app.addRoute("/sonolus/skins/list", sonolus_skins_list);
-    // app.addRoute("/sonolus/backgrounds/list", sonolus_backgrounds_list);
-    // app.addRoute("/sonolus/effects/list", sonolus_effects_list);
-    // app.addRoute("/sonolus/particles/list", sonolus_particles_list);
-    // app.addRoute("/sonolus/engines/list", sonolus_engines_list);
-    // app.addRoute("/sonolus/replays/list", sonolus_replays_list);
-    // app.addRoute("/sonolus/levels/%s", sonolus_levels);
-    // app.addRoute("/sonolus/skins/%s", sonolus_skins);
-    // app.addRoute("/sonolus/backgrounds/%s", sonolus_backgrounds);
-    // app.addRoute("/sonolus/effects/%s", sonolus_effects);
-    // app.addRoute("/sonolus/particles/%s", sonolus_particles);
-    // app.addRoute("/sonolus/engines/%s", sonolus_engines);
-    // app.addRoute("/sonolus/replays/%s", sonolus_replays);
 
     app.addRoute("/", GUIIndex);
     app.addRoute("/index", GUIIndex);
-    // app.addRoute("/", web_index);
-    // app.addRoute("/index", web_index);
+    app.addRoute("/%s/info", GUIInfo);
+    app.addRoute("/%s/list", GUIList);
+    app.addRoute("/%s/search", GUISearch);
     // app.addRoute("/levels/create", web_levels_create);
     // app.addRoute("/skins/create", web_skins_create);
     // app.addRoute("/backgrounds/create", web_backgrounds_create);
@@ -136,13 +123,6 @@ void routerRegister(int argc, char** argv) {
     // app.addRoute("/particles/create", web_particles_create);
     // app.addRoute("/engines/create", web_engines_create);
     // app.addRoute("/replays/create", web_replays_create);
-    // app.addRoute("/levels/list", web_levels_list);
-    // app.addRoute("/skins/list", web_skins_list);
-    // app.addRoute("/backgrounds/list", web_backgrounds_list);
-    // app.addRoute("/effects/list", web_effects_list);
-    // app.addRoute("/particles/list", web_particles_list);
-    // app.addRoute("/engines/list", web_engines_list);
-    // app.addRoute("/replays/list", web_replays_list);
     // app.addRoute("/levels/search", web_levels_search);
     // app.addRoute("/skins/search", web_skins_search);
     // app.addRoute("/backgrounds/search", web_backgrounds_search);
@@ -172,12 +152,6 @@ void routerRegister(int argc, char** argv) {
     // app.addRoute("/engines/%s", web_engines);
     // app.addRoute("/replays/%s", web_replays);
     // app.addRoute("/login", web_login);
-
-    // app.addRoute("/auth/data/%s", downloader);
-    // app.addRoute("/auth/sonolus/info", auth_sonolus_info);
-    // app.addRoute("/auth/sonolus/levels/list", auth_sonolus_list);
-    // app.addRoute("/auth/sonolus/levels/%s", auth_sonolus_levels);
-    // app.addRoute("/auth/sonolus/authenticate", auth_sonolus_authenticate);
 
     // app.addRoute("/uploader", uploader);
 

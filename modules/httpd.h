@@ -1204,7 +1204,8 @@ string str_replace(string from, string to, string source, bool supportTranfer = 
             st = wh + 1;
             wh = result.find(from.c_str(), st);
             continue;
-        } result.replace(wh, from.size(), to.c_str());
+        } 
+        result.replace(wh, from.size(), to.c_str());
 		st = wh + to.size();
 		wh = result.find(from.c_str(), st);
 	} 
@@ -1213,6 +1214,8 @@ string str_replace(string from, string to, string source, bool supportTranfer = 
 
 string str_replace(string source, argvar argv) {
     for (auto it : argv) {
+        source = str_replace("{{" + it.first + "}}", it.second, source, true);
+    } for (auto it : argv) {
         source = str_replace("{{" + it.first + "}}", it.second, source, true);
     } for (auto it = argv.rbegin(); it != argv.rend(); it++) {
         if ((*it).first.size() < 9) continue;

@@ -170,6 +170,15 @@ H fetchSearchColor(string query, string name, string def, bool isMargin) {
     return str_replace(source, args);
 }
 
+H fetchSectionSearch(string searchOptions, string url, string type) {
+    string source = readFile("./web/html/components/sectionSearch.html");
+    argvar args;
+    args["html.searchOptions"] = searchOptions;
+    args["url"] = url;
+    args["type"] = type;
+    return str_replace(source, args);
+}
+
 H fetchNavBar(string title) {
     string navSource = readFile("./web/html/components/navbar.html");
     string langSource = readFile("./web/html/components/language.html");
@@ -183,6 +192,14 @@ H fetchNavBar(string title) {
     args["title"] = title;
     args["html.language"] = htmlLangList;
     return str_replace(navSource, args);
+}
+
+H fetchIconButton(string url, string icon) {
+    string source = readFile("./web/html/components/iconButton.html");
+    argvar args;
+    args["url"] = url;
+    args["icon"] = icon;
+    return str_replace(source, args);
 }
 
 vector<string> iconName = {"advanced", "award", "bookmark", "crown", "heart", "medal", "ranking", "search", "shuffle", "star", "thumbsUp", "thumbsDown", "trophy",

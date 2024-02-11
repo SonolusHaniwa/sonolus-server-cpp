@@ -156,6 +156,8 @@
     "particles": "粒子效果",
     "engines": "引擎",
     "replays": "回放",
+    "posts": "信息",
+    "playlists": "关卡列表",
     "search": "搜索",
     "more": "更多",
     "opening": "正在打开...",
@@ -190,5 +192,8 @@
     "loginTipTitle": "如何登录?",
     "loginTipStep1": "1. 添加登录服务器 <code>{{server.auth.url}}</code> 至 Sonolus。",
     "loginTipStep2": "2. 在登录服务器搜索界面中输入 <code>{{login.code}}</code>。",
-    "loginTipAlternative": "或者，如果您的设备上安装了 Sonolus，您可以通过点击上面的 <code>在 Sonolus 中打开</code> 按钮直接进行登录。"
+    "loginTipAlternative": "或者，如果您的设备上安装了 Sonolus，您可以通过点击上面的 <code>在 Sonolus 中打开</code> 按钮直接进行登录。",
+    "advanced": "高级搜索",
+    "ADVANCED": "高级搜索",
+    "quick": "快速搜索"
 }

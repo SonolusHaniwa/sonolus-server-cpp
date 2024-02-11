@@ -152,10 +152,13 @@ async function create(path, return_path) {
     });
 }
 
-async function search(path) {
-    path += "?";
-    for (index in searchConfig) path += index + "=" + searchConfig[index] + "&";
-    path = path.substr(0, path.length - 1);
+async function search(path, type) {
+    path += "?"; path += "type=" + type + "&";
+    for (index in searchConfig) {
+        if (index.substr(0, type.length + 1) != type + "_") continue;
+        var tmp_index = index.substr(type.length + 1);
+        path += tmp_index + "=" + searchConfig[index] + "&";
+    } path = path.substr(0, path.length - 1);
     document.getElementsByTagName("main")[0].style.opacity = "0";
     document.getElementsByTagName("nav")[0].style.transform = "translateY(-100%)";
     await sleep(150);
@@ -229,7 +232,8 @@ addLoadEvent(async function(){
     var a = document.getElementsByTagName("a");
     for (i = 0; i < a.length; i++) {
         const href = a[i].href;
-        if (href.indexOf("http") === -1) continue; 
+        if (href.length == 0) continue; 
+        if (href.substr(0, location.origin.length) == location.origin) continue;
         a[i].onclick = async function() {
             document.getElementsByTagName("main")[0].style.opacity = "0";
             document.getElementsByTagName("nav")[0].style.transform = "translateY(-100%)";
@@ -248,18 +252,6 @@ addLoadEvent(async function(){
         document.getElementsByTagName("nav")[0].style.transform = "translateY(0%)";
     });
 });
-
-var qrcode;
-/* 初始化 QRCode 结构 */
-addLoadEvent(async function(){
-    qrcode = new QRCode(document.getElementById("qrcode"), {
-        text: "114514",
-        width: 192,
-        height: 192,
-        colorDark : "#000000",
-        colorLight : "#ffffff",
-    });
-})
 
 async function displayStudiosSkin() {
     document.getElementById("createStudiosSkin").style.display = "flex";

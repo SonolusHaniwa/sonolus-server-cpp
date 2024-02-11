@@ -68,11 +68,11 @@ class PlaylistItem {
         return args;
     }
 
-    // H toHTMLObject() {
-    //     string buffer = readFile("./web/html/components/replays.html");
-    //     buffer = str_replace(buffer, fetchParamList());
-    //     return H(buffer);
-    // }
+    H toHTMLObject() {
+        string buffer = readFile("./web/html/components/playlists.html");
+        buffer = str_replace(buffer, fetchParamList());
+        return H(buffer);
+    }
 };
 
 int playlistsNumber(string filter) {

@@ -41,7 +41,7 @@
                 "step": 1
             }
         ],
-        "filter": "title LIKE \"%{{keywords}}%\" AND artists LIKE \"%{{artist}}%\" AND author LIKE \"%{{author}}%\" AND rating >= {{minRating}} AND rating <= {{maxRating}}",
+        "filter": "title LIKE \"%{{keywords}}%\" AND artists LIKE \"%{{artist}}%\" AND author LIKE \"%{{author}}%\" AND rating >= {{minRating}} AND rating <= {{maxRating}} AND title LIKE \"%{{test}}%\"",
         "order": "id DESC"
     }
 ]
