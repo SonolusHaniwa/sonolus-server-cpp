@@ -156,6 +156,7 @@ async function search(path, type) {
     path += "?"; path += "type=" + type + "&";
     for (index in searchConfig) {
         if (index.substr(0, type.length + 1) != type + "_") continue;
+        if (searchConfig[index] == "") continue;
         var tmp_index = index.substr(type.length + 1);
         path += tmp_index + "=" + searchConfig[index] + "&";
     } path = path.substr(0, path.length - 1);

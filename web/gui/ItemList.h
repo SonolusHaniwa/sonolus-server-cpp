@@ -1,3 +1,8 @@
+#define quickGUIList(name) {\
+    auto section = name##List(sqlFilter, order, l, r); pageCount = (name##Number(sqlFilter) - 1) / itemsPerPage + 1;\
+    for (int i = 0; i < section.size(); i++) argList["html.itemsList"] += section[i].toHTMLObject().output();\
+}
+
 auto GUIList = [](client_conn conn, http_request request, param argv) { 
     if (argv[0] != "levels" && 
         argv[0] != "skins" && 
@@ -53,10 +58,16 @@ auto GUIList = [](client_conn conn, http_request request, param argv) {
     } sqlFilter += ")";
 
     int pageCount = 0; argList["html.itemsList"] = "";
-    if (argv[0] == "levels") {
-        auto section = levelsList(sqlFilter, order, l, r); pageCount = (levelsNumber(sqlFilter) - 1) / itemsPerPage + 1;
-        for (int i = 0; i < section.size(); i++) argList["html.itemsList"] += section[i].toHTMLObject().output();
-    }
+    if (argv[0] == "levels") { quickGUIList(levels); }
+    else if (argv[0] == "skins") { quickGUIList(skins); }
+    else if (argv[0] == "backgrounds") { quickGUIList(backgrounds); }
+    else if (argv[0] == "effects") { quickGUIList(effects); }
+    else if (argv[0] == "particles") { quickGUIList(particles); }
+    else if (argv[0] == "engines") { quickGUIList(engines); }
+    else if (argv[0] == "replays") { quickGUIList(replays); }
+    else if (argv[0] == "posts") { quickGUIList(posts); }
+    else if (argv[0] == "playlists") { quickGUIList(playlists); }
+    else quickSendMsg(404);
 
     argList["page.title"] = "{{language." + argv[0] + "}} | " + appConfig["server.title"].asString();
     argList["html.navbar"] = fetchNavBar("{{language." + argv[0] + "}}").output();
@@ -70,7 +81,7 @@ auto GUIList = [](client_conn conn, http_request request, param argv) {
     string searchUrl = "/" + argv[0] + "/search?" + getStringfy($_GET);
     argList["html.itemsBottom"] = fetchBottomBar(sonolusUrl, topUrl, previousUrl, nextUrl, bottomUrl, searchUrl, jumpUrl, page, pageCount).output();
     argList["url.list"] = "/" + argv[0] + "/list?type=" + $_GET["type"];
-    argList["search.display"] = $_GET.size() == 0 ? "style=\"display: none\"" : "";
+    argList["search.display"] = $_GET["keywords"] == "" && $_GET["type"] == "quick" ? "style=\"display: none\"" : "";
     argList["search.filterWords"] = type + "、" + filterWords;
     argList["search.filterWords"] = argList["search.filterWords"].substr(0, argList["search.filterWords"].size() - 3);
 

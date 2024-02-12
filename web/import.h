@@ -7,6 +7,7 @@
 #include"./gui/ItemInfo.h"
 #include"./gui/ItemList.h"
 #include"./gui/ItemSearch.h"
+#include"./gui/ItemJump.h"
 // #include"./gui/index.h"
 // #include"./gui/levels.h"
 // #include"./gui/skins.h"
