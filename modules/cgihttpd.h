@@ -136,7 +136,7 @@ void exitRequest(client_conn&);
 void putRequest(client_conn&, int, argvar);
 bool isCgi = true;
 string cgiRequest, cgiResponse;
-ofstream responseOut;
+jmp_buf buf;
 
 /**
  * @brief 发送信息
@@ -264,9 +264,7 @@ vector<string> explode(const char* seperator, const char* source) {
  * @param conn 客户端连接符
  */
 void exitRequest(client_conn& conn) {
-    responseOut << cgiResponse;
-    responseOut.close();
-    exit(0);
+	longjmp(buf, 1);
 }
 
 /**
@@ -695,49 +693,45 @@ class application {
          * @param host 主机名
          * @param port 运行端口
          */
-		void cgiRun(string requestFile, string responseFile) {
+		void cgiRun() {
 			isCgi = true;
-			ifstream fin(requestFile);
-			responseOut.open(responseFile);
-			fin.seekg(0, ios::end);
-			int len = fin.tellg();
-			char* ch = new char[len];
-			fin.seekg(0, ios::beg);
-			fin.read(ch, len);
-			for (int i = 0; i < len; i++) cgiRequest.push_back(ch[i]);
-			delete[] ch;
 
-			client_conn conn;
-			conn.thread_id = 0;
-			http_request request = getRequest(conn);
+			int res = setjmp(buf);
+			if (res == 0) {
+				client_conn conn;
+				conn.thread_id = 0;
+				http_request request = getRequest(conn);
 
-			/** 提取路径 */
-			string rlpath = request.path;
-			if (rlpath.find("?") != string::npos) rlpath = rlpath.substr(0, rlpath.find("?"));
+				/** 提取路径 */
+				string rlpath = request.path;
+				if (rlpath.find("?") != string::npos) rlpath = rlpath.substr(0, rlpath.find("?"));
 
-			/** 分发路由 */
-			for (int i = 0; i < route.size(); i++) {
-				if (matchPath(route[i], rlpath)) {
-					writeLog(LOG_LEVEL_DEBUG, "Matched route \"" + route[i].path + "\"");
+				/** 分发路由 */
+				for (int i = 0; i < route.size(); i++) {
+					if (matchPath(route[i], rlpath)) {
+						writeLog(LOG_LEVEL_DEBUG, "Matched route \"" + route[i].path + "\"");
 
-					/** 参数提取 */
-					param argv;
-					string __goal = route[i].path;
-					string __path = rlpath;
-					vector<string> __a1 = explode("/", __goal.c_str());
-					vector<string> __a2 = explode("/", __path.c_str());
-					for (int j = 0; j < __a1.size(); j++)
-						if (__a1[j] == "%d" || __a1[j] == "%D" ||
-							__a1[j] == "%f" || __a1[j] == "%F" ||
-							__a1[j] == "%s" || __a1[j] == "%S") argv.push_back(__a2[j]);
+						/** 参数提取 */
+						param argv;
+						string __goal = route[i].path;
+						string __path = rlpath;
+						vector<string> __a1 = explode("/", __goal.c_str());
+						vector<string> __a2 = explode("/", __path.c_str());
+						for (int j = 0; j < __a1.size(); j++)
+							if (__a1[j] == "%d" || __a1[j] == "%D" ||
+								__a1[j] == "%f" || __a1[j] == "%F" ||
+								__a1[j] == "%s" || __a1[j] == "%S") argv.push_back(__a2[j]);
 
-					/** 主函数执行 */
-					route[i].main(conn, request, argv);
-					putRequest(conn, 200, __default_response);
-					send(conn, "");
-					exitRequest(conn);
-					break;
+						/** 主函数执行 */
+						route[i].main(conn, request, argv);
+						putRequest(conn, 200, __default_response);
+						send(conn, "");
+						exitRequest(conn);
+						break;
+					}
 				}
+			} else {
+				return;
 			}
 		}
 }app;

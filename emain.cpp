@@ -7,6 +7,7 @@
 #include<functional>
 #include<fstream>
 #include<sstream>
+#include<setjmp.h>
 #include<jsoncpp/json/json.h>
 using namespace std;
 
@@ -45,7 +46,7 @@ vector<string> playlistVersionList = {"0.0.0"};
 #include"items/Items.h"
 #include"web/import.h"
 
-void routerRegister(int argc, char** argv) {
+void routerRegister() {
     app.route.clear();
 
     app.addRoute("/data/%s", downloader);
@@ -111,7 +112,7 @@ void routerRegister(int argc, char** argv) {
     // app.addRoute("/uploader", uploader);
 }
 
-void cgiRunner(int argc, char** argv) {
+string cgiRunner(string request) {
 	(new DB_Controller)->query("SELECT COUNT(*) FROM Level");
 
 	// 适配 Resource Version
@@ -123,9 +124,11 @@ void cgiRunner(int argc, char** argv) {
 	engineVersion = upper_bound(engineVersionList.begin(), engineVersionList.end(), Sonolus_Version) - engineVersionList.begin();
     replayVersion = upper_bound(replayVersionList.begin(), replayVersionList.end(), Sonolus_Version) - replayVersionList.begin();
 
-	routerRegister(argc, argv);
+	routerRegister();
 
-	app.cgiRun(argv[2], argv[3]);
+	cgiRequest = request;
+	app.cgiRun();
+	return cgiResponse;
 }
 
 void preload() {
@@ -189,11 +192,29 @@ void preload() {
     http_code[505] = "HTTP Version not supported";
 }
 
-int main(int argc, char** argv) {
-    preload();
+#ifndef EM_PORT_API
+#	if defined(__EMSCRIPTEN__)
+#		include <emscripten.h>
+#		if defined(__cplusplus)
+#			define EM_PORT_API(rettype) extern "C" rettype EMSCRIPTEN_KEEPALIVE
+#		else
+#			define EM_PORT_API(rettype) rettype EMSCRIPTEN_KEEPALIVE
+#		endif
+#	else
+#		if defined(__cplusplus)
+#			define EM_PORT_API(rettype) extern "C" rettype
+#		else
+#			define EM_PORT_API(rettype) rettype
+#		endif
+#	endif
+#endif
 
-    if(string(argv[1]) == "cgi") {
-		cgiRunner(argc, argv);
-		return 0;
-	}
+extern "C" EMSCRIPTEN_KEEPALIVE char* cgi(char* request) {
+	preload();
+	string data = "";
+	for (int i = 0; i < strlen(request); i++) data.push_back(request[i]);
+	string res = cgiRunner(data);
+	char* result = new char[res.size()];
+	for (int i = 0; i < res.size(); i++) result[i] = res[i];
+	return result;
 }
