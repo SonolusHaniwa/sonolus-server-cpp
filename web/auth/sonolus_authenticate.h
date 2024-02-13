@@ -34,7 +34,7 @@ auto auth_sonolus_authenticate = [](client_conn conn, http_request request, para
             case 1: iv += rand() % 6 + 'A'; break;
         }
     }
-    (new DB_Controller)->execute("INSERT INTO UserSession (id, aes_key, aes_iv, time) VALUES (\"" 
+    db.execute("INSERT INTO UserSession (id, aes_key, aes_iv, time) VALUES (\"" 
         + id + "\", \"" + key + "\", \"" + iv + "\", " + to_string(time(NULL)) + ")");
     key = base64_encode(const_cast<char*>(key.c_str()), key.size());
     iv = base64_encode(const_cast<char*>(iv.c_str()), iv.size());

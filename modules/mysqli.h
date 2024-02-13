@@ -13,6 +13,9 @@ typedef vector<map<string,string> > dbres;
 
 class DB_Controller {
 	private:
+	#ifdef ENABLE_SQLITE 
+	sqlite3 *db;
+	#endif
 
 	#ifdef ENABLE_MYSQL
 	MYSQL mysqli_connect(const char* host, const char* user, const char* passwd, const char* db, int port) {
@@ -77,25 +80,8 @@ class DB_Controller {
 
 	dbres sqlite_query(const char* sql) {
 		#ifdef ENABLE_SQLITE
-        int ret; sqlite3 *db;
+		int ret;
 		writeLog(LOG_LEVEL_DEBUG, "Execute database: " + string(sql));
-        ret = sqlite3_open(appConfig["sqlite.dbfile"].asString().c_str(), &db);
-        if (ret) {
-            writeLog(LOG_LEVEL_ERROR, "Failed to open SQLite Database: " + string(sqlite3_errmsg(db)));
-			return dbres();
-        }
-
-		if (appConfig["sqlite.dbfile"].asString() == ":memory:") {
-			char* zErrMsg;
-			int rc = sqlite3_exec(db, readFile(appConfig["sqlite.sqlfile"].asString()).c_str(), NULL, 0, &zErrMsg);
-			if(rc != SQLITE_OK) {
-				writeLog(LOG_LEVEL_ERROR, "Failed to execute database: " + string(zErrMsg));
-				sqlite3_free(zErrMsg); 
-				sqlite3_close(db);
-				return dbres();
-			}
-			sqlite3_free(zErrMsg); 
-		}
 
         dbres res;
         char** azResult;
@@ -103,7 +89,7 @@ class DB_Controller {
         char* zErrMsg = 0;
         if ((ret = sqlite3_get_table(db, sql, &azResult, &nrow, &ncolumn, &zErrMsg)) != SQLITE_OK) {
             writeLog(LOG_LEVEL_ERROR, "Failed to query database: " + string(zErrMsg));
-            sqlite3_free(zErrMsg), sqlite3_close(db);
+            sqlite3_free(zErrMsg);
             return dbres();
         } int i = 0, j = 0, index = 0;
         index = ncolumn;
@@ -113,7 +99,6 @@ class DB_Controller {
             res.push_back(tmp);
         }
         sqlite3_free_table(azResult);
-        sqlite3_close(db);
         return res;
 		#else 
 		writeLog(LOG_LEVEL_ERROR, "This program doesn't support SQLite. You need to compile this program with the option `-DENABLE_SQLITE -lsqlite3`");
@@ -123,36 +108,16 @@ class DB_Controller {
 
 	int sqlite_execute(const char* sql) {
 		#ifdef ENABLE_SQLITE
-        int ret; sqlite3 *db;
 		writeLog(LOG_LEVEL_DEBUG, "Execute database: " + string(sql));
-        ret = sqlite3_open(appConfig["sqlite.dbfile"].asString().c_str(), &db);
-        if (ret) {
-            writeLog(LOG_LEVEL_ERROR, "Failed to open SQLite Database: " + string(sqlite3_errmsg(db)));
-			return 0;
-        }
-
-		if (appConfig["sqlite.dbfile"].asString() == ":memory:") {
-			char* zErrMsg;
-			int rc = sqlite3_exec(db, readFile(appConfig["sqlite.sqlfile"].asString()).c_str(), NULL, 0, &zErrMsg);
-			if(rc != SQLITE_OK) {
-				writeLog(LOG_LEVEL_ERROR, "Failed to execute database: " + string(zErrMsg));
-				sqlite3_free(zErrMsg); 
-				sqlite3_close(db);
-				return 0;
-			}
-			sqlite3_free(zErrMsg); 
-		}
 
         char* zErrMsg;
         int rc = sqlite3_exec(db, sql, NULL, 0, &zErrMsg);
         if(rc != SQLITE_OK) {
             writeLog(LOG_LEVEL_ERROR, "Failed to execute database: " + string(zErrMsg));
 			sqlite3_free(zErrMsg); 
-        	sqlite3_close(db);
 			return 0;
         }
         sqlite3_free(zErrMsg); 
-        sqlite3_close(db);
 		return sqlite3_changes(db);
 		#else 
 		writeLog(LOG_LEVEL_ERROR, "This program doesn't support SQLite. You need to compile this program with the option `-DENABLE_SQLITE -lsqlite3`");
@@ -161,6 +126,28 @@ class DB_Controller {
     }
 
 	public:
+	
+	DB_Controller(){}
+	DB_Controller(bool unused){
+		#ifdef ENABLE_SQLITE
+        int ret = sqlite3_open(appConfig["sqlite.dbfile"].asString().c_str(), &db);
+        if (ret) {
+            writeLog(LOG_LEVEL_ERROR, "Failed to open SQLite Database: " + string(sqlite3_errmsg(db)));
+			return;
+        }
+
+		if (appConfig["sqlite.dbfile"].asString() == ":memory:") {
+			char* zErrMsg;
+			int rc = sqlite3_exec(db, readFile(appConfig["sqlite.sqlfile"].asString()).c_str(), NULL, 0, &zErrMsg);
+			if(rc != SQLITE_OK) {
+				writeLog(LOG_LEVEL_ERROR, "Failed to execute database: " + string(zErrMsg));
+				sqlite3_free(zErrMsg); 
+				return;
+			}
+			sqlite3_free(zErrMsg); 
+		}
+		#endif
+	}
 
 	dbres query(string sql) {
 		if (appConfig["database"].asString() == "mysql") return mysqli_query(sql.c_str());

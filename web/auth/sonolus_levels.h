@@ -14,7 +14,7 @@ auto auth_sonolus_levels = [](client_conn conn, http_request request, param argv
     }
     string session_id = request.argv["Sonolus-Session-Id"];
     string session_data = request.argv["Sonolus-Session-Data"];
-    auto res = (new DB_Controller)->query("SELECT * FROM UserSession WHERE id=\"" + session_id + "\" LIMIT 1");
+    auto res = db.query("SELECT * FROM UserSession WHERE id=\"" + session_id + "\" LIMIT 1");
     LevelItem errorItem = LevelItem(
         0, "sonolus-server-auth", 0, "Login Failed",
         "Please see the error info below!", "System",
@@ -32,7 +32,7 @@ auto auth_sonolus_levels = [](client_conn conn, http_request request, param argv
     string iv = res[0]["aes_iv"];
 
     // 请求查询
-    res = (new DB_Controller)->query("SELECT * FROM LoginRequest WHERE code=\"" + argv[0] + "\" AND userId=0 LIMIT 1");
+    res = db.query("SELECT * FROM LoginRequest WHERE code=\"" + argv[0] + "\" AND userId=0 LIMIT 1");
     if (res.size() == 0) {
         ItemDetails<LevelItem> detail = ItemDetails<LevelItem>(errorItem, "Invalid Login Request Key!");
         Json::Value val = detail.toJsonObject();
@@ -48,16 +48,16 @@ auto auth_sonolus_levels = [](client_conn conn, http_request request, param argv
     session_data.clear(); for (int i = 0; i < data_length; i++) session_data.push_back(sessionData[i]);
     string userData = aes_256_cbc_decode(key, iv, session_data);
     Json::Value userInfo; json_decode(userData, userInfo); userInfo = userInfo["userProfile"];
-    res = (new DB_Controller)->query("SELECT * FROM UserProfile WHERE id=\"" + userInfo["id"].asString() + "\"");
+    res = db.query("SELECT * FROM UserProfile WHERE id=\"" + userInfo["id"].asString() + "\"");
     if (res.size() == 0) {
         string sql = "INSERT INTO UserProfile (aboutMe, avatarBackgroundColor, avatarForegroundColor, " +
             string("favorites, handle, id, name, socialLinks) VALUES (\"") + quote_encode(userInfo["aboutMe"].asString()) + "\", \"" +
             quote_encode(userInfo["avatarBackgroundColor"].asString()) + "\", \"" + quote_encode(userInfo["avatarForegroundColor"].asString()) + "\", \"" +
             quote_encode(json_encode(userInfo["favorites"])) + "\", \"" + quote_encode(userInfo["handle"].asString()) + "\", \"" + quote_encode(userInfo["id"].asString()) + "\", \"" +
             quote_encode(userInfo["name"].asString()) + "\", \"" + quote_encode(json_encode(userInfo["socialLinks"])) + "\")";
-        (new DB_Controller)->execute(sql);
+        db.execute(sql);
     }
-    (new DB_Controller)->execute("UPDATE LoginRequest SET userId=\"" + userInfo["id"].asString() + "\" WHERE code=\"" + argv[0] + "\" AND userId=0");
+    db.execute("UPDATE LoginRequest SET userId=\"" + userInfo["id"].asString() + "\" WHERE code=\"" + argv[0] + "\" AND userId=0");
 
     // 结果展示
     LevelItem item = LevelItem(

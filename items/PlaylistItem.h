@@ -61,8 +61,9 @@ class PlaylistItem {
         args["title"] = title;
         args["subtitle"] = subtitle;
         args["author"] = author;
-        args["url"] = "/posts/" + name;
-        args["sonolus.url"] = "sonolus://" + appConfig["server.rootUrl"].asString() + "/posts/" + name;
+        for (int i = 0; i < levels.size(); i++) args["levels"] += levels[i].toHTMLObject().output();
+        args["url"] = "/playlists/" + name;
+        args["sonolus.url"] = "sonolus://" + appConfig["server.rootUrl"].asString() + "/playlists/" + name;
         args["description"] = description;
         args["source"] = source;
         return args;
@@ -78,7 +79,7 @@ class PlaylistItem {
 int playlistsNumber(string filter) {
     string sql = "SELECT COUNT(*) AS sum FROM Playlist";
     if (filter != "") sql += " WHERE (" + filter + ")";
-    dbres res = (new DB_Controller)->query(sql.c_str());
+    dbres res = db.query(sql.c_str());
     return atoi(res[0]["sum"].c_str());
 }
 
@@ -87,7 +88,7 @@ vector<PlaylistItem> playlistsList(string filter, string order, int st = 1, int 
     if (filter != "") sql += " WHERE (" + filter + ")";
     if (order != "") sql += " ORDER BY " + order;
     sql += " LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);
-    auto res = (new DB_Controller)->query(sql.c_str());
+    auto res = db.query(sql.c_str());
     vector<PlaylistItem> list = {};
     sort(res.begin(), res.end(), [](argvar a, argvar b){
         if (a["name"] == b["name"]) return (a["localization"] == "default") < (b["localization"] == "default");
@@ -110,15 +111,15 @@ vector<PlaylistItem> playlistsList(string filter, string order, int st = 1, int 
             SRL<PlaylistThumbnail>(res[i]["thumbnail"], dataPrefix + res[i]["thumbnail"]),
             deserializeTagString(res[i]["tags"]),
             str_replace("\\n", "\n", res[i]["description"]),
-            (appConfig["server.enableSSL"].asBool() ? "https://" : "http://") + appConfig["server.rootUrl"].asString() + "/sonolus/backgrounds/" + res[i]["name"]
+            (appConfig["server.enableSSL"].asBool() ? "https://" : "http://") + appConfig["server.rootUrl"].asString() + "/sonolus/playlists/" + res[i]["name"]
         ); list.push_back(data);
     } return list;
 }
 
 // int replayCreate(ReplayItem item, string localization = "default") {
 //     stringstream sqlbuffer;
-//     auto res = (new DB_Controller)->query("SELECT id FROM Replay WHERE name = \"" + item.name + "\" AND localization = \"" + localization + "\"");
-//     int levelId = atoi((new DB_Controller)->query("SELECT id FROM Level WHERE name = \"" + item.level.name + "\";")[0]["id"].c_str());
+//     auto res = db.query("SELECT id FROM Replay WHERE name = \"" + item.name + "\" AND localization = \"" + localization + "\"");
+//     int levelId = atoi(db.query("SELECT id FROM Level WHERE name = \"" + item.level.name + "\";")[0]["id"].c_str());
 //     if (res.size() != 0) {
 //         int id = atoi(res[0]["id"].c_str());
 //         sqlbuffer << "UPDATE Replay SET name=\"" << item.name << "\", version=" << item.version;
@@ -126,12 +127,12 @@ vector<PlaylistItem> playlistsList(string filter, string order, int st = 1, int 
 //         sqlbuffer << "\", level=" << levelId << ", data=\"" << item.data.hash << "\", configuration=\"" << item.configuration.hash << "\", ";
 //         sqlbuffer << "description=\"" << str_replace("\n", "\\n", item.description) << "\", localization=\"" << localization << "\" WHERE id=" << id;
 //     } else {
-//         int id = atoi((new DB_Controller)->query("SELECT COUNT(*) AS sum FROM Replay;")[0]["sum"].c_str()) + 1;
+//         int id = atoi(db.query("SELECT COUNT(*) AS sum FROM Replay;")[0]["sum"].c_str()) + 1;
 //         sqlbuffer << "INSERT INTO Replay (id, name, version, title, subtitle, author, level, data, configuration, description, localization) VALUES (";
 //         sqlbuffer << id << ", \"" << item.name << "\", " << item.version << ", \"" << item.title << "\", ";
 //         sqlbuffer << "\"" << item.subtitle << "\", \"" << item.author << "\", " << levelId << ", ";
 //         sqlbuffer << "\"" << item.data.hash << "\", \"" << item.configuration.hash << "\", \"" << str_replace("\n", "\\n", item.description) << "\", \"" << localization << "\")";
-//     } return (new DB_Controller)->execute(sqlbuffer.str());
+//     } return db.execute(sqlbuffer.str());
 // }
 
 #endif

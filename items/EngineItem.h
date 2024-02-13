@@ -125,7 +125,7 @@ class EngineItem {
 int enginesNumber(string filter) {
     string sql = "SELECT COUNT(*) AS sum FROM Engine";
     if (filter != "") sql += " WHERE (" + filter + ")";
-    dbres res = (new DB_Controller)->query(sql.c_str());
+    dbres res = db.query(sql.c_str());
     return atoi(res[0]["sum"].c_str());
 }
 
@@ -134,7 +134,7 @@ vector<EngineItem> enginesList(string filter, string order, int st = 1, int en =
     if (filter != "") sql += " WHERE (" + filter + ")";
     if (order != "") sql += " ORDER BY " + order;
     sql += " LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);
-    dbres res = (new DB_Controller)->query(sql.c_str());
+    dbres res = db.query(sql.c_str());
     vector<EngineItem> list = {};
     sort(res.begin(), res.end(), [](argvar a, argvar b){
         if (a["name"] == b["name"]) return (a["localization"] == "default") < (b["localization"] == "default");
@@ -163,18 +163,18 @@ vector<EngineItem> enginesList(string filter, string order, int st = 1, int en =
             deserializeTagString(res[i]["tags"]),
             SRL<EngineRom>(res[i]["rom"], dataPrefix + res[i]["rom"]),
             str_replace("\\n", "\n", res[i]["description"]),
-            (appConfig["server.enableSSL"].asBool() ? "https://" : "http://") + appConfig["server.rootUrl"].asString() + "/sonolus/backgrounds/" + res[i]["name"]
+            (appConfig["server.enableSSL"].asBool() ? "https://" : "http://") + appConfig["server.rootUrl"].asString() + "/sonolus/engines/" + res[i]["name"]
         ); list.push_back(data);
     } return list;
 }
 
 int engineCreate(EngineItem item, string localization = "default") {
     stringstream sqlbuffer;
-    auto res = (new DB_Controller)->query("SELECT id FROM Engine WHERE name = \"" + item.name + "\" AND localization = \"" + localization + "\"");
-    int skinId = atoi((new DB_Controller)->query("SELECT id FROM Skin WHERE name = \"" + item.skin.name + "\";")[0]["id"].c_str());
-    int backgroundId = atoi((new DB_Controller)->query("SELECT id FROM Background WHERE name = \"" + item.background.name + "\";")[0]["id"].c_str());
-    int effectId = atoi((new DB_Controller)->query("SELECT id FROM Effect WHERE name = \"" + item.effect.name + "\";")[0]["id"].c_str());
-    int particleId = atoi((new DB_Controller)->query("SELECT id FROM Particle WHERE name = \"" + item.particle.name + "\";")[0]["id"].c_str());
+    auto res = db.query("SELECT id FROM Engine WHERE name = \"" + item.name + "\" AND localization = \"" + localization + "\"");
+    int skinId = atoi(db.query("SELECT id FROM Skin WHERE name = \"" + item.skin.name + "\";")[0]["id"].c_str());
+    int backgroundId = atoi(db.query("SELECT id FROM Background WHERE name = \"" + item.background.name + "\";")[0]["id"].c_str());
+    int effectId = atoi(db.query("SELECT id FROM Effect WHERE name = \"" + item.effect.name + "\";")[0]["id"].c_str());
+    int particleId = atoi(db.query("SELECT id FROM Particle WHERE name = \"" + item.particle.name + "\";")[0]["id"].c_str());
     if (res.size() != 0) {
         int id = atoi(res[0]["id"].c_str());
         sqlbuffer << "UPDATE Engine SET name = \"" << item.name << "\", version = " << item.version << ", title = \"" << item.title << "\", ";
@@ -182,13 +182,13 @@ int engineCreate(EngineItem item, string localization = "default") {
         sqlbuffer << "effect = " << effectId << ", particle = " << particleId << ", thumbnail = \"" << item.thumbnail.hash << "\", data = \"" << item.data.hash << "\", tutorialData = \"" << item.tutorialData.hash << "\", previewData = \"" << item.previewData.hash << "\", watchData = \"" << item.watchData.hash << "\", ";
         sqlbuffer << "configuration = \"" << item.configuration.hash << "\", rom = \"" << item.rom.hash << "\", description = \"" << str_replace("\n", "\\n", item.description) << "\", localization = \"" << localization << "\" WHERE id = " << id << ";";
     } else {
-        int id = atoi((new DB_Controller)->query("SELECT COUNT(*) AS sum FROM Engine;")[0]["sum"].c_str()) + 1;
+        int id = atoi(db.query("SELECT COUNT(*) AS sum FROM Engine;")[0]["sum"].c_str()) + 1;
         sqlbuffer << "INSERT INTO Engine (id, name, version, title, subtitle, author, skin, background, effect, particle, thumbnail, data, configuration, rom, description, localization, tutorialData, previewData, watchData) VALUES (";
         sqlbuffer << id << ", \"" << item.name << "\", " << item.version << ", \"" << item.title << "\", ";
         sqlbuffer << "\"" << item.subtitle << "\", \"" << item.author << "\", " << skinId << ", " << backgroundId << ", " << effectId << ", " << particleId << ", ";
         sqlbuffer << "\"" << item.thumbnail.hash << "\", \"" << item.data.hash << "\", \"" << item.configuration.hash << "\", ";
         sqlbuffer << "\"" << item.rom.hash << "\", \"" << str_replace("\n", "\\n", item.description) << "\", \"" << localization << "\", \"" << item.tutorialData.hash << "\", \"" << item.previewData.hash << "\", \"" << item.watchData.hash << "\");";
-    } return (new DB_Controller)->execute(sqlbuffer.str());
+    } return db.execute(sqlbuffer.str());
 }
 
 #endif

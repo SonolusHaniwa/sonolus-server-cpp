@@ -41,6 +41,7 @@ vector<string> postVersionList = {"0.0.0"};
 vector<string> playlistVersionList = {"0.0.0"};
 
 #include"modules/modules.h"
+DB_Controller db;
 #include"items/Items.h"
 #include"web/import.h"
 
@@ -118,6 +119,7 @@ void routerRegister(int argc, char** argv) {
     app.addRoute("/%s/list", GUIList);
     app.addRoute("/%s/search", GUISearch);
     app.addRoute("/%s/jump/%d", GUIJump);
+    app.addRoute("/%s/%s", GUIDetails);
     // app.addRoute("/levels/create", web_levels_create);
     // app.addRoute("/skins/create", web_skins_create);
     // app.addRoute("/backgrounds/create", web_backgrounds_create);
@@ -180,7 +182,7 @@ void setConfiguration() {
 }
 
 void serverRunner(int argc, char** argv) {
-    (new DB_Controller)->query("SELECT COUNT(*) FROM Level");
+    db.query("SELECT COUNT(*) FROM Level");
 
     // 适配 Resource Version
     levelVersion = upper_bound(levelVersionList.begin(), levelVersionList.end(), Sonolus_Version) - levelVersionList.begin();
@@ -198,7 +200,7 @@ void serverRunner(int argc, char** argv) {
 }
 
 void cgiRunner(int argc, char** argv) {
-	(new DB_Controller)->query("SELECT COUNT(*) FROM Level");
+	db.query("SELECT COUNT(*) FROM Level");
 
 	// 适配 Resource Version
 	levelVersion = upper_bound(levelVersionList.begin(), levelVersionList.end(), Sonolus_Version) - levelVersionList.begin();
@@ -381,8 +383,9 @@ void preload() {
     appConfig["server.logo"] = dataPrefix + appConfig["server.logo"].asString();
     appConfig["server.bannerHash"] = appConfig["server.banner"].asString();
     appConfig["server.bannerUrl"] = dataPrefix + appConfig["server.banner"].asString();
-    setConfiguration();
     log_init(log_target_type);
+    setConfiguration();
+    db = DB_Controller(true);
     loadConfig();
     loadDefaultVariable();
 

@@ -155,6 +155,6 @@ void loadConfig() {
 bool checkLogin(http_request request) {
     string session = request.argv["sonolus-session"];
     if (session == "") session = cookieParam(request)["Sonolus-Session"];
-    auto res = (new DB_Controller)->query("SELECT * FROM UserSession WHERE session=\"" + session + "\" AND time>=" + to_string(time(NULL) - appConfig["session.expireTime"].asInt64() * 24 * 60 * 60) + " AND userId!=0");
+    auto res = db.query("SELECT * FROM UserSession WHERE session=\"" + session + "\" AND time>=" + to_string(time(NULL) - appConfig["session.expireTime"].asInt64() * 24 * 60 * 60) + " AND userId!=0");
     return res.size();
 }

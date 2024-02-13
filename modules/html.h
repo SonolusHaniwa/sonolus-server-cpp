@@ -203,7 +203,7 @@ H fetchIconButton(string url, string icon) {
 }
 
 vector<string> iconName = {"advanced", "award", "bookmark", "crown", "heart", "medal", "ranking", "search", "shuffle", "star", "thumbsUp", "thumbsDown", "trophy",
-    "home", "global", "post", "playlist", "level", "skin", "background", "effect", "particle", "engine", "replay", "login", "logout"};
+    "home", "global", "post", "playlist", "level", "skin", "background", "effect", "particle", "engine", "replay", "login", "logout", "description"};
 argvar iconList;
 bool iconLoader = [](){
     for (int i = 0; i < iconName.size(); i++) {

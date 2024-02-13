@@ -28,3 +28,6 @@ plugins
 *.srp
 releases
 .tmp
+api/libsonolus.*
+api/package*
+api/node_modules

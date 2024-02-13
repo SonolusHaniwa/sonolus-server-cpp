@@ -5,7 +5,7 @@
     "mysql.username": "root",
     "mysql.password": "root",
     "mysql.database": "sonolus",
-    "sqlite.dbfile": "sonolus.db",
+    "sqlite.dbfile": ":memory:",
     "sqlite.sqlfile": "sonolus.sql",
     "server.listenHost": "0.0.0.0",
     "server.listenPort": 8080,

@@ -44,6 +44,7 @@ vector<string> playlistVersionList = {"0.0.0"};
 #include"modules/mysqli.h"
 #include"modules/json.h"
 #include"modules/encrypt.h"
+DB_Controller db;
 #include"items/Items.h"
 #include"web/import.h"
 
@@ -73,6 +74,7 @@ void routerRegister() {
     app.addRoute("/%s/list", GUIList);
     app.addRoute("/%s/search", GUISearch);
     app.addRoute("/%s/jump/%d", GUIJump);
+    app.addRoute("/%s/%s", GUIDetails);
     // app.addRoute("/levels/create", web_levels_create);
     // app.addRoute("/skins/create", web_skins_create);
     // app.addRoute("/backgrounds/create", web_backgrounds_create);
@@ -114,7 +116,7 @@ void routerRegister() {
 }
 
 string cgiRunner(string request) {
-	(new DB_Controller)->query("SELECT COUNT(*) FROM Level");
+	db.query("SELECT COUNT(*) FROM Level");
 
 	// 适配 Resource Version
 	levelVersion = upper_bound(levelVersionList.begin(), levelVersionList.end(), Sonolus_Version) - levelVersionList.begin();
@@ -148,6 +150,7 @@ void preload() {
     appConfig["server.bannerHash"] = appConfig["server.banner"].asString();
     appConfig["server.bannerUrl"] = dataPrefix + appConfig["server.banner"].asString();
     log_init(log_target_type);
+    db = DB_Controller(true);
     http_init();
     loadConfig();
 

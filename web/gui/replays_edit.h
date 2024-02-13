@@ -17,7 +17,7 @@ auto web_replays_edit = [](client_conn conn, http_request request, param argv){
     argList["page.title"] = argList["language.replayEdit"] + " | " + appConfig["server.title"].asString();
     argList["html.navbar"] = fetchNavBar(argList["language.replayEdit"], checkLogin(request)).output();
     argList["html.replaysCreateOption"] = "";
-    auto dataSet2 = (new DB_Controller)->query("SELECT * FROM replay WHERE name = \"" + argv[0] +
+    auto dataSet2 = db.query("SELECT * FROM replay WHERE name = \"" + argv[0] +
          "\" AND (localization = \"" + cookie["lang"] + "\" OR localization = \"default\")");
     sort(dataSet2.begin(), dataSet2.end(), [](argvar a, argvar b){
         if (a["name"] == b["name"]) return (a["localization"] == "default") < (b["localization"] == "default");
@@ -36,22 +36,22 @@ auto web_replays_edit = [](client_conn conn, http_request request, param argv){
             vector<string> values;
             for (auto k = 0; k < v.select.values.size(); k++) {
                 if (v.select.values[k] == "{{jsonArray.levelList}}") {
-                    auto arr = (new DB_Controller)->query("SELECT title FROM Level ORDER BY id ASC");
+                    auto arr = db.query("SELECT title FROM Level ORDER BY id ASC");
                     for (int j = 0; j < arr.size(); j++) values.push_back(arr[j]["title"]);
                 } if (v.select.values[k] == "{{jsonArray.skinList}}") {
-                    auto arr = (new DB_Controller)->query("SELECT title FROM Skin ORDER BY id ASC");
+                    auto arr = db.query("SELECT title FROM Skin ORDER BY id ASC");
                     for (int j = 0; j < arr.size(); j++) values.push_back(arr[j]["title"]);
                 } else if (v.select.values[k] == "{{jsonArray.backgroundList}}") {
-                    auto arr = (new DB_Controller)->query("SELECT title FROM Background ORDER BY id ASC");
+                    auto arr = db.query("SELECT title FROM Background ORDER BY id ASC");
                     for (int j = 0; j < arr.size(); j++) values.push_back(arr[j]["title"]);
                 } else if (v.select.values[k] == "{{jsonArray.effectList}}") {
-                    auto arr = (new DB_Controller)->query("SELECT title FROM Effect ORDER BY id ASC");
+                    auto arr = db.query("SELECT title FROM Effect ORDER BY id ASC");
                     for (int j = 0; j < arr.size(); j++) values.push_back(arr[j]["title"]);
                 } else if (v.select.values[k] == "{{jsonArray.particleList}}") {
-                    auto arr = (new DB_Controller)->query("SELECT title FROM Particle ORDER BY id ASC");
+                    auto arr = db.query("SELECT title FROM Particle ORDER BY id ASC");
                     for (int j = 0; j < arr.size(); j++) values.push_back(arr[j]["title"]);
                 } else if (v.select.values[k] == "{{jsonArray.engineList}}") {
-                    auto arr = (new DB_Controller)->query("SELECT title FROM Engine ORDER BY id ASC");
+                    auto arr = db.query("SELECT title FROM Engine ORDER BY id ASC");
                     for (int j = 0; j < arr.size(); j++) values.push_back(arr[j]["title"]);
                 } else if (v.select.values[k] == "{{jsonArray.languageList}}") {
                     for (int j = 0; j < i18n_index.size(); j++) values.push_back(i18n_index[j]);

@@ -23,12 +23,12 @@ auto web_login = [](client_conn conn, http_request request, param argv) {
     srand(time(0));
     string code = ""; for (int i = 0; i < 8; i++) code += rand() % 10 + '0';
     // 防止 code 冲突
-    while ((new DB_Controller)->query("SELECT * FROM LoginRequest WHERE code=\"" + code + "\" AND userId=0").size()) {
+    while (db.query("SELECT * FROM LoginRequest WHERE code=\"" + code + "\" AND userId=0").size()) {
         code.clear();
         for (int i = 0; i < 8; i++) code += rand() % 10 + '0';
     } string session = "";
     for (int i = 0; i < 32; i++) session += rand() % 2 ? rand() % 10 + '0' : rand() % 6 + 'A';
-    (new DB_Controller)->execute("INSERT INTO LoginRequest (code, session, time, ip, userId) VALUES (\"" + 
+    db.execute("INSERT INTO LoginRequest (code, session, time, ip, userId) VALUES (\"" + 
         code + "\", \"" + session + "\", " + to_string(time(NULL)) + ", \"" + string(inet_ntoa(conn.client_addr.sin_addr)) + "\", 0)");
     argvar argList = transfer(appConfig);
     argList = merge(argList, transfer(i18n[cookie["lang"] == "" ? appConfig["language.default"].asString() : cookie["lang"]], "language."));

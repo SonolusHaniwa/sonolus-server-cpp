@@ -135,7 +135,7 @@ class LevelItem {
 int levelsNumber(string filter) {
     string sql = "SELECT COUNT(*) AS sum FROM Level";
     if (filter != "") sql += " WHERE (" + filter + ")";
-    dbres res = (new DB_Controller)->query(sql.c_str());
+    dbres res = db.query(sql.c_str());
     return atoi(res[0]["sum"].c_str());
 }
 
@@ -144,7 +144,7 @@ vector<LevelItem> levelsList(string filter, string order, int st = 1, int en = 2
     if (filter != "") sql += " WHERE (" + filter + ")";
     if (order != "") sql += " ORDER BY " + order;
     sql += " LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);
-    auto res = (new DB_Controller)->query(sql.c_str());
+    auto res = db.query(sql.c_str());
     vector<LevelItem> list = {};
     sort(res.begin(), res.end(), [](argvar a, argvar b){
         if (a["name"] == b["name"]) return (a["localization"] == "default") < (b["localization"] == "default");
@@ -181,24 +181,24 @@ vector<LevelItem> levelsList(string filter, string order, int st = 1, int en = 2
             SRL<LevelPreview>(res[i]["preview"], dataPrefix + res[i]["preview"]),
             deserializeTagString(res[i]["tags"]),
             str_replace("\\n", "\n", res[i]["description"]),
-            (appConfig["server.enableSSL"].asBool() ? "https://" : "http://") + appConfig["server.rootUrl"].asString() + "/sonolus/backgrounds/" + res[i]["name"]
+            (appConfig["server.enableSSL"].asBool() ? "https://" : "http://") + appConfig["server.rootUrl"].asString() + "/sonolus/levels/" + res[i]["name"]
         ); list.push_back(data);
     } return list;
 }
 
 int levelCreate(LevelItem item, string localization = "default") {
     stringstream sqlbuffer;
-    auto res = (new DB_Controller)->query("SELECT id FROM Level WHERE name = \"" + item.name + "\" AND localization = \"" + localization + "\"");
+    auto res = db.query("SELECT id FROM Level WHERE name = \"" + item.name + "\" AND localization = \"" + localization + "\"");
     int skinId = 0, backgroundId = 0, effectId = 0, particleId = 0, engineId = 0;
     if (item.useSkin.useDefault == false)
-        skinId = atoi((new DB_Controller)->query("SELECT id FROM Skin WHERE name = \"" + item.useSkin.item.name + "\";")[0]["id"].c_str());
+        skinId = atoi(db.query("SELECT id FROM Skin WHERE name = \"" + item.useSkin.item.name + "\";")[0]["id"].c_str());
     if (item.useBackground.useDefault == false)
-        backgroundId = atoi((new DB_Controller)->query("SELECT id FROM Background WHERE name = \"" + item.useBackground.item.name + "\";")[0]["id"].c_str());
+        backgroundId = atoi(db.query("SELECT id FROM Background WHERE name = \"" + item.useBackground.item.name + "\";")[0]["id"].c_str());
     if (item.useEffect.useDefault == false)
-        effectId = atoi((new DB_Controller)->query("SELECT id FROM Effect WHERE name = \"" + item.useEffect.item.name + "\";")[0]["id"].c_str());
+        effectId = atoi(db.query("SELECT id FROM Effect WHERE name = \"" + item.useEffect.item.name + "\";")[0]["id"].c_str());
     if (item.useParticle.useDefault == false)
-        particleId = atoi((new DB_Controller)->query("SELECT id FROM Particle WHERE name = \"" + item.useParticle.item.name + "\";")[0]["id"].c_str());
-    engineId = atoi((new DB_Controller)->query("SELECT id FROM Engine WHERE name = \"" + item.engine.name + "\";")[0]["id"].c_str());
+        particleId = atoi(db.query("SELECT id FROM Particle WHERE name = \"" + item.useParticle.item.name + "\";")[0]["id"].c_str());
+    engineId = atoi(db.query("SELECT id FROM Engine WHERE name = \"" + item.engine.name + "\";")[0]["id"].c_str());
     if (res.size() != 0) {
         int id = atoi(res[0]["id"].c_str());
         sqlbuffer << "UPDATE Level SET name=\"" << item.name << "\", version=" << item.version << ", rating=\"" << item.rating;
@@ -207,12 +207,12 @@ int levelCreate(LevelItem item, string localization = "default") {
         sqlbuffer << ", cover=\"" << item.cover.hash << "\", bgm=\"" << item.bgm.hash << "\", data=\"" << item.data.hash << "\", preview=\"" << item.preview.hash << "\", ";
         sqlbuffer << "description=\"" << str_replace("\n", "\\n", item.description) << "\", localization=\"" << localization << "\" WHERE id=" << id;
     } else {
-        int id = atoi((new DB_Controller)->query("SELECT COUNT(*) AS sum FROM Level;")[0]["sum"].c_str()) + 1;
+        int id = atoi(db.query("SELECT COUNT(*) AS sum FROM Level;")[0]["sum"].c_str()) + 1;
         sqlbuffer << "INSERT INTO Level (id, name, version, rating, title, artists, author, engine, skin, background, effect, particle, cover, bgm, data, preview, description, localization) VALUES (";
         sqlbuffer << id << ", \"" << item.name << "\", " << item.version << ", " << item.rating << ", \"" << item.title << "\", ";
         sqlbuffer << "\"" << item.artists << "\", \"" << item.author << "\", " << engineId << ", " << skinId << ", " << backgroundId << ", " << effectId << ", " << particleId << ", ";
         sqlbuffer << "\"" << item.cover.hash << "\", \"" << item.bgm.hash << "\", \"" << item.data.hash << "\", \"" << item.preview.hash << "\", \"" << str_replace("\n", "\\n", item.description) << "\", \"" << localization << "\")";
-    } return (new DB_Controller)->execute(sqlbuffer.str());
+    } return db.execute(sqlbuffer.str());
 }
 
 #endif

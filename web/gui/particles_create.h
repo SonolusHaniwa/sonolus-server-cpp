@@ -23,19 +23,19 @@ auto web_particles_create = [](client_conn conn, http_request request, param arg
             vector<string> values;
             for (auto i = 0; i < v.select.values.size(); i++) {
                 if (v.select.values[i] == "{{jsonArray.skinList}}") {
-                    auto arr = (new DB_Controller)->query("SELECT title FROM Skin ORDER BY id ASC");
+                    auto arr = db.query("SELECT title FROM Skin ORDER BY id ASC");
                     for (int j = 0; j < arr.size(); j++) values.push_back(arr[j]["title"]);
                 } else if (v.select.values[i] == "{{jsonArray.backgroundList}}") {
-                    auto arr = (new DB_Controller)->query("SELECT title FROM Background ORDER BY id ASC");
+                    auto arr = db.query("SELECT title FROM Background ORDER BY id ASC");
                     for (int j = 0; j < arr.size(); j++) values.push_back(arr[j]["title"]);
                 } else if (v.select.values[i] == "{{jsonArray.effectList}}") {
-                    auto arr = (new DB_Controller)->query("SELECT title FROM Effect ORDER BY id ASC");
+                    auto arr = db.query("SELECT title FROM Effect ORDER BY id ASC");
                     for (int j = 0; j < arr.size(); j++) values.push_back(arr[j]["title"]);
                 } else if (v.select.values[i] == "{{jsonArray.particleList}}") {
-                    auto arr = (new DB_Controller)->query("SELECT title FROM Particle ORDER BY id ASC");
+                    auto arr = db.query("SELECT title FROM Particle ORDER BY id ASC");
                     for (int j = 0; j < arr.size(); j++) values.push_back(arr[j]["title"]);
                 } else if (v.select.values[i] == "{{jsonArray.engineList}}") {
-                    auto arr = (new DB_Controller)->query("SELECT title FROM Engine ORDER BY id ASC");
+                    auto arr = db.query("SELECT title FROM Engine ORDER BY id ASC");
                     for (int j = 0; j < arr.size(); j++) values.push_back(arr[j]["title"]);
                 } else if (v.select.values[i] == "{{jsonArray.languageList}}") {
                     for (int j = 0; j < i18n_index.size(); j++) values.push_back(i18n_index[j]);

@@ -1,6 +1,7 @@
+sqlite3 sonolus.db .dump > sonolus.sql
 emcc emain.cpp -o api/libsonolus.js -s MODULARIZE -sALLOW_MEMORY_GROWTH\
 	-sDEFAULT_LIBRARY_FUNCS_TO_INCLUDE=['$stringToNewUTF8','$UTF8ToString']\
 	-sEXPORTED_RUNTIME_METHODS=['stringToNewUTF8','UTF8ToString','FS']\
-	-fwasm-exceptions -sASSERTIONS -lidbfs.js\
+	-fwasm-exceptions -sASSERTIONS -lnodefs.js\
 	--preload-file config --preload-file i18n --preload-file web --preload-file sonolus.sql\
 	-L./emsdk/lib -I./emsdk/include -ljsoncpp -lcrypto -lsqlite3 -g

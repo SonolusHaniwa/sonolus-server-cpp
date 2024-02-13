@@ -6,11 +6,12 @@
     argvar args = item.fetchParamList(); \
     for (auto v : args) args[v.first] = str_replace("\"", "\\\"", v.second); \
     for (int i = 0; i < appConfig[defineToString(name2)".details.sections"].size(); i++) { \
-        string filter = appConfig[defineToString(name2)".details.sections"][i]["filter"].asString(), \
-               order = appConfig[defineToString(name2)".details.sections"][i]["order"].asString(); \
+        auto obj = appConfig[defineToString(name2)".details.sections"][i]; \
+        string filter = obj["filter"].asString(), \
+               order = obj["order"].asString(); \
         filter = str_replace(filter, args); \
         ItemDetails["sections"].append(ItemSection<name1##Item>( \
-            appConfig[defineToString(name2)".details.sections"][i]["title"].asString(), appConfig[defineToString(name2)".details.sections"][i]["icon"].asString(), \
+            obj["title"].asString(), obj["icon"].asString(), \
             name2##List(filter, order, 1, 5) \
         ).toJsonObject()); \
     } \

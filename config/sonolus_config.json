@@ -6,6 +6,6 @@
     "server.logo": "9d364cdf72de5709f16eae90e1be7f023946f007",
     "server.banner": "0273968035abcd9bfe8f6b8fa913bb356dd202f2",
     "server.rootUrl": "127.0.0.1:8080",
-    "server.data.prefix": "",
+    "server.data.prefix": "https://stellarity.littleyang.me/data/",
     "language.default": "zhs"
 }

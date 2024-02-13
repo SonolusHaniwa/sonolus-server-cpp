@@ -85,7 +85,7 @@ class EffectItem {
 int effectsNumber(string filter) {
     string sql = "SELECT COUNT(*) AS sum FROM Effect";
     if (filter != "") sql += " WHERE (" + filter + ")";
-    dbres res = (new DB_Controller)->query(sql.c_str());
+    dbres res = db.query(sql.c_str());
     return atoi(res[0]["sum"].c_str());
 }
 
@@ -94,7 +94,7 @@ vector<EffectItem> effectsList(string filter, string order, int st = 1, int en =
     if (filter != "") sql += " WHERE (" + filter + ")";
     if (order != "") sql += " ORDER BY " + order;
     sql += " LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);
-    dbres res = (new DB_Controller)->query(sql.c_str());
+    dbres res = db.query(sql.c_str());
     vector<EffectItem> list = {};
     sort(res.begin(), res.end(), [](argvar a, argvar b){
         if (a["name"] == b["name"]) return (a["localization"] == "default") < (b["localization"] == "default");
@@ -114,14 +114,14 @@ vector<EffectItem> effectsList(string filter, string order, int st = 1, int en =
             SRL<EffectAudio>(res[i]["audio"], dataPrefix + res[i]["audio"]),
             deserializeTagString(res[i]["tags"]),
             str_replace("\\n", "\n", res[i]["description"]),
-            (appConfig["server.enableSSL"].asBool() ? "https://" : "http://") + appConfig["server.rootUrl"].asString() + "/sonolus/backgrounds/" + res[i]["name"]
+            (appConfig["server.enableSSL"].asBool() ? "https://" : "http://") + appConfig["server.rootUrl"].asString() + "/sonolus/effects/" + res[i]["name"]
         ); list.push_back(data);
     } return list;
 }
 
 int effectCreate(EffectItem item, string localization = "default") {
     stringstream sqlbuffer;
-    auto res = (new DB_Controller)->query("SELECT id FROM Effect WHERE name = \"" + item.name + "\" AND localization = \"" + localization + "\"");
+    auto res = db.query("SELECT id FROM Effect WHERE name = \"" + item.name + "\" AND localization = \"" + localization + "\"");
     if (res.size() != 0) {
         int id = atoi(res[0]["id"].c_str());
         sqlbuffer << "UPDATE Effect SET name = \"" << item.name << "\", version = " << item.version << ", ";
@@ -130,12 +130,12 @@ int effectCreate(EffectItem item, string localization = "default") {
         sqlbuffer << "data = \"" << item.data.hash << "\", audio = \"" << item.audio.hash << "\", ";
         sqlbuffer << "description = \"" << str_replace("\n", "\\n", item.description) << "\", localization = \"" << localization << "\" WHERE id = " << id;
     } else {
-        int id = atoi((new DB_Controller)->query("SELECT COUNT(*) AS sum FROM Effect;")[0]["sum"].c_str()) + 1;
+        int id = atoi(db.query("SELECT COUNT(*) AS sum FROM Effect;")[0]["sum"].c_str()) + 1;
         sqlbuffer << "INSERT INTO Effect (id, name, version, title, subtitle, author, thumbnail, data, audio, description, localization) VALUES (";
         sqlbuffer << id << ", \"" << item.name << "\", " << item.version << ", \"" << item.title << "\", ";
         sqlbuffer << "\"" << item.subtitle << "\", \"" << item.author << "\", \"" << item.thumbnail.hash << "\", ";
         sqlbuffer << "\"" << item.data.hash << "\", \"" << item.audio.hash << "\", \"" << str_replace("\n", "\\n", item.description) << "\", \"" << localization << "\")";
-    } return (new DB_Controller)->execute(sqlbuffer.str());
+    } return db.execute(sqlbuffer.str());
 }
 
 #endif
