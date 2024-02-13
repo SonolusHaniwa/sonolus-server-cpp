@@ -20,7 +20,7 @@ auto auth_sonolus_levels = [](client_conn conn, http_request request, param argv
         "Please see the error info below!", "System",
         EngineItem(0, "sonolus-server-auth", "(Message)", "", "", {}, {}, {}, {}, {}, {}, {}, {}, {}, {}), 
         UseItem<SkinItem>(), UseItem<BackgroundItem>(), UseItem<EffectItem>(), UseItem<ParticleItem>(),
-        SRL<LevelCover>(no_sha1, "/data/" + no_sha1), SRL<LevelBgm>(), SRL<LevelData>(), SRL<LevelPreview>()
+        SRL<LevelCover>(no_sha1, dataPrefix + no_sha1), SRL<LevelBgm>(), SRL<LevelData>(), SRL<LevelPreview>()
     );
     if (res.size() == 0) {
         __api_default_response["Content-Length"] = to_string(json_encode(msg[401]).size());
@@ -65,7 +65,7 @@ auto auth_sonolus_levels = [](client_conn conn, http_request request, param argv
         "You can refresh the browser to see the result!", "System",
         EngineItem(0, "sonolus-server-auth", "(Message)", "", "", {}, {}, {}, {}, {}, {}, {}, {}, {}, {}), 
         UseItem<SkinItem>(), UseItem<BackgroundItem>(), UseItem<EffectItem>(), UseItem<ParticleItem>(),
-        SRL<LevelCover>(yes_sha1, "/data/" + yes_sha1), SRL<LevelBgm>(), SRL<LevelData>(), SRL<LevelPreview>()
+        SRL<LevelCover>(yes_sha1, dataPrefix + yes_sha1), SRL<LevelBgm>(), SRL<LevelData>(), SRL<LevelPreview>()
     );
 
     ItemDetails<LevelItem> detail = ItemDetails<LevelItem>(item, "");

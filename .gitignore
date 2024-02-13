@@ -6,7 +6,6 @@ assets.sql
 fetchdata.php
 log.txt
 main
-make
 sonolus-server.zip
 items/UserProfile.h
 sonolus.*
@@ -29,4 +28,3 @@ plugins
 *.srp
 releases
 .tmp
-emake

@@ -114,8 +114,8 @@ vector<ReplayItem> replaysList(string filter, string order, int st = 1, int en =
             res[i]["subtitle"],
             res[i]["author"],
             level,
-            SRL<ReplayData>(res[i]["data"], "/data/" + res[i]["data"]),
-            SRL<ReplayConfiguration>(res[i]["configuration"], "/data/" + res[i]["configuration"]),
+            SRL<ReplayData>(res[i]["data"], dataPrefix + res[i]["data"]),
+            SRL<ReplayConfiguration>(res[i]["configuration"], dataPrefix + res[i]["configuration"]),
             deserializeTagString(res[i]["tags"]),
             str_replace("\\n", "\n", res[i]["description"]),
             (appConfig["server.enableSSL"].asBool() ? "https://" : "http://") + appConfig["server.rootUrl"].asString() + "/sonolus/backgrounds/" + res[i]["name"]

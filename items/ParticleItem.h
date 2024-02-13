@@ -109,9 +109,9 @@ vector<ParticleItem> particlesList(string filter, string order, int st = 1, int 
             res[i]["title"],
             res[i]["subtitle"],
             res[i]["author"],
-            SRL<ParticleThumbnail>(res[i]["thumbnail"], "/data/" + res[i]["thumbnail"]),
-            SRL<ParticleData>(res[i]["data"], "/data/" + res[i]["data"]),
-            SRL<ParticleTexture>(res[i]["texture"], "/data/" + res[i]["texture"]),
+            SRL<ParticleThumbnail>(res[i]["thumbnail"], dataPrefix + res[i]["thumbnail"]),
+            SRL<ParticleData>(res[i]["data"], dataPrefix + res[i]["data"]),
+            SRL<ParticleTexture>(res[i]["texture"], dataPrefix + res[i]["texture"]),
             deserializeTagString(res[i]["tags"]),
             str_replace("\\n", "\n", res[i]["description"]),
             (appConfig["server.enableSSL"].asBool() ? "https://" : "http://") + appConfig["server.rootUrl"].asString() + "/sonolus/backgrounds/" + res[i]["name"]

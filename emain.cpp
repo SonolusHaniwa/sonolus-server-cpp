@@ -17,6 +17,7 @@ std::string Minimum_Sonolus_Version = "0.8.0";
 std::string Sonolus_Version = Maximum_Sonolus_Version;
 Json::Value appConfig;
 Json::Value i18n, i18n_raw;
+std::string dataPrefix = "/data/";
 
 int levelVersion = 1;
 int skinVersion = 3;
@@ -141,7 +142,13 @@ void preload() {
     Json::Value tmpConfig; json_decode(configJson, tmpConfig);
     json_merge(appConfig, tmpConfig);
     Sonolus_Version = appConfig["sonolus.version"].asString();
+    if (appConfig["server.data.prefix"].asString() == "") appConfig["server.data.prefix"] = "/data/";
+    dataPrefix = appConfig["server.data.prefix"].asString();
+    appConfig["server.logo"] = dataPrefix + appConfig["server.logo"].asString();
+    appConfig["server.bannerHash"] = appConfig["server.banner"].asString();
+    appConfig["server.bannerUrl"] = dataPrefix + appConfig["server.banner"].asString();
     log_init(log_target_type);
+    http_init();
     loadConfig();
 
     /** 设置HTTP代码解释 */
@@ -209,12 +216,12 @@ void preload() {
 #	endif
 #endif
 
-extern "C" EMSCRIPTEN_KEEPALIVE char* cgi(char* request) {
+extern "C" EMSCRIPTEN_KEEPALIVE void cgi(char* requestId, int len) {
 	preload();
 	string data = "";
-	for (int i = 0; i < strlen(request); i++) data.push_back(request[i]);
-	string res = cgiRunner(data);
-	char* result = new char[res.size()];
-	for (int i = 0; i < res.size(); i++) result[i] = res[i];
-	return result;
+	for (int i = 0; i < len; i++) data.push_back(requestId[i]);
+	string res = cgiRunner(readFile("./request_" + data));
+    ofstream fout("./response_" + data);
+    fout.write(res.c_str(), res.size());
+    fout.close();
 }

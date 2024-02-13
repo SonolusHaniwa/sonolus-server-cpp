@@ -5,7 +5,8 @@ auto auth_sonolus_info = [](client_conn conn, http_request request, param argv){
     authLevelSearch.append(SearchTextOption("code", "Code", "Please enter 8 digits code here"));
     Json::Value res;
     res["title"] = "auth";
-    res["banner"] = SRL<ServerBanner>(appConfig["server.auth.bannerHash"].asString(), appConfig["server.auth.bannerUrl"].asString()).toJsonObject();
+    res["banner"] = SRL<ServerBanner>(appConfig["server.banner"].asString(), 
+        appConfig["server.data.prefix"].asString() + appConfig["server.banner"].asString()).toJsonObject();
     res["levels"] = Section<LevelItem>(-1, {
         LevelItem(0, "sonolus-server-auth", 0, "Welcome to " + appConfig["server.title"].asString(), 
         "Please enter the [Search] button to enter the code", "System", 

@@ -109,9 +109,9 @@ vector<SkinItem> skinsList(string filter, string order, int st = 1, int en = 20)
             res[i]["title"],
             res[i]["subtitle"],
             res[i]["author"],
-            SRL<SkinThumbnail>(res[i]["thumbnail"], "/data/" + res[i]["thumbnail"]),
-            SRL<SkinData>(res[i]["data"], "/data/" + res[i]["data"]),
-            SRL<SkinTexture>(res[i]["texture"], "/data/" + res[i]["texture"]),
+            SRL<SkinThumbnail>(res[i]["thumbnail"], dataPrefix + res[i]["thumbnail"]),
+            SRL<SkinData>(res[i]["data"], dataPrefix + res[i]["data"]),
+            SRL<SkinTexture>(res[i]["texture"], dataPrefix + res[i]["texture"]),
             deserializeTagString(res[i]["tags"]), 
             str_replace("\\n", "\n", res[i]["description"]),
             (appConfig["server.enableSSL"].asBool() ? "https://" : "http://") + appConfig["server.rootUrl"].asString() + "/sonolus/backgrounds/" + res[i]["name"]

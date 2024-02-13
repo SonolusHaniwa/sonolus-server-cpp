@@ -109,9 +109,9 @@ vector<EffectItem> effectsList(string filter, string order, int st = 1, int en =
             res[i]["title"],
             res[i]["subtitle"],
             res[i]["author"],
-            SRL<EffectThumbnail>(res[i]["thumbnail"], "/data/" + res[i]["thumbnail"]),
-            SRL<EffectData>(res[i]["data"], "/data/" + res[i]["data"]),
-            SRL<EffectAudio>(res[i]["audio"], "/data/" + res[i]["audio"]),
+            SRL<EffectThumbnail>(res[i]["thumbnail"], dataPrefix + res[i]["thumbnail"]),
+            SRL<EffectData>(res[i]["data"], dataPrefix + res[i]["data"]),
+            SRL<EffectAudio>(res[i]["audio"], dataPrefix + res[i]["audio"]),
             deserializeTagString(res[i]["tags"]),
             str_replace("\\n", "\n", res[i]["description"]),
             (appConfig["server.enableSSL"].asBool() ? "https://" : "http://") + appConfig["server.rootUrl"].asString() + "/sonolus/backgrounds/" + res[i]["name"]

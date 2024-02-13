@@ -13,9 +13,8 @@
 auto SonolusInfo = [](client_conn conn, http_request request, param argv){
     auto $_GET = getParam(request);
     Json::Value ItemInfo;
-    SRL<ServerBanner> banner = SRL<ServerBanner>(
-        appConfig["server.bannerHash"].asString(), appConfig["server.bannerUrl"].asString());
-    ItemInfo["banner"] = banner.toJsonObject();
+    ItemInfo["banner"] = SRL<ServerBanner>(appConfig["server.banner"].asString(), 
+        appConfig["server.data.prefix"].asString() + appConfig["server.banner"].asString()).toJsonObject();
     if (argv[0] == "levels") { quickSonolusInfo(Level, levels); }
     else if (argv[0] == "skins") { quickSonolusInfo(Skin, skins); }
     else if (argv[0] == "backgrounds") { quickSonolusInfo(Background, backgrounds); }

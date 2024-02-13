@@ -9,6 +9,7 @@ std::string Sonolus_Version = Maximum_Sonolus_Version;
 Json::Value appConfig, studiosConfig;
 Json::Value i18n, i18n_raw;
 Json::Value enableListJson;
+std::string dataPrefix = "/data/";
 
 const int exportLevelId = 1;
 const int exportSkinId = 2;
@@ -375,6 +376,11 @@ void preload() {
     Json::Value tmpConfig; json_decode(configJson, tmpConfig);
     json_merge(appConfig, tmpConfig);
     Sonolus_Version = appConfig["sonolus.version"].asString();
+    if (appConfig["server.data.prefix"].asString() == "") appConfig["server.data.prefix"] = "/data/";
+    dataPrefix = appConfig["server.data.prefix"].asString();
+    appConfig["server.logo"] = dataPrefix + appConfig["server.logo"].asString();
+    appConfig["server.bannerHash"] = appConfig["server.banner"].asString();
+    appConfig["server.bannerUrl"] = dataPrefix + appConfig["server.banner"].asString();
     setConfiguration();
     log_init(log_target_type);
     loadConfig();

@@ -18,7 +18,7 @@ auto uploader = [](client_conn conn, http_request request, param argv){
     Json::Value res;
     res["status"] = "success";
     res["hash"] = buffer.str();
-    res["url"] = "/data/" + buffer.str();
+    res["url"] = dataPrefix + buffer.str();
     __api_default_response["Content-Length"] = to_string(json_encode(res).size());
     putRequest(conn, 200, __api_default_response);
     send(conn, json_encode(res));

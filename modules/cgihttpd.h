@@ -124,7 +124,7 @@ string http_privkey = "privkey.pem"; // 私钥路径
 int http_thread_num = 8; // 运行线程数
 #define LOG_FILE_PATH 7 // 日志文件路径
 #define LOG_TARGET_TYPE 8 // 日志输出类型
-int log_target_type = LOG_TARGET_FILE;
+int log_target_type = LOG_TARGET_CONSOLE;
 #define OPEN_DEBUG 9 // 是否开启Debug模式
 /** 全局参数结束 */
 

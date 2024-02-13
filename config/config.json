@@ -6,6 +6,7 @@
     "mysql.password": "root",
     "mysql.database": "sonolus",
     "sqlite.dbfile": "sonolus.db",
+    "sqlite.sqlfile": "sonolus.sql",
     "server.listenHost": "0.0.0.0",
     "server.listenPort": 8080,
     "server.enableSSL": false,
@@ -93,6 +94,7 @@
             "order": "id DESC"
         }
     ],
+    
     "levels.details.sections": [
         {
             "title": "#RECOMMENDED",

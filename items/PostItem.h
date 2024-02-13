@@ -99,7 +99,7 @@ vector<PostItem> postsList(string filter, string order, int st = 1, int en = 20)
             res[i]["title"],
             atol(res[i]["time"].c_str()),
             res[i]["author"],
-            SRL<PostThumbnail>(res[i]["thumbnail"], "/data/" + res[i]["thumbnail"]),
+            SRL<PostThumbnail>(res[i]["thumbnail"], dataPrefix + res[i]["thumbnail"]),
             deserializeTagString(res[i]["tags"]),
             str_replace("\\n", "\n", res[i]["description"]),
             (appConfig["server.enableSSL"].asBool() ? "https://" : "http://") + appConfig["server.rootUrl"].asString() + "/sonolus/backgrounds/" + res[i]["name"]

@@ -84,6 +84,19 @@ class DB_Controller {
             writeLog(LOG_LEVEL_ERROR, "Failed to open SQLite Database: " + string(sqlite3_errmsg(db)));
 			return dbres();
         }
+
+		if (appConfig["sqlite.dbfile"].asString() == ":memory:") {
+			char* zErrMsg;
+			int rc = sqlite3_exec(db, readFile(appConfig["sqlite.sqlfile"].asString()).c_str(), NULL, 0, &zErrMsg);
+			if(rc != SQLITE_OK) {
+				writeLog(LOG_LEVEL_ERROR, "Failed to execute database: " + string(zErrMsg));
+				sqlite3_free(zErrMsg); 
+				sqlite3_close(db);
+				return dbres();
+			}
+			sqlite3_free(zErrMsg); 
+		}
+
         dbres res;
         char** azResult;
         int nrow, ncolumn;
@@ -117,6 +130,19 @@ class DB_Controller {
             writeLog(LOG_LEVEL_ERROR, "Failed to open SQLite Database: " + string(sqlite3_errmsg(db)));
 			return 0;
         }
+
+		if (appConfig["sqlite.dbfile"].asString() == ":memory:") {
+			char* zErrMsg;
+			int rc = sqlite3_exec(db, readFile(appConfig["sqlite.sqlfile"].asString()).c_str(), NULL, 0, &zErrMsg);
+			if(rc != SQLITE_OK) {
+				writeLog(LOG_LEVEL_ERROR, "Failed to execute database: " + string(zErrMsg));
+				sqlite3_free(zErrMsg); 
+				sqlite3_close(db);
+				return 0;
+			}
+			sqlite3_free(zErrMsg); 
+		}
+
         char* zErrMsg;
         int rc = sqlite3_exec(db, sql, NULL, 0, &zErrMsg);
         if(rc != SQLITE_OK) {

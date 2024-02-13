@@ -107,7 +107,7 @@ vector<PlaylistItem> playlistsList(string filter, string order, int st = 1, int 
             res[i]["subtitle"],
             res[i]["author"],
             levels,
-            SRL<PlaylistThumbnail>(res[i]["thumbnail"], "/data/" + res[i]["thumbnail"]),
+            SRL<PlaylistThumbnail>(res[i]["thumbnail"], dataPrefix + res[i]["thumbnail"]),
             deserializeTagString(res[i]["tags"]),
             str_replace("\\n", "\n", res[i]["description"]),
             (appConfig["server.enableSSL"].asBool() ? "https://" : "http://") + appConfig["server.rootUrl"].asString() + "/sonolus/backgrounds/" + res[i]["name"]
