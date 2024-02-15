@@ -6,7 +6,7 @@ const string SonolusPublicKey = "-----BEGIN PUBLIC KEY-----\n"
 string generateSession() {
     srand(time(NULL));
     string session = "", key = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    for (int i = 0; i < 128; i++) session += key[rand() % 62];
+    for (int i = 0; i < 32; i++) session += key[rand() % 62];
     return session;
 }
 
@@ -22,10 +22,11 @@ auto Authentication = [](client_conn conn, http_request request, param argv){
         Json::Value AuthenticateServerResponse;
         string json = request.postdata;
         if (!ecdsa_sha256_verify(json, base64_decode(request.argv["sonolus-signature"]), SonolusPublicKey)) quickSendMsg(401);
-        if (abs(times / 1000 - time(0)) > 60) quickSendMsg(401);
+        if (abs(times / 1000 - time(0)) > appConfig["session.expireTime"].asInt() * 24 * 60 * 60) quickSendMsg(401);
         // if (address.size() < realAddress.size() || address.substr(0, realAddress.size()) != realAddress) quickSendMsg(401);
         AuthenticateServerResponse["session"] = generateSession();
         AuthenticateServerResponse["expiration"] = (long long)(times += appConfig["session.expireTime"].asInt64() * 24 * 60 * 60 * 1000);
+        // 保存用户信息
         quickSendObj(AuthenticateServerResponse);
     } else if (type == "authenticateExternal") {
         string address = AuthenticateServerRequest["address"].asString();
@@ -34,10 +35,12 @@ auto Authentication = [](client_conn conn, http_request request, param argv){
         Json::Value AuthenticateServerResponse;
         string json = request.postdata;
         if (!ecdsa_sha256_verify(json, base64_decode(request.argv["sonolus-signature"]), SonolusPublicKey)) quickSendMsg(401);
-        if (abs(times / 1000 - time(0)) > 60) quickSendMsg(401);
+        if (abs(times / 1000 - time(0)) > appConfig["session.expireTime"].asInt() * 24 * 60 * 60) quickSendMsg(401);
         // if (address.size() < realAddress.size() || address.substr(0, realAddress.size()) != realAddress) quickSendMsg(401);
-        AuthenticateServerResponse["session"] = generateSession();
+        AuthenticateServerResponse["session"] = getParam(request)["sessionId"];
         AuthenticateServerResponse["expiration"] = (long long)(times += appConfig["session.expireTime"].asInt64() * 24 * 60 * 60 * 1000);
+        // 保存用户信息
+        db.execute("UPDATE UserSession SET uid=\"" + userProfile["id"].asString() + "\" WHERE session=\"" + getParam(request)["sessionId"] + "\"");
         quickSendObj(AuthenticateServerResponse);
     } else quickSendMsg(404);
 };

@@ -105,6 +105,7 @@ void routerRegister(int argc, char** argv) {
     app.addRoute("/sonolus/%s/list", SonolusList);
     app.addRoute("/sonolus/%s/%s", SonolusDetails);
     app.addRoute("/sonolus/authenticate", Authentication);
+    app.addRoute("/sonolus/checklogin", CheckLogin);
     // app.addRoute("/sonolus/levels/create", sonolus_levels_create);
     // app.addRoute("/sonolus/skins/create", sonolus_skins_create);
     // app.addRoute("/sonolus/backgrounds/create", sonolus_backgrounds_create);
@@ -192,6 +193,8 @@ void serverRunner(int argc, char** argv) {
     particleVersion = upper_bound(particleVersionList.begin(), particleVersionList.end(), Sonolus_Version) - particleVersionList.begin();
     engineVersion = upper_bound(engineVersionList.begin(), engineVersionList.end(), Sonolus_Version) - engineVersionList.begin();
     replayVersion = upper_bound(replayVersionList.begin(), replayVersionList.end(), Sonolus_Version) - replayVersionList.begin();
+    postVersion = upper_bound(postVersionList.begin(), postVersionList.end(), Sonolus_Version) - postVersionList.begin();
+    playlistVersion = upper_bound(playlistVersionList.begin(), playlistVersionList.end(), Sonolus_Version) - playlistVersionList.begin();
 
     setConfiguration();
     routerRegister(argc, argv);
@@ -210,6 +213,8 @@ void cgiRunner(int argc, char** argv) {
 	particleVersion = upper_bound(particleVersionList.begin(), particleVersionList.end(), Sonolus_Version) - particleVersionList.begin();
 	engineVersion = upper_bound(engineVersionList.begin(), engineVersionList.end(), Sonolus_Version) - engineVersionList.begin();
     replayVersion = upper_bound(replayVersionList.begin(), replayVersionList.end(), Sonolus_Version) - replayVersionList.begin();
+    postVersion = upper_bound(postVersionList.begin(), postVersionList.end(), Sonolus_Version) - postVersionList.begin();
+    playlistVersion = upper_bound(playlistVersionList.begin(), playlistVersionList.end(), Sonolus_Version) - playlistVersionList.begin();
 
 	setConfiguration();
 	routerRegister(argc, argv);

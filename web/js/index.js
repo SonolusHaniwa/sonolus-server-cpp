@@ -108,6 +108,19 @@ async function hideOpenInSonolus() {
     document.getElementById("openInSonolus").style.display = "none";
 }
 
+async function displayLogin(e) {
+    generateQRCode("qrcode-login");
+    document.getElementById("login").style.display = "flex";
+    await sleep(10);
+    document.getElementById("login").style.opacity = "1";
+}
+
+async function hideLogin() {
+    document.getElementById("login").style.opacity = "0";
+    await sleep(150);
+    document.getElementById("login").style.display = "none";
+}
+
 async function displayJump() {
     document.getElementById("bottomBar").style.display = "flex";
     await sleep(10);
@@ -173,6 +186,15 @@ function setCookie(cname, cvalue, exdays = 30) {
     document.cookie = cname + "=" + cvalue + "; " + expires + "; path=/;";
 }
 
+function deleteCookie(cname) {
+    document.cookie = cname + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+}
+
+function logout() {
+    deleteCookie("sessionId");
+    location.href = location.href;
+}
+
 const width = window.innerWidth;
 const height = window.innerHeight;
 const size = Math.min(width, height) * 0.125;
@@ -233,7 +255,8 @@ addLoadEvent(async function(){
     var a = document.getElementsByTagName("a");
     for (i = 0; i < a.length; i++) {
         const href = a[i].href;
-        if (href.length == 0) continue; 
+        if (href.length == 0) continue;
+        if (href.substr(0, 11) == "javascript:") continue;
         if (href.substr(0, location.origin.length) == location.origin) continue;
         a[i].onclick = async function() {
             document.getElementsByTagName("main")[0].style.opacity = "0";
@@ -308,8 +331,8 @@ async function hideStudiosEffect() {
     document.getElementById("createStudiosEffect").style.display = "none";
 }
 
-function generateQRCode() {
-    var qrcode = document.getElementById("qrcode");
+function generateQRCode(id = "qrcode") {
+    var qrcode = document.getElementById(id);
     QRCode.toCanvas(qrcode, qrcode.getAttribute("value"), {
         width: 192
     }, function (error) {

@@ -15,6 +15,37 @@
 
                 <div class="flex justify-center text-ellipsis" style="flex-wrap:wrap;gap:10px;justify-content:left;">
                     {{html.buttons}}
+                    <div class="fixed top-0 left-0 z-50 flex h-[100vh] w-[100vw] select-none flex-col items-center justify-center bg-sonolus-main bg-opacity-90 transition-opacity" style="display: none; opacity: 0;" id="login" onclick="hideLogin()">
+                        <main class="mx-auto flex h-full max-w-4xl flex-col justify-center space-y-9 p-9 text-center sm:space-y-12 sm:p-12" style="opacity: 1">
+                            <div class="py-1 text-xl font-bold sm:py-1.5 sm:text-3xl">{{language.opening}}</div>
+                            <div class="space-y-1 sm:space-y-1.5">
+                                <p>{{language.retry}}</p>
+                                <a class="space-x-1 underline sm:space-x-1.5" href="{{url}}">
+                                    <span>{{url}}</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="inline h-4 w-4 fill-current align-text-bottom sm:h-5 sm:w-5">
+                                        <path d="M256 64c0-17.67 14.3-32 32-32h127.1c5.2 0 9.4.86 13.1 2.43 2.9 1.55 7.3 3.84 10.4 6.87 0 .05 0 .1.1.14 6.2 6.22 8.4 14.34 9.3 22.46V192c0 17.7-14.3 32-32 32s-32-14.3-32-32v-50.7L214.6 310.6c-12.5 12.5-32.7 12.5-45.2 0s-12.5-32.7 0-45.2L338.7 96H288c-17.7 0-32-14.33-32-32zM0 128c0-35.35 28.65-64 64-64h96c17.7 0 32 14.33 32 32 0 17.7-14.3 32-32 32H64v288h288v-96c0-17.7 14.3-32 32-32s32 14.3 32 32v96c0 35.3-28.7 64-64 64H64c-35.35 0-64-28.7-64-64V128z"></path>
+                                    </svg>
+                                </a>
+                            </div>
+                            <div class="space-y-1 sm:space-y-1.5"><canvas id="qrcode-login" value="{{url}}" style="margin: auto;"></canvas></div>
+                            <div class="space-y-1 sm:space-y-1.5">
+                                <p>{{language.download}}</p>
+                                <a class="space-x-1 underline sm:space-x-1.5" href="https://sonolus.com" target="_blank">
+                                    <span>https://sonolus.com</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="inline h-4 w-4 fill-current align-text-bottom sm:h-5 sm:w-5">
+                                        <path d="M256 64c0-17.67 14.3-32 32-32h127.1c5.2 0 9.4.86 13.1 2.43 2.9 1.55 7.3 3.84 10.4 6.87 0 .05 0 .1.1.14 6.2 6.22 8.4 14.34 9.3 22.46V192c0 17.7-14.3 32-32 32s-32-14.3-32-32v-50.7L214.6 310.6c-12.5 12.5-32.7 12.5-45.2 0s-12.5-32.7 0-45.2L338.7 96H288c-17.7 0-32-14.33-32-32zM0 128c0-35.35 28.65-64 64-64h96c17.7 0 32 14.33 32 32 0 17.7-14.3 32-32 32H64v288h288v-96c0-17.7 14.3-32 32-32s32 14.3 32 32v96c0 35.3-28.7 64-64 64H64c-35.35 0-64-28.7-64-64V128z"></path>
+                                    </svg>
+                                </a>
+                            </div>
+                        </main>
+                    </div>
+                    <script>
+                        if ({{isLogin}}) setInterval(async function(){
+                            var isLogin = await fetch("/sonolus/checklogin");
+                            var json = await isLogin.json();
+                            if (json.isLogin) location.href = location.href; 
+                        }, 2000);
+                    </script>
                 </div>
                 
                 <div class="fixed top-2 left-0 -z-10 flex w-full justify-center sm:top-4">

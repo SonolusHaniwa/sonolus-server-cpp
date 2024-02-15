@@ -71,6 +71,9 @@ class ReplayItem {
         args["data"] = data.url;
         args["configuration"] = configuration.url;
         args["cover"] = level.cover.url;
+        args["tags"] = "";
+        for (int i = 0; i < tags.size(); i++) args["tags"] += "<div class='flex' style='background-color:rgba(255,255,255,0.125);padding:5px;'>"
+            "<div class='tagIcon'>{{icon." + tags[i].icon + "}}</div>&nbsp;" + tags[i].title + "</div>";
         args["url"] = "/replays/" + name;
         args["sonolus.url"] = "sonolus://" + appConfig["server.rootUrl"].asString() + "/replays/" + name;
         args["description"] = description;

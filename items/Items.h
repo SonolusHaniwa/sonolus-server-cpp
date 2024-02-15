@@ -151,10 +151,3 @@ void loadConfig() {
         i18n_index.push_back(index[i]["name"].asString());
     } i18n_raw = index;
 }
-
-bool checkLogin(http_request request) {
-    string session = request.argv["sonolus-session"];
-    if (session == "") session = cookieParam(request)["Sonolus-Session"];
-    auto res = db.query("SELECT * FROM UserSession WHERE session=\"" + session + "\" AND time>=" + to_string(time(NULL) - appConfig["session.expireTime"].asInt64() * 24 * 60 * 60) + " AND userId!=0");
-    return res.size();
-}

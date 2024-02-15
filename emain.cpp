@@ -126,6 +126,8 @@ string cgiRunner(string request) {
 	particleVersion = upper_bound(particleVersionList.begin(), particleVersionList.end(), Sonolus_Version) - particleVersionList.begin();
 	engineVersion = upper_bound(engineVersionList.begin(), engineVersionList.end(), Sonolus_Version) - engineVersionList.begin();
     replayVersion = upper_bound(replayVersionList.begin(), replayVersionList.end(), Sonolus_Version) - replayVersionList.begin();
+    postVersion = upper_bound(postVersionList.begin(), postVersionList.end(), Sonolus_Version) - postVersionList.begin();
+    playlistVersion = upper_bound(playlistVersionList.begin(), playlistVersionList.end(), Sonolus_Version) - playlistVersionList.begin();
 
 	routerRegister();
 

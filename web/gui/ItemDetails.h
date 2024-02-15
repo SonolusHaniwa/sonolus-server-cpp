@@ -3,9 +3,9 @@
     if (items.size() == 0) { quickSendMsg(404); } \
     auto items2 = name##List("name = \"" + argv[1] + "\" AND localization = \"" + cookie["lang"] + "\"", ""); \
     if (items2.size() == 0) items2 = items; \
-    auto item = items2[0]; \
+    auto item = items2[0]; argList = merge(argList, item.fetchParamList()); \
     argList["html.open_in_sonolus"] = fetchOpenInSonolus(item.fetchParamList()["sonolus.url"]).output(); \
-    argList["html.itemDetails"] = str_replace(ItemDetails, merge(argList, item.fetchParamList())); \
+    argList["html.itemDetails"] = str_replace(ItemDetails, argList); \
     argList["page.title"] = item.title + " | " + appConfig["server.title"].asString(); \
     argList["html.navbar"] = fetchNavBar(item.title).output(); \
     string detailsSection = ""; \
@@ -43,6 +43,7 @@ auto GUIDetails = [](client_conn conn, http_request request, param argv) {
     // TODO: add the argList here
     string detailsIcon = fetchIconButton("#ItemDetails", "{{icon." + argv[0].substr(0, argv[0].size() - 1) + "}}").output();
     detailsIcon += fetchIconButton("##DESCRIPTION", "{{icon.description}}").output();
+    detailsIcon += fetchIconButton("##TAGS", "{{icon.tags}}").output();
     if (argv[0] == "playlists") detailsIcon += fetchIconButton("#Levels", "{{icon.level}}").output();
     if (argv[0] == "levels") { quickGUIDetails(levels); }
     else if (argv[0] == "skins") { quickGUIDetails(skins); }

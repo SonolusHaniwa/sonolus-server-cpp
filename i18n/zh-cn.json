@@ -195,5 +195,6 @@
     "loginTipAlternative": "或者，如果您的设备上安装了 Sonolus，您可以通过点击上面的 <code>在 Sonolus 中打开</code> 按钮直接进行登录。",
     "advanced": "高级搜索",
     "ADVANCED": "高级搜索",
-    "quick": "快速搜索"
+    "quick": "快速搜索",
+    "tags": "标签"
 }

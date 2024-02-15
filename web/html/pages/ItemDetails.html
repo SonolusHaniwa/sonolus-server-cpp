@@ -6,6 +6,16 @@
             <main class="mx-auto flex max-w-4xl flex-col space-y-9 p-9 transition-opacity v-transition:opacity-0 sm:space-y-12 sm:p-12" style="padding-top:0px;">
                 <a style="height:0px;margin:0px;" name="ItemDetails"></a>
                 {{html.itemDetails}}
+                <a style="height:0px;margin:0px;" name="#DESCRIPTION"></a>
+                <div class="flex flex-col space-y-2 sm:space-y-3">
+                    <h2 class="py-1 text-xl font-bold sm:py-1.5 sm:text-3xl">{{language.description}}</h2>
+                    <p class="whitespace-pre-wrap">{{description}}</p>
+                </div>
+                <a style="height:0px;margin:0px;" name="#TAGS"></a>
+                <div class="flex flex-col space-y-2 sm:space-y-3">
+                    <h2 class="py-1 text-xl font-bold sm:py-1.5 sm:text-3xl">{{language.tags}}</h2>
+                    <div class="whitespace-pre-wrap flex" style="fill:white;gap:10px">{{tags}}</div>
+                </div>
                 {{html.detailsSection}}
                 <div style="position:fixed;right:0px;width:64px;fill:white;margin-top:48px;">{{html.icons}}</div>
             </main>

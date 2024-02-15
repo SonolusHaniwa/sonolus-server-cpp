@@ -1593,3 +1593,11 @@ nav {
     background-color: rgb(255 255 255 / var(--tw-bg-opacity));
     transition: width .15s;
 }
+
+.tagIcon {
+    width:24px;
+}
+
+.itemTags .tagIcon {
+    width: 14px!important;
+}

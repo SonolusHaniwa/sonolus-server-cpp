@@ -66,8 +66,10 @@ void loadDefaultVariable() {
     exitRequest(conn); \
 }
 
-void checkSecret(string token, client_conn conn) {
-    if (token != appConfig["admin.password"].asString()) quickSendMsg(401);
+bool checkLogin(http_request request) {
+    string session = cookieParam(request)["sessionId"];
+    auto res = db.query("SELECT session FROM UserSession WHERE session=\"" + session + "\" AND expire >= " + to_string(time(NULL)) + " AND uid != \"\"");
+    return res.size();
 }
 
 #include"ServerInfo.h"
@@ -75,6 +77,7 @@ void checkSecret(string token, client_conn conn) {
 #include"ItemList.h"
 #include"ItemDetails.h"
 #include"Authentication.h"
+#include"CheckLogin.h"
 // #include"levels_list.h"
 // #include"skins_list.h"
 // #include"backgrounds_list.h"

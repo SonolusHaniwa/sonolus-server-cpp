@@ -35,11 +35,12 @@ vector<Tag> deserializeTagString(string tagString) {
         } else if (inTag) {
             if (isSpecial) isTitle ? tag.title += ch : tag.icon += ch;
             else if (ch == ',') isTitle = false;
-            else if (ch == ')') inTag = false, res.push_back(tag), tag = Tag("", ""), isTitle = true;
+            else if (ch == ')') inTag = false, isTitle = true;
             else if (ch == '(') isTitle ? tag.title += ch : tag.icon += ch;
             else isTitle ? tag.title += ch : tag.icon += ch;
         }
-    } return res;
+    } if (tag.icon != "" && tag.title != "") res.push_back(tag);
+    return res;
 }
 
 string serializeTagString(vector<Tag> tags) {
