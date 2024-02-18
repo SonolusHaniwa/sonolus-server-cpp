@@ -4,6 +4,9 @@ on:
   release:
     types: [published]
   workflow_dispatch:
+  push:
+    branches:
+      - main
   
 env: 
   VERSION: ${{ github.ref_name }}
@@ -28,7 +31,7 @@ jobs:
       - name: Preparing C/C++ Compiler
         run: |
           echo $env:VERSION
-          wget https://github.com/LittleYang0531/LittleYang0531/releases/download/g%2B%2B13/windows-x64.zip -O gcc.zip
+          curl https://github.com/LittleYang0531/LittleYang0531/releases/download/g%2B%2B13/windows-x64.zip -o gcc.zip
           unzip -q gcc.zip
       
       - name: Preparing Chocolately
