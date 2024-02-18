@@ -1,4 +1,4 @@
-name: build (linux-x64)
+name: build (emsdk)
 
 on:
   release:
@@ -34,14 +34,15 @@ jobs:
           cd emsdk
           ./emsdk install latest
           ./emsdk activate latest
-          echo 'source "/home/runner/work/sonolus-server-cpp/sonolus-server-cpp/emsdk/emsdk_env.sh"' >> $HOME/.bash_profile
       
-      - name: Checking C/C++ Compiler
+      - name: Checking Emscripten Compiler
         run: |
+          source "/home/runner/work/sonolus-server-cpp/sonolus-server-cpp/emsdk/emsdk_env.sh"
           emcc --version
         
       - name: Compiling Sonolus Server for NodeJS
         run: |
+          source "/home/runner/work/sonolus-server-cpp/sonolus-server-cpp/emsdk/emsdk_env.sh"
           cd sources
           sqlite3 sonolus.db ".read ../data.sql"
           ./emake
