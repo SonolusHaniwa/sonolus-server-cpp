@@ -31,7 +31,7 @@ jobs:
       - name: Preparing C/C++ Compiler
         run: |
           echo $env:VERSION
-          curl https://github.com/LittleYang0531/LittleYang0531/releases/download/g%2B%2B13/windows-x64.zip -o gcc.zip
+          curl https://github.com/LittleYang0531/LittleYang0531/releases/download/g%2B%2B13/windows-x64.zip -o gcc.zip -L
           unzip -q gcc.zip
       
       - name: Preparing Chocolately
