@@ -17,7 +17,6 @@ hwpl
 sirius
 *.bin
 .vscode
-plugins
 !data/87e0c3a0879345e2721f71b0540c5bd8a0f8d6c3
 !data/bd32c9acb1607e6ff65b52c75d8566667c75902f
 !data/18d418a036faf35bbd17c9d265a782e32723356c
@@ -28,6 +27,8 @@ plugins
 *.srp
 releases
 .tmp
-api/libsonolus.*
+libsonolus.*
 api/package*
 api/node_modules
+emsdk
+plugins/*.so

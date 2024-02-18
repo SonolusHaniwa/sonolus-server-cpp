@@ -1,7 +1,28 @@
+# Environment: Linux codespaces-b06e3b 6.2.0-1019-azure #19~22.04.1-Ubuntu SMP Wed Jan 10 22:57:03 UTC 2024 x86_64 x86_64 x86_64 GNU/Linux
+# Emscripten: emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 3.1.53 (ce5114bdd2175c7297583d3c25a53ca95d22f4ce)
+
+# Colors
+WHITE='\033[0m'
+YELLOW='\033[0;33m'
+
+# Compile
+echo -e "${YELLOW}Exporting data into sonolus.sql...${WHITE}"
 sqlite3 sonolus.db .dump > sonolus.sql
-emcc emain.cpp -o api/libsonolus.js -s MODULARIZE -sALLOW_MEMORY_GROWTH\
+echo -e "${YELLOW}Compiling Sonolus Server using emscripten...${WHITE}"
+emcc emain.cpp -o libsonolus.js -s MODULARIZE -sALLOW_MEMORY_GROWTH\
 	-sDEFAULT_LIBRARY_FUNCS_TO_INCLUDE=['$stringToNewUTF8','$UTF8ToString']\
 	-sEXPORTED_RUNTIME_METHODS=['stringToNewUTF8','UTF8ToString','FS']\
-	-fwasm-exceptions -sASSERTIONS -lnodefs.js\
-	--preload-file config --preload-file i18n --preload-file web --preload-file sonolus.sql\
+	-fwasm-exceptions -sASSERTIONS -lnodefs.js \
+	--preload-file config --preload-file web --preload-file i18n --preload-file sonolus.sql\
 	-L./emsdk/lib -I./emsdk/include -ljsoncpp -lcrypto -lsqlite3 -g
+echo -e "${YELLOW}Removing libsonolus.data...${WHITE}"
+rm libsonolus.data
+echo -e "${YELLOW}Modifying libsonolus.js...${WHITE}"
+sed -i "s/var byteArray = this.byteArray.subarray(this.start, this.end);/var byteArray = new Uint8Array(require('fs').readFileSync(__dirname + '\/' + this.name));/g" libsonolus.js
+sed -i "s/Module\['addRunDependency'\]/\/\/ Module\['addRunDependency'\]/g" libsonolus.js
+sed -i "s/Module\['removeRunDependency'\]/\/\/ Module\['removeRunDependency'\]/g" libsonolus.js
+sed -i "s/require('fs').readFile(packageName, function(err, contents)/return; require('fs').readFile(packageName, function(err, contents)/g" libsonolus.js
+sed -i "s/Module.preloadResults\[PACKAGE_NAME\] = {fromCache: false};/Module.preloadResults\[PACKAGE_NAME\] = {fromCache: false}; fetched = new ArrayBuffer(114514);/g" libsonolus.js
+echo -e "${YELLOW}Done.${WHITE}"
+echo -e ""
+echo -e "You can type \`cd api && node index.js\` to start your server."

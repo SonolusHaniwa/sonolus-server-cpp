@@ -1,5 +1,5 @@
 const express = require('express');
-const factory = require('./libsonolus.js');
+const factory = require('../libsonolus.js');
 const app = express();
 
 const BR = '\r\n';
@@ -26,6 +26,7 @@ function parseRawResponse(rawResponse, res) {
         res.send("Invalid response");
         return;
     }
+
     // 分割响应字符串为行
     const lines = rawResponse.split(BR);
     // 第一行是状态行，包含 HTTP 版本、状态码和状态消息
@@ -47,6 +48,7 @@ function parseRawResponse(rawResponse, res) {
     // 剩下的行是正文，再用 Content-Length 截一下
     var body = "";
     for (var j = i + 1; j < lines.length; j++) body += lines[j] + BR;
+
     // 设置正文
     res.send(body);
     res.end();

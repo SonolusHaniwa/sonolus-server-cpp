@@ -151,6 +151,9 @@ void preload() {
     appConfig["server.logo"] = dataPrefix + appConfig["server.logo"].asString();
     appConfig["server.bannerHash"] = appConfig["server.banner"].asString();
     appConfig["server.bannerUrl"] = dataPrefix + appConfig["server.banner"].asString();
+    appConfig["server.hasAuthentication"] = false;
+    appConfig["database"] = "sqlite";
+    appConfig["sqlite.dbfile"] = ":memory:";
     log_init(log_target_type);
     db = DB_Controller(true);
     http_init();

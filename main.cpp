@@ -62,7 +62,7 @@ void initUsage(char** argv) {
 	usage << "    cgi: " << argv[0] << " cgi [request] [response]" << endl;
     usage << "Import & Export commands: " << endl;
     usage << "    import: " << argv[0] << " import [file]" << endl;
-    usage << "    export: " << argv[0] << " export <level/skin/background/effect/particle/engine/replay> [name] [file] (name)" << endl;
+    usage << "    export: " << argv[0] << " export [type] [name] [file] (name)" << endl;
     usage << "    export remote: " << argv[0] << " export remote [url] [file] (name)" << endl;
     usage << "    export all: " << argv[0] << " export all [file] (name)" << endl;
     usage << "    export remote all: " << argv[0] << " export remote-all [url] [file] (name)" << endl;

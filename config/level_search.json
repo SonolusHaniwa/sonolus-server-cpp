@@ -26,8 +26,8 @@
                 "query": "minRating",
                 "name": "#RATING_MINIMUM",
                 "type": "slider",
-                "def": 5,
-                "min": 5,
+                "def": 1,
+                "min": 1,
                 "max": 50,
                 "step": 1
             },
@@ -35,13 +35,19 @@
                 "query": "maxRating",
                 "name": "#RATING_MAXIMUM",
                 "type": "slider",
-                "def": 50,
-                "min": 5,
+                "def": 40,
+                "min": 1,
                 "max": 50,
                 "step": 1
+            },
+            {
+                "query": "random",
+                "name": "#RANDOM",
+                "type": "toggle",
+                "def": 0
             }
         ],
         "filter": "title LIKE \"%{{keywords}}%\" AND artists LIKE \"%{{artist}}%\" AND author LIKE \"%{{author}}%\" AND rating >= {{minRating}} AND rating <= {{maxRating}}",
-        "order": "id DESC"
+        "order": "CASE {{random}} WHEN 0 THEN id WHEN 1 THEN RANDOM() END DESC"
     }
 ]
