@@ -32,3 +32,4 @@ api/package*
 api/node_modules
 emsdk
 plugins/*.so
+plugins/enableList.json

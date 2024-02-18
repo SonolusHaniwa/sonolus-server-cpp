@@ -1,0 +1,74 @@
+name: build (linux-x64)
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+env: 
+  VERSION: ${{ github.ref_name }}
+
+jobs:
+  linux-x64-build:
+    runs-on: ubuntu-20.04
+    
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Preparing Sonolus Server Source Code
+        run: |
+          git clone https://github.com/SonolusHaniwa/sonolus-server-cpp sources
+          mkdir sources/emsdk
+          wget https://github.com/SonolusHaniwa/sonolus-server-cpp/releases/download/emsdk/emsdk.zip -O sources/emsdk/emsdk.zip
+          cd sources/emsdk && unzip emsdk.zip
+            
+      - name: Preparing Emscripten SDK
+        run: |
+          git clone https://github.com/emscripten-core/emsdk
+          cd emsdk
+          ./emsdk install latest
+          ./emsdk activate latest
+          echo "source ./emsdk/emsdk_env.sh" >> ~/.bashrc
+      
+      - name: Checking C/C++ Compiler
+        run: |
+          emcc --version
+        
+      - name: Compiling Sonolus Server for NodeJS
+        run: |
+          cd sources
+          sqlite3 sonolus.db ".read ../data.sql"
+          ./emake
+      
+      - name: Preparing Package Environment
+        run: |
+          mkdir packages
+          mv ./sources/config ./packages/config
+          mv ./sources/i18n ./packages/i18n
+          mv ./sources/web ./packages/web
+          mv ./sources/api ./packages/api
+          mv ./sources/libsonolus.js ./packages/libsonolus.js
+          mv ./sources/libsonolus.wasm ./packages/libsonolus.wasm
+          mv ./sources/sonolus.sql ./packages/sonolus.sql
+          mv ./sources/CODE_OF_CONDUCT.md ./packages/
+          mv ./sources/LICENSE.txt ./packages/
+          mv ./sources/README.md ./packages/
+          mv ./sources/README_en.md ./packages/
+          cd packages
+          
+      - name: Packaging Sonolus Server for Linux x64
+        run: |
+          cd packages
+          zip ../sonolus-server-emsdk-${{ env.VERSION }}.zip ./* -r
+          
+      - name: Uploading Sonolus Server for Linux x64
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: sonolus-server-emsdk-${{ env.VERSION }}.zip
