@@ -54,6 +54,7 @@ auto GUIList = [](client_conn conn, http_request request, param argv) {
         
         if (searchId == -1) quickSendMsg(404);
         sqlFilter += str_replace(filter, args);
+        order = str_replace(order, args);
         if (filter == "") sqlFilter += "1";
     } sqlFilter += ")";
 

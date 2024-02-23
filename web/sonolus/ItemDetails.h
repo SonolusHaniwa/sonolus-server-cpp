@@ -11,6 +11,7 @@
         string filter = obj["filter"].asString(), \
                order = obj["order"].asString(); \
         filter = str_replace(filter, args); \
+        order = str_replace(order, args); \
         ItemDetails["sections"].append(ItemSection<name1##Item>( \
             obj["title"].asString(), obj["icon"].asString(), \
             name2##List(filter, order, 1, 5) \

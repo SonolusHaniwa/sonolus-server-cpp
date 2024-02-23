@@ -37,7 +37,7 @@ auto GUIIndex = [](client_conn conn, http_request request, param argv) {
     buttons += indexButton("{{icon.replay}}", "{{language.replays}}", "/replays/info").output();
     argList["html.buttons"] = buttons;
     argList["url"] = "sonolus://external-login/" + appConfig["server.rootUrl"].asString() + "/sonolus/authenticate?sessionId=" + session;
-    argList["isLogin"] = to_string(!isLogin);
+    argList["isLogin"] = to_string(appConfig["server.hasAuthentication"].asBool() && !isLogin);
 
     argList = merge(argList, merge(
         transfer(appConfig), merge(
