@@ -58,8 +58,10 @@ void routerRegister() {
     app.addRoute("/sonolus/info", ServerInfo);
     app.addRoute("/sonolus/%s/info", SonolusInfo);
     app.addRoute("/sonolus/%s/list", SonolusList);
+    app.addRoute("/sonolus/%s/create", SonolusCreate);
     app.addRoute("/sonolus/%s/%s", SonolusDetails);
     app.addRoute("/sonolus/authenticate", Authentication);
+    app.addRoute("/sonolus/checklogin", CheckLogin);
     // app.addRoute("/sonolus/levels/create", sonolus_levels_create);
     // app.addRoute("/sonolus/skins/create", sonolus_skins_create);
     // app.addRoute("/sonolus/backgrounds/create", sonolus_backgrounds_create);

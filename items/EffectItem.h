@@ -122,7 +122,7 @@ vector<EffectItem> effectsList(string filter, string order, int st = 1, int en =
     } return list;
 }
 
-int effectCreate(EffectItem item, string localization = "default") {
+int effectsCreate(EffectItem item, string localization = "default") {
     stringstream sqlbuffer;
     auto res = db.query("SELECT id FROM Effect WHERE name = \"" + item.name + "\" AND localization = \"" + localization + "\"");
     if (res.size() != 0) {

@@ -171,7 +171,7 @@ vector<EngineItem> enginesList(string filter, string order, int st = 1, int en =
     } return list;
 }
 
-int engineCreate(EngineItem item, string localization = "default") {
+int enginesCreate(EngineItem item, string localization = "default") {
     stringstream sqlbuffer;
     auto res = db.query("SELECT id FROM Engine WHERE name = \"" + item.name + "\" AND localization = \"" + localization + "\"");
     int skinId = atoi(db.query("SELECT id FROM Skin WHERE name = \"" + item.skin.name + "\";")[0]["id"].c_str());

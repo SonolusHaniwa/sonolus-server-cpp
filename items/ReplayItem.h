@@ -126,7 +126,7 @@ vector<ReplayItem> replaysList(string filter, string order, int st = 1, int en =
     } return list;
 }
 
-int replayCreate(ReplayItem item, string localization = "default") {
+int replaysCreate(ReplayItem item, string localization = "default") {
     stringstream sqlbuffer;
     auto res = db.query("SELECT id FROM Replay WHERE name = \"" + item.name + "\" AND localization = \"" + localization + "\"");
     int levelId = atoi(db.query("SELECT id FROM Level WHERE name = \"" + item.level.name + "\";")[0]["id"].c_str());

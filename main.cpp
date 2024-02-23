@@ -103,6 +103,7 @@ void routerRegister(int argc, char** argv) {
     app.addRoute("/sonolus/info", ServerInfo);
     app.addRoute("/sonolus/%s/info", SonolusInfo);
     app.addRoute("/sonolus/%s/list", SonolusList);
+    app.addRoute("/sonolus/%s/create", SonolusCreate);
     app.addRoute("/sonolus/%s/%s", SonolusDetails);
     app.addRoute("/sonolus/authenticate", Authentication);
     app.addRoute("/sonolus/checklogin", CheckLogin);

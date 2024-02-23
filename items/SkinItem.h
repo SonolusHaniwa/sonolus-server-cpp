@@ -122,7 +122,7 @@ vector<SkinItem> skinsList(string filter, string order, int st = 1, int en = 20)
     } return list;
 }
 
-int skinCreate(SkinItem item, string localization = "default") {
+int skinsCreate(SkinItem item, string localization = "default") {
     stringstream sqlbuffer;
     auto res = db.query("SELECT id FROM Skin WHERE name = \"" + item.name + "\" AND localization = \"" + localization + "\"");
     if (res.size() > 0) {

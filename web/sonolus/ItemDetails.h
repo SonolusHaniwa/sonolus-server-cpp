@@ -1,4 +1,5 @@
 #define quickSonolusDetails(name1, name2) {\
+	if (name2##Number("name = \"" + argv[1] + "\"") == 0) quickSendMsg(404); \
     auto item = name2##List("name = \"" + argv[1] + "\"", "", 1, 1)[0]; \
     ItemDetails["item"] = item.toJsonObject(); \
     ItemDetails["description"] = item.description; \

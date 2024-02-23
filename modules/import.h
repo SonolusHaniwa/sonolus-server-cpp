@@ -33,13 +33,13 @@ void serverPackageImport(FileStream& fin) {
         json = fin.getBuffer(jsonsize);
         Json::Value arr; json_decode(json, arr);
         switch(type) {
-            case 1: effected_raws += levelCreate(LevelItem(-1, arr)); importedLevelNumber++; break;
-            case 2: effected_raws += skinCreate(SkinItem(-1, arr)); importedSkinNumber++; break;
-            case 3: effected_raws += backgroundCreate(BackgroundItem(-1, arr)); importedBackgroundNumber++; break;
-            case 4: effected_raws += effectCreate(EffectItem(-1, arr)); importedEffectNumber++; break;
-            case 5: effected_raws += particleCreate(ParticleItem(-1, arr)); importedParticleNumber++; break;
-            case 6: effected_raws += engineCreate(EngineItem(-1, arr)); importedEngineNumber++; break;
-            case 7: effected_raws += replayCreate(ReplayItem(-1, arr)); importedReplayNumber++; break;
+            case 1: effected_raws += levelsCreate(LevelItem(-1, arr)); importedLevelNumber++; break;
+            case 2: effected_raws += skinsCreate(SkinItem(-1, arr)); importedSkinNumber++; break;
+            case 3: effected_raws += backgroundsCreate(BackgroundItem(-1, arr)); importedBackgroundNumber++; break;
+            case 4: effected_raws += effectsCreate(EffectItem(-1, arr)); importedEffectNumber++; break;
+            case 5: effected_raws += particlesCreate(ParticleItem(-1, arr)); importedParticleNumber++; break;
+            case 6: effected_raws += enginesCreate(EngineItem(-1, arr)); importedEngineNumber++; break;
+            case 7: effected_raws += replaysCreate(ReplayItem(-1, arr)); importedReplayNumber++; break;
         }
     }
     writeLog(LOG_LEVEL_INFO, "Import data successfully.");
@@ -87,43 +87,43 @@ void officialPackageImport(string path) {
             switch(i) {
             	case 0: {
             		LevelItem level = LevelItem(-1, arr);
-            		raws += skinCreate(level.engine.skin);
-            		raws += backgroundCreate(level.engine.background);
-            		raws += effectCreate(level.engine.effect);
-            		raws += particleCreate(level.engine.particle);
-            		raws += engineCreate(level.engine);
-            		if (level.useSkin.useDefault == false) raws += skinCreate(level.useSkin.item);
-            		if (level.useBackground.useDefault == false) raws += backgroundCreate(level.useBackground.item);
-            		if (level.useEffect.useDefault == false) raws += effectCreate(level.useEffect.item);
-            		if (level.useParticle.useDefault == false) raws += particleCreate(level.useParticle.item);
-            		raws += levelCreate(level);
+            		raws += skinsCreate(level.engine.skin);
+            		raws += backgroundsCreate(level.engine.background);
+            		raws += effectsCreate(level.engine.effect);
+            		raws += particlesCreate(level.engine.particle);
+            		raws += enginesCreate(level.engine);
+            		if (level.useSkin.useDefault == false) raws += skinsCreate(level.useSkin.item);
+            		if (level.useBackground.useDefault == false) raws += backgroundsCreate(level.useBackground.item);
+            		if (level.useEffect.useDefault == false) raws += effectsCreate(level.useEffect.item);
+            		if (level.useParticle.useDefault == false) raws += particlesCreate(level.useParticle.item);
+            		raws += levelsCreate(level);
             	} break;
-                case 1: raws += skinCreate(SkinItem(-1, arr)); break;
-                case 2: raws += backgroundCreate(BackgroundItem(-1, arr)); break;
-                case 3: raws += effectCreate(EffectItem(-1, arr)); break;
-                case 4: raws += particleCreate(ParticleItem(-1, arr)); break;
+                case 1: raws += skinsCreate(SkinItem(-1, arr)); break;
+                case 2: raws += backgroundsCreate(BackgroundItem(-1, arr)); break;
+                case 3: raws += effectsCreate(EffectItem(-1, arr)); break;
+                case 4: raws += particlesCreate(ParticleItem(-1, arr)); break;
             	case 5: {
             		EngineItem engine = EngineItem(-1, arr);
-            		raws += skinCreate(engine.skin);
-            		raws += backgroundCreate(engine.background);
-            		raws += effectCreate(engine.effect);
-            		raws += particleCreate(engine.particle);
-            		raws += engineCreate(engine);
+            		raws += skinsCreate(engine.skin);
+            		raws += backgroundsCreate(engine.background);
+            		raws += effectsCreate(engine.effect);
+            		raws += particlesCreate(engine.particle);
+            		raws += enginesCreate(engine);
             	} break;
             	case 6: {
             		ReplayItem replay = ReplayItem(-1, arr);
             		LevelItem level = replay.level;
-            		raws += skinCreate(level.engine.skin);
-            		raws += backgroundCreate(level.engine.background);
-            		raws += effectCreate(level.engine.effect);
-            		raws += particleCreate(level.engine.particle);
-            		raws += engineCreate(level.engine);
-            		if (level.useSkin.useDefault == false) raws += skinCreate(level.useSkin.item);
-            		if (level.useBackground.useDefault == false) raws += backgroundCreate(level.useBackground.item);
-            		if (level.useEffect.useDefault == false) raws += effectCreate(level.useEffect.item);
-            		if (level.useParticle.useDefault == false) raws += particleCreate(level.useParticle.item);
-            		raws += levelCreate(level);
-            		raws += replayCreate(replay);
+            		raws += skinsCreate(level.engine.skin);
+            		raws += backgroundsCreate(level.engine.background);
+            		raws += effectsCreate(level.engine.effect);
+            		raws += particlesCreate(level.engine.particle);
+            		raws += enginesCreate(level.engine);
+            		if (level.useSkin.useDefault == false) raws += skinsCreate(level.useSkin.item);
+            		if (level.useBackground.useDefault == false) raws += backgroundsCreate(level.useBackground.item);
+            		if (level.useEffect.useDefault == false) raws += effectsCreate(level.useEffect.item);
+            		if (level.useParticle.useDefault == false) raws += particlesCreate(level.useParticle.item);
+            		raws += levelsCreate(level);
+            		raws += replaysCreate(replay);
             	} break;
             }
         } files += fileCnt;

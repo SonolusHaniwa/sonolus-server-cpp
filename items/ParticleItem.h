@@ -122,7 +122,7 @@ vector<ParticleItem> particlesList(string filter, string order, int st = 1, int 
     } return list;
 }
 
-int particleCreate(ParticleItem item, string localization = "default") {
+int particlesCreate(ParticleItem item, string localization = "default") {
     stringstream sqlbuffer;
     auto res = db.query("SELECT id FROM Particle WHERE name = \"" + item.name + "\" AND localization = \"" + localization + "\"");
     if (res.size() != 0) {

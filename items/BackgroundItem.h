@@ -127,7 +127,7 @@ vector<BackgroundItem> backgroundsList(string filter, string order, int st = 1, 
     } return list;
 }
 
-int backgroundCreate(BackgroundItem item, string localization = "default") {
+int backgroundsCreate(BackgroundItem item, string localization = "default") {
     stringstream sqlbuffer;
     auto res = db.query("SELECT id FROM Background WHERE name = \"" + item.name + "\" AND localization = \"" + localization + "\"");
     if (res.size() != 0) {

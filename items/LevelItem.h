@@ -189,7 +189,7 @@ vector<LevelItem> levelsList(string filter, string order, int st = 1, int en = 2
     } return list;
 }
 
-int levelCreate(LevelItem item, string localization = "default") {
+int levelsCreate(LevelItem item, string localization = "default") {
     stringstream sqlbuffer;
     auto res = db.query("SELECT id FROM Level WHERE name = \"" + item.name + "\" AND localization = \"" + localization + "\"");
     int skinId = 0, backgroundId = 0, effectId = 0, particleId = 0, engineId = 0;

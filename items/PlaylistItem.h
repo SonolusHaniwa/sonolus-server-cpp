@@ -119,23 +119,26 @@ vector<PlaylistItem> playlistsList(string filter, string order, int st = 1, int 
     } return list;
 }
 
-// int replayCreate(ReplayItem item, string localization = "default") {
-//     stringstream sqlbuffer;
-//     auto res = db.query("SELECT id FROM Replay WHERE name = \"" + item.name + "\" AND localization = \"" + localization + "\"");
-//     int levelId = atoi(db.query("SELECT id FROM Level WHERE name = \"" + item.level.name + "\";")[0]["id"].c_str());
-//     if (res.size() != 0) {
-//         int id = atoi(res[0]["id"].c_str());
-//         sqlbuffer << "UPDATE Replay SET name=\"" << item.name << "\", version=" << item.version;
-//         sqlbuffer << ", title=\"" << item.title << "\", subtitle=\"" << item.subtitle << "\", author=\"" << item.author;
-//         sqlbuffer << "\", level=" << levelId << ", data=\"" << item.data.hash << "\", configuration=\"" << item.configuration.hash << "\", ";
-//         sqlbuffer << "description=\"" << str_replace("\n", "\\n", item.description) << "\", localization=\"" << localization << "\" WHERE id=" << id;
-//     } else {
-//         int id = atoi(db.query("SELECT COUNT(*) AS sum FROM Replay;")[0]["sum"].c_str()) + 1;
-//         sqlbuffer << "INSERT INTO Replay (id, name, version, title, subtitle, author, level, data, configuration, description, localization) VALUES (";
-//         sqlbuffer << id << ", \"" << item.name << "\", " << item.version << ", \"" << item.title << "\", ";
-//         sqlbuffer << "\"" << item.subtitle << "\", \"" << item.author << "\", " << levelId << ", ";
-//         sqlbuffer << "\"" << item.data.hash << "\", \"" << item.configuration.hash << "\", \"" << str_replace("\n", "\\n", item.description) << "\", \"" << localization << "\")";
-//     } return db.execute(sqlbuffer.str());
-// }
+int playlistsCreate(PlaylistItem item, string localization = "default") {
+    stringstream sqlbuffer;
+    auto res = db.query("SELECT id FROM Playlist WHERE name = \"" + item.name + "\" AND localization = \"" + localization + "\"");
+    Json::Value levels; levels.resize(0);
+    for (int i = 0; i < item.levels.size(); i++) levels.append(item.levels[i].id);
+    if (res.size() != 0) {
+        int id = atoi(res[0]["id"].c_str());
+        sqlbuffer << "UPDATE Playlist SET name=\"" << item.name << "\", version=" << item.version;
+        sqlbuffer << ", title=\"" << item.title << "\", subtitle=\"" << item.subtitle << "\", author=\"" << item.author << "\"";
+        sqlbuffer << ", levels=\"" << json_encode(levels) << "\"";
+        sqlbuffer << ", thumbnail=\"" << item.thumbnail.hash << "\"";
+        sqlbuffer << ", description=\"" << str_replace("\n", "\\n", item.description) << "\", localization=\"" << localization << "\" WHERE id=" << id;
+    } else {
+        int id = atoi(db.query("SELECT COUNT(*) AS sum FROM Replay;")[0]["sum"].c_str()) + 1;
+        sqlbuffer << "INSERT INTO Playlist (id, name, version, title, subtitle, author, levels, thumbnail, description, localization) VALUES (";
+        sqlbuffer << id << ", \"" << item.name << "\", " << item.version << ", \"" << item.title << "\", ";
+        sqlbuffer << "\"" << item.subtitle << "\", \"" << item.author << "\", \"" << json_encode(levels) << "\", ";
+        sqlbuffer << "\"" << item.thumbnail.hash << "\", ";
+        sqlbuffer << "\"" << str_replace("\n", "\\n", item.description) << "\", \"" << localization << "\")";
+    } return db.execute(sqlbuffer.str());
+}
 
 #endif
