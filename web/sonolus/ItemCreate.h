@@ -39,32 +39,32 @@ auto SonolusCreate = [](client_conn conn, http_request request, param argv){
 	    	(background == 0 ? UseItem<BackgroundItem>(true, BackgroundItem()) : UseItem<BackgroundItem>(false, backgroundsList("id = " + to_string(background), "")[0])),
 	    	(effect == 0 ? UseItem<EffectItem>(true, EffectItem()) : UseItem<EffectItem>(false, effectsList("id = " + to_string(effect), "")[0])),
 	    	(particle == 0 ? UseItem<ParticleItem>(true, ParticleItem()) : UseItem<ParticleItem>(false, particlesList("id = " + to_string(particle), "")[0])),
-	    	SRL<LevelCover>("", $_POST["cover"]), SRL<LevelBgm>("", $_POST["bgm"]),
-	    	SRL<LevelData>("", $_POST["data"]), SRL<LevelPreview>("", $_POST["preview"]),
+	    	SRL<LevelCover>($_POST["cover"], ""), SRL<LevelBgm>($_POST["bgm"], ""),
+	    	SRL<LevelData>($_POST["data"], ""), SRL<LevelPreview>($_POST["preview"], ""),
 	    	tags, description
 	    ), localization);
 	else if (argv[0] == "skins") raws = skinsCreate(SkinItem(skinsNumber("") + 1,
 			name, title, subtitle, author,
-			SRL<SkinThumbnail>("", $_POST["thumbnail"]), SRL<SkinData>("", $_POST["data"]),
-			SRL<SkinTexture>("", $_POST["texture"]),
+			SRL<SkinThumbnail>($_POST["thumbnail"], ""), SRL<SkinData>($_POST["data"], ""),
+			SRL<SkinTexture>($_POST["texture"], ""),
 	    	tags, description
 		), localization);
 	else if (argv[0] == "backgrounds") raws = backgroundsCreate(BackgroundItem(backgroundsNumber("") + 1,
 			name, title, subtitle, author,
-			SRL<BackgroundThumbnail>("", $_POST["thumbnail"]), SRL<BackgroundData>("", $_POST["data"]),
-			SRL<BackgroundImage>("", $_POST["image"]), SRL<BackgroundConfiguration>("", $_POST["configuration"]),
+			SRL<BackgroundThumbnail>($_POST["thumbnail"], ""), SRL<BackgroundData>($_POST["data"], ""),
+			SRL<BackgroundImage>($_POST["image"], ""), SRL<BackgroundConfiguration>($_POST["configuration"], ""),
 	    	tags, description
 		), localization);
 	else if (argv[0] == "effects") raws = effectsCreate(EffectItem(effectsNumber("") + 1,
 			name, title, subtitle, author,
-			SRL<EffectThumbnail>("", $_POST["thumbnail"]), SRL<EffectData>("", $_POST["data"]),
-			SRL<EffectAudio>("", $_POST["audio"]),
+			SRL<EffectThumbnail>($_POST["thumbnail"], ""), SRL<EffectData>($_POST["data"], ""),
+			SRL<EffectAudio>($_POST["audio"], ""),
 	    	tags, description
 		), localization);
 	else if (argv[0] == "particles") raws = particlesCreate(ParticleItem(particlesNumber("") + 1,
 			name, title, subtitle, author,
-			SRL<ParticleThumbnail>("", $_POST["thumbnail"]), SRL<ParticleData>("", $_POST["data"]),
-			SRL<ParticleTexture>("", $_POST["texture"]),
+			SRL<ParticleThumbnail>($_POST["thumbnail"], ""), SRL<ParticleData>($_POST["data"], ""),
+			SRL<ParticleTexture>($_POST["texture"], ""),
 	    	tags, description
 		), localization);
 	else if (argv[0] == "engines") raws = enginesCreate(EngineItem(enginesNumber("") + 1,
@@ -73,25 +73,25 @@ auto SonolusCreate = [](client_conn conn, http_request request, param argv){
 	    	backgroundsList("id = " + to_string(background), "")[0],
 	    	effectsList("id = " + to_string(effect), "")[0],
 	    	particlesList("id = " + to_string(particle), "")[0],
-	    	SRL<EngineThumbnail>("", $_POST["thumbnail"]),
-	    	SRL<EngineData>("", $_POST["data"]),
-	    	SRL<EngineTutorialData>("", $_POST["tutorialData"]),
-	    	SRL<EnginePreviewData>("", $_POST["previewData"]),
-	    	SRL<EngineWatchData>("", $_POST["watchData"]),
-	    	SRL<EngineConfiguration>("", $_POST["configuration"]),
+	    	SRL<EngineThumbnail>($_POST["thumbnail"], ""),
+	    	SRL<EngineData>($_POST["data"], ""),
+	    	SRL<EngineTutorialData>($_POST["tutorialData"], ""),
+	    	SRL<EnginePreviewData>($_POST["previewData"], ""),
+	    	SRL<EngineWatchData>($_POST["watchData"], ""),
+	    	SRL<EngineConfiguration>($_POST["configuration"], ""),
 	    	tags,
-	    	SRL<EngineRom>("", $_POST["rom"]),
+	    	SRL<EngineRom>($_POST["rom"], ""),
 	    	description
 	    ), localization);
 	else if (argv[0] == "replays") raws = replaysCreate(ReplayItem(replaysNumber("") + 1,
 	    	name, title, subtitle, author, 
 	    	levelsList("id = " + to_string(level), "")[0],
-	    	SRL<ReplayData>("", $_POST["data"]), SRL<ReplayConfiguration>("", $_POST["configuration"]),
+	    	SRL<ReplayData>($_POST["data"], ""), SRL<ReplayConfiguration>($_POST["configuration"], ""),
 	    	tags, description
 	    ), localization);
 	else if (argv[0] == "posts") raws = postsCreate(PostItem(postsNumber("") + 1,
 			name, title, time, author,
-	    	SRL<PostThumbnail>("", $_POST["thumbnail"]),
+	    	SRL<PostThumbnail>($_POST["thumbnail"], ""),
 	    	tags, description
 		), localization);
 	else if (argv[0] == "playlists") raws = playlistsCreate(PlaylistItem(playlistsNumber("") + 1,
@@ -99,7 +99,7 @@ auto SonolusCreate = [](client_conn conn, http_request request, param argv){
 				vector<LevelItem> items;
 				for (int i = 0; i < levels.size(); i++) items.push_back(levelsList("id = " + levels[i].asString(), "")[0]);
 				return items;
-			}(), SRL<PlaylistThumbnail>("", $_POST["thumbnail"]),
+			}(), SRL<PlaylistThumbnail>($_POST["thumbnail"], ""),
 	    	tags, description
 		), localization);
 	else quickSendMsg(404);

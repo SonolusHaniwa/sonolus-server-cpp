@@ -3,6 +3,7 @@
     vector<name##Item> list = name2##List(sqlFilter, order, l, r); \
     ItemList["items"].resize(0); for (int i = 0; i < list.size(); i++) ItemList["items"].append(list[i].toJsonObject()); \
     ItemList["searches"].resize(0); for (int i = 0; i < name##Search.size(); i++) ItemList["searches"].append(name##Search[i].toJsonObject()); \
+    ItemList["search"] = name##Search.size() ? name##Search[0].toJsonObject() : quickSearchObject.toJsonObject(); \
 }
 
 auto SonolusList = [](client_conn conn, http_request request, param argv){
@@ -18,6 +19,12 @@ auto SonolusList = [](client_conn conn, http_request request, param argv){
         string searchJson = readFile("./config/" + argv[0].substr(0, argv[0].size() - 1) + "_search.json"); Json::Value Searches;
         for (auto v : $_GET) $_GET[v.first] = str_replace("\"", "\\\"", urldecode(v.second));
         json_decode(searchJson, Searches); int searchId = -1;
+        
+        if ($_GET["type"] == "") { // 向下兼容 Sonolus 0.7.5-
+        	if (Searches.size()) $_GET["type"] = Searches[0]["type"].asString();
+        	else filter = "title LIKE \"%" + $_GET["keywords"] + "%\"", searchId = 114514;
+        }
+        
         for (int i = 0; i < Searches.size(); i++) if (Searches[i]["type"].asString() == $_GET["type"]) {
             searchId = i; filter = Searches[i]["filter"].asString(); order = Searches[i]["order"].asString();
             for (int j = 0; j < Searches[i]["options"].size(); j++) {

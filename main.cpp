@@ -2,9 +2,8 @@
 using namespace std;
 #include<jsoncpp/json/json.h>
 
-std::string sonolus_server_version = "1.4.8";
+std::string sonolus_server_version = "1.5.0";
 std::string Maximum_Sonolus_Version = "0.8.0";
-std::string Minimum_Sonolus_Version = "0.8.0";
 std::string Sonolus_Version = Maximum_Sonolus_Version;
 Json::Value appConfig, studiosConfig;
 Json::Value i18n, i18n_raw;
@@ -51,9 +50,9 @@ stringstream usage;
 
 void initUsage(char** argv) {
     usage << "Sonolus Server v" << sonolus_server_version << " (WebServer Core v" << httpd_version << ")" << endl;
-    usage << "The lowest supported version of Sonolus: " << Minimum_Sonolus_Version << endl;
     usage << "The highest supported version of Sonolus: " << Maximum_Sonolus_Version << endl;
     usage << "Copyright (c) 2023 LittleYang0531, all rights reserved." << endl;
+    usage << "Compiled at " << __DATE__ << " " << __TIME__ << "." << endl;
     usage << endl;
     usage << "Usage: " << argv[0] << " [command]" << endl;
     usage << "Basic commands: " << endl;
@@ -107,13 +106,6 @@ void routerRegister(int argc, char** argv) {
     app.addRoute("/sonolus/%s/%s", SonolusDetails);
     app.addRoute("/sonolus/authenticate", Authentication);
     app.addRoute("/sonolus/checklogin", CheckLogin);
-    // app.addRoute("/sonolus/levels/create", sonolus_levels_create);
-    // app.addRoute("/sonolus/skins/create", sonolus_skins_create);
-    // app.addRoute("/sonolus/backgrounds/create", sonolus_backgrounds_create);
-    // app.addRoute("/sonolus/effects/create", sonolus_effects_create);
-    // app.addRoute("/sonolus/particles/create", sonolus_particles_create);
-    // app.addRoute("/sonolus/engines/create", sonolus_engines_create);
-    // app.addRoute("/sonolus/replays/create", sonolus_replays_create);
 
     app.addRoute("/", GUIIndex);
     app.addRoute("/index", GUIIndex);
@@ -121,6 +113,7 @@ void routerRegister(int argc, char** argv) {
     app.addRoute("/%s/list", GUIList);
     app.addRoute("/%s/search", GUISearch);
     app.addRoute("/%s/jump/%d", GUIJump);
+    app.addRoute("/%s/create", GUICreate);
     app.addRoute("/%s/%s", GUIDetails);
     // app.addRoute("/levels/create", web_levels_create);
     // app.addRoute("/skins/create", web_skins_create);
@@ -129,20 +122,6 @@ void routerRegister(int argc, char** argv) {
     // app.addRoute("/particles/create", web_particles_create);
     // app.addRoute("/engines/create", web_engines_create);
     // app.addRoute("/replays/create", web_replays_create);
-    // app.addRoute("/levels/search", web_levels_search);
-    // app.addRoute("/skins/search", web_skins_search);
-    // app.addRoute("/backgrounds/search", web_backgrounds_search);
-    // app.addRoute("/effects/search", web_effects_search);
-    // app.addRoute("/particles/search", web_particles_search);
-    // app.addRoute("/engines/search", web_engines_search);
-    // app.addRoute("/replays/search", web_replays_search);
-    // app.addRoute("/levels/jump/%d", web_levels_jump);
-    // app.addRoute("/skins/jump/%d", web_skins_jump);
-    // app.addRoute("/backgrounds/jump/%d", web_backgrounds_jump);
-    // app.addRoute("/effects/jump/%d", web_effects_jump);
-    // app.addRoute("/particles/jump/%d", web_particles_jump);
-    // app.addRoute("/engines/jump/%d", web_engines_jump);
-    // app.addRoute("/replays/jump/%d", web_replays_jump);
     // app.addRoute("/levels/%s/edit", web_levels_edit);
     // app.addRoute("/skins/%s/edit", web_skins_edit);
     // app.addRoute("/backgrounds/%s/edit", web_backgrounds_edit);
@@ -150,16 +129,8 @@ void routerRegister(int argc, char** argv) {
     // app.addRoute("/particles/%s/edit", web_particles_edit);
     // app.addRoute("/engines/%s/edit", web_engines_edit);
     // app.addRoute("/replays/%s/edit", web_replays_edit);
-    // app.addRoute("/levels/%s", web_levels);
-    // app.addRoute("/skins/%s", web_skins);
-    // app.addRoute("/backgrounds/%s", web_backgrounds);
-    // app.addRoute("/effects/%s", web_effects);
-    // app.addRoute("/particles/%s", web_particles);
-    // app.addRoute("/engines/%s", web_engines);
-    // app.addRoute("/replays/%s", web_replays);
-    // app.addRoute("/login", web_login);
 
-    // app.addRoute("/uploader", uploader);
+    app.addRoute("/uploader", uploader);
 
     for (int i = 0; i < providers.size(); i++) {
         SonolusServerPlugin* plugin = providers[i]->create();

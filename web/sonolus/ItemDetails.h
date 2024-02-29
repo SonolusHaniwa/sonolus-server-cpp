@@ -17,6 +17,9 @@
             name2##List(filter, order, 1, 5) \
         ).toJsonObject()); \
     } \
+    auto recommended = name2##List("author = \"" + item.author + "\"", "id DESC", 1, 5); \
+    ItemDetails["recommended"].resize(0); \
+    for (int i = 0; i < recommended.size(); i++) ItemDetails["recommended"].append(recommended[i].toJsonObject()); \
 }
 
 auto SonolusDetails = [](client_conn conn, http_request request, param argv){

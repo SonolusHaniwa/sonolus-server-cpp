@@ -50,12 +50,18 @@ class PostItem {
         return res;
     }
 
+	string formatTime(time_t t) {
+		t /= 1000; tm* ti = localtime(&t);
+		stringstream os;
+	 	os << put_time(ti, "%m/%d/%Y %H:%M:%S");
+	 	return os.str();
+	}
     argvar fetchParamList() {
         argvar args;
         args["name"] = name;
         args["version"] = to_string(version);
         args["title"] = title;
-        args["time"] = to_string(time);
+        args["time"] = formatTime(time);
         args["author"] = author;
         args["thumbnail"] = thumbnail.url;
         args["tags"] = "";
@@ -120,7 +126,7 @@ int postsCreate(PostItem item, string localization = "default") {
         sqlbuffer << ", thumbnail=\"" << item.thumbnail.hash << "\"";
         sqlbuffer << ", description=\"" << str_replace("\n", "\\n", item.description) << "\", localization=\"" << localization << "\" WHERE id=" << id;
     } else {
-        int id = atoi(db.query("SELECT COUNT(*) AS sum FROM Replay;")[0]["sum"].c_str()) + 1;
+        int id = atoi(db.query("SELECT COUNT(*) AS sum FROM Post;")[0]["sum"].c_str()) + 1;
         sqlbuffer << "INSERT INTO Post (id, name, version, title, time, author, thumbnail, description, localization) VALUES (";
         sqlbuffer << id << ", \"" << item.name << "\", " << item.version << ", \"" << item.title << "\", ";
         sqlbuffer << item.time << ", \"" << item.author << "\", ";

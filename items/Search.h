@@ -251,4 +251,16 @@ class Search {
     }
 };
 
+Search quickSearchObject = [](){
+	return Search({
+		title: "Quick Search",
+		icon: "search",
+		filter: "title LIKE \"keywords\"",
+		order: "",
+		options: {
+			SearchTextOption("keywords", "#KEYWORDS", "#KEYWORDS")
+		}
+	});
+}();
+
 #endif

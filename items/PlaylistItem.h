@@ -132,7 +132,7 @@ int playlistsCreate(PlaylistItem item, string localization = "default") {
         sqlbuffer << ", thumbnail=\"" << item.thumbnail.hash << "\"";
         sqlbuffer << ", description=\"" << str_replace("\n", "\\n", item.description) << "\", localization=\"" << localization << "\" WHERE id=" << id;
     } else {
-        int id = atoi(db.query("SELECT COUNT(*) AS sum FROM Replay;")[0]["sum"].c_str()) + 1;
+        int id = atoi(db.query("SELECT COUNT(*) AS sum FROM Playlist;")[0]["sum"].c_str()) + 1;
         sqlbuffer << "INSERT INTO Playlist (id, name, version, title, subtitle, author, levels, thumbnail, description, localization) VALUES (";
         sqlbuffer << id << ", \"" << item.name << "\", " << item.version << ", \"" << item.title << "\", ";
         sqlbuffer << "\"" << item.subtitle << "\", \"" << item.author << "\", \"" << json_encode(levels) << "\", ";
