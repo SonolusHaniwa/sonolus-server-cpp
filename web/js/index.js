@@ -133,15 +133,11 @@ async function hideJump() {
     document.getElementById("bottomBar").style.display = "none";
 }
 
-async function create(path, return_path) {
-    if (return_path.indexOf("studios") != -1) {
-        type = return_path.substr(9, return_path.length - 10);
-        console.log(type);
-        searchConfig["name"] = searchConfig[type + "-name"];
-    }
+async function create(path, return_path, id = -1) {
+    console.log(id);
     postdata = "";
     for (index in searchConfig) postdata += index + "=" + searchConfig[index] + "&";
-    postdata = postdata.substr(0, postdata.length - 1);
+    postdata += "id=" + id;
     $.ajax({
         url: path,
         type: "POST",
@@ -275,6 +271,16 @@ addLoadEvent(async function(){
         document.getElementsByTagName("main")[0].style.opacity = "1";
         document.getElementsByTagName("nav")[0].style.transform = "translateY(0%)";
     });
+});
+
+/* 清除空 Icon */
+addLoadEvent(function(){
+    var icons = document.getElementsByClassName("tagIcon");
+    for (var i = 0; i < icons.length; i++)
+        if (icons[i].innerHTML == "") {
+            icons[i].style.display = "none";
+            icons[i].parentElement.innerHTML = icons[i].outerHTML + icons[i].parentElement.innerText.substr(1);
+        }
 });
 
 async function displayStudiosSkin() {

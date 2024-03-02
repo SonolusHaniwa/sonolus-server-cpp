@@ -29,8 +29,10 @@ vector<Tag> deserializeTagString(string tagString) {
         if (ch == '\\') ch = tagString[++i], isSpecial = true;
         if (!inTag) { 
             if (!isSpecial) {
-                if (ch == ',') res.push_back(tag), tag = Tag("", ""), isTitle = true;
-                else if (ch == '(') inTag = true;
+                if (ch == ',') {
+                    if (iconList.find("icon." + tag.icon) == iconList.end()) tag.icon = "";
+                    res.push_back(tag), tag = Tag("", ""), isTitle = true;
+                } else if (ch == '(') inTag = true;
             }
         } else if (inTag) {
             if (isSpecial) isTitle ? tag.title += ch : tag.icon += ch;
@@ -39,8 +41,10 @@ vector<Tag> deserializeTagString(string tagString) {
             else if (ch == '(') isTitle ? tag.title += ch : tag.icon += ch;
             else isTitle ? tag.title += ch : tag.icon += ch;
         }
-    } if (tag.icon != "" && tag.title != "") res.push_back(tag);
-    return res;
+    } if (tag.icon != "" || tag.title != "") {
+        if (iconList.find("icon." + tag.icon) == iconList.end()) tag.icon = "";
+        res.push_back(tag);
+    } return res;
 }
 
 string serializeTagString(vector<Tag> tags) {

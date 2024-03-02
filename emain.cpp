@@ -10,6 +10,7 @@
 #include<setjmp.h>
 #include<jsoncpp/json/json.h>
 using namespace std;
+#define defineToString(str) #str
 
 std::string sonolus_server_version = "1.4.8";
 std::string Maximum_Sonolus_Version = "0.8.0";

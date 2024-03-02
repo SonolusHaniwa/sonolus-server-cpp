@@ -47,7 +47,7 @@ int getRemoteFileLength(string url) {
         curl_easy_cleanup(curl);
         return 0;
     } double length;
-    curl_easy_getinfo(curl, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &length);
+    curl_easy_getinfo(curl, CURLINFO_CONTENT_LENGTH_DOWNLOAD_T, &length);
     curl_easy_cleanup(curl);
     return (int)length;
     #else

@@ -206,6 +206,7 @@ vector<string> iconName = {"advanced", "award", "bookmark", "crown", "heart", "m
     "home", "global", "post", "playlist", "level", "skin", "background", "effect", "particle", "engine", "replay", "login", "logout", "description", "tags"};
 argvar iconList;
 bool iconLoader = [](){
+    iconList["icon."] = ""; // 避免空 Icon 名导致错误
     for (int i = 0; i < iconName.size(); i++) {
         string svg = readFile("./web/html/icons/" + iconName[i] + ".svg");
         iconList["icon." + iconName[i]] = svg;

@@ -50,8 +50,6 @@ void loadDefaultVariable() {
     msg[505]["msg"] = "505 HTTP Version not supported";
 }
 
-#define defineToString(str) #str
-
 #define quickSendMsg(code) {\
     __api_default_response["Content-Length"] = to_string(json_encode(msg[code]).size()); \
     putRequest(conn, code, __api_default_response); \

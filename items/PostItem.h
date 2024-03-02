@@ -40,7 +40,7 @@ class PostItem {
         res["name"] = name;
         res["version"] = version;
         res["title"] = title;
-        res["time"] = (long long)time;
+        res["time"] = (Json::Int64)time;
         res["author"] = author;
         res["thumbnail"] = thumbnail.toJsonObject();
         res["tags"].resize(0);
@@ -82,26 +82,18 @@ class PostItem {
 };
 
 int postsNumber(string filter) {
-    string sql = "SELECT COUNT(*) AS sum FROM Post";
-    if (filter != "") sql += " WHERE (" + filter + ")";
+    itemNumberTemplate(Post, filter);
     dbres res = db.query(sql.c_str());
     return atoi(res[0]["sum"].c_str());
 }
 
 vector<PostItem> postsList(string filter, string order, int st = 1, int en = 20) {
-    string sql = "SELECT * FROM Post";
-    if (filter != "") sql += " WHERE (" + filter + ")";
-    if (order != "") sql += " ORDER BY " + order;
-    sql += " LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);
+    itemListTemplate(Post, filter, order, st, en);
+
     auto res = db.query(sql.c_str());
     vector<PostItem> list = {};
-    sort(res.begin(), res.end(), [](argvar a, argvar b){
-        if (a["name"] == b["name"]) return (a["localization"] == "default") < (b["localization"] == "default");
-        else return atoi(a["id"].c_str()) > atoi(b["id"].c_str());
-    }); map<string, bool> nameUsed;
+
     for (int i = 0; i < res.size(); i++) {
-        if (nameUsed[res[i]["name"]]) continue;
-        nameUsed[res[i]["name"]] = true;
         PostItem data = PostItem(
             atoi(res[i]["id"].c_str()),
             res[i]["name"],

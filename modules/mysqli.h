@@ -168,3 +168,13 @@ class DB_Controller {
 	}
 };
 #endif
+
+#define itemNumberTemplate(item, filter) assert(filter != ""); \
+	string sql = "SELECT name FROM " defineToString(item) " WHERE (" + filter + ")"; \
+    sql = "SELECT name FROM (" + sql + ") GROUP BY name"; \
+    sql = "SELECT COUNT(*) AS sum FROM (" + sql + ")";
+#define itemListTemplate(item, filter, order, st, en) assert(filter != ""); if (order == "") order = "id DESC"; \
+	string sql = "SELECT * FROM " defineToString(item) " WHERE (" + filter + ") ORDER BY " + order; \
+    sql = "SELECT * FROM (" + sql + ") GROUP BY name"; \
+    sql = "SELECT * FROM (" + sql + ") ORDER BY " + order + " LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);      
+                                                                                                                                                                        

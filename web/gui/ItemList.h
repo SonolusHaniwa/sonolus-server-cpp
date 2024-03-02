@@ -1,10 +1,7 @@
 #define quickGUIList(itemname) {\
+    pageCount = (itemname##Number(sqlFilter) - 1) / itemsPerPage + 1; \
     auto section = itemname##List(sqlFilter, order, l, r); \
-	map<string, bool> used; int number = 0; \
-    for (int i = 0; i < section.size(); i++) { \
-    	if (used[section[i].name]) continue; \
-    	used[section[i].name] = 1; argList["html.itemsList"] += section[i].toHTMLObject().output(); number++; \
-    } pageCount = (number - 1) / itemsPerPage + 1; \
+    for (int i = 0; i < section.size(); i++) argList["html.itemsList"] += section[i].toHTMLObject().output(); \
 }
 
 auto GUIList = [](client_conn conn, http_request request, param argv) { 

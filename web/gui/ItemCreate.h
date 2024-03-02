@@ -21,6 +21,7 @@ auto GUICreate = [](client_conn conn, http_request request, param argv){
     argList["html.navbar"] = fetchNavBar("{{language." + argv[0].substr(0, argv[0].size() - 1) + "Create}}").output();
     argList["html.createOption"] = "";
     argList["item.type"] = argv[0];
+    argList["item.id"] = "-1";
     Search SearchItem;
     if (argv[0] == "levels") SearchItem = LevelCreate[0];
     else if (argv[0] == "skins") SearchItem = SkinCreate[0];

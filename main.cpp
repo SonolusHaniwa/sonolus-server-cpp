@@ -1,6 +1,7 @@
 #include<bits/stdc++.h>
-using namespace std;
 #include<jsoncpp/json/json.h>
+using namespace std;
+#define defineToString(str) #str
 
 std::string sonolus_server_version = "1.5.0";
 std::string Maximum_Sonolus_Version = "0.8.0";

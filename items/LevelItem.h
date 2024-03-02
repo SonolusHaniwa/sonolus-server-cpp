@@ -111,10 +111,10 @@ class LevelItem {
         args["artists"] = artists;
         args["author"] = author;
         args["engine"] = engine.title;
-        args["skin"] = useSkin.useDefault ? engine.skin.title : useSkin.item.title;
-        args["background"] = useBackground.useDefault ? engine.background.title : useBackground.item.title;
-        args["effect"] = useEffect.useDefault ? engine.effect.title : useEffect.item.title;
-        args["particle"] = useParticle.useDefault ? engine.particle.title : useParticle.item.title;
+        args["skin"] = useSkin.useDefault ? "Default Skin" : useSkin.item.title;
+        args["background"] = useBackground.useDefault ? "Default Background" : useBackground.item.title;
+        args["effect"] = useEffect.useDefault ? "Default Effect" : useEffect.item.title;
+        args["particle"] = useParticle.useDefault ? "Default Particle" : useParticle.item.title;
         args["cover"] = cover.url;
         args["bgm"] = bgm.url;
         args["data"] = data.url;
@@ -136,29 +136,18 @@ class LevelItem {
 };
 
 int levelsNumber(string filter) {
-    string sql = "SELECT COUNT(*) AS sum FROM Level";
-    if (filter != "") sql += " WHERE (" + filter + ")";
+    itemNumberTemplate(Level, filter);
     dbres res = db.query(sql.c_str());
     return atoi(res[0]["sum"].c_str());
 }
 
-vector<LevelItem> levelsList(string filter, string order, int st = 1, int en = 20) { 
-    string sql = "SELECT * FROM Level";
-    assert(filter != "" && order != "");
-    sql += " WHERE (" + filter + ") ORDER BY " + order;
-    sql = "SELECT * FROM (" + sql + ") GROUP BY name ORDER BY " + order;
-    sql += " LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);
+vector<LevelItem> levelsList(string filter, string order, int st = 1, int en = 20) {
+    itemListTemplate(Level, filter, order, st, en);
 
     auto res = db.query(sql.c_str());
     vector<LevelItem> list = {};
-    sort(res.begin(), res.end(), [](argvar a, argvar b){
-        if (a["name"] == b["name"]) return (a["localization"] == "default") < (b["localization"] == "default");
-        else return atoi(a["id"].c_str()) > atoi(b["id"].c_str());
-    }); map<string, bool> nameUsed;
     
     for (int i = 0; i < res.size(); i++) {
-        if (nameUsed[res[i]["name"]]) continue;
-        nameUsed[res[i]["name"]] = true;
         EngineItem engine = enginesList("id = " + res[i]["engine"], "", 1, 1)[0];
         UseItem<SkinItem> useSkin = UseItem<SkinItem>(
             res[i]["skin"] == "0", res[i]["skin"] == "0" ? SkinItem() : skinsList("id = " + res[i]["skin"], "", 1, 1)[0]);

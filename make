@@ -7,7 +7,7 @@ YELLOW='\033[0;33m'
 
 # Compile
 echo -e "${YELLOW}Compiling Sonolus Server using g++...${WHITE}"
-g++ main.cpp -o ~/sonolus-server-cpp/sonolus\
+g++ main.cpp -o sonolus\
     -ldl -lpthread -lcrypto -lssl -ljsoncpp -std=c++14 -g \
     -DENABLE_SONOLUS -DENABLE_MYSQL -lmysqlclient -DENABLE_SQLITE -lsqlite3 -DENABLE_CURL -lcurl -DENABLE_ZIP -lzip
 echo -e "${YELLOW}Compiling libsonolush using g++...${WHITE}"

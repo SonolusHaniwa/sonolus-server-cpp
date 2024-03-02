@@ -126,26 +126,18 @@ class EngineItem {
 };
 
 int enginesNumber(string filter) {
-    string sql = "SELECT COUNT(*) AS sum FROM Engine";
-    if (filter != "") sql += " WHERE (" + filter + ")";
+    itemNumberTemplate(Engine, filter);
     dbres res = db.query(sql.c_str());
     return atoi(res[0]["sum"].c_str());
 }
 
 vector<EngineItem> enginesList(string filter, string order, int st = 1, int en = 20) {
-    string sql = "SELECT * FROM Engine";
-    if (filter != "") sql += " WHERE (" + filter + ")";
-    if (order != "") sql += " ORDER BY " + order;
-    sql += " LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);
+    itemListTemplate(Engine, filter, order, st, en);
+
     dbres res = db.query(sql.c_str());
     vector<EngineItem> list = {};
-    sort(res.begin(), res.end(), [](argvar a, argvar b){
-        if (a["name"] == b["name"]) return (a["localization"] == "default") < (b["localization"] == "default");
-        else return atoi(a["id"].c_str()) > atoi(b["id"].c_str());
-    }); map<string, bool> nameUsed;
+
     for (int i = 0; i < res.size(); i++) {
-        if (nameUsed[res[i]["name"]]) continue;
-        nameUsed[res[i]["name"]] = true;
         SkinItem skin = skinsList("id = " + res[i]["skin"], "", 1, 1)[0];
         BackgroundItem background = backgroundsList("id = " + res[i]["background"], "", 1, 1)[0];
         EffectItem effect = effectsList("id = " + res[i]["effect"], "", 1, 1)[0];

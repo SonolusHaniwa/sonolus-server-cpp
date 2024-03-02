@@ -25,7 +25,7 @@ auto Authentication = [](client_conn conn, http_request request, param argv){
         if (abs(times / 1000 - time(0)) > appConfig["session.expireTime"].asInt() * 24 * 60 * 60) quickSendMsg(401);
         // if (address.size() < realAddress.size() || address.substr(0, realAddress.size()) != realAddress) quickSendMsg(401);
         AuthenticateServerResponse["session"] = generateSession();
-        AuthenticateServerResponse["expiration"] = (long long)(times += appConfig["session.expireTime"].asInt64() * 24 * 60 * 60 * 1000);
+        AuthenticateServerResponse["expiration"] = (Json::Int64)(times += appConfig["session.expireTime"].asInt64() * 24 * 60 * 60 * 1000);
         // 保存用户信息
         quickSendObj(AuthenticateServerResponse);
     } else if (type == "authenticateExternal") {
@@ -38,7 +38,7 @@ auto Authentication = [](client_conn conn, http_request request, param argv){
         if (abs(times / 1000 - time(0)) > appConfig["session.expireTime"].asInt() * 24 * 60 * 60) quickSendMsg(401);
         // if (address.size() < realAddress.size() || address.substr(0, realAddress.size()) != realAddress) quickSendMsg(401);
         AuthenticateServerResponse["session"] = getParam(request)["sessionId"];
-        AuthenticateServerResponse["expiration"] = (long long)(times += appConfig["session.expireTime"].asInt64() * 24 * 60 * 60 * 1000);
+        AuthenticateServerResponse["expiration"] = (Json::Int64)(times += appConfig["session.expireTime"].asInt64() * 24 * 60 * 60 * 1000);
         // 保存用户信息
         db.execute("UPDATE UserSession SET uid=\"" + userProfile["id"].asString() + "\" WHERE session=\"" + getParam(request)["sessionId"] + "\"");
         quickSendObj(AuthenticateServerResponse);

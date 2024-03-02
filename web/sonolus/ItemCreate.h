@@ -4,6 +4,7 @@ auto SonolusCreate = [](client_conn conn, http_request request, param argv){
     
     auto $_POST = postParam(request);
     int raws = 0;
+	int id = $_POST["id"] == "" ? -1 : atoi($_POST["id"].c_str());
     string name = $_POST["name"];
     int rating = atoi($_POST["rating"].c_str());
     string title = $_POST["title"];
@@ -32,7 +33,7 @@ auto SonolusCreate = [](client_conn conn, http_request request, param argv){
 	if (level != -1 && levelsNumber("id = " + to_string(level)) == 0) quickSendMsg(404);
 	for (int i = 0; i < levels.size(); i++) if (levelsNumber("id = " + levels[i].asString()) == 0) quickSendMsg(404);
 
-    if (argv[0] == "levels") raws = levelsCreate(LevelItem(levelsNumber("") + 1,
+    if (argv[0] == "levels") raws = levelsCreate(LevelItem(id,
 	    	name, rating, title, artists, author, 
 	    	enginesList("id = " + to_string(engine), "")[0],
 	    	(skin == 0 ? UseItem<SkinItem>(true, SkinItem()) : UseItem<SkinItem>(false, skinsList("id = " + to_string(skin), "")[0])),
@@ -43,31 +44,31 @@ auto SonolusCreate = [](client_conn conn, http_request request, param argv){
 	    	SRL<LevelData>($_POST["data"], ""), SRL<LevelPreview>($_POST["preview"], ""),
 	    	tags, description
 	    ), localization);
-	else if (argv[0] == "skins") raws = skinsCreate(SkinItem(skinsNumber("") + 1,
+	else if (argv[0] == "skins") raws = skinsCreate(SkinItem(id,
 			name, title, subtitle, author,
 			SRL<SkinThumbnail>($_POST["thumbnail"], ""), SRL<SkinData>($_POST["data"], ""),
 			SRL<SkinTexture>($_POST["texture"], ""),
 	    	tags, description
 		), localization);
-	else if (argv[0] == "backgrounds") raws = backgroundsCreate(BackgroundItem(backgroundsNumber("") + 1,
+	else if (argv[0] == "backgrounds") raws = backgroundsCreate(BackgroundItem(id,
 			name, title, subtitle, author,
 			SRL<BackgroundThumbnail>($_POST["thumbnail"], ""), SRL<BackgroundData>($_POST["data"], ""),
 			SRL<BackgroundImage>($_POST["image"], ""), SRL<BackgroundConfiguration>($_POST["configuration"], ""),
 	    	tags, description
 		), localization);
-	else if (argv[0] == "effects") raws = effectsCreate(EffectItem(effectsNumber("") + 1,
+	else if (argv[0] == "effects") raws = effectsCreate(EffectItem(id,
 			name, title, subtitle, author,
 			SRL<EffectThumbnail>($_POST["thumbnail"], ""), SRL<EffectData>($_POST["data"], ""),
 			SRL<EffectAudio>($_POST["audio"], ""),
 	    	tags, description
 		), localization);
-	else if (argv[0] == "particles") raws = particlesCreate(ParticleItem(particlesNumber("") + 1,
+	else if (argv[0] == "particles") raws = particlesCreate(ParticleItem(id,
 			name, title, subtitle, author,
 			SRL<ParticleThumbnail>($_POST["thumbnail"], ""), SRL<ParticleData>($_POST["data"], ""),
 			SRL<ParticleTexture>($_POST["texture"], ""),
 	    	tags, description
 		), localization);
-	else if (argv[0] == "engines") raws = enginesCreate(EngineItem(enginesNumber("") + 1,
+	else if (argv[0] == "engines") raws = enginesCreate(EngineItem(id,
 	    	name, title, subtitle, author, 
 	 		skinsList("id = " + to_string(skin), "")[0],
 	    	backgroundsList("id = " + to_string(background), "")[0],
@@ -83,18 +84,18 @@ auto SonolusCreate = [](client_conn conn, http_request request, param argv){
 	    	SRL<EngineRom>($_POST["rom"], ""),
 	    	description
 	    ), localization);
-	else if (argv[0] == "replays") raws = replaysCreate(ReplayItem(replaysNumber("") + 1,
+	else if (argv[0] == "replays") raws = replaysCreate(ReplayItem(id,
 	    	name, title, subtitle, author, 
 	    	levelsList("id = " + to_string(level), "")[0],
 	    	SRL<ReplayData>($_POST["data"], ""), SRL<ReplayConfiguration>($_POST["configuration"], ""),
 	    	tags, description
 	    ), localization);
-	else if (argv[0] == "posts") raws = postsCreate(PostItem(postsNumber("") + 1,
+	else if (argv[0] == "posts") raws = postsCreate(PostItem(id,
 			name, title, time, author,
 	    	SRL<PostThumbnail>($_POST["thumbnail"], ""),
 	    	tags, description
 		), localization);
-	else if (argv[0] == "playlists") raws = playlistsCreate(PlaylistItem(playlistsNumber("") + 1,
+	else if (argv[0] == "playlists") raws = playlistsCreate(PlaylistItem(id,
 			name, title, subtitle, author, [&](){
 				vector<LevelItem> items;
 				for (int i = 0; i < levels.size(); i++) items.push_back(levelsList("id = " + levels[i].asString(), "")[0]);
