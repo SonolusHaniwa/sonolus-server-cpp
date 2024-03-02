@@ -173,7 +173,8 @@ vector<EngineItem> enginesList(string filter, string order, int st = 1, int en =
 
 int enginesCreate(EngineItem item, string localization = "default") {
     stringstream sqlbuffer;
-    auto res = db.query("SELECT id FROM Engine WHERE name = \"" + item.name + "\" AND localization = \"" + localization + "\"");
+    auto res = db.query("SELECT id FROM Engine WHERE id = " + to_string(item.id));
+    if (res.size() == 0) res = db.query("SELECT id FROM Engine WHERE name = \"" + item.name + "\" AND localization = \"" + localization + "\"");
     int skinId = atoi(db.query("SELECT id FROM Skin WHERE name = \"" + item.skin.name + "\";")[0]["id"].c_str());
     int backgroundId = atoi(db.query("SELECT id FROM Background WHERE name = \"" + item.background.name + "\";")[0]["id"].c_str());
     int effectId = atoi(db.query("SELECT id FROM Effect WHERE name = \"" + item.effect.name + "\";")[0]["id"].c_str());

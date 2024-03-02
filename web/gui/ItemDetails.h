@@ -1,9 +1,9 @@
 #define quickGUIDetails(name) {\
-    auto items = name##List("name = \"" + argv[1] + "\"", ""); \
+    auto items = name##List( \
+    	"name = \"" + argv[1] + "\" AND (localization == \"" + $_GET["localization"] + "\" OR localization == \"default\")", \
+    	"CASE WHEN localization == \"default\" THEN 1 WHEN localization != \"default\" THEN 0 END ASC"); \
     if (items.size() == 0) { quickSendMsg(404); } \
-    auto items2 = name##List("name = \"" + argv[1] + "\" AND localization = \"" + cookie["lang"] + "\"", ""); \
-    if (items2.size() == 0) items2 = items; \
-    auto item = items2[0]; argList = merge(argList, item.fetchParamList()); \
+    auto item = items[0]; argList = merge(argList, item.fetchParamList()); \
     argList["html.open_in_sonolus"] = fetchOpenInSonolus(item.fetchParamList()["sonolus.url"]).output(); \
     argList["html.itemDetails"] = str_replace(ItemDetails, argList); \
     argList["page.title"] = item.title + " | " + appConfig["server.title"].asString(); \
@@ -38,6 +38,8 @@ auto GUIDetails = [](client_conn conn, http_request request, param argv) {
     string ItemDetails = readFile("./web/html/pages/ItemDetails/" + argv[0] + ".html");
     string body = readFile("./web/html/pages/ItemDetails.html");
     auto cookie = cookieParam(request);
+    auto $_GET = getParam(request);
+    $_GET["localization"] = cookie["lang"] == "" ? appConfig["language.default"].asString() : cookie["lang"];
     argvar argList = argvar();
 
     // TODO: add the argList here
@@ -54,30 +56,6 @@ auto GUIDetails = [](client_conn conn, http_request request, param argv) {
     else if (argv[0] == "replays") { quickGUIDetails(replays); }
     else if (argv[0] == "posts") { quickGUIDetails(posts); }
     else if (argv[0] == "playlists") { quickGUIDetails(playlists); }
-    // if (argv[0] == "levels") {
-    //     auto items = levelsList("name = \"" + argv[1] + "\"", "");
-    //     if (items.size() == 0) { quickSendMsg(404); }
-    //     auto items2 = levelsList("name = \"" + argv[1] + "\" AND localization = \"" + cookie["lang"] + "\"", "");
-    //     if (items2.size() == 0) items2 = items;
-    //     auto item = items2[0];
-    //     argList["page.title"] = item.title + " | " + appConfig["server.title"].asString();
-    //     argList["html.navbar"] = fetchNavBar(item.title).output();
-    //     argList["html.open_in_sonolus"] = fetchOpenInSonolus(argList["sonolus.url"]).output();
-    //     argList["html.itemDetails"] = str_replace(ItemDetails, item.fetchParamList());
-    //     string detailsSection = "", detailsIcon = fetchIconButton("#ItemDetails", "{{icon." + argv[0].substr(0, argv[0].size() - 1) + "}}").output();
-    //     argvar args = item.fetchParamList(); \
-    //     for (auto v : args) args[v.first] = str_replace("\"", "\\\"", v.second); \
-    //     for (int i = 0; i < appConfig["levels.details.sections"].size(); i++) {
-    //         auto section = appConfig["levels.details.sections"][i];
-    //         detailsSection += "<a style=\"height:0px;margin:0px;\" name=\"" + section["title"].asString() + "\"></a>";
-    //         detailsSection += "<div class=\"flex flex-col space-y-2 sm:space-y-3\"><h2 class=\"py-1 text-xl font-bold sm:py-1.5 sm:text-3xl\">" + section["title"].asString() + "</h2>";
-    //         auto list = levelsList(str_replace(section["filter"].asString(), args), section["order"].asString(), 1, 5);
-    //         for (int j = 0; j < list.size(); j++) detailsSection += list[j].toHTMLObject().output();
-    //         detailsSection += "</div>";
-    //         detailsIcon += fetchIconButton("#" + section["title"].asString(), "{{icon." + section["icon"].asString() + "}}").output();
-    //     } argList["html.detailsSection"] = detailsSection;
-    //     argList["html.icons"] = detailsIcon;
-    // }
 
     argList = merge(argList, merge(
         transfer(appConfig), merge(

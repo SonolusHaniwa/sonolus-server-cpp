@@ -1,6 +1,10 @@
-#define quickGUIList(name) {\
-    auto section = name##List(sqlFilter, order, l, r); pageCount = (name##Number(sqlFilter) - 1) / itemsPerPage + 1;\
-    for (int i = 0; i < section.size(); i++) argList["html.itemsList"] += section[i].toHTMLObject().output();\
+#define quickGUIList(itemname) {\
+    auto section = itemname##List(sqlFilter, order, l, r); \
+	map<string, bool> used; int number = 0; \
+    for (int i = 0; i < section.size(); i++) { \
+    	if (used[section[i].name]) continue; \
+    	used[section[i].name] = 1; argList["html.itemsList"] += section[i].toHTMLObject().output(); number++; \
+    } pageCount = (number - 1) / itemsPerPage + 1; \
 }
 
 auto GUIList = [](client_conn conn, http_request request, param argv) { 
@@ -21,7 +25,7 @@ auto GUIList = [](client_conn conn, http_request request, param argv) {
 
     // TODO: add the argList here
     argvar $_GET = getParam(request);
-    $_GET["localization"] = cookie["lang"];
+    $_GET["localization"] = cookie["lang"] == "" ? appConfig["language.default"].asString() : cookie["lang"];
     int page = $_GET["page"] == "" ? 0 : atoi($_GET["page"].c_str());
     int itemsPerPage = appConfig["sonolus.itemsPerPage"].asInt();
     int l = page * itemsPerPage + 1, r = (page + 1) * itemsPerPage;
@@ -57,6 +61,7 @@ auto GUIList = [](client_conn conn, http_request request, param argv) {
         order = str_replace(order, args);
         if (filter == "") sqlFilter += "1";
     } sqlFilter += ")";
+    order = "CASE WHEN localization == \"default\" THEN 1 WHEN localization != \"default\" THEN 0 END ASC, " + order;
 
     int pageCount = 0; argList["html.itemsList"] = "";
     if (argv[0] == "levels") { quickGUIList(levels); }

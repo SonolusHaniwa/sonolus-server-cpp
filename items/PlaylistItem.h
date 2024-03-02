@@ -121,7 +121,8 @@ vector<PlaylistItem> playlistsList(string filter, string order, int st = 1, int 
 
 int playlistsCreate(PlaylistItem item, string localization = "default") {
     stringstream sqlbuffer;
-    auto res = db.query("SELECT id FROM Playlist WHERE name = \"" + item.name + "\" AND localization = \"" + localization + "\"");
+    auto res = db.query("SELECT id FROM Playlist WHERE id = " + to_string(item.id));
+    if (res.size() == 0) res = db.query("SELECT id FROM Playlist WHERE name = \"" + item.name + "\" AND localization = \"" + localization + "\"");
     Json::Value levels; levels.resize(0);
     for (int i = 0; i < item.levels.size(); i++) levels.append(item.levels[i].id);
     if (res.size() != 0) {

@@ -124,7 +124,8 @@ vector<EffectItem> effectsList(string filter, string order, int st = 1, int en =
 
 int effectsCreate(EffectItem item, string localization = "default") {
     stringstream sqlbuffer;
-    auto res = db.query("SELECT id FROM Effect WHERE name = \"" + item.name + "\" AND localization = \"" + localization + "\"");
+    auto res = db.query("SELECT id FROM Effect WHERE id = " + to_string(item.id));
+    if (res.size() == 0) res = db.query("SELECT id FROM Effect WHERE name = \"" + item.name + "\" AND localization = \"" + localization + "\"");
     if (res.size() != 0) {
         int id = atoi(res[0]["id"].c_str());
         sqlbuffer << "UPDATE Effect SET name = \"" << item.name << "\", version = " << item.version << ", ";

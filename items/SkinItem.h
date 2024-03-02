@@ -124,7 +124,8 @@ vector<SkinItem> skinsList(string filter, string order, int st = 1, int en = 20)
 
 int skinsCreate(SkinItem item, string localization = "default") {
     stringstream sqlbuffer;
-    auto res = db.query("SELECT id FROM Skin WHERE name = \"" + item.name + "\" AND localization = \"" + localization + "\"");
+    auto res = db.query("SELECT id FROM Skin WHERE id = " + to_string(item.id));
+    if (res.size() == 0) res = db.query("SELECT id FROM Skin WHERE name = \"" + item.name + "\" AND localization = \"" + localization + "\"");
     if (res.size() > 0) {
         int id = atoi(res[0]["id"].c_str());
         sqlbuffer << "UPDATE Skin SET name = \"" << item.name << "\", version = " << item.version << ", title = \"" << item.title << "\", ";

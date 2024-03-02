@@ -144,9 +144,11 @@ int levelsNumber(string filter) {
 
 vector<LevelItem> levelsList(string filter, string order, int st = 1, int en = 20) { 
     string sql = "SELECT * FROM Level";
-    if (filter != "") sql += " WHERE (" + filter + ")";
-    if (order != "") sql += " ORDER BY " + order;
+    assert(filter != "" && order != "");
+    sql += " WHERE (" + filter + ") ORDER BY " + order;
+    sql = "SELECT * FROM (" + sql + ") GROUP BY name ORDER BY " + order;
     sql += " LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);
+
     auto res = db.query(sql.c_str());
     vector<LevelItem> list = {};
     sort(res.begin(), res.end(), [](argvar a, argvar b){
@@ -191,7 +193,8 @@ vector<LevelItem> levelsList(string filter, string order, int st = 1, int en = 2
 
 int levelsCreate(LevelItem item, string localization = "default") {
     stringstream sqlbuffer;
-    auto res = db.query("SELECT id FROM Level WHERE name = \"" + item.name + "\" AND localization = \"" + localization + "\"");
+    auto res = db.query("SELECT id FROM Level WHERE id = " + to_string(item.id));
+    if (res.size() == 0) res = db.query("SELECT id FROM Level WHERE name = \"" + item.name + "\" AND localization = \"" + localization + "\"");
     int skinId = 0, backgroundId = 0, effectId = 0, particleId = 0, engineId = 0;
     if (item.useSkin.useDefault == false)
         skinId = atoi(db.query("SELECT id FROM Skin WHERE name = \"" + item.useSkin.item.name + "\";")[0]["id"].c_str());

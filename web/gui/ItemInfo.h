@@ -1,6 +1,10 @@
-#define quickGUIInfo(name) {\
-    auto infos = name##List(item["filter"].asString(), item["order"].asString(), 1, 5);\
-    for (int i = 0; i < infos.size(); i++) sections += infos[i].toHTMLObject().output();\
+#define quickGUIInfo(itemname) {\
+    auto infos = itemname##List(item["filter"].asString(), item["order"].asString(), 1, 5);\
+    map<string, bool> used; int number = 0; \
+    for (int i = 0; i < infos.size(); i++) { \
+    	if (used[infos[i].name]) continue; \
+    	used[infos[i].name] = 1; sections += infos[i].toHTMLObject().output(); \
+    } \
 }
 
 auto GUIInfo = [](client_conn conn, http_request request, param argv) { 
@@ -16,7 +20,9 @@ auto GUIInfo = [](client_conn conn, http_request request, param argv) {
     
     string header = readFile("./web/html/components/header.html");
     string body = readFile("./web/html/pages/ItemInfo.html");
+    auto $_GET = getParam(request);
     auto cookie = cookieParam(request);
+    $_GET["localization"] = cookie["lang"] == "" ? appConfig["language.default"].asString() : cookie["lang"];
     argvar argList = argvar();
 
     // TODO: add the argList here
@@ -33,6 +39,10 @@ auto GUIInfo = [](client_conn conn, http_request request, param argv) {
         sections += "<div class=\"flex flex-col space-y-2 sm:space-y-3\"><div class=\"flex space-x-2 sm:space-x-3\">"
         "<h2 class=\"flex-grow py-1 text-xl font-bold sm:py-1.5 sm:text-3xl\">" + item["title"].asString() + "</h2></div>";
         icons += fetchIconButton("#" + item["title"].asString(), "{{icon." + item["icon"].asString() + "}}").output();
+        item["filter"] = "(localization = \"" + $_GET["localization"] + "\" OR localization = \"default\") AND (" + 
+        	(item["filter"].asString() == "" ? "1" : item["filter"].asString()) + ")";
+        item["order"] = "CASE WHEN localization == \"default\" THEN 1 WHEN localization != \"default\" THEN 0 END ASC, " + 
+        	(item["order"].asString() == "" ? "id DESC" : item["order"].asString());
         if (argv[0] == "levels") { quickGUIInfo(levels); }
         else if (argv[0] == "skins") { quickGUIInfo(skins); }
         else if (argv[0] == "backgrounds") { quickGUIInfo(backgrounds); }

@@ -10,6 +10,7 @@
 #include"./gui/ItemJump.h"
 #include"./gui/ItemDetails.h"
 #include"./gui/ItemCreate.h"
+#include"./gui/ItemEdit.h"
 // #include"./gui/index.h"
 // #include"./gui/levels.h"
 // #include"./gui/skins.h"

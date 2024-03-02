@@ -115,6 +115,7 @@ void routerRegister(int argc, char** argv) {
     app.addRoute("/%s/jump/%d", GUIJump);
     app.addRoute("/%s/create", GUICreate);
     app.addRoute("/%s/%s", GUIDetails);
+    app.addRoute("/%s/%s/edit", GUIEdit);
     // app.addRoute("/levels/create", web_levels_create);
     // app.addRoute("/skins/create", web_skins_create);
     // app.addRoute("/backgrounds/create", web_backgrounds_create);

@@ -124,7 +124,8 @@ vector<ParticleItem> particlesList(string filter, string order, int st = 1, int 
 
 int particlesCreate(ParticleItem item, string localization = "default") {
     stringstream sqlbuffer;
-    auto res = db.query("SELECT id FROM Particle WHERE name = \"" + item.name + "\" AND localization = \"" + localization + "\"");
+    auto res = db.query("SELECT id FROM Particle WHERE id = " + to_string(item.id));
+    if (res.size() == 0) res = db.query("SELECT id FROM Particle WHERE name = \"" + item.name + "\" AND localization = \"" + localization + "\"");
     if (res.size() != 0) {
         int id = atoi(res[0]["id"].c_str());
         sqlbuffer << "UPDATE Particle SET name = \"" << item.name << "\", version = " << item.version << ", ";
