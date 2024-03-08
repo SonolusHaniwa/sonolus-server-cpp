@@ -94,6 +94,14 @@
             "order": "id DESC"
         }
     ],
+    "rooms.info.sections": [
+        {
+            "title": "#NEWEST",
+            "icon": "room",
+            "filter": "",
+            "order": "id DESC"
+        }
+    ],
     
     "levels.details.sections": [
         {

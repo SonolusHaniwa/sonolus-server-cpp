@@ -33,7 +33,8 @@ enum ResourceType {
 	ReplayData,
 	ReplayConfiguration,
     PostThumbnail,
-    PlaylistThumbnail
+    PlaylistThumbnail,
+    Unknown
 };
 
 string ResourceTypeString[] = {
@@ -66,7 +67,8 @@ string ResourceTypeString[] = {
 	"ReplayData",
 	"ReplayConfiguration",
     "PostThumbnail",
-    "PlaylistThumbnail"
+    "PlaylistThumbnail",
+    "Unknown"
 };
 
 template<ResourceType T>

@@ -66,8 +66,25 @@ void loadDefaultVariable() {
 
 bool checkLogin(http_request request) {
     string session = cookieParam(request)["sessionId"];
+    if (session == "") session = request.argv["sonolus-session"];
     auto res = db.query("SELECT session FROM UserSession WHERE session=\"" + session + "\" AND expire >= " + to_string(time(NULL)) + " AND uid != \"\"");
     return res.size();
+}
+
+UserProfile getUserProfile(http_request request) {
+	if (!checkLogin(request)) return UserProfile();
+    string session = cookieParam(request)["sessionId"];
+    if (session == "") session = request.argv["sonolus-session"];
+    auto res = db.query("SELECT uid FROM UserSession WHERE session=\"" + session + "\" AND expire >= " + to_string(time(NULL)) + " AND uid != \"\"");
+    string uid = res[0]["uid"];
+    return usersList("id = \"" + uid + "\"", "")[0];
+}
+
+string generateSession() {
+    srand(time(NULL));
+    string session = "", key = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    for (int i = 0; i < 32; i++) session += key[rand() % 62];
+    return session;
 }
 
 #include"ServerInfo.h"
@@ -77,6 +94,8 @@ bool checkLogin(http_request request) {
 #include"ItemCreate.h"
 #include"Authentication.h"
 #include"CheckLogin.h"
+#include"RoomJoin.h"
+#include"RoomConnection.h"
 // #include"levels_list.h"
 // #include"skins_list.h"
 // #include"backgrounds_list.h"

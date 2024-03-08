@@ -30,6 +30,7 @@ auto SonolusInfo = [](client_conn conn, http_request request, param argv){
     else if (argv[0] == "replays") { quickSonolusInfo(Replay, replays); }
     else if (argv[0] == "posts") { quickSonolusInfo(Post, posts); }
     else if (argv[0] == "playlists") { quickSonolusInfo(Playlist, playlists); }
+    else if (argv[0] == "rooms") { quickSonolusInfo(Room, rooms); }
     else quickSendMsg(404);
     quickSendObj(ItemInfo);
 };

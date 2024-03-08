@@ -2,13 +2,13 @@
  * @file httpd.h
  * @author LittleYang0531 (dev@lyoj.ml)
  * @brief Web服务器核心头文件
- * @version 1.0.5
+ * @version 1.0.6
  * @date 2022-09-18
  * 
  * @copyright Copyright (c) 2023 LittleYang0531
  * 
  */
-const std::string httpd_version = "1.0.5";
+const std::string httpd_version = "1.0.6";
 
 #ifndef _HTTPD_H_
 #define _HTTPD_H_
@@ -33,12 +33,6 @@ const std::string httpd_version = "1.0.5";
 #else 
 #error("We only support Windows & Linux system! Sorry for that your system wasn't supported!")
 #endif
-#include<openssl/ssl.h>
-#include<openssl/aes.h>
-#include<openssl/err.h>
-#include<openssl/ec.h>
-#include<openssl/ecdsa.h>
-#include<openssl/obj_mac.h>
 #include<pthread.h>
 using namespace std;
 
@@ -129,6 +123,7 @@ void __writeLog(LOG_LEVEL loglevel, string fileName, int lineNumber, string dat)
     pthread_mutex_unlock(&g_mutex_lock);
 }
 
+const string magic_string = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
 typedef map<string, string> argvar;
 argvar _e, __default_response, __api_default_response;
 string _endl = "<br/>";
@@ -170,6 +165,37 @@ bool isCgi = false;
 string cgiRequest, cgiResponse;
 ofstream responseOut;
 
+/** WebSocket数据收发相关函数 */
+const int http_len = 1 << 12;
+/** 二进制转换 */
+vector<int> to2(unsigned char x) {
+    vector<int> st;
+    for (int j = 0; j < 8; j++) st.push_back(x % 2), x /= 2;
+    reverse(st.begin(), st.end());
+    return st;
+}
+/** 获取十进制值 */
+int getval(vector<int> x, int st, int len) {
+    int e = st + len - 1;
+    e = min(e, int(x.size() - 1));
+    int res = 0;
+    for (int i = st; i <= e; i++) res *= 2, res += x[i];
+    return res;
+}
+/** 接收数据接口 */
+int ws_recv_data(client_conn __fd, char __buf[http_len], int len) {
+    memset(__buf, '\0', http_len);
+    int s = -1;
+    if (!https) s = recv(__fd.conn, __buf, len, 0);
+    else s = SSL_read(__fd.ssl, __buf, len);
+    if (s == -1) {
+        writeLog(LOG_LEVEL_WARNING, "Failed to recieve data!");
+        return 0;
+    }
+    writeLog(LOG_LEVEL_DEBUG, "Recieve " + to_string(s) + " bytes from client.");
+    return s;
+}
+
 /**
  * @brief 发送信息
  * 
@@ -209,6 +235,63 @@ ssize_t send(client_conn __fd, char* __buf, int len) {
     if (s == -1) writeLog(LOG_LEVEL_WARNING, "Failed to send data to client!");
     else if (s != len) writeLog(LOG_LEVEL_WARNING, "The data wasn't send completely! Send " + to_string(s) + "/" + to_string(len) + " bytes.");
     else writeLog(LOG_LEVEL_DEBUG, "Send " + to_string(s) + " bytes to client.");
+    return s;
+}
+
+/**
+ * @brief WebSocket信息加密与发送
+ * 
+ * @param __fd 客户端连接符
+ * @param __buf 信息主体
+ * @return ssize_t 
+ */
+ssize_t ws_send(client_conn __fd, string __buf, bool extra = false) {
+    const int MaxL = 131000;
+    char dat[MaxL]; int pt = 0;
+    memset(dat, '\0', MaxL);
+
+    /** 构造第一帧 */
+    int FIN = __buf.size() <= MaxL;
+    int RSV1 = 0;
+    int RSV2 = 0;
+    int RSV3 = 0;
+    int opcode = !extra;
+    int frame0 = FIN << 7 | RSV1 << 6 | RSV2 << 5 | RSV3 << 4 | opcode;
+    dat[pt++] = frame0;
+
+    /** 构造数据长度帧 */
+    int MASK = 0;
+    int len = min(int(__buf.size()), MaxL);
+    if (len <= 125) dat[pt++] = MASK << 7 | len;
+    else if (len < (1 << 16)) {
+        dat[pt++] = MASK << 7 | 126;
+        dat[pt++] = len >> 8;
+        dat[pt++] = len % (1 << 8);
+    } else {
+        dat[pt++] = MASK << 7 | 127;
+        int st[8] = {0};
+        for (int i = 0; i < 8; i++) 
+            st[i] = len % (1 << 8), len >>= 8;
+        for (int i = 7; i >= 0; i--) dat[pt++] = st[i];
+    }
+
+    /** 构造数据帧 */
+    for (int i = 0; i < len; i++) dat[pt++] = __buf[i];
+    writeLog(LOG_LEVEL_DEBUG, "Date Frame length: " + to_string(pt));
+    
+    /** 发送数据帧 */
+    int s = -1;
+    if (!https) s = send(__fd.conn, dat, pt, 0);
+    else s = SSL_write(__fd.ssl, dat, pt);
+    if (s == -1) {
+        writeLog(LOG_LEVEL_WARNING, "Failed to send data frame!");
+        pthread_exit(NULL);
+    } else if (s != pt) writeLog(LOG_LEVEL_WARNING, "The data wasn't send completely! Send " + to_string(s) + "/" + to_string(pt) + " bytes.");
+    else writeLog(LOG_LEVEL_DEBUG, "Send " + to_string(s) + " bytes to client.");
+
+    /** 分段发送 */
+    if (__buf.size() > MaxL) s += ws_send(__fd, __buf.substr(MaxL), true);
+
     return s;
 }
 
@@ -270,6 +353,97 @@ string recv(client_conn __fd, int siz = -1) {
         writeLog(LOG_LEVEL_DEBUG, "Recieve " + to_string(__buf.size()) + " bytes from client.");
         return __buf;
     }
+}
+
+/**
+ * @brief WebSocket信息接收与解密
+ * 
+ * @param conn 客户端连接符
+ * @return string 
+ */
+string ws_recv(client_conn conn) {
+
+    /** 接受数据 */
+    char __buf[http_len] = "";
+    int s = ws_recv_data(conn, __buf, 2);
+
+    /** 解析头数据 */
+    if (s < 2) {
+        writeLog(LOG_LEVEL_WARNING, "Invalid WebSocket Data Frame!");
+        pthread_exit(NULL);
+    }
+    vector<int> frame0 = to2(__buf[0]);
+    int FIN = frame0[0];
+    int RSV1 = frame0[1];
+    int RSV2 = frame0[2];
+    int RSV3 = frame0[3];
+    int opcode = getval(frame0, 4, 4);
+
+    /** 解析数据长度 */
+    vector<int> frame1 = to2(__buf[1]);
+    int MASK = frame1[0];
+    int type = 0;
+    long long len = getval(frame1, 1, 7);
+
+    /** 数据长度需要用2byte存储的情况 */
+    if (len == 126) {
+        type = 1;
+        s = ws_recv_data(conn, __buf, 2);
+        if (s < 2) {
+            writeLog(LOG_LEVEL_WARNING, "Invalid WebSocket Data Frame!");
+            pthread_exit(NULL);
+        }
+        len = (getval(to2(__buf[0]), 0, 8) << 8) + getval(to2(__buf[1]), 0, 8);
+    }
+
+    /** 数据长度需要用8byte存储的情况 */
+    if (len == 127) {
+        type = 2;
+        s = ws_recv_data(conn, __buf, 8);
+        if (s < 8) {
+            writeLog(LOG_LEVEL_WARNING, "Invalid WebSocket Data Frame!");
+            pthread_exit(NULL);
+        }
+        len = 0;
+        for (int i = 0; i < 8; i++) {
+            len <<= 8;
+            len += getval(to2(__buf[i]), 0, 8);
+        }
+    }
+
+    /** 获取maskkey */
+    int maskkey[4] = {0};
+    s = ws_recv_data(conn, __buf, 4);
+    if (s < 4) {
+        writeLog(LOG_LEVEL_WARNING, "Invalid WebSocket Data Frame!"); 
+        pthread_exit(NULL);
+    }
+    for (int i = 0; i < 4; i++) maskkey[i] = getval(to2(__buf[i]), 0, 8);
+
+    /** 解析文本 */
+    int x = 0;
+    string res = "";
+    const long long MaxL = http_len;
+    s = ws_recv_data(conn, __buf, min(len, MaxL));
+    int pt = 0;
+    for (long long i = 0; i < len; i++) {
+        /** 由于TCP缓冲区的原因，导致数据传输不完整，需要多次调用recv读取 */
+        if (pt >= s) {
+            s = ws_recv_data(conn, __buf, min(len - i, MaxL));
+            pt = 0;
+        }
+
+        /** 解析i位置上的字符 */
+        int data = getval(to2(__buf[pt]), 0, 8);
+        data = ((~maskkey[i % 4]) & data) | (maskkey[i % 4] & (~data));
+        res += char(data);
+        pt++;
+    }
+
+    /** FIN值为0时，后续还有数据帧，需要继续获取 */
+    if (FIN == 0) res += ws_recv(conn);
+
+    return res;
 }
 
 struct http_request {
@@ -450,6 +624,22 @@ void exitRequest(client_conn& conn) {
 }
 
 /**
+ * @brief 结束请求
+ * 
+ * @param conn 客户端连接符
+ */
+void ws_exitRequest(client_conn& conn) {
+    #ifdef __linux__
+    close(conn.conn);
+    #elif __windows__
+    closesocket(conn.conn);
+    #endif
+    if (https) SSL_clear(conn.ssl);
+    
+    writeLog(LOG_LEVEL_INFO, "Close connection of conn " + to_string(conn.conn));
+}
+
+/**
  * @brief 获取HTTP请求头
  * 
  * @param conn 客户端连接符
@@ -560,6 +750,7 @@ void putRequest(client_conn& conn, int code, argvar argv) {
     for (auto it = argv.begin(); it != argv.end(); it++)
         __buf << (*it).first << ": " << (*it).second << "\r\n";
     __buf << "\r\n";
+    // cout << __buf.str() << endl;
 
     /** 发送响应头 */
     writeLog(LOG_LEVEL_DEBUG, "Send Response Header to client");
@@ -865,6 +1056,7 @@ class application {
             r(string path, function<void(client_conn, http_request, param)> main):path(path),main(main){}
         }; 
         vector<r> route;
+        vector<r> ws_route;
 
         /**
          * @brief 判断是否为整数
@@ -939,6 +1131,16 @@ class application {
          */
         void addRoute(string path, function<void(client_conn, http_request, param)> func) {
             route.push_back(r(path, func));
+        }
+
+        /**
+         * @brief 添加 WebSocket 路由
+         * 
+         * @param path 路由路径
+         * @param func 执行函数
+         */
+        void ws_addRoute(string path, function<void(client_conn, http_request, param)> func) {
+            ws_route.push_back(r(path, func));
         }
 
         /**
@@ -1110,6 +1312,23 @@ string urldecode(string str){
     return tmp;
 }
 
+struct wsarg {
+	int routeId;
+	client_conn conn;
+	http_request request;
+	param argv;
+};
+
+/**
+ * @brief WebSocket 工作线程主函数
+ *
+ */
+void* ws_work_thread(void* arg) {
+	wsarg args = *(wsarg*)arg;
+	app.ws_route[args.routeId].main(args.conn, args.request, args.argv);
+	return NULL;
+}
+
 /**
  * @brief 工作线程主函数
  * 
@@ -1148,12 +1367,59 @@ void thread_pool::work_thread() {
         http_request request = getRequest(conn2);
         writeLog(LOG_LEVEL_INFO, "New Connection: " + request.method + " " + request.path + 
                                  " [" + inet_ntoa(client_addr.sin_addr) + ":" + to_string(client_addr.sin_port) + "]");
-
+                                 
         /** 提取路径 */
         string rlpath = request.path;
         if (rlpath.find("?") != string::npos) 
             rlpath = rlpath.substr(0, rlpath.find("?"));
 
+		/** WebSocket 分发路由 */
+		if (request.argv.find("sec-websocket-key") != request.argv.end()) {
+			for (int i = 0; i < app.ws_route.size(); i++) {
+		        if (app.matchPath(app.ws_route[i], rlpath)) {
+		            writeLog(LOG_LEVEL_DEBUG, "Matched websocket route \"" + app.ws_route[i].path + "\"");
+		
+		            /** 计算Sec_WebSocket_Accept的值 */
+		            string req_key = request.argv["sec-websocket-key"];
+		            string key = req_key + magic_string;
+		            SHA_CTX sha_ctx;
+		            unsigned char result[20] = ""; char enc[20] = "";
+		            SHA1_Init(&sha_ctx);
+		            SHA1_Update(&sha_ctx, key.c_str(), key.size());
+		            SHA1_Final(&(result[0]), &sha_ctx);
+		            for (int i = 0; i < 20; i++) enc[i] = result[i];
+		            string sec_key = "";
+		            sec_key = base64_encode(enc, 20);
+		            argvar ret = __default_response;
+		            ret["Sec-WebSocket-Accept"] = sec_key;
+		            ret["Upgrade"] = "websocket";
+		            ret["Connection"] = "Upgrade";
+
+					stringstream buffer;
+		            buffer << "Secure WebSocket Accept: " << sec_key;
+		            writeLog(LOG_LEVEL_INFO, buffer.str());
+		            putRequest(conn2, 101, ret);
+		            
+		            /** 参数提取 */
+		            param argv;
+		            string __goal = app.ws_route[i].path;
+		            string __path = rlpath;
+		            vector<string> __a1 = explode("/", __goal.c_str());
+		            vector<string> __a2 = explode("/", __path.c_str());
+		            for (int j = 0; j < __a1.size(); j++) 
+		                if (__a1[j] == "%d" || __a1[j] == "%D" ||
+		                    __a1[j] == "%f" || __a1[j] == "%F" || 
+		                    __a1[j] == "%s" || __a1[j] == "%S")
+		                    argv.push_back(__a2[j]);
+		
+		            /** 主函数执行 */
+		            wsarg args = { i, conn2, request, argv }; pthread_t pt;
+		            pthread_create(&pt, NULL, ws_work_thread, (void*)&args);
+		            longjmp(buf[id], 0);
+		        }
+		    }
+		}
+		
         /** 分发路由 */
         for (int i = 0; i < app.route.size(); i++) {
             if (app.matchPath(app.route[i], rlpath)) {
@@ -1194,22 +1460,6 @@ void thread_pool::work_thread() {
         send(conn2, buffer.str());
         exitRequest(conn2);
     }
-}
-
-string str_replace(string from, string to, string source, bool supportTranfer = false) {
-    string result = source;
-	int st = 0, wh = result.find(from.c_str(), st);
-	while (wh != string::npos) {
-        if (supportTranfer && wh >= 1 && result[wh - 1] == '\\') {
-            st = wh + 1;
-            wh = result.find(from.c_str(), st);
-            continue;
-        } 
-        result.replace(wh, from.size(), to.c_str());
-		st = wh + to.size();
-		wh = result.find(from.c_str(), st);
-	} 
-    return result;
 }
 
 string str_replace(string source, argvar argv) {

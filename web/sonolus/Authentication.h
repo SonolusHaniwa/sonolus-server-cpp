@@ -3,13 +3,6 @@ const string SonolusPublicKey = "-----BEGIN PUBLIC KEY-----\n"
 "90+a5lT80NFdXo0fHOL0MeuUngJVIlVGfJ3EVYFkCCQXFldvLE9JrxIlDA==\n"
 "-----END PUBLIC KEY-----";
 
-string generateSession() {
-    srand(time(NULL));
-    string session = "", key = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    for (int i = 0; i < 32; i++) session += key[rand() % 62];
-    return session;
-}
-
 auto Authentication = [](client_conn conn, http_request request, param argv){
     Json::Value AuthenticateServerRequest;
     json_decode(request.postdata, AuthenticateServerRequest);
@@ -24,9 +17,12 @@ auto Authentication = [](client_conn conn, http_request request, param argv){
         if (!ecdsa_sha256_verify(json, base64_decode(request.argv["sonolus-signature"]), SonolusPublicKey)) quickSendMsg(401);
         if (abs(times / 1000 - time(0)) > appConfig["session.expireTime"].asInt() * 24 * 60 * 60) quickSendMsg(401);
         // if (address.size() < realAddress.size() || address.substr(0, realAddress.size()) != realAddress) quickSendMsg(401);
-        AuthenticateServerResponse["session"] = generateSession();
+		string session = generateSession();
+        AuthenticateServerResponse["session"] = session;
         AuthenticateServerResponse["expiration"] = (Json::Int64)(times += appConfig["session.expireTime"].asInt64() * 24 * 60 * 60 * 1000);
         // 保存用户信息
+        db.execute("INSERT INTO UserSession (uid, session, expire) VALUES (\"" + userProfile["id"].asString() + "\", \"" + session + "\", " + to_string(time(NULL) + appConfig["session.expireTime"].asInt64() * 24 * 60 * 60) + ")");
+        usersCreate(UserProfile(userProfile));
         quickSendObj(AuthenticateServerResponse);
     } else if (type == "authenticateExternal") {
         string address = AuthenticateServerRequest["address"].asString();
@@ -41,6 +37,7 @@ auto Authentication = [](client_conn conn, http_request request, param argv){
         AuthenticateServerResponse["expiration"] = (Json::Int64)(times += appConfig["session.expireTime"].asInt64() * 24 * 60 * 60 * 1000);
         // 保存用户信息
         db.execute("UPDATE UserSession SET uid=\"" + userProfile["id"].asString() + "\" WHERE session=\"" + getParam(request)["sessionId"] + "\"");
+        usersCreate(UserProfile(userProfile));
         quickSendObj(AuthenticateServerResponse);
     } else quickSendMsg(404);
 };

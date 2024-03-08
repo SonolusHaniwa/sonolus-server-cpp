@@ -2,8 +2,8 @@
 #include"SRL.h"
 #include"Search.h"
 
-vector<Search> LevelSearch, SkinSearch, BackgroundSearch, EffectSearch, ParticleSearch, EngineSearch, ReplaySearch, PostSearch, PlaylistSearch;
-vector<Search> LevelCreate, SkinCreate, BackgroundCreate, EffectCreate, ParticleCreate, EngineCreate, ReplayCreate, PostCreate, PlaylistCreate;
+vector<Search> LevelSearch, SkinSearch, BackgroundSearch, EffectSearch, ParticleSearch, EngineSearch, ReplaySearch, PostSearch, PlaylistSearch, RoomSearch;
+vector<Search> LevelCreate, SkinCreate, BackgroundCreate, EffectCreate, ParticleCreate, EngineCreate, ReplayCreate, PostCreate, PlaylistCreate, RoomCreate;
 
 #include"ItemSection.h"
 #include"ItemList.h"
@@ -17,33 +17,13 @@ vector<Search> LevelCreate, SkinCreate, BackgroundCreate, EffectCreate, Particle
 #include"ReplayItem.h"
 #include"PostItem.h"
 #include"PlaylistItem.h"
-// #include"UserProfile.h"
+#include"RoomItem.h"
+#include"UserProfile.h"
 using namespace std;
 
-vector<Search> readJson(string path) {
-    ifstream fin(path);
-    if (!fin) {
-        writeLog(LOG_LEVEL_ERROR, ("Failed to open config file \"" + path + "\"").c_str());
-        exit(3);
-    }
-    fin.seekg(0, ios::end);
-    int len = fin.tellg();
-    fin.seekg(0, ios::beg);
-    char* ch = new char[len];
-    fin.read(ch, len);
-    fin.close();
-
-    Json::Value json = Json::Value();
-    string str = ""; for (int i = 0; i < len; i++) str.push_back(ch[i]);
-    if (!json_decode(str, json)) {
-        writeLog(LOG_LEVEL_ERROR, ("Invalid json file in \"" + path + "\"").c_str()); 
-        exit(3);
-    }
-    delete[] ch;
-
-    vector<Search> result;
-    Json::Value orig = json;
-    for (int k = 0; k < orig.size(); k++) {
+vector<Search> constructSearch(Json::Value orig) {
+	vector<Search> result; Json::Value json;
+	for (int k = 0; k < orig.size(); k++) {
         Search search;
         json = orig[k]["options"];
         search.type = orig[k]["type"].asString();
@@ -112,14 +92,37 @@ vector<Search> readJson(string path) {
                     multi.values.push_back(json[i]["values"][j].asString());
                 search.append(multi);
             } else {
-                writeLog(LOG_LEVEL_ERROR, ("Invalid search option type \"" + 
-                    json[i]["type"].asString() + "\" in file \"" + path + "\"").c_str());  
-                exit(3);
+                writeLog(LOG_LEVEL_ERROR, ("Invalid search option type \"" + json[i]["type"].asString()).c_str());  
+                continue;
             }
         }
         result.push_back(search);
     }
     return result;
+}
+
+vector<Search> readJson(string path) {
+    ifstream fin(path);
+    if (!fin) {
+        writeLog(LOG_LEVEL_ERROR, ("Failed to open config file \"" + path + "\"").c_str());
+        exit(3);
+    }
+    fin.seekg(0, ios::end);
+    int len = fin.tellg();
+    fin.seekg(0, ios::beg);
+    char* ch = new char[len];
+    fin.read(ch, len);
+    fin.close();
+
+    Json::Value json = Json::Value();
+    string str = ""; for (int i = 0; i < len; i++) str.push_back(ch[i]);
+    if (!json_decode(str, json)) {
+        writeLog(LOG_LEVEL_ERROR, ("Invalid json file in \"" + path + "\"").c_str()); 
+        exit(3);
+    }
+    delete[] ch;
+
+    return constructSearch(json);
 }
 
 vector<string> i18n_index;
@@ -143,6 +146,8 @@ void loadConfig() {
     PostCreate = readJson("./config/post_create.json");
     PlaylistSearch = readJson("./config/playlist_search.json");
     PlaylistCreate = readJson("./config/playlist_create.json");
+    RoomSearch = readJson("./config/room_search.json");
+    RoomCreate = readJson("./config/room_create.json");
     string json = readFile("./i18n/index.json");
     Json::Value index; json_decode(json, index);
     for (int i = 0; i < index.size(); i++) {

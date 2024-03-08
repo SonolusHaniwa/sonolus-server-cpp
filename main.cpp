@@ -34,7 +34,7 @@ vector<string> levelVersionList = {"0.0.0"};
 vector<string> skinVersionList = {"0.0.0", "0.5.8", "0.7.0", "0.7.3"};
 vector<string> backgroundVersionList = {"0.0.0", "0.5.8"};
 vector<string> effectVersionList = {"0.0.0", "0.5.8", "0.6.0", "0.6.4", "0.7.0"};
-vector<string> particleVersionList = {"0.0.0", "0.7.0"};
+vector<string> particleVersionList = {"0.0.0", "0.7.0", "0.7.5"};
 vector<string> engineVersionList = {"0.0.0", "0.0.0", "0.0.0", "0.5.8", "0.5.13", "0.6.0", "0.6.4", "0.7.0", "0.7.2", "0.7.3", "0.7.4", "0.7.5"};
 vector<string> replayVersionList = {"0.0.0"};
 vector<string> postVersionList = {"0.0.0"};
@@ -42,7 +42,7 @@ vector<string> playlistVersionList = {"0.0.0"};
 
 #include"modules/modules.h"
 DB_Controller db;
-#include"items/Items.h"
+#include"items/items.h"
 #include"web/import.h"
 
 pluma::Pluma plugins;
@@ -104,6 +104,7 @@ void routerRegister(int argc, char** argv) {
     app.addRoute("/sonolus/%s/info", SonolusInfo);
     app.addRoute("/sonolus/%s/list", SonolusList);
     app.addRoute("/sonolus/%s/create", SonolusCreate);
+    app.addRoute("/sonolus/rooms/%s", SonolusRoomJoin);
     app.addRoute("/sonolus/%s/%s", SonolusDetails);
     app.addRoute("/sonolus/authenticate", Authentication);
     app.addRoute("/sonolus/checklogin", CheckLogin);
@@ -133,6 +134,8 @@ void routerRegister(int argc, char** argv) {
     // app.addRoute("/replays/%s/edit", web_replays_edit);
 
     app.addRoute("/uploader", uploader);
+
+    app.ws_addRoute("/rooms/%s", SonolusRoomConnection);
 
     for (int i = 0; i < providers.size(); i++) {
         SonolusServerPlugin* plugin = providers[i]->create();

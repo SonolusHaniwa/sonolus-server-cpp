@@ -1,0 +1,12 @@
+[    
+    {
+        "options": [
+            {
+                "query": "subtitle",
+                "name": "#SUBTITLE",
+                "type": "text",
+                "placeholder": "Use some simple word to describe your room."
+            }
+        ]
+    }
+]

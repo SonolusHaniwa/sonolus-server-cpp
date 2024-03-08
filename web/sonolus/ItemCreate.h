@@ -2,7 +2,8 @@ auto SonolusCreate = [](client_conn conn, http_request request, param argv){
     if (request.method != "POST") quickSendMsg(405);
     if (!checkLogin(request)) quickSendMsg(401);
     
-    auto $_POST = postParam(request);
+    auto $_POST = argvar();
+    if (request.postdata[0] != '{' && request.postdata[0] != '[') $_POST = postParam(request);
     int raws = 0;
 	int id = $_POST["id"] == "" ? -1 : atoi($_POST["id"].c_str());
     string name = $_POST["name"];
@@ -22,7 +23,7 @@ auto SonolusCreate = [](client_conn conn, http_request request, param argv){
     Json::Value levels; json_decode($_POST["levels"] == "" ? "[]" : $_POST["levels"], levels);
     string description = $_POST["description"];
     string localization = $_POST["localization"];
-    if (localization == "0") localization = "default";
+    if (localization == "0" || localization == "") localization = "default";
     else localization = i18n_index[atoi(localization.c_str()) - 1];
     
 	if (engine != -1 && enginesNumber("id = " + to_string(engine)) == 0) quickSendMsg(404);
@@ -33,6 +34,7 @@ auto SonolusCreate = [](client_conn conn, http_request request, param argv){
 	if (level != -1 && levelsNumber("id = " + to_string(level)) == 0) quickSendMsg(404);
 	for (int i = 0; i < levels.size(); i++) if (levelsNumber("id = " + levels[i].asString()) == 0) quickSendMsg(404);
 
+	Json::Value obj = msg[200];
     if (argv[0] == "levels") raws = levelsCreate(LevelItem(id,
 	    	name, rating, title, artists, author, 
 	    	enginesList("id = " + to_string(engine), "")[0],
@@ -103,8 +105,28 @@ auto SonolusCreate = [](client_conn conn, http_request request, param argv){
 			}(), SRL<PlaylistThumbnail>($_POST["thumbnail"], ""),
 	    	tags, description
 		), localization);
+	else if (argv[0] == "rooms") {
+		Json::Value CreateRoomRequest;
+		json_decode(request.postdata, CreateRoomRequest);
+		string name = generateSession();
+		string key = generateSession();
+		auto user = getUserProfile(request);
+		raws = roomsCreate(RoomItem(-1, 
+			name, user.name + "#" + user.handle + "'s Room", "", user.id, 
+			SRL<Unknown>("", ""), 
+			SRL<Unknown>("", ""), 
+			SRL<Unknown>("", ""),
+			vector<Tag>()
+		), "default");
+		obj = Json::Value();
+		obj["name"] = name;
+		obj["key"] = name;
+		obj["creates"].resize(0);
+		db.execute("UPDATE Room SET key = \"" + key + "\" WHERE name = \"" + name + "\"");
+		for (int i = 0; i < RoomCreate.size(); i++) obj["creates"].append(RoomCreate[i].toJsonObject());
+	}
 	else quickSendMsg(404);
 
-	if (raws) { quickSendMsg(200); }
+	if (raws) { quickSendObj(obj); }
 	else { quickSendMsg(400); }
 };

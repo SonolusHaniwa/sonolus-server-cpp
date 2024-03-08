@@ -96,10 +96,10 @@ class EngineItem {
         args["title"] = title;
         args["subtitle"] = subtitle;
         args["author"] = author;
-        args["skin"] = "/skins/" + skin.name;
-        args["background"] = "/backgrounds/" + background.name;
-        args["effect"] = "/effects/" + effect.name;
-        args["particle"] = "/particles/" + particle.name;
+        args["skin"] = skin.name;
+        args["background"] = background.name;
+        args["effect"] = effect.name;
+        args["particle"] = particle.name;
         args["thumbnail"] = thumbnail.url;
         args["data"] = data.url;
 		args["playData"] = data.url;

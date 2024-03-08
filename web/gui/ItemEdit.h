@@ -36,14 +36,15 @@ auto GUIEdit = [](client_conn conn, http_request request, param argv){
     argList["item.type"] = argv[0];
     Search SearchItem; argvar dataSet;
     if (argv[0] == "levels") { quickGUIEdit(Level, levels); }
-    else if (argv[0] == "skins") SearchItem = SkinCreate[0];
-    else if (argv[0] == "backgrounds") SearchItem = BackgroundCreate[0];
-    else if (argv[0] == "effects") SearchItem = EffectCreate[0];
-    else if (argv[0] == "particle") SearchItem = ParticleCreate[0];
-    else if (argv[0] == "engines") SearchItem = EngineCreate[0];
-    else if (argv[0] == "replays") SearchItem = ReplayCreate[0];
-    else if (argv[0] == "posts") SearchItem = PostCreate[0];
-    else if (argv[0] == "playlists") SearchItem = PlaylistCreate[0];
+    else if (argv[0] == "skins") { quickGUIEdit(Skin, skins); }
+    else if (argv[0] == "backgrounds") { quickGUIEdit(Background, backgrounds); }
+    else if (argv[0] == "effects") { quickGUIEdit(Effect, effects); }
+    else if (argv[0] == "particles") { quickGUIEdit(Particle, particles); }
+    else if (argv[0] == "engines") { quickGUIEdit(Engine, engines); }
+    else if (argv[0] == "replays") { quickGUIEdit(Replay, replays); }
+    else if (argv[0] == "posts") { quickGUIEdit(Post, posts); }
+    else if (argv[0] == "playlists") { quickGUIEdit(Playlist, playlists); }
+    for (auto v : dataSet) dataSet[v.first] = str_replace("\n", "\\n", v.second.c_str());
     for (int i = 0; i < SearchItem.options.size(); i++) {
         auto v = SearchItem.options[i];
         if (v.type == "select") {
@@ -77,7 +78,7 @@ auto GUIEdit = [](client_conn conn, http_request request, param argv){
         	argList["html.createOption"] += fetchSearchSelect(v.select.query, v.select.name, v.select.values, def, i != 0).output();
         }
         if (v.type == "slider") argList["html.createOption"] += fetchSearchSlider(v.slider.query, v.slider.name, atoi(dataSet[v.slider.query].c_str()), v.slider.min, v.slider.max, v.slider.step, i != 0).output();
-        if (v.type == "file") argList["html.createOption"] += fetchSearchFile(v.file.query, v.file.name, dataSet[v.file.query].substr(6), i != 0).output();
+        if (v.type == "file") argList["html.createOption"] += fetchSearchFile(v.file.query, v.file.name, dataSet[v.file.query].size() < 6 ? dataSet[v.file.query] : dataSet[v.file.query].substr(6), i != 0).output();
     }
 
     argList = merge(argList, merge(

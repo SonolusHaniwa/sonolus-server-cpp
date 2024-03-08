@@ -1,0 +1,21 @@
+auto SonolusRoomJoin = [](client_conn conn, http_request request, param argv){
+	string id = argv[0];
+	string key = request.argv["sonolus-room-key"];
+	Json::Value JoinRoomRequest, JoinRoomResponse;
+    string json = request.postdata;
+    json_decode(json, JoinRoomRequest);
+    string type = JoinRoomRequest["type"].asString();
+    string realAddress = (appConfig["server.enableSSL"].asBool() ? "https://" : "http://") + appConfig["server.rootUrl"].asString();
+    string address = JoinRoomRequest["address"].asString();
+    time_t times = JoinRoomRequest["time"].asInt64();
+    auto userProfile = JoinRoomRequest["userProfile"];
+    if (type != "authenticateMultiplayer") quickSendMsg(401);
+    if (!ecdsa_sha256_verify(json, base64_decode(request.argv["sonolus-signature"]), SonolusPublicKey)) quickSendMsg(401);
+    if (abs(times / 1000 - time(0)) > appConfig["session.expireTime"].asInt() * 24 * 60 * 60) quickSendMsg(401);
+	string session = generateSession();
+	JoinRoomResponse["url"] = "ws://127.0.0.1:8080/rooms/" + argv[0];
+	JoinRoomResponse["type"] = "round";
+	JoinRoomResponse["session"] = session;
+    db.execute("INSERT INTO UserSession (uid, session, expire) VALUES (\"" + userProfile["id"].asString() + "\", \"" + session + "\", " + to_string(time(NULL) + appConfig["session.expireTime"].asInt64() * 24 * 60 * 60) + ")");
+    quickSendObj(JoinRoomResponse);
+};

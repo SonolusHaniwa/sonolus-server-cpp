@@ -1,5 +1,27 @@
 #ifndef ENCRYPT_H
 #define ENCRYPT_H
+#include<openssl/ssl.h>
+#include<openssl/aes.h>
+#include<openssl/err.h>
+#include<openssl/ec.h>
+#include<openssl/ecdsa.h>
+#include<openssl/obj_mac.h>
+
+string str_replace(string from, string to, string source, bool supportTranfer = false) {
+    string result = source;
+	int st = 0, wh = result.find(from.c_str(), st);
+	while (wh != string::npos) {
+        if (supportTranfer && wh >= 1 && result[wh - 1] == '\\') {
+            st = wh + 1;
+            wh = result.find(from.c_str(), st);
+            continue;
+        } 
+        result.replace(wh, from.size(), to.c_str());
+		st = wh + to.size();
+		wh = result.find(from.c_str(), st);
+	} 
+    return result;
+}
 
 // base64编码部分
 std::string base64_chars =
@@ -177,7 +199,7 @@ bool ecdsa_sha256_verify(string msg, string sig, string pemKey) {
 
     // 验证
     int res = ECDSA_do_verify((const unsigned char*)msg.c_str(), msg.length(), signature, eckey);
-    if (res == -1) writeLog(LOG_LEVEL_ERROR, "Failed to verify signature! Unknwon Error!");
+    // if (res == -1) writeLog(LOG_LEVEL_ERROR, "Failed to verify signature! Unknwon Error!");
     EC_KEY_free(eckey);
     ECDSA_SIG_free(signature);
     delete[] pSig;

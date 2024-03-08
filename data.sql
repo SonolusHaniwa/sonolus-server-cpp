@@ -178,3 +178,17 @@ CREATE TABLE UserSession (
     session text,
     expire int
 );
+CREATE TABLE Room (
+	id int,
+	name text,
+	version int,
+	title text,
+	subtitle text,
+	master text,
+	cover text,
+	bgm text,
+	preview text,
+	tags text,
+	localization text DEFAULT "default",
+	key text
+);
