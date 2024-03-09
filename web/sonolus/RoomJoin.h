@@ -26,7 +26,7 @@ auto SonolusRoomJoin = [](client_conn conn, http_request request, param argv){
     	roomsCreate(newItem);
     }
 	string session = generateSession();
-	JoinRoomResponse["url"] = "ws://127.0.0.1:8080/rooms/" + argv[0];
+	JoinRoomResponse["url"] = appConfig["server.multiplayer.address"].asString() + "/rooms/" + argv[0];
 	JoinRoomResponse["type"] = "round";
 	JoinRoomResponse["session"] = session;
 	string json_base64 = base64_encode(const_cast<char*>(json.c_str()), json.size());

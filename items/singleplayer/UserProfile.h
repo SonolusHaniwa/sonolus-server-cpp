@@ -99,9 +99,9 @@ int usersCreate(UserProfile item) {
     obj = Json::Value();
     for (int i = 0; i < item.favorites.size(); i++) obj[i] = item.favorites[i];
     string favorites = json_encode(obj);
-    string aboutMe = str_replace("\n", "\\n", str_replace("\"", "\"\"", item.aboutMe));
-    socialLinks = str_replace("\n", "\\n", str_replace("\"", "\"\"", socialLinks));
-    favorites = str_replace("\n", "\\n", str_replace("\"", "\"\"", favorites));
+    string aboutMe = quote_encode(item.aboutMe);
+    socialLinks = quote_encode(socialLinks);
+    favorites = quote_encode(favorites);
     if (res.size() != 0) {
         int id = atoi(res[0]["id"].c_str());
         sqlbuffer << "UPDATE UserProfile SET id=\"" << item.id << "\", handle=\"" << item.handle << "\", name=\"" << item.name;

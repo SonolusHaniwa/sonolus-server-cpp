@@ -355,6 +355,12 @@ string recv(client_conn __fd, int siz = -1) {
     }
 }
 
+const string ws_recv_error = [](){
+    int len = 128; srand(time(0));
+    string table = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", res = "";
+    for (int i = 0; i < len; i++) res += table[rand() % 62];
+    return res;
+}();
 /**
  * @brief WebSocket信息接收与解密
  * 
@@ -370,7 +376,7 @@ string ws_recv(client_conn conn) {
     /** 解析头数据 */
     if (s < 2) {
         writeLog(LOG_LEVEL_WARNING, "Invalid WebSocket Data Frame!");
-        pthread_exit(NULL);
+        return ws_recv_error;
     }
     vector<int> frame0 = to2(__buf[0]);
     int FIN = frame0[0];
@@ -391,7 +397,7 @@ string ws_recv(client_conn conn) {
         s = ws_recv_data(conn, __buf, 2);
         if (s < 2) {
             writeLog(LOG_LEVEL_WARNING, "Invalid WebSocket Data Frame!");
-            pthread_exit(NULL);
+            return ws_recv_error;
         }
         len = (getval(to2(__buf[0]), 0, 8) << 8) + getval(to2(__buf[1]), 0, 8);
     }
@@ -402,7 +408,7 @@ string ws_recv(client_conn conn) {
         s = ws_recv_data(conn, __buf, 8);
         if (s < 8) {
             writeLog(LOG_LEVEL_WARNING, "Invalid WebSocket Data Frame!");
-            pthread_exit(NULL);
+            return ws_recv_error;
         }
         len = 0;
         for (int i = 0; i < 8; i++) {
@@ -416,7 +422,7 @@ string ws_recv(client_conn conn) {
     s = ws_recv_data(conn, __buf, 4);
     if (s < 4) {
         writeLog(LOG_LEVEL_WARNING, "Invalid WebSocket Data Frame!"); 
-        pthread_exit(NULL);
+        return ws_recv_error;
     }
     for (int i = 0; i < 4; i++) maskkey[i] = getval(to2(__buf[i]), 0, 8);
 
