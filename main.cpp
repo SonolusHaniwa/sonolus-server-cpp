@@ -354,10 +354,13 @@ void preload() {
     // 先初始化一遍日志系统
     log_init(log_target_type);
 
-    string sonolusJson = readFile("./config/sonolus_config.json");
+    string sonolusJson = readFile("./config/singleplayer_config.json");
+    string multiplayerJson = readFile("./config/multiplayer_config.json");
     string configJson = readFile("./config/config.json");
-    json_decode(sonolusJson, appConfig);
-    Json::Value tmpConfig; json_decode(configJson, tmpConfig);
+    json_decode(configJson, appConfig);
+    Json::Value tmpConfig; json_decode(sonolusJson, tmpConfig);
+    json_merge(appConfig, tmpConfig);
+    json_decode(multiplayerJson, tmpConfig);
     json_merge(appConfig, tmpConfig);
     Sonolus_Version = appConfig["sonolus.version"].asString();
     if (appConfig["server.data.prefix"].asString() == "") appConfig["server.data.prefix"] = "/data/";

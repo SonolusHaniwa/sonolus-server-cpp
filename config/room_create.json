@@ -1,11 +1,17 @@
 [    
     {
         "options": [
+        	{
+                "query": "title",
+                "name": "#TITLE",
+                "type": "text",
+                "placeholder": "#TITLE_PLACEHOLDER"
+        	},
             {
                 "query": "subtitle",
                 "name": "#SUBTITLE",
                 "type": "text",
-                "placeholder": "Use some simple word to describe your room."
+                "placeholder": "#SUBTITLE_PLACEHOLDER"
             }
         ]
     }

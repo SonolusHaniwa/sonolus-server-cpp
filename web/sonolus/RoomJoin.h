@@ -1,4 +1,8 @@
 auto SonolusRoomJoin = [](client_conn conn, http_request request, param argv){
+	auto items = roomsList("name = \"" + argv[0] + "\"", "");
+	if (items.size() == 0) quickSendMsg(404);
+	string creatorId = db.query("SELECT creatorId FROM Room where name = \"" + argv[0] + "\"")[0]["creatorId"];
+	
 	string id = argv[0];
 	string key = request.argv["sonolus-room-key"];
 	Json::Value JoinRoomRequest, JoinRoomResponse;
@@ -12,10 +16,24 @@ auto SonolusRoomJoin = [](client_conn conn, http_request request, param argv){
     if (type != "authenticateMultiplayer") quickSendMsg(401);
     if (!ecdsa_sha256_verify(json, base64_decode(request.argv["sonolus-signature"]), SonolusPublicKey)) quickSendMsg(401);
     if (abs(times / 1000 - time(0)) > appConfig["session.expireTime"].asInt() * 24 * 60 * 60) quickSendMsg(401);
+
+    if (userProfile["id"].asString() == creatorId) {
+    	auto $_GET = getParam(request);
+    	auto newItem = items[0];
+    	if ($_GET["title"] != "") newItem.title = urldecode($_GET["title"]);
+    	if ($_GET["subtitle"] != "") newItem.subtitle = urldecode($_GET["subtitle"]);
+    	newItem.master = userProfile["name"].asString() + "#" + userProfile["handle"].asString();
+    	roomsCreate(newItem);
+    }
 	string session = generateSession();
 	JoinRoomResponse["url"] = "ws://127.0.0.1:8080/rooms/" + argv[0];
 	JoinRoomResponse["type"] = "round";
 	JoinRoomResponse["session"] = session;
-    db.execute("INSERT INTO UserSession (uid, session, expire) VALUES (\"" + userProfile["id"].asString() + "\", \"" + session + "\", " + to_string(time(NULL) + appConfig["session.expireTime"].asInt64() * 24 * 60 * 60) + ")");
+	string json_base64 = base64_encode(const_cast<char*>(json.c_str()), json.size());
+    db.execute("INSERT INTO UserSession (uid, session, expire, body, signature) VALUES (\"" + 
+    	userProfile["id"].asString() + "\", \"" + session + "\", " + 
+    	to_string(time(NULL) + appConfig["session.expireTime"].asInt64() * 24 * 60 * 60) + ", \"" +
+    	json_base64 + "\", \"" + request.argv["sonolus-signature"] + "\")");
+    usersCreate(UserProfile(userProfile));
     quickSendObj(JoinRoomResponse);
 };

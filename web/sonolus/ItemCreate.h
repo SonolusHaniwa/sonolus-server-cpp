@@ -122,7 +122,7 @@ auto SonolusCreate = [](client_conn conn, http_request request, param argv){
 		obj["name"] = name;
 		obj["key"] = name;
 		obj["creates"].resize(0);
-		db.execute("UPDATE Room SET key = \"" + key + "\" WHERE name = \"" + name + "\"");
+		db.execute("UPDATE Room SET creatorId = \"" + user.id + "\" WHERE name = \"" + name + "\"");
 		for (int i = 0; i < RoomCreate.size(); i++) obj["creates"].append(RoomCreate[i].toJsonObject());
 	}
 	else quickSendMsg(404);

@@ -176,7 +176,9 @@ DROP TABLE LoginRequest;
 CREATE TABLE UserSession (
     uid text,
     session text,
-    expire int
+    expire int,
+   	body text,
+   	signature text
 );
 CREATE TABLE Room (
 	id int,
@@ -190,5 +192,5 @@ CREATE TABLE Room (
 	preview text,
 	tags text,
 	localization text DEFAULT "default",
-	key text
+	creatorId text
 );
