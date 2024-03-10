@@ -46,7 +46,7 @@ vector<string> playlistVersionList = {"0.0.0"};
 #include"modules/json.h"
 #include"modules/encrypt.h"
 DB_Controller db;
-#include"items/Items.h"
+#include"core/items.h"
 #include"web/import.h"
 
 void routerRegister() {

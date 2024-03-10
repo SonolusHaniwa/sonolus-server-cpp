@@ -42,7 +42,7 @@ vector<string> playlistVersionList = {"0.0.0"};
 
 #include"modules/modules.h"
 DB_Controller db;
-#include"items/items.h"
+#include"core/items.h"
 #include"web/import.h"
 
 pluma::Pluma plugins;

@@ -1494,4 +1494,14 @@ string readFile(string path) {
     return buffer;
 }
 
+int getThreadId() {
+    int tid = -1;
+    #ifdef __linux__
+    tid = syscall(__NR_gettid);
+    #elif __windows__
+    tid = GetCurrentThreadId();
+    #endif
+    return tid;
+}
+
 #endif
