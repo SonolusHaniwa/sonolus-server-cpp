@@ -56,10 +56,12 @@ void serverPackageImport(FileStream& fin) {
 
 void importDataFromOfficialPackage(string path, Json::Value obj, int& fileCnt) {
     if (obj.isObject() && obj.isMember("url") && obj.isMember("hash")) {
-    	if (obj["url"].asString().size() == 0) {
-    		writeLog(LOG_LEVEL_WARNING, "Empty file info.");
-    		return;
-    	} string fileContent = getFileFromZip(path, obj["url"].asString().substr(1));
+    	// if (obj["url"].asString().size() == 0) {
+    	// 	writeLog(LOG_LEVEL_WARNING, "Empty file info.");
+    	// 	return;
+    	// } 
+    	if (obj["url"].asString().size() == 0) return;
+    	string fileContent = getFileFromZip(path, obj["url"].asString().substr(1));
         ofstream fout("./data/" + obj["hash"].asString());
         fout.write(const_cast<char*>(fileContent.c_str()), fileContent.size());
         fout.close();
