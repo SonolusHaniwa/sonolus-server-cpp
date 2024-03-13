@@ -15,7 +15,7 @@ class UpdateEvent {
 	LevelLocator level;
 	vector<LevelOptionEntry> levelOptions;
 	string autoExit = AutoExit.off;
-	bool isSuggestionLocked;
+	bool isSuggestionsLocked;
 	vector<Suggestion> suggestions;
 	string scoreboardDescription;
 	vector<ScoreboardSection> scoreboardSections;
@@ -36,7 +36,7 @@ class UpdateEvent {
 		LevelLocator level,
 		vector<LevelOptionEntry> levelOptions,
 		string autoExit,
-		bool isSuggestionLocked,
+		bool isSuggestionsLocked,
 		vector<Suggestion> suggestions,
 		string scoreboardDescription,
 		vector<ScoreboardSection> scoreboardSections,
@@ -45,7 +45,7 @@ class UpdateEvent {
 		vector<UserStatusEntry> userStatuses
 	): allowOtherServers(allowOtherServers), reportUserOptions(reportUserOptions), title(title),
 		status(status), master(master), lead(lead), options(options), optionValues(optionValues),
-		level(level), levelOptions(levelOptions), autoExit(autoExit), isSuggestionLocked(isSuggestionLocked),
+		level(level), levelOptions(levelOptions), autoExit(autoExit), isSuggestionsLocked(isSuggestionsLocked),
 		suggestions(suggestions), scoreboardDescription(scoreboardDescription), scoreboardSections(scoreboardSections),
 		results(results), users(users), userStatuses(userStatuses){};
 	UpdateEvent(Json::Value obj) {
@@ -60,7 +60,7 @@ class UpdateEvent {
 		level = LevelLocator(obj["level"]);
 		for (int i = 0; i < obj["levelOptions"].size(); i++) levelOptions.push_back(LevelOptionEntry(obj["levelOptions"][i]));
 		autoExit = obj["autoExit"].asString();
-		isSuggestionLocked = obj["isSuggestionLocked"].asBool();
+		isSuggestionsLocked = obj["isSuggestionsLocked"].asBool();
 		for (int i = 0; i < obj["suggestions"].size(); i++) suggestions.push_back(Suggestion(obj["suggestions"][i]));
 		scoreboardDescription = obj["scoreboardDescription"].asString();
 		for (int i = 0; i < obj["scoreboardSections"].size(); i++) scoreboardSections.push_back(ScoreboardSection(obj["scoreboardSections"][i]));
@@ -86,7 +86,7 @@ class UpdateEvent {
 		res["levelOptions"].resize(0);
 		for (int i = 0; i < levelOptions.size(); i++) res["levelOptions"].append(levelOptions[i].toJsonObject());
 		res["autoExit"] = autoExit;
-		res["isSuggestionLocked"] = isSuggestionLocked;
+		res["isSuggestionsLocked"] = isSuggestionsLocked;
 		res["suggestions"].resize(0);
 		for (int i = 0; i < suggestions.size(); i++) res["suggestions"].append(suggestions[i].toJsonObject());
 		res["scoreboardDescription"] = scoreboardDescription;

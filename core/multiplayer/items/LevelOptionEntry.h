@@ -4,13 +4,13 @@ class LevelOptionEntry {
 	public:
 
 	int index;
-	int value;
+	double value;
 
 	LevelOptionEntry(){}
-	LevelOptionEntry(int index, int value): index(index), value(value){}
+	LevelOptionEntry(int index, double value): index(index), value(value){}
 	LevelOptionEntry(Json::Value obj) {
 		index = obj["index"].asInt();
-		value = obj["value"].asInt();
+		value = obj["value"].asDouble();
 	}
 
 	Json::Value toJsonObject() {

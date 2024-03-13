@@ -10,14 +10,14 @@ echo -e "${YELLOW}Compiling Sonolus Server using g++...${WHITE}"
 g++ main.cpp -o sonolus\
     -ldl -lpthread -lcrypto -lssl -ljsoncpp -std=c++14 -g -w \
     -DENABLE_SONOLUS -DENABLE_MYSQL -lmysqlclient -DENABLE_SQLITE -lsqlite3 -DENABLE_CURL -lcurl -DENABLE_ZIP -lzip
-# echo -e "${YELLOW}Compiling libsonolush using g++...${WHITE}"
-# g++ plugins/libsonolush/libsonolush.cpp -o plugins/libsonolush.so \
-#     -g -std=c++17 -fPIC -shared\
-#     -DENABLE_SONOLUS -DENABLE_MYSQL -DENABLE_SQLITE -DENABLE_CURL -DENABLE_ZIP
-# echo -e "${YELLOW}Compiling libonedrive using g++...${WHITE}"
-# g++ plugins/libonedrive/libonedrive.cpp -o plugins/libonedrive.so \
-#     -ldl -lpthread -lcrypto -lssl -ljsoncpp -std=c++17 -fPIC -shared -g \
-#     -DENABLE_SONOLUS -DENABLE_MYSQL -DENABLE_SQLITE -DENABLE_CURL -DENABLE_ZIP
+echo -e "${YELLOW}Compiling libsonolush using g++...${WHITE}"
+g++ plugins/libsonolush/libsonolush.cpp -o plugins/libsonolush.so \
+    -g -std=c++17 -fPIC -shared\
+    -DENABLE_SONOLUS -DENABLE_MYSQL -DENABLE_SQLITE -DENABLE_CURL -DENABLE_ZIP
+echo -e "${YELLOW}Compiling libonedrive using g++...${WHITE}"
+g++ plugins/libonedrive/libonedrive.cpp -o plugins/libonedrive.so \
+    -ldl -lpthread -lcrypto -lssl -ljsoncpp -std=c++17 -fPIC -shared -g \
+    -DENABLE_SONOLUS -DENABLE_MYSQL -DENABLE_SQLITE -DENABLE_CURL -DENABLE_ZIP
 echo -e "${YELLOW}Done.${WHITE}"
 echo -e ""
 echo -e "You can type \`./sonolus serve\` to start your server."

@@ -3,19 +3,19 @@
 class UpdateIsSuggestionsLockedEvent {
     public:
 
-    string type = "updateIsSuggestionLocked";
-    bool isSuggestionLocked;
+    string type = "updateIsSuggestionsLocked";
+    bool isSuggestionsLocked;
 
     UpdateIsSuggestionsLockedEvent(){}
-    UpdateIsSuggestionsLockedEvent(bool isSuggestionLocked): isSuggestionLocked(isSuggestionLocked){}
+    UpdateIsSuggestionsLockedEvent(bool isSuggestionsLocked): isSuggestionsLocked(isSuggestionsLocked){}
     UpdateIsSuggestionsLockedEvent(Json::Value obj) {
-        isSuggestionLocked = obj["isSuggestionLocked"].asBool();
+        isSuggestionsLocked = obj["isSuggestionsLocked"].asBool();
     }
 
     Json::Value toJsonObject() {
         Json::Value res;
         res["type"] = type;
-        res["isSuggestionLocked"] = isSuggestionLocked;
+        res["isSuggestionsLocked"] = isSuggestionsLocked;
         return res;
     }
 };

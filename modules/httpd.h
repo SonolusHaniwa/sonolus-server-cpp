@@ -245,7 +245,7 @@ ssize_t send(client_conn __fd, char* __buf, int len) {
  * @param __buf 信息主体
  * @return ssize_t 
  */
-ssize_t ws_send(client_conn __fd, string __buf, bool extra = false) {
+ssize_t ws_send(client_conn __fd, string __buf, int opcode = 1) {
     const int MaxL = 131000;
     char dat[MaxL]; int pt = 0;
     memset(dat, '\0', MaxL);
@@ -255,7 +255,6 @@ ssize_t ws_send(client_conn __fd, string __buf, bool extra = false) {
     int RSV1 = 0;
     int RSV2 = 0;
     int RSV3 = 0;
-    int opcode = !extra;
     int frame0 = FIN << 7 | RSV1 << 6 | RSV2 << 5 | RSV3 << 4 | opcode;
     dat[pt++] = frame0;
 
@@ -290,7 +289,7 @@ ssize_t ws_send(client_conn __fd, string __buf, bool extra = false) {
     else writeLog(LOG_LEVEL_DEBUG, "Send " + to_string(s) + " bytes to client.");
 
     /** 分段发送 */
-    if (__buf.size() > MaxL) s += ws_send(__fd, __buf.substr(MaxL), true);
+    if (__buf.size() > MaxL) s += ws_send(__fd, __buf.substr(MaxL), 0);
 
     return s;
 }
@@ -635,6 +634,11 @@ void exitRequest(client_conn& conn) {
  * @param conn 客户端连接符
  */
 void ws_exitRequest(client_conn& conn) {
+	string s;
+	s.push_back(1000 / 256);
+	s.push_back(1000 % 256);
+	s += "Remote server closed a connection proactively.";
+	ws_send(conn, s, 8);
     #ifdef __linux__
     close(conn.conn);
     #elif __windows__

@@ -4,18 +4,18 @@ class UpdateAutoExitCommand {
     public:
 
     string type = "updateAutoExit";
-    string AutoExit;
+    string autoExit;
 
     UpdateAutoExitCommand(){}
-    UpdateAutoExitCommand(string AutoExit): AutoExit(AutoExit){}
+    UpdateAutoExitCommand(string autoExit): autoExit(autoExit){}
     UpdateAutoExitCommand(Json::Value obj) {
-        AutoExit = obj["AutoExit"].asString();
+        autoExit = obj["autoExit"].asString();
     }
 
     Json::Value toJsonObject() {
         Json::Value res;
         res["type"] = type;
-        res["AutoExit"] = AutoExit;
+        res["autoExit"] = autoExit;
         return res;
     }
 };

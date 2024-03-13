@@ -10,6 +10,7 @@ struct RoomEvent {
 	LevelItem levelItem;
 	ChatMessage msg;
 	Suggestion suggestionA, suggestionB;
+	LevelOptionEntry levelOption;
 };
 
 map<string, vector<RoomEvent> > roomEvents;
@@ -69,13 +70,16 @@ void* RoomWorkThread(void* roomId) {
 				conns.push_back(item.connArg);
 			}
 			else if (item.name == "RemoveUser") {
+				cout << "Removing..." << endl;
 				// 数据修改
+				int id1 = -1;
 				for (int i = 0; i < conns.size(); i++) {
 					if (conns[i].routeId == item.connArg.routeId) {
-						conns.erase(conns.begin() + i);
+						conns.erase(conns.begin() + i); id1 = i;
 						break;
 					}
 				}
+				if (id1 == -1) goto next;
 				auto res = db.query("SELECT * FROM UserSession where session = \"" + item.connArg.request.argv["sonolus-room-session"] + "\"")[0];
 				for (int i = 0; i < data.users.size(); i++)
 					if (data.users[i].authentication == res["body"] && data.users[i].signature == res["signature"]) {
@@ -219,8 +223,46 @@ void* RoomWorkThread(void* roomId) {
 				data.suggestions.erase(data.suggestions.begin() + id1);
 				for (int i = 0; i < conns.size(); i++) RoomConnectionSend(conns[i], id, RemoveSuggestionEvent(item.suggestionA));
 			}
+			else if (item.name == "RemoveUser2") {
+				int id1 = -1;
+				for (int i = 0; i < conns.size(); i++) {
+					auto res = db.query("SELECT * FROM UserSession where session = \"" + conns[i].request.argv["sonolus-room-session"] + "\"")[0];
+					if (res["uid"] == item.sValue) { id1 = i; break; }
+				}
+				roomEvents[id].push_back({ name: "RemoveUser", connArg: conns[id1] });
+				ws_exitRequest(conns[id1].conn);
+			}
+			else if (item.name == "UpdateAutoExit") {
+				data.autoExit = item.sValue;
+				for (int i = 0; i < conns.size(); i++) RoomConnectionSend(conns[i], id, UpdateAutoExitEvent(item.sValue));
+			}
+			else if (item.name == "UpdateIsSuggestionsLocked") {
+				data.isSuggestionsLocked = item.bValue;
+				for (int i = 0; i < conns.size(); i++) RoomConnectionSend(conns[i], id, UpdateIsSuggestionsLockedEvent(item.bValue));
+			}
+			else if (item.name == "UpdateLead") {
+				data.lead = item.sValue;
+				for (int i = 0; i < conns.size(); i++) RoomConnectionSend(conns[i], id, UpdateLeadEvent(item.sValue));
+			}
+			else if (item.name == "UpdateMaster") {
+				data.master = item.sValue;
+				for (int i = 0; i < conns.size(); i++) RoomConnectionSend(conns[i], id, UpdateMasterEvent(item.sValue));
+			}
+			else if (item.name == "UpdateOptionValues") {
+				data.optionValues = item.sValue;
+				for (int i = 0; i < conns.size(); i++) RoomConnectionSend(conns[i], id, UpdateOptionValuesEvent(item.sValue));
+			}
+			else if (item.name == "UpdateLevelOption") {
+				int id1 = -1;
+				for (int i = 0; i < data.levelOptions.size(); i++)
+					if (data.levelOptions[i].index == item.levelOption.index)
+						data.levelOptions[i] = item.levelOption, id1 = i;
+				if (id1 == -1) data.levelOptions.push_back(item.levelOption);
+				for (int i = 0; i < conns.size(); i++) RoomConnectionSend(conns[i], id, UpdateLevelOptionEvent(item.levelOption));
+			}
 
-			roomEvents.erase(roomEvents.begin());
+			next:
+			roomEvents[id].erase(roomEvents[id].begin());
 		}
 		usleep(10000);
 	}
@@ -281,7 +323,10 @@ auto SonolusRoomConnection = [](client_conn conn, http_request request, param ar
 			name: "RemoveSuggestion",
 			suggestionA: RemoveSuggestionCommand(Command).suggestion
 		});
-		else if (type == "RemoveUser") {}
+		else if (type == "RemoveUser") roomEvents[argv[0]].push_back({
+			name: "RemoveUser2",
+			sValue: RemoveUserCommand(Command).userId	
+		});
 		else if (type == "ReportUser") {}
 		else if (type == "ResetScoreboard") roomEvents[argv[0]].push_back({
 			name: "ResetScoreboard"
@@ -295,16 +340,34 @@ auto SonolusRoomConnection = [](client_conn conn, http_request request, param ar
 			suggestionA: SwapSuggestionsCommand(Command).suggestionA,
 			suggestionB: SwapSuggestionsCommand(Command).suggestionB
 		});
-		else if (type == "UpdateAutoExit") {}
-		else if (type == "UpdateIsSuggestionsLocked") {}
-		else if (type == "UpdateLead") {}
+		else if (type == "UpdateAutoExit") roomEvents[argv[0]].push_back({
+			name: "UpdateAutoExit",
+			sValue: UpdateAutoExitCommand(Command).autoExit	
+		});
+		else if (type == "UpdateIsSuggestionsLocked") roomEvents[argv[0]].push_back({
+			name: "UpdateIsSuggestionsLocked",
+			bValue: UpdateIsSuggestionsLockedCommand(Command).isSuggestionsLocked
+		});
+		else if (type == "UpdateLead") roomEvents[argv[0]].push_back({
+			name: "UpdateLead",
+			sValue: UpdateLeadCommand(Command).lead
+		});
 		else if (type == "UpdateLevel") roomEvents[argv[0]].push_back({
 			name: "UpdateLevel",
 			level: UpdateLevelCommand(Command).level
 		});
-		else if (type == "UpdateLevelOption") {}
-		else if (type == "UpdateMaster") {}
-		else if (type == "UpdateOptionValues") {}
+		else if (type == "UpdateLevelOption") roomEvents[argv[0]].push_back({
+			name: "UpdateLevelOption",
+			levelOption: UpdateLevelOptionCommand(Command).levelOption
+		});
+		else if (type == "UpdateMaster") roomEvents[argv[0]].push_back({
+			name: "UpdateMaster",
+			sValue: UpdateMasterCommand(Command).master
+		});
+		else if (type == "UpdateOptionValues") roomEvents[argv[0]].push_back({
+			name: "UpdateOptionValues",
+			sValue: UpdateOptionValuesCommand(Command).optionValues
+		});
 		else if (type == "UpdateStatus") roomEvents[argv[0]].push_back({ 
 			name: "UpdateStatus", 
 			sValue: UpdateStatusCommand(Command).status 
