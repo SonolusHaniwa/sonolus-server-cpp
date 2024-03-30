@@ -1,4 +1,3 @@
-#define ENABLE_SQLITE
 #include<iostream>
 #include<vector>
 #include<set>
@@ -41,9 +40,9 @@ vector<string> postVersionList = {"0.0.0"};
 vector<string> playlistVersionList = {"0.0.0"};
 
 #include"modules/cgihttpd.h"
+#include"modules/json.h"
 #include"modules/html.h"
 #include"modules/mysqli.h"
-#include"modules/json.h"
 #include"modules/encrypt.h"
 DB_Controller db;
 #include"core/items.h"
@@ -155,8 +154,7 @@ void preload() {
     appConfig["server.bannerHash"] = appConfig["server.banner"].asString();
     appConfig["server.bannerUrl"] = dataPrefix + appConfig["server.banner"].asString();
     appConfig["server.hasAuthentication"] = false;
-    appConfig["database"] = "sqlite";
-    appConfig["sqlite.dbfile"] = ":memory:";
+    appConfig["database"] = "emscripten";
     log_init(log_target_type);
     db = DB_Controller(true);
     http_init();

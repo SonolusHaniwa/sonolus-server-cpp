@@ -783,22 +783,7 @@ string urldecode(string str){
     return tmp;
 }
 
-string str_replace(string from, string to, string source, bool supportTranfer = false) {
-    string result = source;
-	int st = 0, wh = result.find(from.c_str(), st);
-	while (wh != string::npos) {
-        if (supportTranfer && wh >= 1 && result[wh - 1] == '\\') {
-            st = wh + 1;
-            wh = result.find(from.c_str(), st);
-            continue;
-        } 
-        result.replace(wh, from.size(), to.c_str());
-		st = wh + to.size();
-		wh = result.find(from.c_str(), st);
-	} 
-    return result;
-}
-
+string str_replace(string, string, string, bool);
 string str_replace(string source, argvar argv) {
     for (auto it : argv) {
         source = str_replace("{{" + it.first + "}}", it.second, source, true);

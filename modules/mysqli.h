@@ -8,6 +8,12 @@ using namespace std;
 #ifdef ENABLE_SQLITE
 #include<sqlite3.h>
 #endif
+#ifdef __EMSCRIPTEN__
+extern "C" {
+	extern char* __builtin_emscripten_query(char* sql);
+	extern int __builtin_emscripten_execute(char* sql);
+}
+#endif
 
 typedef vector<map<string,string> > dbres;
 
@@ -125,6 +131,34 @@ class DB_Controller {
 		#endif
     }
 
+	dbres emscripten_query(const char* sql) {
+		#ifdef __EMSCRIPTEN__
+		writeLog(LOG_LEVEL_DEBUG, "Execute database: " + string(sql));
+		char* tmp = __builtin_emscripten_query(const_cast<char*>(sql));
+		string result = string(tmp, strlen(tmp)); Json::Value obj;
+		json_decode(result, obj); dbres res;
+		for (int i = 0; i < obj.size(); i++) {
+			map<string, string> tmp;
+			Json::Value::Members mem = obj[i].getMemberNames();
+			for (auto it = mem.begin(); it != mem.end(); it++) tmp[*it] = obj[i][*it].asString();
+			res.push_back(tmp);
+		} return res;
+		#else 
+		writeLog(LOG_LEVEL_ERROR, "You should't use emscripten database in terminal! Maybe you want to compile this program with the command `emcc`?");
+		exit(3);
+		#endif
+	}
+
+	int emscripten_execute(const char* sql) {
+		#ifdef __EMSCRIPTEN__
+		return 0;
+		#else 
+		writeLog(LOG_LEVEL_ERROR, "You should't use emscripten database in terminal! Maybe you want to compile this program with the command `emcc`?");
+		exit(3);
+		#endif
+
+	}
+
 	public:
 	
 	DB_Controller(){}
@@ -152,6 +186,7 @@ class DB_Controller {
 	dbres query(string sql) {
 		if (appConfig["database"].asString() == "mysql") return mysqli_query(sql.c_str());
 		else if (appConfig["database"].asString() == "sqlite") return sqlite_query(sql.c_str());
+		else if (appConfig["database"].asString() == "emscripten") return emscripten_query(sql.c_str());
 		else {
 			writeLog(LOG_LEVEL_ERROR, "Unsupported database type!");
 			exit(3);
@@ -161,6 +196,7 @@ class DB_Controller {
 	int execute(string sql) {
 		if (appConfig["database"].asString() == "mysql") return mysqli_execute(sql.c_str());
 		else if (appConfig["database"].asString() == "sqlite") return sqlite_execute(sql.c_str());
+		else if (appConfig["database"].asString() == "emscripten") return emscripten_execute(sql.c_str());
 		else {
 			writeLog(LOG_LEVEL_ERROR, "Unsupported database type!");
 			exit(3);
@@ -169,11 +205,11 @@ class DB_Controller {
 };
 #endif
 
-#define itemNumberTemplate(item, filter) assert(filter != ""); \
+#define itemNumberTemplate(item, filter) \
 	string sql = "SELECT name FROM " defineToString(item) " WHERE (" + filter + ")"; \
     sql = "SELECT name FROM (" + sql + ") GROUP BY name"; \
     sql = "SELECT COUNT(*) AS sum FROM (" + sql + ")";
-#define itemListTemplate(item, filter, order, st, en) assert(filter != ""); if (order == "") order = "id DESC"; \
+#define itemListTemplate(item, filter, order, st, en) if (order == "") order = "id DESC"; \
 	string sql = "SELECT * FROM " defineToString(item) " WHERE (" + filter + ") ORDER BY " + order; \
     sql = "SELECT * FROM (" + sql + ") GROUP BY name"; \
     sql = "SELECT * FROM (" + sql + ") ORDER BY " + order + " LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);      

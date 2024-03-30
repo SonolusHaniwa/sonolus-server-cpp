@@ -13,8 +13,9 @@ emcc emain.cpp -o libsonolus.js -s MODULARIZE -sALLOW_MEMORY_GROWTH\
 	-sDEFAULT_LIBRARY_FUNCS_TO_INCLUDE=['$stringToNewUTF8','$UTF8ToString']\
 	-sEXPORTED_RUNTIME_METHODS=['stringToNewUTF8','UTF8ToString','FS']\
 	-fwasm-exceptions -sASSERTIONS -lnodefs.js \
-	--preload-file config --preload-file web --preload-file i18n --preload-file sonolus.sql\
-	-L./emsdk/lib -I./emsdk/include -ljsoncpp -lcrypto -lsqlite3 -g
+	--preload-file config --preload-file web --preload-file i18n --preload-file sonolus.db \
+	--js-library ./api/database.js -sVERBOSE \
+	-L./emsdk/lib -I./emsdk/include -ljsoncpp -lcrypto -g
 echo -e "${YELLOW}Removing libsonolus.data...${WHITE}"
 rm libsonolus.data
 echo -e "${YELLOW}Modifying libsonolus.js...${WHITE}"
