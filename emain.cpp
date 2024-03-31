@@ -142,7 +142,7 @@ void preload() {
     // 先初始化一遍日志系统
     log_init(log_target_type);
 
-    string sonolusJson = readFile("./config/sonolus_config.json");
+    string sonolusJson = readFile("./config/singleplayer_config.json");
     string configJson = readFile("./config/config.json");
     json_decode(sonolusJson, appConfig);
     Json::Value tmpConfig; json_decode(configJson, tmpConfig);
@@ -153,7 +153,6 @@ void preload() {
     appConfig["server.logo"] = dataPrefix + appConfig["server.logo"].asString();
     appConfig["server.bannerHash"] = appConfig["server.banner"].asString();
     appConfig["server.bannerUrl"] = dataPrefix + appConfig["server.banner"].asString();
-    appConfig["server.hasAuthentication"] = false;
     appConfig["database"] = "emscripten";
     log_init(log_target_type);
     db = DB_Controller(true);
