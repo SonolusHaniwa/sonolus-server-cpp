@@ -124,12 +124,14 @@ int particlesCreate(ParticleItem item, string localization = "default") {
         sqlbuffer << "title = \"" << item.title << "\", subtitle = \"" << item.subtitle << "\", ";
         sqlbuffer << "author = \"" << item.author << "\", thumbnail = \"" << item.thumbnail.hash << "\", ";
         sqlbuffer << "data = \"" << item.data.hash << "\", texture = \"" << item.texture.hash << "\", ";
+        sqlbuffer << "tags=\"" << serializeTagString(item.tags) << "\", ";
         sqlbuffer << "description = \"" << str_replace("\n", "\\n", item.description) << "\", localization = \"" << localization << "\" WHERE id = " << id << ";";
     } else {
         int id = atoi(db.query("SELECT COUNT(*) AS sum FROM Particle;")[0]["sum"].c_str()) + 1;
-        sqlbuffer << "INSERT INTO Particle (id, name, version, title, subtitle, author, thumbnail, data, texture, description, localization) VALUES (";
+        sqlbuffer << "INSERT INTO Particle (id, name, version, title, subtitle, author, thumbnail, tags, data, texture, description, localization) VALUES (";
         sqlbuffer << id << ", \"" << item.name << "\", " << item.version << ", \"" << item.title << "\", ";
         sqlbuffer << "\"" << item.subtitle << "\", \"" << item.author << "\", \"" << item.thumbnail.hash << "\", ";
+        sqlbuffer << "\"" << serializeTagString(item.tags) << "\", ";
         sqlbuffer << "\"" << item.data.hash << "\", \"" << item.texture.hash << "\", \"" << str_replace("\n", "\\n", item.description) << "\", \"" << localization << "\");";
     } return db.execute(sqlbuffer.str());
 }

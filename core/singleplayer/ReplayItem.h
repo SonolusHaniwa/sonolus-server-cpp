@@ -128,12 +128,14 @@ int replaysCreate(ReplayItem item, string localization = "default") {
         sqlbuffer << "UPDATE Replay SET name=\"" << item.name << "\", version=" << item.version;
         sqlbuffer << ", title=\"" << item.title << "\", subtitle=\"" << item.subtitle << "\", author=\"" << item.author;
         sqlbuffer << "\", level=" << levelId << ", data=\"" << item.data.hash << "\", configuration=\"" << item.configuration.hash << "\", ";
+        sqlbuffer << "tags=\"" << serializeTagString(item.tags) << "\", ";
         sqlbuffer << "description=\"" << str_replace("\n", "\\n", item.description) << "\", localization=\"" << localization << "\" WHERE id=" << id;
     } else {
         int id = atoi(db.query("SELECT COUNT(*) AS sum FROM Replay;")[0]["sum"].c_str()) + 1;
-        sqlbuffer << "INSERT INTO Replay (id, name, version, title, subtitle, author, level, data, configuration, description, localization) VALUES (";
+        sqlbuffer << "INSERT INTO Replay (id, name, version, title, subtitle, author, level, tags, data, configuration, description, localization) VALUES (";
         sqlbuffer << id << ", \"" << item.name << "\", " << item.version << ", \"" << item.title << "\", ";
         sqlbuffer << "\"" << item.subtitle << "\", \"" << item.author << "\", " << levelId << ", ";
+        sqlbuffer << "\"" << serializeTagString(item.tags) << "\", ";
         sqlbuffer << "\"" << item.data.hash << "\", \"" << item.configuration.hash << "\", \"" << str_replace("\n", "\\n", item.description) << "\", \"" << localization << "\")";
     } return db.execute(sqlbuffer.str());
 }

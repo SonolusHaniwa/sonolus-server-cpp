@@ -128,13 +128,15 @@ int backgroundsCreate(BackgroundItem item, string localization = "default") {
         sqlbuffer << "UPDATE Background SET name = \"" << item.name << "\", version = " << item.version << ", title = \"" << item.title << "\", ";
         sqlbuffer << "subtitle = \"" << item.subtitle << "\", author = \"" << item.author << "\", thumbnail = \"" << item.thumbnail.hash << "\", ";
         sqlbuffer << "data = \"" << item.data.hash << "\", image = \"" << item.image.hash << "\", configuration = \"" << item.configuration.hash << "\", ";
+        sqlbuffer << "tags=\"" << serializeTagString(item.tags) << "\", ";
         sqlbuffer << "description = \"" << str_replace("\n", "\\n", item.description) << "\", localization = \"" << localization << "\" WHERE id = " << id << ";";
     } else {
         int id = atoi(db.query("SELECT COUNT(*) AS sum FROM Background;")[0]["sum"].c_str()) + 1;
-        sqlbuffer << "INSERT INTO Background (id, name, version, title, subtitle, author, thumbnail, data, image, configuration, description, localization) VALUES (";
+        sqlbuffer << "INSERT INTO Background (id, name, version, title, subtitle, author, thumbnail, data, image, configuration, tags, description, localization) VALUES (";
         sqlbuffer << id << ", \"" << item.name << "\", " << item.version << ", \"" << item.title << "\", ";
         sqlbuffer << "\"" << item.subtitle << "\", \"" << item.author << "\", \"" << item.thumbnail.hash << "\", ";
         sqlbuffer << "\"" << item.data.hash << "\", \"" << item.image.hash << "\", \"" << item.configuration.hash << "\", ";
+        sqlbuffer << "\"" << serializeTagString(item.tags) << "\", ";
         sqlbuffer << "\"" << str_replace("\n", "\\n", item.description) << "\", \"" << localization << "\");";
     } return db.execute(sqlbuffer.str());
 }

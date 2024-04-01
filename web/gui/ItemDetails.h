@@ -8,6 +8,7 @@
     argList["html.itemDetails"] = str_replace(ItemDetails, argList); \
     argList["page.title"] = item.title + " | " + appConfig["server.title"].asString(); \
     argList["html.navbar"] = fetchNavBar(item.title).output(); \
+    argList["editUrl"] = "/" + argv[0] + "/" + argv[1] + "/edit"; \
     string detailsSection = ""; \
     argvar args = item.fetchParamList(); \
     for (auto v : args) args[v.first] = str_replace("\"", "\\\"", v.second); \

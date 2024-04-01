@@ -176,13 +176,15 @@ int enginesCreate(EngineItem item, string localization = "default") {
         sqlbuffer << "UPDATE Engine SET name = \"" << item.name << "\", version = " << item.version << ", title = \"" << item.title << "\", ";
         sqlbuffer << "subtitle = \"" << item.subtitle << "\", author = \"" << item.author << "\", skin = " << skinId << ", background = " << backgroundId << ", ";
         sqlbuffer << "effect = " << effectId << ", particle = " << particleId << ", thumbnail = \"" << item.thumbnail.hash << "\", data = \"" << item.data.hash << "\", tutorialData = \"" << item.tutorialData.hash << "\", previewData = \"" << item.previewData.hash << "\", watchData = \"" << item.watchData.hash << "\", ";
+        sqlbuffer << "tags=\"" << serializeTagString(item.tags) << "\", ";
         sqlbuffer << "configuration = \"" << item.configuration.hash << "\", rom = \"" << item.rom.hash << "\", description = \"" << str_replace("\n", "\\n", item.description) << "\", localization = \"" << localization << "\" WHERE id = " << id << ";";
     } else {
         int id = atoi(db.query("SELECT COUNT(*) AS sum FROM Engine;")[0]["sum"].c_str()) + 1;
-        sqlbuffer << "INSERT INTO Engine (id, name, version, title, subtitle, author, skin, background, effect, particle, thumbnail, data, configuration, rom, description, localization, tutorialData, previewData, watchData) VALUES (";
+        sqlbuffer << "INSERT INTO Engine (id, name, version, title, subtitle, author, skin, background, effect, particle, thumbnail, data, configuration, tags, rom, description, localization, tutorialData, previewData, watchData) VALUES (";
         sqlbuffer << id << ", \"" << item.name << "\", " << item.version << ", \"" << item.title << "\", ";
         sqlbuffer << "\"" << item.subtitle << "\", \"" << item.author << "\", " << skinId << ", " << backgroundId << ", " << effectId << ", " << particleId << ", ";
         sqlbuffer << "\"" << item.thumbnail.hash << "\", \"" << item.data.hash << "\", \"" << item.configuration.hash << "\", ";
+        sqlbuffer << "\"" << serializeTagString(item.tags) << "\", ";
         sqlbuffer << "\"" << item.rom.hash << "\", \"" << str_replace("\n", "\\n", item.description) << "\", \"" << localization << "\", \"" << item.tutorialData.hash << "\", \"" << item.previewData.hash << "\", \"" << item.watchData.hash << "\");";
     } return db.execute(sqlbuffer.str());
 }

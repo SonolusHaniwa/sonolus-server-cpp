@@ -109,12 +109,14 @@ int roomsCreate(RoomItem item, string localization = "default") {
         sqlbuffer << "UPDATE Room SET name=\"" << item.name << "\", version=" << item.version;
         sqlbuffer << ", title=\"" << item.title << "\", subtitle=\"" << item.subtitle << "\", master=\"" << item.master;
         sqlbuffer << "\", cover=\"" << item.cover.hash << "\", bgm=\"" << item.bgm.hash << "\", preview=\"" << item.preview.hash << "\", ";
+        sqlbuffer << "tags=\"" << serializeTagString(item.tags) << "\", ";
         sqlbuffer << "localization=\"" << localization << "\" WHERE id=" << id;
     } else {
         int id = atoi(db.query("SELECT COUNT(*) AS sum FROM Room;")[0]["sum"].c_str()) + 1;
-        sqlbuffer << "INSERT INTO Room (id, name, version, title, subtitle, master, cover, bgm, preview, localization) VALUES (";
+        sqlbuffer << "INSERT INTO Room (id, name, version, title, subtitle, master, tags, cover, bgm, preview, localization) VALUES (";
         sqlbuffer << id << ", \"" << item.name << "\", " << item.version << ", \"" << item.title << "\", ";
         sqlbuffer << "\"" << item.subtitle << "\", \"" << item.master << "\", ";
+        sqlbuffer << "\"" << serializeTagString(item.tags) << "\", ";
         sqlbuffer << "\"" << item.cover.hash << "\", \"" << item.bgm.hash << "\", \"" << item.preview.hash << "\", \"" << localization << "\")";
     } return db.execute(sqlbuffer.str());
 }

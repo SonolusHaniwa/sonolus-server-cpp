@@ -124,12 +124,14 @@ int effectsCreate(EffectItem item, string localization = "default") {
         sqlbuffer << "title = \"" << item.title << "\", subtitle = \"" << item.subtitle << "\", ";
         sqlbuffer << "author = \"" << item.author << "\", thumbnail = \"" << item.thumbnail.hash << "\", ";
         sqlbuffer << "data = \"" << item.data.hash << "\", audio = \"" << item.audio.hash << "\", ";
+        sqlbuffer << "tags=\"" << serializeTagString(item.tags) << "\", ";
         sqlbuffer << "description = \"" << str_replace("\n", "\\n", item.description) << "\", localization = \"" << localization << "\" WHERE id = " << id;
     } else {
         int id = atoi(db.query("SELECT COUNT(*) AS sum FROM Effect;")[0]["sum"].c_str()) + 1;
-        sqlbuffer << "INSERT INTO Effect (id, name, version, title, subtitle, author, thumbnail, data, audio, description, localization) VALUES (";
+        sqlbuffer << "INSERT INTO Effect (id, name, version, title, subtitle, author, thumbnail, tags, data, audio, description, localization) VALUES (";
         sqlbuffer << id << ", \"" << item.name << "\", " << item.version << ", \"" << item.title << "\", ";
         sqlbuffer << "\"" << item.subtitle << "\", \"" << item.author << "\", \"" << item.thumbnail.hash << "\", ";
+        sqlbuffer << "\"" << serializeTagString(item.tags) << "\", ";
         sqlbuffer << "\"" << item.data.hash << "\", \"" << item.audio.hash << "\", \"" << str_replace("\n", "\\n", item.description) << "\", \"" << localization << "\")";
     } return db.execute(sqlbuffer.str());
 }

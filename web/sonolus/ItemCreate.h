@@ -20,6 +20,7 @@ auto SonolusCreate = [](client_conn conn, http_request request, param argv){
     int particle = $_POST["particle"] == "" ? -1 : atoi($_POST["particle"].c_str());
     int level = $_POST["level"] == "" ? -1 : atoi($_POST["level"].c_str());
     vector<Tag> tags = deserializeTagString($_POST["tags"]);
+    // cout << tags.size() << endl;
     Json::Value levels; json_decode($_POST["levels"] == "" ? "[]" : $_POST["levels"], levels);
     string description = $_POST["description"];
     string localization = $_POST["localization"];

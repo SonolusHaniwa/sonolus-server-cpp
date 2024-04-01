@@ -117,13 +117,15 @@ int postsCreate(PostItem item, string localization = "default") {
         sqlbuffer << "UPDATE Post SET name=\"" << item.name << "\", version=" << item.version;
         sqlbuffer << ", title=\"" << item.title << "\", time=" << item.time << ", author=\"" << item.author << "\"";
         sqlbuffer << ", thumbnail=\"" << item.thumbnail.hash << "\"";
+        sqlbuffer << ", tags=\"" << serializeTagString(item.tags) << "\"";
         sqlbuffer << ", description=\"" << str_replace("\n", "\\n", item.description) << "\", localization=\"" << localization << "\" WHERE id=" << id;
     } else {
         int id = atoi(db.query("SELECT COUNT(*) AS sum FROM Post;")[0]["sum"].c_str()) + 1;
-        sqlbuffer << "INSERT INTO Post (id, name, version, title, time, author, thumbnail, description, localization) VALUES (";
+        sqlbuffer << "INSERT INTO Post (id, name, version, title, time, author, thumbnail, tags, description, localization) VALUES (";
         sqlbuffer << id << ", \"" << item.name << "\", " << item.version << ", \"" << item.title << "\", ";
         sqlbuffer << item.time << ", \"" << item.author << "\", ";
         sqlbuffer << "\"" << item.thumbnail.hash << "\", ";
+        sqlbuffer << "\"" << serializeTagString(item.tags) << "\", ";
         sqlbuffer << "\"" << str_replace("\n", "\\n", item.description) << "\", \"" << localization << "\")";
     } return db.execute(sqlbuffer.str());
 }

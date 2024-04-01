@@ -151,7 +151,8 @@ class DB_Controller {
 
 	int emscripten_execute(const char* sql) {
 		#ifdef __EMSCRIPTEN__
-		return 0;
+		writeLog(LOG_LEVEL_DEBUG, "Execute database: " + string(sql));
+		return __builtin_emscripten_execute(const_cast<char*>(sql));
 		#else 
 		writeLog(LOG_LEVEL_ERROR, "You should't use emscripten database in terminal! Maybe you want to compile this program with the command `emcc`?");
 		exit(3);

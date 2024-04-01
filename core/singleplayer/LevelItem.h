@@ -200,12 +200,14 @@ int levelsCreate(LevelItem item, string localization = "default") {
         sqlbuffer << "\", title=\"" << item.title << "\", artists=\"" << item.artists << "\", author=\"" << item.author;
         sqlbuffer << "\", engine=" << engineId << ", skin=" << skinId << ", background=" << backgroundId << ", effect=" << effectId << ", particle=" << particleId;
         sqlbuffer << ", cover=\"" << item.cover.hash << "\", bgm=\"" << item.bgm.hash << "\", data=\"" << item.data.hash << "\", preview=\"" << item.preview.hash << "\", ";
+        sqlbuffer << "tags=\"" << serializeTagString(item.tags) << "\", ";
         sqlbuffer << "description=\"" << str_replace("\n", "\\n", item.description) << "\", localization=\"" << localization << "\" WHERE id=" << id;
     } else {
         int id = atoi(db.query("SELECT COUNT(*) AS sum FROM Level;")[0]["sum"].c_str()) + 1;
-        sqlbuffer << "INSERT INTO Level (id, name, version, rating, title, artists, author, engine, skin, background, effect, particle, cover, bgm, data, preview, description, localization) VALUES (";
+        sqlbuffer << "INSERT INTO Level (id, name, version, rating, title, artists, author, engine, skin, background, effect, particle, tags, cover, bgm, data, preview, description, localization) VALUES (";
         sqlbuffer << id << ", \"" << item.name << "\", " << item.version << ", " << item.rating << ", \"" << item.title << "\", ";
         sqlbuffer << "\"" << item.artists << "\", \"" << item.author << "\", " << engineId << ", " << skinId << ", " << backgroundId << ", " << effectId << ", " << particleId << ", ";
+        sqlbuffer << "\"" << serializeTagString(item.tags) << "\", ";
         sqlbuffer << "\"" << item.cover.hash << "\", \"" << item.bgm.hash << "\", \"" << item.data.hash << "\", \"" << item.preview.hash << "\", \"" << str_replace("\n", "\\n", item.description) << "\", \"" << localization << "\")";
     } return db.execute(sqlbuffer.str());
 }

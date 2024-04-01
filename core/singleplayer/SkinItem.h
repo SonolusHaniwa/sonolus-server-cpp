@@ -123,12 +123,14 @@ int skinsCreate(SkinItem item, string localization = "default") {
         sqlbuffer << "UPDATE Skin SET name = \"" << item.name << "\", version = " << item.version << ", title = \"" << item.title << "\", ";
         sqlbuffer << "subtitle = \"" << item.subtitle << "\", author = \"" << item.author << "\", thumbnail = \"" << item.thumbnail.hash << "\", ";
         sqlbuffer << "data = \"" << item.data.hash << "\", texture = \"" << item.texture.hash << "\", ";
+        sqlbuffer << "tags=\"" << serializeTagString(item.tags) << "\", ";
         sqlbuffer << "description = \"" << str_replace("\n", "\\n", item.description) << "\", localization = \"" << localization << "\" WHERE id = " << id;
     } else {
         int id = atoi(db.query("SELECT COUNT(*) AS sum FROM Skin;")[0]["sum"].c_str()) + 1;
-        sqlbuffer << "INSERT INTO Skin (id, name, version, title, subtitle, author, thumbnail, data, texture, description, localization) VALUES (";
+        sqlbuffer << "INSERT INTO Skin (id, name, version, title, subtitle, author, thumbnail, tags, data, texture, description, localization) VALUES (";
         sqlbuffer << id << ", \"" << item.name << "\", " << item.version << ", \"" << item.title << "\", ";
         sqlbuffer << "\"" << item.subtitle << "\", \"" << item.author << "\", \"" << item.thumbnail.hash << "\", ";
+        sqlbuffer << "\"" << serializeTagString(item.tags) << "\", ";
         sqlbuffer << "\"" << item.data.hash << "\", \"" << item.texture.hash << "\", \"" << str_replace("\n", "\\n", item.description) << "\", \"" << localization << "\")";
     }
     return db.execute(sqlbuffer.str());

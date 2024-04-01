@@ -32,6 +32,7 @@ auto GUIInfo = [](client_conn conn, http_request request, param argv) {
     argList["search.placeholder"] = "{{language.KEYWORDS_PLACEHOLDER}}";
     argList["searchUrl"] = "/" + argv[0] + "/search";
     argList["listUrl"] = "/" + argv[0] + "/list";
+    argList["createUrl"] = "/" + argv[0] + "/create";
     string sections = ""; string icons = fetchIconButton("#SearchText", "{{icon.search}}").output();
     for (int i = 0; i < appConfig[argv[0] + ".info.sections"].size(); i++) {
         auto item = appConfig[argv[0] + ".info.sections"][i];
