@@ -69,6 +69,7 @@ jobs:
         run: |
           cd packages
           zip ../sonolus-server-emsdk-${{ env.VERSION }}.zip ./* -r
+          zip ../sonolus-server-emsdk-${{ inputs.version }}.zip ./* -r
           
       - name: Uploading Sonolus Server for Linux x64
         uses: softprops/action-gh-release@v1
