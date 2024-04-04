@@ -82,4 +82,5 @@ jobs:
         if: github.event_name == 'workflow_dispatch'
         with:
           tag_name: ${{ inputs.version }}
+          prerelease: true
           files: sonolus-server-emsdk-${{ inputs.version }}.zip

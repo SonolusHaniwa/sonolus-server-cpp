@@ -6,8 +6,8 @@
     "server.hasMultiplayer": true,
     "server.logo": "9d364cdf72de5709f16eae90e1be7f023946f007",
     "server.banner": "0273968035abcd9bfe8f6b8fa913bb356dd202f2",
-    "server.rootUrl": "192.168.2.18:8080",
+    "server.rootUrl": "",
     "server.data.prefix": "",
-    "server.multiplayer.address": "ws://192.168.2.18:8080",
+    "server.multiplayer.address": "",
     "language.default": "zhs"
 }

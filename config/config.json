@@ -28,6 +28,12 @@
             "icon": "level",
             "filter": "",
             "order": "id DESC"
+        },
+        {
+            "title": "#RANDOM",
+            "icon": "level",
+            "filter": "name LIKE \"%olivier%\"",
+            "order": "RANDOM() ASC"
         }
     ],
     "skins.info.sections": [
@@ -80,10 +86,15 @@
     ],
     "posts.info.sections": [
         {
-            "title": "#NEWEST",
+            "title": "更新情報",
             "icon": "post",
-            "filter": "",
-            "order": "id DESC"
+            "filter": "tags LIKE \"%更新情報%\"",
+            "order": ""
+        }, {
+            "title": "不具合情報",
+            "icon": "post",
+            "filter": "tags LIKE \"%不具合情報%\"",
+            "order": ""
         }
     ],
     "playlists.info.sections": [
@@ -113,7 +124,7 @@
         {
             "title": "#SAME_AUTHOR",
             "icon": "crown",
-            "filter": "author = \"{{author}}\"",
+            "filter": "name LIKE \"%olivier%\" AND artists = \"{{artists}}\"",
             "order": "id DESC"
         }
     ],

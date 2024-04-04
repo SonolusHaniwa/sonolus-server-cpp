@@ -17,7 +17,7 @@ emcc emain.cpp -o libsonolus.js -s MODULARIZE -sALLOW_MEMORY_GROWTH\
 echo -e "${YELLOW}Removing libsonolus.data...${WHITE}"
 rm libsonolus.data
 echo -e "${YELLOW}Modifying libsonolus.js...${WHITE}"
-sed -i "s/var byteArray = this.byteArray.subarray(this.start, this.end);/var byteArray = new Uint8Array(require('fs').readFileSync(__dirname + '\/' + this.name));/g" libsonolus.js
+sed -i "s/var byteArray = this.byteArray.subarray(this.start, this.end);/var byteArray = this.name.substr(-2) == '.h' ? new Uint8Array(0) : new Uint8Array(require('fs').readFileSync(__dirname + '\/' + this.name));/g" libsonolus.js
 sed -i "s/Module\['addRunDependency'\]/\/\/ Module\['addRunDependency'\]/g" libsonolus.js
 sed -i "s/Module\['removeRunDependency'\]/\/\/ Module\['removeRunDependency'\]/g" libsonolus.js
 sed -i "s/require('fs').readFile(packageName, function(err, contents)/return; require('fs').readFile(packageName, function(err, contents)/g" libsonolus.js
