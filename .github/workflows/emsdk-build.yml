@@ -80,4 +80,5 @@ jobs:
         uses: softprops/action-gh-release@v1 
         if: github.event_name == 'workflow_dispatch'
         with:
+          tag_name: ${{ inputs.version }}
           files: sonolus-server-emsdk-${{ inputs.version }}.zip
