@@ -1,5 +1,13 @@
 const express = require('express');
-const factory = require('../libsonolus.js');
+const fs = require('fs');
+function getFiles(path) {
+    return fs.readdirSync(path);
+}
+console.log(__dirname, getFiles(__dirname));
+console.log(__dirname + "/../public", getFiles(__dirname + "/../public"));
+let wasm = fs.readFileSync(__dirname + '/../public/libsonolus.wasm');
+console.log(wasm.length);
+const factory = require('../public/libsonolus.js');
 const app = express();
 
 const BR = '\r\n';
@@ -61,15 +69,25 @@ function randomId() {
 }
 
 app.all("*", async (req, res2) => {
-    var requestId = randomId();
-    console.log("[INFO] [tid:-1] New Connection: " + req.method + " " + req.url + " [" + req.ip + "]");
-    var header = reconstructRequest(req);
-    var inst = await factory();
-    inst.FS.writeFile("/request_" + requestId, header);
-	var ptr = inst.stringToNewUTF8(requestId); // 将字符串转为 char* 指针
-	inst._cgi(ptr, requestId.length);
-    var dat = inst.FS.readFile("/response_" + requestId, { encoding: 'utf8' });
-    parseRawResponse(dat, res2);
+	try {
+	    var requestId = randomId();
+	    console.log("[INFO] [tid:-1] New Connection: " + req.method + " " + req.url + " [" + req.ip + "]");
+	    var header = reconstructRequest(req);
+	    var inst = await factory();
+	    inst.FS.writeFile("/request_" + requestId, header);
+		var ptr = inst.stringToNewUTF8(requestId); // 将字符串转为 char* 指针
+		inst._cgi(ptr, requestId.length);
+	    var dat = inst.FS.readFile("/response_" + requestId, { encoding: 'utf8' });
+	    parseRawResponse(dat, res2);
+    } catch (error) {
+    	let obj = {
+    		error: true,
+    		msg: error.message,
+    		stack: error.stack
+    	}
+    	res2.send(obj)
+    	res2.end()
+    }
 });
 
 app.listen(8080, () => {

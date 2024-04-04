@@ -4,6 +4,11 @@ on:
   release:
     types: [published]
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version'
+        required: true
+        default: 'test-build'
 
 env: 
   VERSION: ${{ github.ref_name }}
@@ -47,18 +52,18 @@ jobs:
       - name: Preparing Package Environment
         run: |
           mkdir packages
-          mv ./sources/config ./packages/config
-          mv ./sources/i18n ./packages/i18n
-          mv ./sources/web ./packages/web
+          mkdir packages/public
+          mv ./sources/config ./packages/public/config
+          mv ./sources/i18n ./packages/public/i18n
+          mv ./sources/web ./packages/public/web
           mv ./sources/api ./packages/api
-          mv ./sources/libsonolus.js ./packages/libsonolus.js
-          mv ./sources/libsonolus.wasm ./packages/libsonolus.wasm
-          mv ./sources/sonolus.sql ./packages/sonolus.sql
+          mv ./sources/libsonolus.js ./packages/public/libsonolus.js
+          mv ./sources/libsonolus.wasm ./packages/public/libsonolus.wasm
+          mv ./sources/sonolus.db ./packages/public/sonolus.db
           mv ./sources/CODE_OF_CONDUCT.md ./packages/
           mv ./sources/LICENSE.txt ./packages/
           mv ./sources/README.md ./packages/
           mv ./sources/README_en.md ./packages/
-          cd packages
           
       - name: Packaging Sonolus Server for Linux x64
         run: |
@@ -70,3 +75,9 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: sonolus-server-emsdk-${{ env.VERSION }}.zip
+      
+      - name: Uploading Sonolus Server for Linux x64
+        uses: softprops/action-gh-release@v1 
+        if: github.event_name == 'workflow_dispatch'
+        with:
+          files: sonolus-server-emsdk-${{ inputs.version }}.zip
