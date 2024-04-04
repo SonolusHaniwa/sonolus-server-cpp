@@ -264,7 +264,11 @@ void* RoomWorkThread(void* roomId) {
 			next:
 			roomEvents[id].erase(roomEvents[id].begin());
 		}
-		usleep(10000);
+		#ifdef __linux__
+		usleep(10 * 1000);
+		#else
+		Sleep(10);
+		#endif
 	}
 	return NULL;
 }
@@ -379,6 +383,9 @@ auto SonolusRoomConnection = [](client_conn conn, http_request request, param ar
 		});
 		else writeLog(LOG_LEVEL_INFO, "Unknown " + type + "Command. (roomId = " + argv[0] + ", thread = " + to_string(userSessionId) + ")");
 
-		usleep(10000);
+		#ifdef __linux__
+		usleep(10 * 1000);
+		#else
+		Sleep(10);
 	}
 };

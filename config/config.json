@@ -16,7 +16,7 @@
     "logSystem.debug": false,
     "logSystem.target": 1,
     "logSystem.targetFile": "./log.txt",
-    "sonolus.version": "0.7.5",
+    "sonolus.version": "0.8.0",
     "sonolus.itemsPerPage": 20,
     "session.expireTime": 30,
     "export.retryTime": 5,
@@ -28,12 +28,6 @@
             "icon": "level",
             "filter": "",
             "order": "id DESC"
-        },
-        {
-            "title": "#RANDOM",
-            "icon": "level",
-            "filter": "name LIKE \"%olivier%\"",
-            "order": "RANDOM() ASC"
         }
     ],
     "skins.info.sections": [
@@ -86,15 +80,10 @@
     ],
     "posts.info.sections": [
         {
-            "title": "更新情報",
-            "icon": "post",
-            "filter": "tags LIKE \"%更新情報%\"",
-            "order": ""
-        }, {
-            "title": "不具合情報",
-            "icon": "post",
-            "filter": "tags LIKE \"%不具合情報%\"",
-            "order": ""
+            "title": "#NEWEST",
+            "icon": "playlist",
+            "filter": "",
+            "order": "id DESC"
         }
     ],
     "playlists.info.sections": [
@@ -119,12 +108,6 @@
             "title": "#RECOMMENDED",
             "icon": "star",
             "filter": "title = \"{{title}}\"",
-            "order": "id DESC"
-        },
-        {
-            "title": "#SAME_AUTHOR",
-            "icon": "crown",
-            "filter": "name LIKE \"%olivier%\" AND artists = \"{{artists}}\"",
             "order": "id DESC"
         }
     ],
