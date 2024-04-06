@@ -33,7 +33,7 @@ auto GUIList = [](client_conn conn, http_request request, param argv) {
     string order = "id DESC"; string type = "", filterWords = "";
     if ($_GET["type"] == "quick") {
         type = "{{language.quick}}";
-        if ($_GET["keywords"] != "") filterWords = "{{language.KEYWORDS}}: " + $_GET["keywords"] + "、";
+        if ($_GET["keywords"] != "") filterWords = "{{language.KEYWORDS}}: " + urldecode($_GET["keywords"]) + "、";
         sqlFilter += "title like \"%" + str_replace("\"", "\\\"", urldecode($_GET["keywords"])) + "%\"";
     } else {
         argvar args = argvar(); string filter = "";
@@ -49,7 +49,7 @@ auto GUIList = [](client_conn conn, http_request request, param argv) {
                 if (item["type"].asString() == "slider") args[query] = $_GET.find(query) == $_GET.end() ? item["def"].asString() : $_GET[query];
                 if (item["type"].asString() == "toggle") args[query] = $_GET.find(query) == $_GET.end() ? item["def"].asString() : $_GET[query];
                 if (item["type"].asString() == "select") args[query] = item["values"][$_GET.find(query) == $_GET.end() ? item["def"].asInt() : atoi($_GET[query].c_str())].asString();
-                if (args[query] != "") filterWords += item["name"].asString() + ": " + args[query] + "、";
+                if (args[query] != "") filterWords += item["name"].asString() + ": " + urldecode(args[query]) + "、";
             }
         }
         

@@ -98,7 +98,12 @@ vector<PostItem> postsList(string filter, string order, int st = 1, int en = 20)
             atoi(res[i]["id"].c_str()),
             res[i]["name"],
             res[i]["title"],
-            atol(res[i]["time"].c_str()),
+            [&](){
+            	time_t num = 0;
+            	for (int j = 0; j < res[i]["time"].size(); j++)
+            		num *= 10, num += res[i]["time"][j] - '0';
+            	return num;
+            }(), // 震惊，llvm 的 atol 居然会出负数😨
             res[i]["author"],
             SRL<PostThumbnail>(res[i]["thumbnail"], dataPrefix + res[i]["thumbnail"]),
             deserializeTagString(res[i]["tags"]),

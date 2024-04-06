@@ -387,5 +387,6 @@ auto SonolusRoomConnection = [](client_conn conn, http_request request, param ar
 		usleep(10 * 1000);
 		#else
 		Sleep(10);
+		#endif
 	}
 };
