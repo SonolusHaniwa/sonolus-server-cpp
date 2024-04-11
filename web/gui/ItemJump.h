@@ -15,7 +15,7 @@ auto GUIJump = [](client_conn conn, http_request request, param argv) {
     argvar argList = argvar();
 
     // TODO: add the argList here
-    argList["page.title"] = argList["language.jumpTitle"] + " | " + appConfig["server.title"].asString();
+    argList["page.title"] = "#jumpTitle | " + appConfig["server.title"].asString();
     argList["html.navbar"] = fetchNavBar("{{language.jumpTitle}}").output();
     argList["pages.current"] = to_string(atoi(argv[1].c_str()) + 1);
     argList["url.base"] = "/" + argv[0] + "/list?" + getStringfy(getParam(request));
