@@ -41,6 +41,12 @@
                 "placeholder": "Enter description..."
             },
             {
+                "query": "tags",
+                "name": "#tags",
+                "type": "text",
+                "placeholder": "Enter tags..."
+            },
+            {
                 "query": "localization",
                 "name": "Localization",
                 "type": "select",

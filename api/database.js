@@ -3,6 +3,7 @@ addToLibrary({
         let configJson = FS.readFile("/config/config.json", { encoding: "utf8" }).toString()
         let appConfig = JSON.parse(configJson)
         sql = UTF8ToString(sql)
+        sql = sql.replace(/\'/g, "\'\'")
         sql = sql.replace(/\"/g, "'")
         if (ENVIRONMENT_IS_NODE) {
             if (appConfig["database"] == "sqlite") {
@@ -24,6 +25,7 @@ addToLibrary({
         let configJson = FS.readFile("/config/config.json", { encoding: "utf8" }).toString()
         let appConfig = JSON.parse(configJson)
         sql = UTF8ToString(sql)
+        sql = sql.replace(/\'/g, "\'\'")
         sql = sql.replace(/\"/g, "'")
         if (ENVIRONMENT_IS_NODE) {
             if (appConfig["database"] == "sqlite") {

@@ -690,6 +690,7 @@ http_request getRequest(client_conn& conn) {
         header[0] != "PUT" && header[0] != "DELETE" && header[0] != "CONNECT" && 
         header[0] != "OPTIONS" && header[0] != "TRACE" && header[0] != "PATCH"
     )) {
+    	cout << header[0].size() << " " << header[0][0] << endl;
         writeLog(LOG_LEVEL_WARNING, "Invalid HTTP Request in line 1: Invalid Request Method!");
         stringstream buffer;
         buffer << "<html>" << endl;
