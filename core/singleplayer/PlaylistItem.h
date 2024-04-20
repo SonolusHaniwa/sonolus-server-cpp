@@ -63,6 +63,7 @@ class PlaylistItem {
         args["subtitle"] = subtitle;
         args["author"] = author;
         for (int i = 0; i < levels.size(); i++) args["levels"] += levels[i].toHTMLObject().output();
+        args["thumbnail"] = thumbnail.url;
         args["tags"] = serializeTagString(tags);
         args["tags.html"] = "";
         for (int i = 0; i < tags.size(); i++) args["tags.html"] += "<div class='flex' style='background-color:rgba(255,255,255,0.125);padding:5px;'>"
