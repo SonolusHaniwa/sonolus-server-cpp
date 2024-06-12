@@ -1,0 +1,97 @@
+{
+    "replays.enableLike": true,
+    "replays.enableComment": true,
+    "replays.enableRating": true,
+    "replays.enableGUICreate": true,
+    "replays.enableSonolusCreate": true,
+    "replays.pageSize.info": 5,
+    "replays.pageSize.list": 20,
+    "replays.pageSize.recommends": 5,
+    "replays.pageSize.community": 5,
+    "replays.info.sections": [
+        {
+            "title": "#NEWEST",
+            "icon": "replay",
+            "filter": "",
+            "order": "id DESC"
+        }
+    ],
+    "replays.details.sections": [
+        
+    ],
+    "replays.searches": [
+        
+    ],
+    "replays.creates": [
+        {
+            "options": [
+                {
+                    "query": "name",
+                    "name": "#NAME",
+                    "type": "text",
+                    "placeholder": "Enter replay name..."
+                },
+                {
+                    "query": "title",
+                    "name": "#TITLE",
+                    "type": "text",
+                    "placeholder": "Enter replay title..."
+                },
+                {
+                    "query": "subtitle",
+                    "name": "#SUBTITLE",
+                    "type": "text",
+                    "placeholder": "Enter subtitle name..."
+                },
+                {
+                    "query": "author",
+                    "name": "#AUTHOR",
+                    "type": "text",
+                    "placeholder": "Enter replay author..."
+                },
+                {
+                    "query": "description",
+                    "name": "#description",
+                    "type": "textArea",
+                    "placeholder": "Enter description..."
+                },
+                {
+                    "query": "tags",
+                    "name": "#tags",
+                    "type": "text",
+                    "placeholder": "Enter tags..."
+                },
+                {
+                    "query": "localization",
+                    "name": "Localization",
+                    "type": "select",
+                    "def": 0,
+                    "values": [
+                        "default",
+                        "{{jsonArray.languageList}}"
+                    ]
+                },
+                {
+                    "query": "level",
+                    "name": "#levels",
+                    "type": "select",
+                    "def": 0,
+                    "values": [
+                        "Choose a Level",
+                        "{{jsonArray.levelList}}"
+                    ]
+                },
+                {
+                    "query": "data",
+                    "name": "Data",
+                    "type": "file"
+                },
+                {
+                    "query": "configuration",
+                    "name": "Configuration",
+                    "type": "file"
+                }
+            ]
+        }
+    ]
+}

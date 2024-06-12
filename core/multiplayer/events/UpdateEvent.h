@@ -50,12 +50,12 @@ class UpdateEvent {
 		results(results), users(users), userStatuses(userStatuses){};
 	UpdateEvent(Json::Value obj) {
 		allowOtherServers = obj["allowOtherServers"].asBool();
-		reportUserOptions = constructSearch(obj["reportUserOptions"]);
+		reportUserOptions = constructSearch(obj["reportUserOptions"]["options"]);
 		title = obj["title"].asString();
 		status = obj["status"].asString();
 		master = obj["master"].asString();
 		lead = obj["lead"].asString();
-		options = constructSearch(obj["options"]);
+        options = constructSearch(obj["options"]["options"]);
 		optionValues = obj["optionValues"].asString();
 		level = LevelLocator(obj["level"]);
 		for (int i = 0; i < obj["levelOptions"].size(); i++) levelOptions.push_back(LevelOptionEntry(obj["levelOptions"][i]));

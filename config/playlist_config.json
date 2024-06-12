@@ -1,0 +1,28 @@
+{
+    "playlists.enableLike": true,
+    "playlists.enableComment": true,
+    "playlists.enableRating": true,
+    "playlists.enableGUICreate": true,
+    "playlists.enableSonolusCreate": true,
+    "playlists.pageSize.info": 5,
+    "playlists.pageSize.list": 20,
+    "playlists.pageSize.recommends": 5,
+    "playlists.pageSize.community": 5,
+    "playlists.info.sections": [
+        {
+            "title": "#NEWEST",
+            "icon": "playlist",
+            "filter": "",
+            "order": "id DESC"
+        }
+    ],
+    "playlists.details.sections": [
+        
+    ],
+    "playlists.searches": [
+        
+    ],
+    "playlists.creates": [
+
+    ]
+}

@@ -194,3 +194,26 @@ CREATE TABLE Room (
 	localization text DEFAULT "default",
 	creatorId text
 );
+
+/* Sonolus v0.8.2 */
+CREATE TABLE Like (
+    name text,
+    targetType text,
+    targetName text,
+    uid text
+);
+CREATE TABLE Comment (
+    name text,
+    targetType text,
+    targetName text,
+    uid text,
+    time int,
+    content text
+);
+CREATE TABLE Rating (
+    name text,
+    targetType text,
+    targetName text,
+    uid text,
+    rating int
+)

@@ -7,6 +7,10 @@
     ItemDetails["item"] = item.toJsonObject(); \
     ItemDetails["description"] = item.description; \
     ItemDetails["sections"].resize(0); \
+    ItemDetails["hasCommunity"] = \
+        appConfig[defineToString(name2)".enableLike"].asBool() || \
+        appConfig[defineToString(name2)".enableComment"].asBool() || \
+        appConfig[defineToString(name2)".enableRating"].asBool(); \
     argvar args = item.fetchParamList(); \
     for (auto v : args) args[v.first] = str_replace("\"", "\\\"", v.second); \
     for (int i = 0; i < appConfig[defineToString(name2)".details.sections"].size(); i++) { \
@@ -17,7 +21,7 @@
         order = str_replace(order, args); \
         ItemDetails["sections"].append(ItemSection<name1##Item>( \
             obj["title"].asString(), obj["icon"].asString(), \
-            name2##List(filter, order, 1, 5) \
+            name2##List(filter, order, 1, appConfig[defineToString(name2)".pageSize.recommends"].asInt()) \
         ).toJsonObject()); \
     } \
     auto recommended = name2##List("author = \"" + item.author + "\"", "id DESC", 1, 5); \

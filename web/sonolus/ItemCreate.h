@@ -3,7 +3,8 @@ auto SonolusCreate = [](client_conn conn, http_request request, param argv){
     if (!checkLogin(request)) quickSendMsg(401);
     
     auto $_POST = argvar();
-    if (request.postdata[0] != '{' && request.postdata[0] != '[') $_POST = postParam(request);
+    if (request.postdata[0] == '{') request.postdata = json_decode(request.postdata)["value"].asString();
+	$_POST = postParam(request);
     int raws = 0;
 	int id = $_POST["id"] == "" ? -1 : atoi($_POST["id"].c_str());
     string name = $_POST["name"];

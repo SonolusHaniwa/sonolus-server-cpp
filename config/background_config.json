@@ -1,0 +1,97 @@
+{
+    "backgrounds.enableLike": true,
+    "backgrounds.enableComment": true,
+    "backgrounds.enableRating": true,
+    "backgrounds.enableGUICreate": false,
+    "backgrounds.enableSonolusCreate": false,
+    "backgrounds.pageSize.info": 5,
+    "backgrounds.pageSize.list": 20,
+    "backgrounds.pageSize.recommends": 5,
+    "backgrounds.pageSize.community": 5,
+    "backgrounds.info.sections": [
+        {
+            "title": "#NEWEST",
+            "icon": "background",
+            "filter": "",
+            "order": "id DESC"
+        }
+    ],
+    "backgrounds.details.sections": [
+
+    ],
+    "backgrounds.searches": [
+        
+    ],
+    "backgrounds.creates": [
+        {
+            "options": [
+                {
+                    "query": "name",
+                    "name": "#NAME",
+                    "type": "text",
+                    "placeholder": "Enter background name..."
+                },
+                {
+                    "query": "title",
+                    "name": "#TITLE",
+                    "type": "text",
+                    "placeholder": "Enter background title..."
+                },
+                {
+                    "query": "subtitle",
+                    "name": "#SUBTITLE",
+                    "type": "text",
+                    "placeholder": "Enter background subtitle..."
+                },
+                {
+                    "query": "author",
+                    "name": "#AUTHOR",
+                    "type": "text",
+                    "placeholder": "Enter background author..."
+                },
+                {
+                    "query": "description",
+                    "name": "#description",
+                    "type": "textArea",
+                    "placeholder": "Enter description..."
+                },
+                {
+                    "query": "tags",
+                    "name": "#tags",
+                    "type": "text",
+                    "placeholder": "Enter tags..."
+                },
+                {
+                    "query": "localization",
+                    "name": "Localization",
+                    "type": "select",
+                    "def": 0,
+                    "values": [
+                        "default",
+                        "{{jsonArray.languageList}}"
+                    ]
+                },
+                {
+                    "query": "thumbnail",
+                    "name": "Thumbnail",
+                    "type": "file"
+                },
+                {
+                    "query": "data",
+                    "name": "Data",
+                    "type": "file"
+                },
+                {
+                    "query": "image",
+                    "name": "Image",
+                    "type": "file"
+                },
+                {
+                    "query": "configuration",
+                    "name": "Configuration",
+                    "type": "file"
+                }
+            ]
+        }
+    ]
+}

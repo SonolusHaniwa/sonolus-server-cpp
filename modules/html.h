@@ -202,8 +202,14 @@ H fetchIconButton(string url, string icon) {
     return str_replace(source, args);
 }
 
-vector<string> iconName = {"advanced", "award", "bookmark", "crown", "heart", "medal", "ranking", "search", "shuffle", "star", "thumbsUp", "thumbsDown", "trophy",
-    "home", "global", "post", "playlist", "level", "skin", "background", "effect", "particle", "engine", "replay", "login", "logout", "description", "tags"};
+vector<string> iconName = {
+    "advanced", "award", "bookmark", "crown", "heart", 
+    "medal", "ranking", "search", "shuffle", "star", 
+    "thumbsUp", "thumbsDown", "trophy", "home", "global", 
+    "post", "playlist", "level", "skin", "background", 
+    "effect", "particle", "engine", "replay", "login", 
+    "logout", "description", "tags", "more"
+};
 argvar iconList;
 bool iconLoader = [](){
     iconList["icon."] = ""; // 避免空 Icon 名导致错误

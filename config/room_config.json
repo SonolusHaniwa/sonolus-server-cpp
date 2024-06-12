@@ -1,0 +1,43 @@
+{
+    "rooms.enableLike": true,
+    "rooms.enableComment": true,
+    "rooms.enableRating": true,
+    "rooms.enableGUICreate": true,
+    "rooms.enableSonolusCreate": true,
+    "rooms.pageSize.info": 5,
+    "rooms.pageSize.list": 20,
+    "rooms.pageSize.recommends": 5,
+    "rooms.pageSize.community": 5,
+    "rooms.info.sections": [
+        {
+            "title": "#NEWEST",
+            "icon": "room",
+            "filter": "",
+            "order": "id DESC"
+        }
+    ],
+    "rooms.details.sections": [
+        
+    ],
+    "rooms.searches": [
+        
+    ],
+    "rooms.creates": [
+        {
+            "options": [
+                {
+                    "query": "title",
+                    "name": "#TITLE",
+                    "type": "text",
+                    "placeholder": "#TITLE_PLACEHOLDER"
+                },
+                {
+                    "query": "subtitle",
+                    "name": "#SUBTITLE",
+                    "type": "text",
+                    "placeholder": "#SUBTITLE_PLACEHOLDER"
+                }
+            ]
+        }
+    ]
+}

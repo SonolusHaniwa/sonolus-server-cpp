@@ -73,7 +73,7 @@ vector<UserProfile> usersList(string filter, string order, int st = 1, int en = 
     	vector<pair<string, string> > socialLinks;
 		vector<string> favorites;
 		Json::Value obj; json_decode(res[i]["socialLinks"], obj);
-		for (int j = 0; j < obj.size(); j++) socialLinks.push_back({obj[j][0].asString(), obj[j][1].asString()});
+		for (int j = 0; j < obj.size(); j++) socialLinks.push_back({obj[j]["title"].asString(), obj[j]["address"].asString()});
 		json_decode(res[i]["favorites"], obj);
 		for (int j = 0; j < obj.size(); j++) favorites.push_back(obj[j].asString());
     	UserProfile data = UserProfile(

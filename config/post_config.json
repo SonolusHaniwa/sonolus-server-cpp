@@ -1,0 +1,28 @@
+{
+    "posts.enableLike": true,
+    "posts.enableComment": true,
+    "posts.enableRating": true,
+    "posts.enableGUICreate": true,
+    "posts.enableSonolusCreate": true,
+    "posts.pageSize.info": 5,
+    "posts.pageSize.list": 20,
+    "posts.pageSize.recommends": 5,
+    "posts.pageSize.community": 5,
+    "posts.info.sections": [
+        {
+            "title": "#NEWEST",
+            "icon": "post",
+            "filter": "",
+            "order": "id DESC"
+        }
+    ],
+    "posts.details.sections": [
+        
+    ],
+    "posts.searches": [
+        
+    ],
+    "posts.creates": [
+        
+    ]
+}

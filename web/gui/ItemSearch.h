@@ -18,9 +18,8 @@ auto GUISearch = [](client_conn conn, http_request request, param argv) {
     argvar $_GET = getParam(request);
     argvar args = argvar();
     if ($_GET["type"] == "quick") args["quick_keywords"] = urldecode($_GET["keywords"]);
-    string searchJson = readFile("./config/" + argv[0].substr(0, argv[0].size() - 1) + "_search.json"); Json::Value Searches;
     for (auto v : $_GET) $_GET[v.first] = str_replace("\"", "\\\"", urldecode(v.second));
-    json_decode(searchJson, Searches);
+    Json::Value Searches = appConfig[argv[0] + ".searches"];
     for (int i = 0; i < Searches.size(); i++) {
         string type = Searches[i]["type"].asString();
         for (int j = 0; j < Searches[i]["options"].size(); j++) {

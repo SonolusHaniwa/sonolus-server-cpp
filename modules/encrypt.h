@@ -208,7 +208,7 @@ bool ecdsa_sha256_verify(string msg, string sig, string pemKey) {
 
 // 引号编码
 string quote_encode(string source) {
-    return str_replace("\"", "\"\"", str_replace("\n", "\\n", source));
+    return str_replace("\"", "\"\"", source);
 }
 
 #endif

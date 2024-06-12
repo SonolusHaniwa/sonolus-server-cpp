@@ -16,7 +16,7 @@
         auto section = appConfig[argv[0] + ".details.sections"][i]; \
         detailsSection += "<a style=\"height:0px;margin:0px;\" name=\"" + section["title"].asString() + "\"></a>"; \
         detailsSection += "<div class=\"flex flex-col space-y-2 sm:space-y-3\"><h2 class=\"py-1 text-xl font-bold sm:py-1.5 sm:text-3xl\">" + section["title"].asString() + "</h2>"; \
-        auto list = name##List(str_replace(section["filter"].asString(), args), str_replace(section["order"].asString(), args), 1, 5); \
+        auto list = name##List(str_replace(section["filter"].asString(), args), str_replace(section["order"].asString(), args), 1, appConfig[string(argv[0]) + ".pageSize.recommends"].asInt()); \
         for (int j = 0; j < list.size(); j++) detailsSection += list[j].toHTMLObject().output(); \
         detailsSection += "</div>"; \
         detailsIcon += fetchIconButton("#" + section["title"].asString(), "{{icon." + section["icon"].asString() + "}}").output(); \

@@ -10,7 +10,7 @@ class UpdateOptionsEvent {
     UpdateOptionsEvent(){}
     UpdateOptionsEvent(vector<Search> options, string optionValues): options(options), optionValues(optionValues){}
     UpdateOptionsEvent(Json::Value obj) {
-        options = constructSearch(obj["options"]);
+        options = constructSearch(obj["options"]["options"]);
         optionValues = obj["optionValues"].asString();
     }
 

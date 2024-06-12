@@ -11,7 +11,7 @@
             (item["order"].asString() == "" ? "id DESC" : item["order"].asString()); \
         ItemInfo["sections"].append(ItemSection<name1##Item>( \
             item["title"].asString(), item["icon"].asString(), \
-            name2##List(item["filter"].asString(), item["order"].asString(), 1, 5) \
+            name2##List(item["filter"].asString(), item["order"].asString(), 1, appConfig[defineToString(name2)".pageSize.info"].asInt()) \
         ).toJsonObject()); \
     } \
 }

@@ -1,0 +1,152 @@
+{
+    "engines.enableLike": true,
+    "engines.enableComment": true,
+    "engines.enableRating": true,
+    "engines.enableGUICreate": false,
+    "engines.enableSonolusCreate": false,
+    "engines.pageSize.info": 5,
+    "engines.pageSize.list": 20,
+    "engines.pageSize.recommends": 5,
+    "engines.pageSize.community": 5,
+    "engines.info.sections": [
+        {
+            "title": "#NEWEST",
+            "icon": "engine",
+            "filter": "",
+            "order": "id DESC"
+        }
+    ],
+    "engines.details.sections": [
+        
+    ],
+    "engines.searches": [
+        
+    ],
+    "engines.creates": [
+        {
+            "options": [
+                {
+                    "query": "name",
+                    "name": "#NAME",
+                    "type": "text",
+                    "placeholder": "Enter engine name..."
+                },
+                {
+                    "query": "title",
+                    "name": "#TITLE",
+                    "type": "text",
+                    "placeholder": "Enter engine title..."
+                },
+                {
+                    "query": "subtitle",
+                    "name": "#SUBTITLE",
+                    "type": "text",
+                    "placeholder": "Enter engine subtitle..."
+                },
+                {
+                    "query": "author",
+                    "name": "#AUTHOR",
+                    "type": "text",
+                    "placeholder": "Enter engine author..."
+                },
+                {
+                    "query": "description",
+                    "name": "#description",
+                    "type": "textArea",
+                    "placeholder": "Enter description..."
+                },
+                {
+                    "query": "tags",
+                    "name": "#tags",
+                    "type": "text",
+                    "placeholder": "Enter tags..."
+                },
+                {
+                    "query": "localization",
+                    "name": "Localization",
+                    "type": "select",
+                    "def": 0,
+                    "values": [
+                        "default",
+                        "{{jsonArray.languageList}}"
+                    ]
+                },
+                {
+                    "query": "skin",
+                    "name": "#skins",
+                    "type": "select",
+                    "def": 0,
+                    "values": [
+                        "Choose a Skin",
+                        "{{jsonArray.skinList}}"
+                    ]
+                },
+                {
+                    "query": "background",
+                    "name": "#backgrounds",
+                    "type": "select",
+                    "def": 0,
+                    "values": [
+                        "Choose a Background",
+                        "{{jsonArray.backgroundList}}"
+                    ]
+                },
+                {
+                    "query": "effect",
+                    "name": "#effects",
+                    "type": "select",
+                    "def": 0,
+                    "values": [
+                        "Choose an Effect",
+                        "{{jsonArray.effectList}}"
+                    ]
+                },
+                {
+                    "query": "particle",
+                    "name": "#particles",
+                    "type": "select",
+                    "def": 0,
+                    "values": [
+                        "Choose a Particle", 
+                        "{{jsonArray.particleList}}"
+                    ]
+                },
+                {
+                    "query": "thumbnail",
+                    "name": "Thumbnail",
+                    "type": "file"
+                },
+                {
+                    "query": "data",
+                    "name": "Play Data",
+                    "type": "file"
+                },
+                {
+                    "query": "tutorialData",
+                    "name": "Tutorial Data",
+                    "type": "file"
+                },
+                {
+                    "query": "previewData",
+                    "name": "Preview Data",
+                    "type": "file"
+                },
+                {
+                    "query": "watchData",
+                    "name": "Watch Data",
+                    "type": "file"
+                },
+                {
+                    "query": "configuration",
+                    "name": "Configuration",
+                    "type": "file"
+                },
+                {
+                    "query": "rom",
+                    "name": "Rom",
+                    "type": "file"
+                }
+            ]
+        }
+    ]
+}

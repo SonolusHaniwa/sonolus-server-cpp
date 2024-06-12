@@ -94,6 +94,8 @@ string generateSession() {
 #include"ItemCreate.h"
 #include"Authentication.h"
 #include"CheckLogin.h"
+#include"ItemCommunity.h"
+#include"ItemCommunityCommentList.h"
 #ifndef __EMSCRIPTEN__
 #include"RoomJoin.h"
 #include"RoomConnection.h"

@@ -1,0 +1,92 @@
+{
+    "particles.enableLike": true,
+    "particles.enableComment": true,
+    "particles.enableRating": true,
+    "particles.enableGUICreate": true,
+    "particles.enableSonolusCreate": true,
+    "particles.pageSize.info": 5,
+    "particles.pageSize.list": 20,
+    "particles.pageSize.recommends": 5,
+    "particles.pageSize.community": 5,
+    "particles.info.sections": [
+        {
+            "title": "#NEWEST",
+            "icon": "particle",
+            "filter": "",
+            "order": "id DESC"
+        }
+    ],
+    "particles.details.sections": [
+        
+    ],
+    "particles.searches": [
+        
+    ],
+    "particles.creates": [
+        {
+            "options": [
+                {
+                    "query": "name",
+                    "name": "#NAME",
+                    "type": "text",
+                    "placeholder": "Enter particle name..."
+                },
+                {
+                    "query": "title",
+                    "name": "#TITLE",
+                    "type": "text",
+                    "placeholder": "Enter particle title..."
+                },
+                {
+                    "query": "subtitle",
+                    "name": "#SUBTITLE",
+                    "type": "text",
+                    "placeholder": "Enter particle subtitle..."
+                },
+                {
+                    "query": "author",
+                    "name": "#AUTHOR",
+                    "type": "text",
+                    "placeholder": "Enter particle author..."
+                },
+                {
+                    "query": "description",
+                    "name": "#description",
+                    "type": "textArea",
+                    "placeholder": "Enter description..."
+                },
+                {
+                    "query": "tags",
+                    "name": "#tags",
+                    "type": "text",
+                    "placeholder": "Enter tags..."
+                },
+                {
+                    "query": "localization",
+                    "name": "Localization",
+                    "type": "select",
+                    "def": 0,
+                    "values": [
+                        "default",
+                        "{{jsonArray.languageList}}"
+                    ]
+                },
+                {
+                    "query": "thumbnail",
+                    "name": "Thumbnail",
+                    "type": "file"
+                },
+                {
+                    "query": "data",
+                    "name": "Data",
+                    "type": "file"
+                },
+                {
+                    "query": "texture",
+                    "name": "Texture",
+                    "type": "file"
+                }
+            ]
+        }
+    ]
+}

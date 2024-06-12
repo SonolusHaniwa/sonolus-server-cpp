@@ -106,6 +106,8 @@ void routerRegister(int argc, char** argv) {
     app.addRoute("/sonolus/%s/create", SonolusCreate);
     app.addRoute("/sonolus/rooms/%s", SonolusRoomJoin);
     app.addRoute("/sonolus/%s/%s", SonolusDetails);
+    app.addRoute("/sonolus/%s/%s/community", SonolusCommunity);
+    app.addRoute("/sonolus/%s/%s/community/comments/list", SonolusCommunityCommentList);
     app.addRoute("/sonolus/authenticate", Authentication);
     app.addRoute("/sonolus/checklogin", CheckLogin);
 
@@ -353,15 +355,28 @@ void preload() {
 
     // 先初始化一遍日志系统
     log_init(log_target_type);
+    vector<string> config_lists = {
+        "./config/config.json",
+        "./config/singleplayer_config.json",
+        "./config/multiplayer_config.json",
+        "./config/level_config.json",
+        "./config/skin_config.json",
+        "./config/background_config.json",
+        "./config/effect_config.json",
+        "./config/particle_config.json",
+        "./config/engine_config.json",
+        "./config/replay_config.json",
+        "./config/post_config.json",
+        "./config/playlist_config.json",
+        "./config/room_config.json"
+    };
+    for (int i = 0; i < config_lists.size(); i++) {
+        string json = readFile(config_lists[i]);
+        Json::Value obj;
+        json_decode(json, obj);
+        json_merge(appConfig, obj);
+    }
 
-    string sonolusJson = readFile("./config/singleplayer_config.json");
-    string multiplayerJson = readFile("./config/multiplayer_config.json");
-    string configJson = readFile("./config/config.json");
-    json_decode(configJson, appConfig);
-    Json::Value tmpConfig; json_decode(sonolusJson, tmpConfig);
-    json_merge(appConfig, tmpConfig);
-    json_decode(multiplayerJson, tmpConfig);
-    json_merge(appConfig, tmpConfig);
     Sonolus_Version = appConfig["sonolus.version"].asString();
     if (appConfig["server.data.prefix"].asString() == "") appConfig["server.data.prefix"] = "/data/";
     dataPrefix = appConfig["server.data.prefix"].asString();

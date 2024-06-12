@@ -1,0 +1,211 @@
+{
+    "levels.enableLike": true,
+    "levels.enableComment": true,
+    "levels.enableRating": true,
+    "levels.enableGUICreate": false,
+    "levels.enableSonolusCreate": false,
+    "levels.pageSize.info": 5,
+    "levels.pageSize.list": 20,
+    "levels.pageSize.recommends": 5,
+    "levels.pageSize.community": 5,
+    "levels.info.sections": [
+        {
+            "title": "#NEWEST",
+            "icon": "level",
+            "filter": "",
+            "order": "id DESC"
+        }
+    ],
+    "levels.details.sections": [
+        {
+            "title": "#RECOMMENDED",
+            "icon": "star",
+            "filter": "title = \"{{title}}\"",
+            "order": "id DESC"
+        }
+    ],
+    "levels.searches": [
+        {
+            "title": "#ADVANCED",
+            "icon": "search",
+            "type": "advanced",
+            "options": [
+                {
+                    "query": "keywords",
+                    "name": "#KEYWORDS",
+                    "type": "text",
+                    "placeholder": "Enter keywords..."
+                },
+                {
+                    "query": "artist",
+                    "name": "#ARTISTS",
+                    "type": "text",
+                    "placeholder": "Enter artist name..."
+                },
+                {
+                    "query": "author",
+                    "name": "#AUTHOR",
+                    "type": "text",
+                    "placeholder": "Enter author name..."
+                },
+                {
+                    "query": "minRating",
+                    "name": "#RATING_MINIMUM",
+                    "type": "slider",
+                    "def": 1,
+                    "min": 1,
+                    "max": 50,
+                    "step": 1
+                },
+                {
+                    "query": "maxRating",
+                    "name": "#RATING_MAXIMUM",
+                    "type": "slider",
+                    "def": 40,
+                    "min": 1,
+                    "max": 50,
+                    "step": 1
+                },
+                {
+                    "query": "random",
+                    "name": "#RANDOM",
+                    "type": "toggle",
+                    "def": 0
+                }
+            ],
+            "filter": "title LIKE \"%{{keywords}}%\" AND artists LIKE \"%{{artist}}%\" AND author LIKE \"%{{author}}%\" AND rating >= {{minRating}} AND rating <= {{maxRating}}",
+            "order": "CASE {{random}} WHEN 0 THEN id WHEN 1 THEN RANDOM() END DESC"
+        }
+    ],
+    "levels.creates": [
+        {
+            "options": [
+                {
+                    "query": "name",
+                    "name": "#NAME",
+                    "type": "text",
+                    "placeholder": "Enter level name..."
+                },
+                {
+                    "query": "rating",
+                    "name": "#RATING",
+                    "type": "slider",
+                    "def": 5,
+                    "min": 5,
+                    "max": 50,
+                    "step": 1
+                },
+                {
+                    "query": "title",
+                    "name": "#TITLE",
+                    "type": "text",
+                    "placeholder": "Enter level title..."
+                },
+                {
+                    "query": "artists",
+                    "name": "#ARTISTS",
+                    "type": "text",
+                    "placeholder": "Enter artists name..."
+                },
+                {
+                    "query": "author",
+                    "name": "#AUTHOR",
+                    "type": "text",
+                    "placeholder": "Enter chart author..."
+                },
+                {
+                    "query": "description",
+                    "name": "#description",
+                    "type": "textArea",
+                    "placeholder": "Enter description..."
+                },
+                {
+                    "query": "tags",
+                    "name": "#tags",
+                    "type": "text",
+                    "placeholder": "Enter tags..."
+                },
+                {
+                    "query": "localization",
+                    "name": "Localization",
+                    "type": "select",
+                    "def": 0,
+                    "values": [
+                        "default",
+                        "{{jsonArray.languageList}}"
+                    ]
+                },
+                {
+                    "query": "engine",
+                    "name": "#engines",
+                    "type": "select",
+                    "def": 0,
+                    "values": [
+                        "Choose an Engine",
+                        "{{jsonArray.engineList}}"
+                    ]
+                },
+                {
+                    "query": "skin",
+                    "name": "#skins",
+                    "type": "select",
+                    "def": 0,
+                    "values": [
+                        "Default Skin",
+                        "{{jsonArray.skinList}}"
+                    ]
+                },
+                {
+                    "query": "background",
+                    "name": "#backgrounds",
+                    "type": "select",
+                    "def": 0,
+                    "values": [
+                        "Default Background",
+                        "{{jsonArray.backgroundList}}"
+                    ]
+                },
+                {
+                    "query": "effect",
+                    "name": "#effects",
+                    "type": "select",
+                    "def": 0,
+                    "values": [
+                        "Default Effect",
+                        "{{jsonArray.effectList}}"
+                    ]
+                },
+                {
+                    "query": "particle",
+                    "name": "#particles",
+                    "type": "select",
+                    "def": 0,
+                    "values": [
+                        "Default Particle", 
+                        "{{jsonArray.particleList}}"
+                    ]
+                },
+                {
+                    "query": "cover",
+                    "name": "Cover",
+                    "type": "file"
+                },
+                {
+                    "query": "bgm",
+                    "name": "BGM",
+                    "type": "file"
+                },
+                {
+                    "query": "data",
+                    "name": "Data",
+                    "type": "file"
+                },
+                {
+                    "query": "preview",
+                    "name": "Preview",
+                    "type": "file"
+                }
+            ]
+        }
+    ]
+}

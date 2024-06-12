@@ -1,5 +1,5 @@
 #define quickGUIInfo(itemname) {\
-    auto infos = itemname##List(item["filter"].asString(), item["order"].asString(), 1, 5);\
+    auto infos = itemname##List(item["filter"].asString(), item["order"].asString(), 1, appConfig[string(argv[0]) + ".pageSize.info"].asInt());\
     map<string, bool> used; int number = 0; \
     for (int i = 0; i < infos.size(); i++) { \
     	if (used[infos[i].name]) continue; \
