@@ -41,7 +41,7 @@ auto SonolusList = [](client_conn conn, http_request request, param argv){
         order = str_replace(order, args);
         if (filter == "") sqlFilter += "1";
     } sqlFilter += ")";
-    order = "CASE WHEN localization == \"default\" THEN 1 WHEN localization != \"default\" THEN 0 END ASC, " + order;
+    order = "CASE WHEN localization = \"default\" THEN 1 WHEN localization != \"default\" THEN 0 END ASC, " + order;
 
     int page = $_GET["page"] == "" ? 0 : atoi($_GET["page"].c_str());
     int itemsPerPage = appConfig[string(argv[0]) + ".pageSize.list"].asInt();

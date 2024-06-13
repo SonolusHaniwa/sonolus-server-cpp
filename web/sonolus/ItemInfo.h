@@ -7,7 +7,7 @@
         auto item = appConfig[defineToString(name2)".info.sections"][i]; \
         item["filter"] = "(localization = \"" + $_GET["localization"] + "\" OR localization = \"default\") AND (" + \
             (item["filter"].asString() == "" ? "1" : item["filter"].asString()) + ")"; \
-        item["order"] = "CASE WHEN localization == \"default\" THEN 1 WHEN localization != \"default\" THEN 0 END ASC, " + \
+        item["order"] = "CASE WHEN localization = \"default\" THEN 1 WHEN localization != \"default\" THEN 0 END ASC, " + \
             (item["order"].asString() == "" ? "id DESC" : item["order"].asString()); \
         ItemInfo["sections"].append(ItemSection<name1##Item>( \
             item["title"].asString(), item["icon"].asString(), \

@@ -310,6 +310,7 @@
     "TEAM_CYAN": "水チーム",
     "TEAM_WHITE": "白チーム",
     "TEAM_BLACK": "黒チーム",
+    "LIKE": "いいね",
     "open_in_sonolus": "Sonolusで開く",
     "description": "説明文",
     "recommended": "おすすめ",
@@ -356,5 +357,6 @@
     "editButton": "編集",
     "advanced": "高度",
     "quick": "検索",
-    "tags": "タグ"
+    "tags": "タグ",
+    "community": "コミュニティ"
 }

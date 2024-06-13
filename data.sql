@@ -109,12 +109,12 @@ ALTER TABLE Background ADD COLUMN description text;
 ALTER TABLE Effect ADD COLUMN description text;
 ALTER TABLE Particle ADD COLUMN description text;
 ALTER TABLE Engine ADD COLUMN description text;
-ALTER TABLE Level ADD COLUMN localization text DEFAULT 'default';
-ALTER TABLE Skin ADD COLUMN localization text DEFAULT 'default';
-ALTER TABLE Background ADD COLUMN localization text DEFAULT 'default';
-ALTER TABLE Effect ADD COLUMN localization text DEFAULT 'default';
-ALTER TABLE Particle ADD COLUMN localization text DEFAULT 'default';
-ALTER TABLE Engine ADD COLUMN localization text DEFAULT 'default';
+ALTER TABLE Level ADD COLUMN localization text;
+ALTER TABLE Skin ADD COLUMN localization text;
+ALTER TABLE Background ADD COLUMN localization text;
+ALTER TABLE Effect ADD COLUMN localization text;
+ALTER TABLE Particle ADD COLUMN localization text;
+ALTER TABLE Engine ADD COLUMN localization text;
 
 /* Sonolus v0.7.2 */
 ALTER TABLE Engine ADD COLUMN tutorialData text;
@@ -144,7 +144,7 @@ CREATE TABLE Replay (
     configuration text,
     tags text,
     description text,
-    localization text DEFAULT 'default'
+    localization text
 );
 CREATE TABLE Post (
     id int,
@@ -156,7 +156,7 @@ CREATE TABLE Post (
     thumbnail text,
     tags text,
     description text,
-    localization text DEFAULT 'default'
+    localization text
 );
 CREATE TABLE Playlist (
     id int,
@@ -169,7 +169,7 @@ CREATE TABLE Playlist (
     thumbnail text,
     tags text,
     description text,
-    localization text DEFAULT 'default'
+    localization text
 );
 DROP TABLE UserSession;
 DROP TABLE LoginRequest;
@@ -191,12 +191,12 @@ CREATE TABLE Room (
 	bgm text,
 	preview text,
 	tags text,
-	localization text DEFAULT "default",
+	localization text,
 	creatorId text
 );
 
 /* Sonolus v0.8.2 */
-CREATE TABLE Like (
+CREATE TABLE LikeTable (
     name text,
     targetType text,
     targetName text,
@@ -216,4 +216,4 @@ CREATE TABLE Rating (
     targetName text,
     uid text,
     rating int
-)
+);

@@ -34,3 +34,4 @@ emsdk
 plugins/*.so
 plugins/enableList.json
 make
+public

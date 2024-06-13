@@ -58,7 +58,7 @@ auto GUIList = [](client_conn conn, http_request request, param argv) {
         order = str_replace(order, args);
         if (filter == "") sqlFilter += "1";
     } sqlFilter += ")";
-    order = "CASE WHEN localization == \"default\" THEN 1 WHEN localization != \"default\" THEN 0 END ASC, " + order;
+    order = "CASE WHEN localization = \"default\" THEN 1 WHEN localization != \"default\" THEN 0 END ASC, " + order;
 
     int pageCount = 0; argList["html.itemsList"] = "";
     if (argv[0] == "levels") { quickGUIList(levels); }

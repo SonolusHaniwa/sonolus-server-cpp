@@ -1,7 +1,7 @@
 #define quickGUIDetails(name) {\
     auto items = name##List( \
-    	"name = \"" + argv[1] + "\" AND (localization == \"" + $_GET["localization"] + "\" OR localization == \"default\")", \
-    	"CASE WHEN localization == \"default\" THEN 1 WHEN localization != \"default\" THEN 0 END ASC"); \
+    	"name = \"" + argv[1] + "\" AND (localization = \"" + $_GET["localization"] + "\" OR localization = \"default\")", \
+    	"CASE WHEN localization = \"default\" THEN 1 WHEN localization != \"default\" THEN 0 END ASC"); \
     if (items.size() == 0) { quickSendMsg(404); } \
     auto item = items[0]; argList = merge(argList, item.fetchParamList()); \
     argList["html.open_in_sonolus"] = fetchOpenInSonolus(item.fetchParamList()["sonolus.url"]).output(); \
@@ -9,6 +9,7 @@
     argList["page.title"] = item.title + " | " + appConfig["server.title"].asString(); \
     argList["html.navbar"] = fetchNavBar(item.title).output(); \
     argList["editUrl"] = "/" + argv[0] + "/" + argv[1] + "/edit"; \
+    quickGUICommunity(request, argv[0], argv[1], argList, detailsIcon); \
     string detailsSection = ""; \
     argvar args = item.fetchParamList(); \
     for (auto v : args) args[v.first] = str_replace("\"", "\\\"", v.second); \
@@ -21,7 +22,7 @@
         detailsSection += "</div>"; \
         detailsIcon += fetchIconButton("#" + section["title"].asString(), "{{icon." + section["icon"].asString() + "}}").output(); \
     } argList["html.detailsSection"] = detailsSection; \
-    argList["html.icons"] = detailsIcon; \
+    argList["html.icons"] += detailsIcon; \
 }
 
 auto GUIDetails = [](client_conn conn, http_request request, param argv) {

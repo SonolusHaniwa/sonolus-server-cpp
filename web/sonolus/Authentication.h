@@ -36,7 +36,7 @@ auto Authentication = [](client_conn conn, http_request request, param argv){
         AuthenticateServerResponse["session"] = getParam(request)["sessionId"];
         AuthenticateServerResponse["expiration"] = (Json::Int64)(times += appConfig["session.expireTime"].asInt64() * 24 * 60 * 60 * 1000);
         // 保存用户信息
-        db.execute("UPDATE UserSession SET uid=\"" + userProfile["id"].asString() + "\" WHERE session=\"" + getParam(request)["sessionId"] + "\"");
+        db.execute("UPDATE UserSession SET uid = \"" + userProfile["id"].asString() + "\" WHERE session = \"" + getParam(request)["sessionId"] + "\"");
         usersCreate(UserProfile(userProfile));
         quickSendObj(AuthenticateServerResponse);
     } else quickSendMsg(404);

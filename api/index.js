@@ -1,16 +1,11 @@
 const express = require('express');
-const fs = require('fs');
-function getFiles(path) {
-    return fs.readdirSync(path);
-}
-console.log(__dirname, getFiles(__dirname));
-console.log(__dirname + "/../public", getFiles(__dirname + "/../public"));
-let wasm = fs.readFileSync(__dirname + '/../public/libsonolus.wasm');
-console.log(wasm.length);
+var bodyParser = require('body-parser')
 const factory = require('../public/libsonolus.js');
 const app = express();
 
 const BR = '\r\n';
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
 
 function requestHeadersToTuples(rawHeaders, headersToSkip = new Set()){
     const tuples = [];
@@ -22,10 +17,19 @@ function requestHeadersToTuples(rawHeaders, headersToSkip = new Set()){
     return tuples;
 };
 
+function isJsonFormat(rawHeaders) {
+    for (let i = 0; i < rawHeaders.length; i += 2) {
+        if (rawHeaders[i].toLowerCase() == "content-type" && rawHeaders[i+1].toLowerCase().includes("application/json")) return true;
+    }
+    return false;
+}
+
 function reconstructRequest(req) {
     const methodLine = `${req.method} ${req.url} HTTP/${req.httpVersion}`;
     const tuples = requestHeadersToTuples(req.rawHeaders);
-    return methodLine + BR + tuples.map(({ name, value }) => `${name}: ${value}`).join(BR) + BR + BR;
+    var data = req.body;
+    if (isJsonFormat(req.rawHeaders)) data = JSON.stringify(data);
+    return methodLine + BR + tuples.map(({ name, value }) => `${name}: ${value}`).join(BR) + BR + BR + data;
 };
 
 function parseRawResponse(rawResponse, res) {
@@ -75,8 +79,10 @@ app.all("*", async (req, res2) => {
 	    var header = reconstructRequest(req);
 	    var inst = await factory();
 	    inst.FS.writeFile("/request_" + requestId, header);
+	    inst.FS.writeFile("/response_" + requestId, "");
 		var ptr = inst.stringToNewUTF8(requestId); // 将字符串转为 char* 指针
 		inst._cgi(ptr, requestId.length);
+        while (inst.FS.readFile("/response_" + requestId) == "") await new Promise(r => setTimeout(r, 100));
 	    var dat = inst.FS.readFile("/response_" + requestId, { encoding: 'utf8' });
 	    parseRawResponse(dat, res2);
     } catch (error) {

@@ -202,13 +202,23 @@ H fetchIconButton(string url, string icon) {
     return str_replace(source, args);
 }
 
+H fetchIconTextButton(string onclick, string icon, string text) {
+    string source = readFile("./web/html/components/iconTextButton.html");
+    argvar args;
+    args["onclick"] = onclick;
+    args["icon"] = "{{icon." + icon + "}}";
+    args["text"] = text;
+    return str_replace(source, args);
+}
+
 vector<string> iconName = {
     "advanced", "award", "bookmark", "crown", "heart", 
     "medal", "ranking", "search", "shuffle", "star", 
     "thumbsUp", "thumbsDown", "trophy", "home", "global", 
     "post", "playlist", "level", "skin", "background", 
     "effect", "particle", "engine", "replay", "login", 
-    "logout", "description", "tags", "more"
+    "logout", "description", "tags", "more", "heartHollow",
+    "comment", "community"
 };
 argvar iconList;
 bool iconLoader = [](){

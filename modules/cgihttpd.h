@@ -169,7 +169,7 @@ ssize_t send(client_conn __fd, char* __buf, int len) {
  * @return char
 */
 char recvchar(client_conn __fd) {
-    if (cgiRequest.size() == 0) return -1;
+    if (cgiRequest.size() == 0) return 0;
     char ch = cgiRequest.front();
     cgiRequest = cgiRequest.substr(1); return ch;
 }
@@ -808,6 +808,10 @@ string readFile(string path) {
     for (int i = 0; i < len; i++) buffer.push_back(ch[i]);
     delete[] ch;
     return buffer;
+}
+
+time_t getMilliSeconds() {
+    return chrono::duration_cast<chrono::milliseconds>(chrono::system_clock::now().time_since_epoch()).count();
 }
 
 #endif

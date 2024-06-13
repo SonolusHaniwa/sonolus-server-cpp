@@ -208,10 +208,10 @@ class DB_Controller {
 
 #define itemNumberTemplate(item, filter) \
 	string sql = "SELECT name FROM " defineToString(item) " WHERE (" + filter + ")"; \
-    sql = "SELECT name FROM (" + sql + ") GROUP BY name"; \
-    sql = "SELECT COUNT(*) AS sum FROM (" + sql + ")";
+    sql = "SELECT name FROM (" + sql + ") AS A GROUP BY name"; \
+    sql = "SELECT COUNT(*) AS sum FROM (" + sql + ") AS B";
 #define itemListTemplate(item, filter, order, st, en) if (order == "") order = "id DESC"; \
 	string sql = "SELECT * FROM " defineToString(item) " WHERE (" + filter + ") ORDER BY " + order; \
-    sql = "SELECT * FROM (" + sql + ") GROUP BY name"; \
-    sql = "SELECT * FROM (" + sql + ") ORDER BY " + order + " LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);      
+    sql = "SELECT * FROM (" + sql + ") AS A GROUP BY name"; \
+    sql = "SELECT * FROM (" + sql + ") AS B ORDER BY " + order + " LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);      
                                                                                                                                                                         

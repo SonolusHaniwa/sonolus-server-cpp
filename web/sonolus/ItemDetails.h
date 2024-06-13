@@ -1,7 +1,7 @@
 #define quickSonolusDetails(name1, name2) {\
     auto items = name2##List( \
-    	"name = \"" + argv[1] + "\" AND (localization == \"" + $_GET["localization"] + "\" OR localization == \"default\")", \
-    	"CASE WHEN localization == \"default\" THEN 1 WHEN localization != \"default\" THEN 0 END ASC"); \
+    	"name = \"" + argv[1] + "\" AND (localization = \"" + $_GET["localization"] + "\" OR localization = \"default\")", \
+    	"CASE WHEN localization = \"default\" THEN 1 WHEN localization != \"default\" THEN 0 END ASC"); \
     if (items.size() == 0) { quickSendMsg(404); } \
     auto item = items[0]; \
     ItemDetails["item"] = item.toJsonObject(); \

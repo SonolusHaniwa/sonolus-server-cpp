@@ -310,6 +310,7 @@
     "TEAM_CYAN": "Team Cyan",
     "TEAM_WHITE": "Team White",
     "TEAM_BLACK": "Team Black",
+    "LIKE": "Like",
     "open_in_sonolus": "Open in Sonolus",
     "description": "Description",
     "recommended": "Recommended",
@@ -356,5 +357,6 @@
     "editButton": "Edit",
     "advanced": "Advanced",
     "quick": "Search",
-    "tags": "Tags"
+    "tags": "Tags",
+    "community": "Community"
 }

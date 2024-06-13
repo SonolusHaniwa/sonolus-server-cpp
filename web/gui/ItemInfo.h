@@ -42,7 +42,7 @@ auto GUIInfo = [](client_conn conn, http_request request, param argv) {
         icons += fetchIconButton("#" + item["title"].asString(), "{{icon." + item["icon"].asString() + "}}").output();
         item["filter"] = "(localization = \"" + $_GET["localization"] + "\" OR localization = \"default\") AND (" + 
         	(item["filter"].asString() == "" ? "1" : item["filter"].asString()) + ")";
-        item["order"] = "CASE WHEN localization == \"default\" THEN 1 WHEN localization != \"default\" THEN 0 END ASC, " + 
+        item["order"] = "CASE WHEN localization = \"default\" THEN 1 WHEN localization != \"default\" THEN 0 END ASC, " + 
         	(item["order"].asString() == "" ? "id DESC" : item["order"].asString());
         if (argv[0] == "levels") { quickGUIInfo(levels); }
         else if (argv[0] == "skins") { quickGUIInfo(skins); }

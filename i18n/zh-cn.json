@@ -310,6 +310,7 @@
     "TEAM_CYAN": "青队",
     "TEAM_WHITE": "白队",
     "TEAM_BLACK": "黑队",
+    "LIKE": "喜欢",
     "open_in_sonolus": "在 Sonolus 中打开",
     "description": "描述",
     "recommended": "推荐",
@@ -356,5 +357,6 @@
     "editButton": "修改",
     "advanced": "高级",
     "quick": "搜索",
-    "tags": "标签"
+    "tags": "标签",
+    "community": "社区"
 }
