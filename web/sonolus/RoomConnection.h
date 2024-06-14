@@ -29,7 +29,7 @@ void* RoomWorkThread(void* roomId) {
 	auto items = roomsList("name = \"" + id + "\"", "");
 	if (items.size() == 0) pthread_exit(NULL);
 	auto room = items[0];
-	string creatorId = db.query("SELECT creatorId FROM Room where name = \"" + id + "\"")[0]["creatorId"];
+	string creatorId = db.query("SELECT creatorId FROM Room where name = \"" + id + "\"", "Room")[0]["creatorId"];
 	writeLog(LOG_LEVEL_INFO, "Room server started! (roomId = " + id + ")");
 	
 	UpdateEvent data; data.options = { quickSearchObject };
@@ -46,7 +46,7 @@ void* RoomWorkThread(void* roomId) {
 
 			if (item.name == "AddUser") {
 				// 数据修改
-				auto res = db.query("SELECT * FROM UserSession where session = \"" + item.connArg.request.argv["sonolus-room-session"] + "\"")[0];
+				auto res = db.query("SELECT * FROM UserSession where session = \"" + item.connArg.request.argv["sonolus-room-session"] + "\"", "UserSession")[0];
 				data.users.push_back(RoomUser(res["body"], res["signature"]));
 				data.userStatuses.push_back(UserStatusEntry(res["uid"], UserStatus.waiting));
 				data.scoreboardSections[0].scores.push_back(ScoreEntry(res["uid"], "0"));
@@ -80,7 +80,7 @@ void* RoomWorkThread(void* roomId) {
 					}
 				}
 				if (id1 == -1) goto next;
-				auto res = db.query("SELECT * FROM UserSession where session = \"" + item.connArg.request.argv["sonolus-room-session"] + "\"")[0];
+				auto res = db.query("SELECT * FROM UserSession where session = \"" + item.connArg.request.argv["sonolus-room-session"] + "\"", "UserSession")[0];
 				for (int i = 0; i < data.users.size(); i++)
 					if (data.users[i].authentication == res["body"] && data.users[i].signature == res["signature"]) {
 						data.users.erase(data.users.begin() + i);
@@ -143,7 +143,7 @@ void* RoomWorkThread(void* roomId) {
 				if (!createdScoreboard) {
 					data.scoreboardSections.insert(data.scoreboardSections.begin() + 1, { item.levelItem.title, "", {} });
 					for (int i = 0; i < conns.size(); i++) {
-						auto res = db.query("SELECT * FROM UserSession where session = \"" + conns[i].request.argv["sonolus-room-session"] + "\"")[0];
+						auto res = db.query("SELECT * FROM UserSession where session = \"" + conns[i].request.argv["sonolus-room-session"] + "\"", "UserSession")[0];
 						data.scoreboardSections[1].scores.push_back(ScoreEntry(res["uid"], data.userStatuses[i].status == UserStatus.ready ? "Playing" : "Skipped"));
 					}
 					for (int i = 0; i < data.users.size(); i++)
@@ -152,7 +152,7 @@ void* RoomWorkThread(void* roomId) {
 				}
 			}
 			else if (item.name == "UpdateUserStatus") {
-				auto res = db.query("SELECT * FROM UserSession where session = \"" + item.connArg.request.argv["sonolus-room-session"] + "\"")[0];
+				auto res = db.query("SELECT * FROM UserSession where session = \"" + item.connArg.request.argv["sonolus-room-session"] + "\"", "UserSession")[0];
 				for (int i = 0; i < data.users.size(); i++) 
 					if (data.users[i].authentication == res["body"] && data.users[i].signature == res["signature"]) 
 						data.userStatuses[i] = UserStatusEntry(res["uid"], item.sValue);
@@ -160,7 +160,7 @@ void* RoomWorkThread(void* roomId) {
 				for (int i = 0; i < conns.size(); i++) RoomConnectionSend(conns[i], id, event);
 			}
 			else if (item.name == "FinishGameplay") {
-				auto res = db.query("SELECT * FROM UserSession where session = \"" + item.connArg.request.argv["sonolus-room-session"] + "\"")[0];
+				auto res = db.query("SELECT * FROM UserSession where session = \"" + item.connArg.request.argv["sonolus-room-session"] + "\"", "UserSession")[0];
 				int uid = -1;
 				for (int i = 0; i < data.users.size(); i++)
 					if (data.users[i].authentication == res["body"] && data.users[i].signature == res["signature"]) 
@@ -191,7 +191,7 @@ void* RoomWorkThread(void* roomId) {
 				while (data.scoreboardSections.size() > 1) data.scoreboardSections.pop_back();
 			}
 			else if (item.name == "AddSuggestion") {
-				auto res = db.query("SELECT * FROM UserSession where session = \"" + item.connArg.request.argv["sonolus-room-session"] + "\"")[0];
+				auto res = db.query("SELECT * FROM UserSession where session = \"" + item.connArg.request.argv["sonolus-room-session"] + "\"", "UserSession")[0];
 				data.suggestions.push_back(Suggestion(res["uid"], item.level));
 				for (int i = 0; i < conns.size(); i++) 
 					RoomConnectionSend(conns[i], id, AddSuggestionEvent(data.suggestions.back()));
@@ -226,7 +226,7 @@ void* RoomWorkThread(void* roomId) {
 			else if (item.name == "RemoveUser2") {
 				int id1 = -1;
 				for (int i = 0; i < conns.size(); i++) {
-					auto res = db.query("SELECT * FROM UserSession where session = \"" + conns[i].request.argv["sonolus-room-session"] + "\"")[0];
+					auto res = db.query("SELECT * FROM UserSession where session = \"" + conns[i].request.argv["sonolus-room-session"] + "\"", "UserSession")[0];
 					if (res["uid"] == item.sValue) { id1 = i; break; }
 				}
 				roomEvents[id].push_back({ name: "RemoveUser", connArg: conns[id1] });
@@ -277,7 +277,7 @@ void* RoomWorkThread(void* roomId) {
 auto SonolusRoomConnection = [](client_conn conn, http_request request, param argv){
 	auto items = roomsList("name = \"" + argv[0] + "\"", "");
 	if (items.size() == 0) ws_exitRequest(conn), pthread_exit(NULL);
-	auto sessions = db.query("SELECT * FROM UserSession where session = \"" + request.argv["sonolus-room-session"] + "\"");
+	auto sessions = db.query("SELECT * FROM UserSession where session = \"" + request.argv["sonolus-room-session"] + "\"", "UserSession");
 	if (items.size() == 0) ws_exitRequest(conn), pthread_exit(NULL);
 	auto session = sessions[0];
 	

@@ -38,19 +38,19 @@ auto GUICreate = [](client_conn conn, http_request request, param argv){
             vector<string> values;
             for (auto i = 0; i < v.select.values.size(); i++) {
                 if (v.select.values[i] == "{{jsonArray.skinList}}") {
-                    auto arr = db.query("SELECT title FROM Skin ORDER BY id ASC");
+                    auto arr = db.query("SELECT title FROM Skin ORDER BY id ASC", "Skin");
                     for (int j = 0; j < arr.size(); j++) values.push_back(arr[j]["title"]);
                 } else if (v.select.values[i] == "{{jsonArray.backgroundList}}") {
-                    auto arr = db.query("SELECT title FROM Background ORDER BY id ASC");
+                    auto arr = db.query("SELECT title FROM Background ORDER BY id ASC", "Background");
                     for (int j = 0; j < arr.size(); j++) values.push_back(arr[j]["title"]);
                 } else if (v.select.values[i] == "{{jsonArray.effectList}}") {
-                    auto arr = db.query("SELECT title FROM Effect ORDER BY id ASC");
+                    auto arr = db.query("SELECT title FROM Effect ORDER BY id ASC", "Effect");
                     for (int j = 0; j < arr.size(); j++) values.push_back(arr[j]["title"]);
                 } else if (v.select.values[i] == "{{jsonArray.particleList}}") {
-                    auto arr = db.query("SELECT title FROM Particle ORDER BY id ASC");
+                    auto arr = db.query("SELECT title FROM Particle ORDER BY id ASC", "Particle");
                     for (int j = 0; j < arr.size(); j++) values.push_back(arr[j]["title"]);
                 } else if (v.select.values[i] == "{{jsonArray.engineList}}") {
-                    auto arr = db.query("SELECT title FROM Engine ORDER BY id ASC");
+                    auto arr = db.query("SELECT title FROM Engine ORDER BY id ASC", "Engine");
                     for (int j = 0; j < arr.size(); j++) values.push_back(arr[j]["title"]);
                 } else if (v.select.values[i] == "{{jsonArray.languageList}}") {
                     for (int j = 0; j < i18n_index.size(); j++) values.push_back(i18n_index[j]);

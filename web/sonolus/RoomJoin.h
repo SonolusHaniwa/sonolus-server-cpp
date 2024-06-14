@@ -1,7 +1,7 @@
 auto SonolusRoomJoin = [](client_conn conn, http_request request, param argv){
 	auto items = roomsList("name = \"" + argv[0] + "\"", "");
 	if (items.size() == 0) quickSendMsg(404);
-	string creatorId = db.query("SELECT creatorId FROM Room where name = \"" + argv[0] + "\"")[0]["creatorId"];
+	string creatorId = db.query("SELECT creatorId FROM Room where name = \"" + argv[0] + "\"", "Room")[0]["creatorId"];
 	
 	string id = argv[0];
 	string key = request.argv["sonolus-room-key"];
@@ -33,7 +33,7 @@ auto SonolusRoomJoin = [](client_conn conn, http_request request, param argv){
     db.execute("INSERT INTO UserSession (uid, session, expire, body, signature) VALUES (\"" + 
     	userProfile["id"].asString() + "\", \"" + session + "\", " + 
     	to_string(time(NULL) + appConfig["session.expireTime"].asInt64() * 24 * 60 * 60) + ", \"" +
-    	json_base64 + "\", \"" + request.argv["sonolus-signature"] + "\")");
+    	json_base64 + "\", \"" + request.argv["sonolus-signature"] + "\")", "UserSession");
     usersCreate(UserProfile(userProfile));
     quickSendObj(JoinRoomResponse);
 };

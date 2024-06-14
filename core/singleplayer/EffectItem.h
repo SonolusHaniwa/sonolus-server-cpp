@@ -89,14 +89,14 @@ class EffectItem {
 
 int effectsNumber(string filter) {
     itemNumberTemplate(Effect, filter);
-    dbres res = db.query(sql.c_str());
+    dbres res = db.query(sql.c_str(), "Effect");
     return atoi(res[0]["sum"].c_str());
 }
 
 vector<EffectItem> effectsList(string filter, string order, int st = 1, int en = 20) {
     itemListTemplate(Effect, filter, order, st, en);
 
-    auto res = db.query(sql.c_str());
+    auto res = db.query(sql.c_str(), "Effect");
     vector<EffectItem> list = {};
 
     for (int i = 0; i < res.size(); i++) {
@@ -118,8 +118,8 @@ vector<EffectItem> effectsList(string filter, string order, int st = 1, int en =
 
 int effectsCreate(EffectItem item, string localization = "default") {
     stringstream sqlbuffer;
-    auto res = db.query("SELECT id FROM Effect WHERE id = " + to_string(item.id));
-    if (res.size() == 0) res = db.query("SELECT id FROM Effect WHERE name = \"" + item.name + "\" AND localization = \"" + localization + "\"");
+    auto res = db.query("SELECT id FROM Effect WHERE id = " + to_string(item.id), "Effect");
+    if (res.size() == 0) res = db.query("SELECT id FROM Effect WHERE name = \"" + item.name + "\" AND localization = \"" + localization + "\"", "Effect");
     if (res.size() != 0) {
         int id = atoi(res[0]["id"].c_str());
         sqlbuffer << "UPDATE Effect SET name = \"" << item.name << "\", version = " << item.version << ", ";
@@ -129,13 +129,13 @@ int effectsCreate(EffectItem item, string localization = "default") {
         sqlbuffer << "tags=\"" << serializeTagString(item.tags) << "\", ";
         sqlbuffer << "description = \"" << str_replace("\n", "\\n", item.description) << "\", localization = \"" << localization << "\" WHERE id = " << id;
     } else {
-        int id = atoi(db.query("SELECT COUNT(*) AS sum FROM Effect;")[0]["sum"].c_str()) + 1;
+        int id = atoi(db.query("SELECT COUNT(*) AS sum FROM Effect;", "Effect")[0]["sum"].c_str()) + 1;
         sqlbuffer << "INSERT INTO Effect (id, name, version, title, subtitle, author, thumbnail, tags, data, audio, description, localization) VALUES (";
         sqlbuffer << id << ", \"" << item.name << "\", " << item.version << ", \"" << item.title << "\", ";
         sqlbuffer << "\"" << item.subtitle << "\", \"" << item.author << "\", \"" << item.thumbnail.hash << "\", ";
         sqlbuffer << "\"" << serializeTagString(item.tags) << "\", ";
         sqlbuffer << "\"" << item.data.hash << "\", \"" << item.audio.hash << "\", \"" << str_replace("\n", "\\n", item.description) << "\", \"" << localization << "\")";
-    } return db.execute(sqlbuffer.str());
+    } return db.execute(sqlbuffer.str(), "Effect");
 }
 
 #endif

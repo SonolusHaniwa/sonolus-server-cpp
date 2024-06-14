@@ -93,14 +93,14 @@ class BackgroundItem {
 
 int backgroundsNumber(string filter) {
     itemNumberTemplate(Background, filter);
-    dbres res = db.query(sql.c_str());
+    dbres res = db.query(sql.c_str(), "Background");
     return atoi(res[0]["sum"].c_str());
 }
 
 vector<BackgroundItem> backgroundsList(string filter, string order, int st = 1, int en = 20) {
     itemListTemplate(Background, filter, order, st, en);
 
-    auto res = db.query(sql.c_str());
+    auto res = db.query(sql.c_str(), "Background");
     vector<BackgroundItem> list = {};
 
     for (int i = 0; i < res.size(); i++) {
@@ -123,8 +123,8 @@ vector<BackgroundItem> backgroundsList(string filter, string order, int st = 1, 
 
 int backgroundsCreate(BackgroundItem item, string localization = "default") {
     stringstream sqlbuffer;
-    auto res = db.query("SELECT id FROM Background WHERE id = " + to_string(item.id));
-    if (res.size() == 0) res = db.query("SELECT id FROM Background WHERE name = \"" + item.name + "\" AND localization = \"" + localization + "\"");
+    auto res = db.query("SELECT id FROM Background WHERE id = " + to_string(item.id), "Background");
+    if (res.size() == 0) res = db.query("SELECT id FROM Background WHERE name = \"" + item.name + "\" AND localization = \"" + localization + "\"", "Background");
     if (res.size() != 0) {
         int id = atoi(res[0]["id"].c_str());
         sqlbuffer << "UPDATE Background SET name = \"" << item.name << "\", version = " << item.version << ", title = \"" << item.title << "\", ";
@@ -133,14 +133,14 @@ int backgroundsCreate(BackgroundItem item, string localization = "default") {
         sqlbuffer << "tags=\"" << serializeTagString(item.tags) << "\", ";
         sqlbuffer << "description = \"" << str_replace("\n", "\\n", item.description) << "\", localization = \"" << localization << "\" WHERE id = " << id << ";";
     } else {
-        int id = atoi(db.query("SELECT COUNT(*) AS sum FROM Background;")[0]["sum"].c_str()) + 1;
+        int id = atoi(db.query("SELECT COUNT(*) AS sum FROM Background;", "Background")[0]["sum"].c_str()) + 1;
         sqlbuffer << "INSERT INTO Background (id, name, version, title, subtitle, author, thumbnail, data, image, configuration, tags, description, localization) VALUES (";
         sqlbuffer << id << ", \"" << item.name << "\", " << item.version << ", \"" << item.title << "\", ";
         sqlbuffer << "\"" << item.subtitle << "\", \"" << item.author << "\", \"" << item.thumbnail.hash << "\", ";
         sqlbuffer << "\"" << item.data.hash << "\", \"" << item.image.hash << "\", \"" << item.configuration.hash << "\", ";
         sqlbuffer << "\"" << serializeTagString(item.tags) << "\", ";
         sqlbuffer << "\"" << str_replace("\n", "\\n", item.description) << "\", \"" << localization << "\");";
-    } return db.execute(sqlbuffer.str());
+    } return db.execute(sqlbuffer.str(), "Background");
 }
 
 #endif

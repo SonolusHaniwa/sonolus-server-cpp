@@ -15,7 +15,7 @@ auto GUIIndex = [](client_conn conn, http_request request, param argv) {
     if (!isLogin && cookie["sessionId"] == "") {
         session = generateSession();
         response["Set-Cookie"] = "sessionId=" + session + "; expires=" + toGMTDate(time(NULL) + appConfig["session.expireTime"].asInt64() * 24 * 60 * 60) + "; path=/",
-        db.execute("INSERT INTO UserSession (uid, session, expire) VALUES (\"\", \"" + session + "\", " + to_string(time(NULL) + appConfig["session.expireTime"].asInt64() * 24 * 60 * 60) + ")");
+        db.execute("INSERT INTO UserSession (uid, session, expire) VALUES (\"\", \"" + session + "\", " + to_string(time(NULL) + appConfig["session.expireTime"].asInt64() * 24 * 60 * 60) + ")", "UserSession");
     } else session = cookie["sessionId"];
 
     // TODO: add the argList here

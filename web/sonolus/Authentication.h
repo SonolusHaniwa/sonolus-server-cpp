@@ -21,7 +21,7 @@ auto Authentication = [](client_conn conn, http_request request, param argv){
         AuthenticateServerResponse["session"] = session;
         AuthenticateServerResponse["expiration"] = (Json::Int64)(times += appConfig["session.expireTime"].asInt64() * 24 * 60 * 60 * 1000);
         // 保存用户信息
-        db.execute("INSERT INTO UserSession (uid, session, expire) VALUES (\"" + userProfile["id"].asString() + "\", \"" + session + "\", " + to_string(time(NULL) + appConfig["session.expireTime"].asInt64() * 24 * 60 * 60) + ")");
+        db.execute("INSERT INTO UserSession (uid, session, expire) VALUES (\"" + userProfile["id"].asString() + "\", \"" + session + "\", " + to_string(time(NULL) + appConfig["session.expireTime"].asInt64() * 24 * 60 * 60) + ")", "UserSession");
         usersCreate(UserProfile(userProfile));
         quickSendObj(AuthenticateServerResponse);
     } else if (type == "authenticateExternal") {
@@ -36,7 +36,7 @@ auto Authentication = [](client_conn conn, http_request request, param argv){
         AuthenticateServerResponse["session"] = getParam(request)["sessionId"];
         AuthenticateServerResponse["expiration"] = (Json::Int64)(times += appConfig["session.expireTime"].asInt64() * 24 * 60 * 60 * 1000);
         // 保存用户信息
-        db.execute("UPDATE UserSession SET uid = \"" + userProfile["id"].asString() + "\" WHERE session = \"" + getParam(request)["sessionId"] + "\"");
+        db.execute("UPDATE UserSession SET uid = \"" + userProfile["id"].asString() + "\" WHERE session = \"" + getParam(request)["sessionId"] + "\"", "UserSession");
         usersCreate(UserProfile(userProfile));
         quickSendObj(AuthenticateServerResponse);
     } else quickSendMsg(404);

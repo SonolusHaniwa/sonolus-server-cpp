@@ -67,7 +67,7 @@ void loadDefaultVariable() {
 bool checkLogin(http_request request) {
     string session = cookieParam(request)["sessionId"];
     if (session == "") session = request.argv["sonolus-session"];
-    auto res = db.query("SELECT session FROM UserSession WHERE session=\"" + session + "\" AND expire >= " + to_string(time(NULL)) + " AND uid != \"\"");
+    auto res = db.query("SELECT session FROM UserSession WHERE session=\"" + session + "\" AND expire >= " + to_string(time(NULL)) + " AND uid != \"\"", "UserSession");
     return res.size();
 }
 
@@ -75,7 +75,7 @@ UserProfile getUserProfile(http_request request) {
 	if (!checkLogin(request)) return UserProfile();
     string session = cookieParam(request)["sessionId"];
     if (session == "") session = request.argv["sonolus-session"];
-    auto res = db.query("SELECT uid FROM UserSession WHERE session=\"" + session + "\" AND expire >= " + to_string(time(NULL)) + " AND uid != \"\"");
+    auto res = db.query("SELECT uid FROM UserSession WHERE session=\"" + session + "\" AND expire >= " + to_string(time(NULL)) + " AND uid != \"\"", "UserSession");
     string uid = res[0]["uid"];
     return usersList("id = \"" + uid + "\"", "")[0];
 }

@@ -59,21 +59,24 @@ class UserProfile {
 
 int usersNumber(string filter) {
     itemNumberTemplate(UserProfile, filter);
-    dbres res = db.query(sql.c_str());
+    dbres res = db.query(sql.c_str(), "UserProfile");
     return atoi(res[0]["sum"].c_str());
 }
 
 vector<UserProfile> usersList(string filter, string order, int st = 1, int en = 20) {
     itemListTemplate(UserProfile, filter, order, st, en);
 
-    auto res = db.query(sql.c_str());
+    auto res = db.query(sql.c_str(), "UserProfile");
     vector<UserProfile> list = {};
     
     for (int i = 0; i < res.size(); i++) {
     	vector<pair<string, string> > socialLinks;
 		vector<string> favorites;
 		Json::Value obj; json_decode(res[i]["socialLinks"], obj);
-		for (int j = 0; j < obj.size(); j++) socialLinks.push_back({obj[j]["title"].asString(), obj[j]["address"].asString()});
+		for (int j = 0; j < obj.size(); j++) {
+            if (obj[j] == Json::objectValue) socialLinks.push_back({obj[j]["title"].asString(), obj[j]["address"].asString()});
+            else if (obj[j] == Json::arrayValue) socialLinks.push_back({obj[j][0].asString(), obj[j][1].asString()});
+        }
 		json_decode(res[i]["favorites"], obj);
 		for (int j = 0; j < obj.size(); j++) favorites.push_back(obj[j].asString());
     	UserProfile data = UserProfile(
@@ -92,7 +95,7 @@ vector<UserProfile> usersList(string filter, string order, int st = 1, int en = 
 
 int usersCreate(UserProfile item) {
     stringstream sqlbuffer;
-    auto res = db.query("SELECT id FROM UserProfile WHERE id = \"" + item.id + "\"");
+    auto res = db.query("SELECT id FROM UserProfile WHERE id = \"" + item.id + "\"", "UserProfile");
     Json::Value obj = Json::Value();
     for (int i = 0; i < item.socialLinks.size(); i++) obj[i][0] = item.socialLinks[i].first, obj[i][1] = item.socialLinks[i].second;
     string socialLinks = json_encode(obj);
@@ -112,5 +115,5 @@ int usersCreate(UserProfile item) {
         sqlbuffer << "\"" << item.id << "\", \"" << item.handle << "\",  \"" << item.name << "\", ";
         sqlbuffer << "\"" << item.avatarForegroundColor << "\", \"" << item.avatarBackgroundColor << "\", ";
         sqlbuffer << "\"" << aboutMe << "\", \"" << socialLinks << "\", \"" << favorites << "\")";
-    } return db.execute(sqlbuffer.str());
+    } return db.execute(sqlbuffer.str(), "UserProfile");
 }

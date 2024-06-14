@@ -1,4 +1,12 @@
 const express = require('express');
+const fs = require('fs');
+function getFiles(path) {
+    return fs.readdirSync(path);
+}
+console.log(__dirname, getFiles(__dirname));
+console.log(__dirname + "/../public", getFiles(__dirname + "/../public"));
+let wasm = fs.readFileSync(__dirname + '/../public/libsonolus.wasm');
+console.log(wasm.length);
 var bodyParser = require('body-parser')
 const factory = require('../public/libsonolus.js');
 const app = express();

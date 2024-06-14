@@ -92,14 +92,14 @@ class ReplayItem {
 
 int replaysNumber(string filter) {
     itemNumberTemplate(Replay, filter);
-    dbres res = db.query(sql.c_str());
+    dbres res = db.query(sql.c_str(), "Replay");
     return atoi(res[0]["sum"].c_str());
 }
 
 vector<ReplayItem> replaysList(string filter, string order, int st = 1, int en = 20) {
     itemListTemplate(Replay, filter, order, st, en);
 
-    auto res = db.query(sql.c_str());
+    auto res = db.query(sql.c_str(), "Replay");
     vector<ReplayItem> list = {};
 
     for (int i = 0; i < res.size(); i++) {
@@ -122,9 +122,9 @@ vector<ReplayItem> replaysList(string filter, string order, int st = 1, int en =
 
 int replaysCreate(ReplayItem item, string localization = "default") {
     stringstream sqlbuffer;
-    auto res = db.query("SELECT id FROM Replay WHERE id = " + to_string(item.id));
-    if (res.size() == 0) res = db.query("SELECT id FROM Replay WHERE name = \"" + item.name + "\" AND localization = \"" + localization + "\"");
-    int levelId = atoi(db.query("SELECT id FROM Level WHERE name = \"" + item.level.name + "\";")[0]["id"].c_str());
+    auto res = db.query("SELECT id FROM Replay WHERE id = " + to_string(item.id), "Replay");
+    if (res.size() == 0) res = db.query("SELECT id FROM Replay WHERE name = \"" + item.name + "\" AND localization = \"" + localization + "\"", "Replay");
+    int levelId = atoi(db.query("SELECT id FROM Level WHERE name = \"" + item.level.name + "\";", "Level")[0]["id"].c_str());
     if (res.size() != 0) {
         int id = atoi(res[0]["id"].c_str());
         sqlbuffer << "UPDATE Replay SET name=\"" << item.name << "\", version=" << item.version;
@@ -133,13 +133,13 @@ int replaysCreate(ReplayItem item, string localization = "default") {
         sqlbuffer << "tags=\"" << serializeTagString(item.tags) << "\", ";
         sqlbuffer << "description=\"" << str_replace("\n", "\\n", item.description) << "\", localization=\"" << localization << "\" WHERE id=" << id;
     } else {
-        int id = atoi(db.query("SELECT COUNT(*) AS sum FROM Replay;")[0]["sum"].c_str()) + 1;
+        int id = atoi(db.query("SELECT COUNT(*) AS sum FROM Replay;", "Replay")[0]["sum"].c_str()) + 1;
         sqlbuffer << "INSERT INTO Replay (id, name, version, title, subtitle, author, level, tags, data, configuration, description, localization) VALUES (";
         sqlbuffer << id << ", \"" << item.name << "\", " << item.version << ", \"" << item.title << "\", ";
         sqlbuffer << "\"" << item.subtitle << "\", \"" << item.author << "\", " << levelId << ", ";
         sqlbuffer << "\"" << serializeTagString(item.tags) << "\", ";
         sqlbuffer << "\"" << item.data.hash << "\", \"" << item.configuration.hash << "\", \"" << str_replace("\n", "\\n", item.description) << "\", \"" << localization << "\")";
-    } return db.execute(sqlbuffer.str());
+    } return db.execute(sqlbuffer.str(), "Replay");
 }
 
 #endif

@@ -85,14 +85,14 @@ class PostItem {
 
 int postsNumber(string filter) {
     itemNumberTemplate(Post, filter);
-    dbres res = db.query(sql.c_str());
+    dbres res = db.query(sql.c_str(), "Post");
     return atoi(res[0]["sum"].c_str());
 }
 
 vector<PostItem> postsList(string filter, string order, int st = 1, int en = 20) {
     itemListTemplate(Post, filter, order, st, en);
 
-    auto res = db.query(sql.c_str());
+    auto res = db.query(sql.c_str(), "Post");
     vector<PostItem> list = {};
 
     for (int i = 0; i < res.size(); i++) {
@@ -117,8 +117,8 @@ vector<PostItem> postsList(string filter, string order, int st = 1, int en = 20)
 
 int postsCreate(PostItem item, string localization = "default") {
     stringstream sqlbuffer;
-    auto res = db.query("SELECT id FROM Post WHERE id = " + to_string(item.id));
-    if (res.size() == 0) res = db.query("SELECT id FROM Post WHERE name = \"" + item.name + "\" AND localization = \"" + localization + "\"");
+    auto res = db.query("SELECT id FROM Post WHERE id = " + to_string(item.id), "Post");
+    if (res.size() == 0) res = db.query("SELECT id FROM Post WHERE name = \"" + item.name + "\" AND localization = \"" + localization + "\"", "Post");
     if (res.size() != 0) {
         int id = atoi(res[0]["id"].c_str());
         sqlbuffer << "UPDATE Post SET name=\"" << item.name << "\", version=" << item.version;
@@ -127,14 +127,14 @@ int postsCreate(PostItem item, string localization = "default") {
         sqlbuffer << ", tags=\"" << serializeTagString(item.tags) << "\"";
         sqlbuffer << ", description=\"" << str_replace("\n", "\\n", item.description) << "\", localization=\"" << localization << "\" WHERE id=" << id;
     } else {
-        int id = atoi(db.query("SELECT COUNT(*) AS sum FROM Post;")[0]["sum"].c_str()) + 1;
+        int id = atoi(db.query("SELECT COUNT(*) AS sum FROM Post;", "Post")[0]["sum"].c_str()) + 1;
         sqlbuffer << "INSERT INTO Post (id, name, version, title, time, author, thumbnail, tags, description, localization) VALUES (";
         sqlbuffer << id << ", \"" << item.name << "\", " << item.version << ", \"" << item.title << "\", ";
         sqlbuffer << item.time << ", \"" << item.author << "\", ";
         sqlbuffer << "\"" << item.thumbnail.hash << "\", ";
         sqlbuffer << "\"" << serializeTagString(item.tags) << "\", ";
         sqlbuffer << "\"" << str_replace("\n", "\\n", item.description) << "\", \"" << localization << "\")";
-    } return db.execute(sqlbuffer.str());
+    } return db.execute(sqlbuffer.str(), "Post");
 }
 
 #endif

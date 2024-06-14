@@ -89,14 +89,14 @@ class ParticleItem {
 
 int particlesNumber(string filter) {
     itemNumberTemplate(Particle, filter);
-    dbres res = db.query(sql.c_str());
+    dbres res = db.query(sql.c_str(), "Particle");
     return atoi(res[0]["sum"].c_str());
 }
 
 vector<ParticleItem> particlesList(string filter, string order, int st = 1, int en = 20) {
     itemListTemplate(Particle, filter, order, st, en);
 
-    dbres res = db.query(sql.c_str());
+    dbres res = db.query(sql.c_str(), "Particle");
     vector<ParticleItem> list = {};
 
     for (int i = 0; i < res.size(); i++) {
@@ -118,8 +118,8 @@ vector<ParticleItem> particlesList(string filter, string order, int st = 1, int 
 
 int particlesCreate(ParticleItem item, string localization = "default") {
     stringstream sqlbuffer;
-    auto res = db.query("SELECT id FROM Particle WHERE id = " + to_string(item.id));
-    if (res.size() == 0) res = db.query("SELECT id FROM Particle WHERE name = \"" + item.name + "\" AND localization = \"" + localization + "\"");
+    auto res = db.query("SELECT id FROM Particle WHERE id = " + to_string(item.id), "Particle");
+    if (res.size() == 0) res = db.query("SELECT id FROM Particle WHERE name = \"" + item.name + "\" AND localization = \"" + localization + "\"", "Particle");
     if (res.size() != 0) {
         int id = atoi(res[0]["id"].c_str());
         sqlbuffer << "UPDATE Particle SET name = \"" << item.name << "\", version = " << item.version << ", ";
@@ -129,13 +129,13 @@ int particlesCreate(ParticleItem item, string localization = "default") {
         sqlbuffer << "tags=\"" << serializeTagString(item.tags) << "\", ";
         sqlbuffer << "description = \"" << str_replace("\n", "\\n", item.description) << "\", localization = \"" << localization << "\" WHERE id = " << id << ";";
     } else {
-        int id = atoi(db.query("SELECT COUNT(*) AS sum FROM Particle;")[0]["sum"].c_str()) + 1;
+        int id = atoi(db.query("SELECT COUNT(*) AS sum FROM Particle;", "Particle")[0]["sum"].c_str()) + 1;
         sqlbuffer << "INSERT INTO Particle (id, name, version, title, subtitle, author, thumbnail, tags, data, texture, description, localization) VALUES (";
         sqlbuffer << id << ", \"" << item.name << "\", " << item.version << ", \"" << item.title << "\", ";
         sqlbuffer << "\"" << item.subtitle << "\", \"" << item.author << "\", \"" << item.thumbnail.hash << "\", ";
         sqlbuffer << "\"" << serializeTagString(item.tags) << "\", ";
         sqlbuffer << "\"" << item.data.hash << "\", \"" << item.texture.hash << "\", \"" << str_replace("\n", "\\n", item.description) << "\", \"" << localization << "\");";
-    } return db.execute(sqlbuffer.str());
+    } return db.execute(sqlbuffer.str(), "Particle");
 }
 
 #endif

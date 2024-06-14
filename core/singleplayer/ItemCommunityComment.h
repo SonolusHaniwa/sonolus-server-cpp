@@ -65,14 +65,14 @@ class ItemCommunityComment {
 
 int commentsNumber(string filter) {
     string sql = "SELECT COUNT(*) AS sum FROM Comment WHERE (" + filter + ")";
-    dbres res = db.query(sql.c_str());
+    dbres res = db.query(sql.c_str(), "Comment");
     return atoi(res[0]["sum"].c_str());
 }
 
 vector<ItemCommunityComment> commentsList(string filter, string order, int st = 1, int en = 20) {
     string sql = "SELECT * FROM Comment WHERE (" + filter + ") ORDER BY " + order + " LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);
 
-    auto res = db.query(sql.c_str());
+    auto res = db.query(sql.c_str(), "Comment");
     vector<ItemCommunityComment> list;
 
     for (int i = 0; i < res.size(); i++) {

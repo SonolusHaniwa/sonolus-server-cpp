@@ -3,7 +3,7 @@
 using namespace std;
 #define defineToString(str) #str
 
-std::string sonolus_server_version = "1.6.0";
+std::string sonolus_server_version = "1.6.1";
 std::string Maximum_Sonolus_Version = "0.8.2";
 std::string Sonolus_Version = Maximum_Sonolus_Version;
 Json::Value appConfig, studiosConfig;
@@ -41,7 +41,6 @@ vector<string> postVersionList = {"0.0.0"};
 vector<string> playlistVersionList = {"0.0.0"};
 
 #include"modules/modules.h"
-DB_Controller db;
 #include"core/items.h"
 #include"web/import.h"
 
@@ -164,8 +163,6 @@ void setConfiguration() {
 }
 
 void serverRunner(int argc, char** argv) {
-    db.query("SELECT COUNT(*) FROM Level");
-
     // 适配 Resource Version
     levelVersion = upper_bound(levelVersionList.begin(), levelVersionList.end(), Sonolus_Version) - levelVersionList.begin();
     skinVersion = upper_bound(skinVersionList.begin(), skinVersionList.end(), Sonolus_Version) - skinVersionList.begin();
@@ -184,8 +181,6 @@ void serverRunner(int argc, char** argv) {
 }
 
 void cgiRunner(int argc, char** argv) {
-	db.query("SELECT COUNT(*) FROM Level");
-
 	// 适配 Resource Version
 	levelVersion = upper_bound(levelVersionList.begin(), levelVersionList.end(), Sonolus_Version) - levelVersionList.begin();
 	skinVersion = upper_bound(skinVersionList.begin(), skinVersionList.end(), Sonolus_Version) - skinVersionList.begin();
@@ -378,6 +373,8 @@ void preload() {
         json_decode(json, obj);
         json_merge(appConfig, obj);
     }
+    Json::Value dbConfig = json_decode(readFile("./config/database.json"));
+    db = DB_Total_Controller(dbConfig);
 
     Sonolus_Version = appConfig["sonolus.version"].asString();
     if (appConfig["server.data.prefix"].asString() == "") appConfig["server.data.prefix"] = "/data/";
@@ -387,7 +384,6 @@ void preload() {
     appConfig["server.bannerUrl"] = dataPrefix + appConfig["server.banner"].asString();
     log_init(log_target_type);
     setConfiguration();
-    db = DB_Controller(true);
     loadConfig();
     loadDefaultVariable();
 

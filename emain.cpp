@@ -8,11 +8,12 @@
 #include<sstream>
 #include<setjmp.h>
 #include<chrono>
+#include<assert.h>
 #include<jsoncpp/json/json.h>
 using namespace std;
 #define defineToString(str) #str
 
-std::string sonolus_server_version = "1.6.0";
+std::string sonolus_server_version = "1.6.1";
 std::string Maximum_Sonolus_Version = "0.8.2";
 std::string Sonolus_Version = Maximum_Sonolus_Version;
 Json::Value appConfig;
@@ -44,7 +45,6 @@ vector<string> playlistVersionList = {"0.0.0"};
 #include"modules/html.h"
 #include"modules/mysqli.h"
 #include"modules/encrypt.h"
-DB_Controller db;
 #include"core/items.h"
 #include"web/import.h"
 
@@ -122,8 +122,6 @@ void routerRegister() {
 }
 
 string cgiRunner(string request) {
-	db.query("SELECT COUNT(*) FROM Level");
-
 	// 适配 Resource Version
 	levelVersion = upper_bound(levelVersionList.begin(), levelVersionList.end(), Sonolus_Version) - levelVersionList.begin();
 	skinVersion = upper_bound(skinVersionList.begin(), skinVersionList.end(), Sonolus_Version) - skinVersionList.begin();
@@ -168,6 +166,9 @@ void preload() {
         json_decode(json, obj);
         json_merge(appConfig, obj);
     }
+    Json::Value dbConfig = json_decode(readFile("./config/database.json"));
+    db = DB_Total_Controller(dbConfig);
+
     Sonolus_Version = appConfig["sonolus.version"].asString();
     if (appConfig["server.data.prefix"].asString() == "") appConfig["server.data.prefix"] = "/data/";
     dataPrefix = appConfig["server.data.prefix"].asString();
@@ -176,7 +177,6 @@ void preload() {
     appConfig["server.bannerUrl"] = dataPrefix + appConfig["server.banner"].asString();
     appConfig["database"] = "emscripten";
     log_init(log_target_type);
-    db = DB_Controller(true);
     http_init();
     loadConfig();
 

@@ -77,14 +77,14 @@ class RoomItem {
 
 int roomsNumber(string filter) {
     itemNumberTemplate(Room, filter);
-    dbres res = db.query(sql.c_str());
+    dbres res = db.query(sql.c_str(), "Room");
     return atoi(res[0]["sum"].c_str());
 }
 
 vector<RoomItem> roomsList(string filter, string order, int st = 1, int en = 20) {
     itemListTemplate(Room, filter, order, st, en);
 
-    auto res = db.query(sql.c_str());
+    auto res = db.query(sql.c_str(), "Room");
     vector<RoomItem> list = {};
     
     for (int i = 0; i < res.size(); i++) {
@@ -104,8 +104,8 @@ vector<RoomItem> roomsList(string filter, string order, int st = 1, int en = 20)
 
 int roomsCreate(RoomItem item, string localization = "default") {
     stringstream sqlbuffer;
-    auto res = db.query("SELECT id FROM Room WHERE id = " + to_string(item.id));
-    if (res.size() == 0) res = db.query("SELECT id FROM Room WHERE name = \"" + item.name + "\" AND localization = \"" + localization + "\"");
+    auto res = db.query("SELECT id FROM Room WHERE id = " + to_string(item.id), "Room");
+    if (res.size() == 0) res = db.query("SELECT id FROM Room WHERE name = \"" + item.name + "\" AND localization = \"" + localization + "\"", "Room");
     if (res.size() != 0) {
         int id = atoi(res[0]["id"].c_str());
         sqlbuffer << "UPDATE Room SET name=\"" << item.name << "\", version=" << item.version;
@@ -114,11 +114,11 @@ int roomsCreate(RoomItem item, string localization = "default") {
         sqlbuffer << "tags=\"" << serializeTagString(item.tags) << "\", ";
         sqlbuffer << "localization=\"" << localization << "\" WHERE id=" << id;
     } else {
-        int id = atoi(db.query("SELECT COUNT(*) AS sum FROM Room;")[0]["sum"].c_str()) + 1;
+        int id = atoi(db.query("SELECT COUNT(*) AS sum FROM Room;", "Room")[0]["sum"].c_str()) + 1;
         sqlbuffer << "INSERT INTO Room (id, name, version, title, subtitle, master, tags, cover, bgm, preview, localization) VALUES (";
         sqlbuffer << id << ", \"" << item.name << "\", " << item.version << ", \"" << item.title << "\", ";
         sqlbuffer << "\"" << item.subtitle << "\", \"" << item.master << "\", ";
         sqlbuffer << "\"" << serializeTagString(item.tags) << "\", ";
         sqlbuffer << "\"" << item.cover.hash << "\", \"" << item.bgm.hash << "\", \"" << item.preview.hash << "\", \"" << localization << "\")";
-    } return db.execute(sqlbuffer.str());
+    } return db.execute(sqlbuffer.str(), "Room");
 }

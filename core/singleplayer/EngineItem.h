@@ -129,14 +129,14 @@ class EngineItem {
 
 int enginesNumber(string filter) {
     itemNumberTemplate(Engine, filter);
-    dbres res = db.query(sql.c_str());
+    dbres res = db.query(sql.c_str(), "Engine");
     return atoi(res[0]["sum"].c_str());
 }
 
 vector<EngineItem> enginesList(string filter, string order, int st = 1, int en = 20) {
     itemListTemplate(Engine, filter, order, st, en);
 
-    dbres res = db.query(sql.c_str());
+    dbres res = db.query(sql.c_str(), "Engine");
     vector<EngineItem> list = {};
 
     for (int i = 0; i < res.size(); i++) {
@@ -167,12 +167,12 @@ vector<EngineItem> enginesList(string filter, string order, int st = 1, int en =
 
 int enginesCreate(EngineItem item, string localization = "default") {
     stringstream sqlbuffer;
-    auto res = db.query("SELECT id FROM Engine WHERE id = " + to_string(item.id));
-    if (res.size() == 0) res = db.query("SELECT id FROM Engine WHERE name = \"" + item.name + "\" AND localization = \"" + localization + "\"");
-    int skinId = atoi(db.query("SELECT id FROM Skin WHERE name = \"" + item.skin.name + "\";")[0]["id"].c_str());
-    int backgroundId = atoi(db.query("SELECT id FROM Background WHERE name = \"" + item.background.name + "\";")[0]["id"].c_str());
-    int effectId = atoi(db.query("SELECT id FROM Effect WHERE name = \"" + item.effect.name + "\";")[0]["id"].c_str());
-    int particleId = atoi(db.query("SELECT id FROM Particle WHERE name = \"" + item.particle.name + "\";")[0]["id"].c_str());
+    auto res = db.query("SELECT id FROM Engine WHERE id = " + to_string(item.id), "Engine");
+    if (res.size() == 0) res = db.query("SELECT id FROM Engine WHERE name = \"" + item.name + "\" AND localization = \"" + localization + "\"", "Engine");
+    int skinId = atoi(db.query("SELECT id FROM Skin WHERE name = \"" + item.skin.name + "\";", "Skin")[0]["id"].c_str());
+    int backgroundId = atoi(db.query("SELECT id FROM Background WHERE name = \"" + item.background.name + "\";", "Background")[0]["id"].c_str());
+    int effectId = atoi(db.query("SELECT id FROM Effect WHERE name = \"" + item.effect.name + "\";", "Effect")[0]["id"].c_str());
+    int particleId = atoi(db.query("SELECT id FROM Particle WHERE name = \"" + item.particle.name + "\";", "Particle")[0]["id"].c_str());
     if (res.size() != 0) {
         int id = atoi(res[0]["id"].c_str());
         sqlbuffer << "UPDATE Engine SET name = \"" << item.name << "\", version = " << item.version << ", title = \"" << item.title << "\", ";
@@ -181,14 +181,14 @@ int enginesCreate(EngineItem item, string localization = "default") {
         sqlbuffer << "tags=\"" << serializeTagString(item.tags) << "\", ";
         sqlbuffer << "configuration = \"" << item.configuration.hash << "\", rom = \"" << item.rom.hash << "\", description = \"" << str_replace("\n", "\\n", item.description) << "\", localization = \"" << localization << "\" WHERE id = " << id << ";";
     } else {
-        int id = atoi(db.query("SELECT COUNT(*) AS sum FROM Engine;")[0]["sum"].c_str()) + 1;
+        int id = atoi(db.query("SELECT COUNT(*) AS sum FROM Engine;", "Engine")[0]["sum"].c_str()) + 1;
         sqlbuffer << "INSERT INTO Engine (id, name, version, title, subtitle, author, skin, background, effect, particle, thumbnail, data, configuration, tags, rom, description, localization, tutorialData, previewData, watchData) VALUES (";
         sqlbuffer << id << ", \"" << item.name << "\", " << item.version << ", \"" << item.title << "\", ";
         sqlbuffer << "\"" << item.subtitle << "\", \"" << item.author << "\", " << skinId << ", " << backgroundId << ", " << effectId << ", " << particleId << ", ";
         sqlbuffer << "\"" << item.thumbnail.hash << "\", \"" << item.data.hash << "\", \"" << item.configuration.hash << "\", ";
         sqlbuffer << "\"" << serializeTagString(item.tags) << "\", ";
         sqlbuffer << "\"" << item.rom.hash << "\", \"" << str_replace("\n", "\\n", item.description) << "\", \"" << localization << "\", \"" << item.tutorialData.hash << "\", \"" << item.previewData.hash << "\", \"" << item.watchData.hash << "\");";
-    } return db.execute(sqlbuffer.str());
+    } return db.execute(sqlbuffer.str(), "Engine");
 }
 
 #endif

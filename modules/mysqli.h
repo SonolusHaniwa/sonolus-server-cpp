@@ -10,17 +10,22 @@ using namespace std;
 #endif
 #ifdef __EMSCRIPTEN__
 extern "C" {
-	extern char* __builtin_emscripten_query(char* sql);
-	extern int __builtin_emscripten_execute(char* sql);
+	extern void __builtin_emscripten_prepare(char* config);
+	extern char* __builtin_emscripten_query(char* sql, char* config);
+	extern int __builtin_emscripten_execute(char* sql, char* config);
 }
 #endif
 
-typedef vector<map<string,string> > dbres;
+typedef vector<map<string, string> > dbres;
 
 class DB_Controller {
 	private:
+	Json::Value dbConfig;
 	#ifdef ENABLE_SQLITE 
 	sqlite3 *db;
+	#endif
+	#ifdef ENABLE_MYSQL
+	MYSQL mysql;
 	#endif
 
 	#ifdef ENABLE_MYSQL
@@ -40,8 +45,10 @@ class DB_Controller {
 	dbres mysqli_query(const char* sql) {
 		#ifdef ENABLE_MYSQL
 		writeLog(LOG_LEVEL_DEBUG, "Execute database: " + string(sql));
-		MYSQL mysql = mysqli_connect(appConfig["mysql.hostname"].asString().c_str(), appConfig["mysql.username"].asString().c_str(), 
-			appConfig["mysql.password"].asString().c_str(), appConfig["mysql.database"].asString().c_str(), appConfig["mysql.port"].asInt());
+		if (mysql_query(&mysql, "set sql_mode=\"NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION\";")) {
+			writeLog(LOG_LEVEL_ERROR, "Failed to query database: " + string(mysql_error(&mysql)));
+			return dbres();
+		} 
 		bool res1 = mysql_query(&mysql, sql);
 		if (res1) {
 			writeLog(LOG_LEVEL_ERROR, "Failed to query database: " + string(mysql_error(&mysql)));
@@ -59,7 +66,7 @@ class DB_Controller {
 			for (int i = 0; i < field.size(); i++) tmp[field[i]] = row[i] == NULL ? "" : row[i];
 			res.push_back(tmp);
 		} tmp.clear(); delete[] row;
-		mysql_free_result(res2); mysql_close(&mysql);
+		mysql_free_result(res2);
 		return res;
 		#else 
 		writeLog(LOG_LEVEL_ERROR, "This program doesn't support MySQL/MariaDB server. You need to compile this program with the option `-DENABLE_MYSQL -lmysqlclient`");
@@ -70,13 +77,14 @@ class DB_Controller {
 	int mysqli_execute(const char* sql) {
 		#ifdef ENABLE_MYSQL
 		writeLog(LOG_LEVEL_DEBUG, "Execute database: " + string(sql));
-		MYSQL mysql = mysqli_connect(appConfig["mysql.hostname"].asString().c_str(), appConfig["mysql.username"].asString().c_str(), 
-			appConfig["mysql.password"].asString().c_str(), appConfig["mysql.database"].asString().c_str(), appConfig["mysql.port"].asInt());
+		if (mysql_query(&mysql, "set sql_mode=\"NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION\";")) {
+			writeLog(LOG_LEVEL_ERROR, "Failed to execute database: " + string(mysql_error(&mysql)));
+			return 0;
+		} 
 		if (mysql_query(&mysql, sql)) {
 			writeLog(LOG_LEVEL_ERROR, "Failed to execute database: " + string(mysql_error(&mysql)));
 			return 0;
 		} int rows = mysql_affected_rows(&mysql);
-		mysql_close(&mysql);
 		return rows;
 		#else 
 		writeLog(LOG_LEVEL_ERROR, "This program doesn't support MySQL/MariaDB server. You need to compile this program with the option `-DENABLE_MYSQL -lmysqlclient`");
@@ -134,7 +142,7 @@ class DB_Controller {
 	dbres emscripten_query(const char* sql) {
 		#ifdef __EMSCRIPTEN__
 		writeLog(LOG_LEVEL_DEBUG, "Execute database: " + string(sql));
-		char* tmp = __builtin_emscripten_query(const_cast<char*>(sql));
+		char* tmp = __builtin_emscripten_query(const_cast<char*>(sql), const_cast<char*>(json_encode(dbConfig).c_str()));
 		string result = string(tmp, strlen(tmp)); Json::Value obj;
 		json_decode(result, obj); dbres res;
 		for (int i = 0; i < obj.size(); i++) {
@@ -152,7 +160,7 @@ class DB_Controller {
 	int emscripten_execute(const char* sql) {
 		#ifdef __EMSCRIPTEN__
 		writeLog(LOG_LEVEL_DEBUG, "Execute database: " + string(sql));
-		return __builtin_emscripten_execute(const_cast<char*>(sql));
+		return __builtin_emscripten_execute(const_cast<char*>(sql), const_cast<char*>(json_encode(dbConfig).c_str()));
 		#else 
 		writeLog(LOG_LEVEL_ERROR, "You should't use emscripten database in terminal! Maybe you want to compile this program with the command `emcc`?");
 		exit(3);
@@ -163,48 +171,83 @@ class DB_Controller {
 	public:
 	
 	DB_Controller(){}
-	DB_Controller(bool unused){
-		#ifdef ENABLE_SQLITE
-        int ret = sqlite3_open(appConfig["sqlite.dbfile"].asString().c_str(), &db);
-        if (ret) {
-            writeLog(LOG_LEVEL_ERROR, "Failed to open SQLite Database: " + string(sqlite3_errmsg(db)));
-			return;
-        }
-
-		if (appConfig["sqlite.dbfile"].asString() == ":memory:") {
-			char* zErrMsg;
-			int rc = sqlite3_exec(db, readFile(appConfig["sqlite.sqlfile"].asString()).c_str(), NULL, 0, &zErrMsg);
-			if(rc != SQLITE_OK) {
-				writeLog(LOG_LEVEL_ERROR, "Failed to execute database: " + string(zErrMsg));
-				sqlite3_free(zErrMsg); 
-				return;
+	DB_Controller(Json::Value dbConfig){
+		this->dbConfig = dbConfig;
+		#ifndef __EMSCRIPTEN__
+			#ifdef ENABLE_SQLITE
+			if (dbConfig["database"].asString() == "sqlite") { 
+				int ret = sqlite3_open(dbConfig["sqlite.dbfile"].asString().c_str(), &db);
+				if (ret) {
+					writeLog(LOG_LEVEL_ERROR, "Failed to open SQLite Database: " + string(sqlite3_errmsg(db)));
+					return;
+				}
 			}
-			sqlite3_free(zErrMsg); 
-		}
+			#endif
+			#ifdef ENABLE_MYSQL
+			if (dbConfig["database"].asString() == "mysql") 
+				mysql = mysqli_connect(dbConfig["mysql.hostname"].asString().c_str(), dbConfig["mysql.username"].asString().c_str(), 
+					dbConfig["mysql.password"].asString().c_str(), dbConfig["mysql.database"].asString().c_str(), dbConfig["mysql.port"].asInt());
+			#endif
+		#else
+		__builtin_emscripten_prepare(const_cast<char*>(json_encode(dbConfig).c_str()));
 		#endif
 	}
 
 	dbres query(string sql) {
-		if (appConfig["database"].asString() == "mysql") return mysqli_query(sql.c_str());
-		else if (appConfig["database"].asString() == "sqlite") return sqlite_query(sql.c_str());
-		else if (appConfig["database"].asString() == "emscripten") return emscripten_query(sql.c_str());
+		#ifndef __EMSCRIPTEN__
+		if (dbConfig["database"].asString() == "mysql") return mysqli_query(sql.c_str());
+		else if (dbConfig["database"].asString() == "sqlite") return sqlite_query(sql.c_str());
 		else {
 			writeLog(LOG_LEVEL_ERROR, "Unsupported database type!");
 			exit(3);
 		}
+		#else
+		return emscripten_query(sql.c_str());
+		#endif
 	}
 
 	int execute(string sql) {
-		if (appConfig["database"].asString() == "mysql") return mysqli_execute(sql.c_str());
-		else if (appConfig["database"].asString() == "sqlite") return sqlite_execute(sql.c_str());
-		else if (appConfig["database"].asString() == "emscripten") return emscripten_execute(sql.c_str());
+		#ifndef __EMSCRIPTEN__
+		if (dbConfig["database"].asString() == "mysql") return mysqli_execute(sql.c_str());
+		else if (dbConfig["database"].asString() == "sqlite") return sqlite_execute(sql.c_str());
 		else {
 			writeLog(LOG_LEVEL_ERROR, "Unsupported database type!");
 			exit(3);
 		}
+		#else
+		return emscripten_execute(sql.c_str());
+		#endif
 	}
 };
 #endif
+
+class DB_Total_Controller {
+	public:
+
+	vector<DB_Controller> dbs;
+	DB_Total_Controller(){}
+	DB_Total_Controller(Json::Value config) {
+		for (int i = 0; i < config.size(); i++) dbs.push_back(DB_Controller(config[i]));
+	}
+
+	dbres query(string sql, string tableName) {
+		assert(sql.find(tableName) != string::npos);
+		int dbId = -1;
+		Json::Value::Members mem = appConfig["tables"].getMemberNames();
+		for (auto it = mem.begin(); it != mem.end(); it++) { if ((*it) == tableName) dbId = appConfig["tables"][*it].asInt(); }
+		assert(dbId != -1);
+		return dbs[dbId].query(sql);
+	}
+
+	int execute(string sql, string tableName) {
+		assert(sql.find(tableName) != string::npos);
+		int dbId = -1;
+		Json::Value::Members mem = appConfig["tables"].getMemberNames();
+		for (auto it = mem.begin(); it != mem.end(); it++) { if ((*it) == tableName) dbId = appConfig["tables"][*it].asInt(); }
+		assert(dbId != -1);
+		return dbs[dbId].execute(sql);
+	}
+}db;
 
 #define itemNumberTemplate(item, filter) \
 	string sql = "SELECT name FROM " defineToString(item) " WHERE (" + filter + ")"; \

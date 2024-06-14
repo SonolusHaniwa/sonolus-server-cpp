@@ -84,14 +84,14 @@ class PlaylistItem {
 
 int playlistsNumber(string filter) {
     itemNumberTemplate(Playlist, filter);
-    dbres res = db.query(sql.c_str());
+    dbres res = db.query(sql.c_str(), "Playlist");
     return atoi(res[0]["sum"].c_str());
 }
 
 vector<PlaylistItem> playlistsList(string filter, string order, int st = 1, int en = 20) {
     itemListTemplate(Playlist, filter, order, st, en);
 
-    auto res = db.query(sql.c_str());
+    auto res = db.query(sql.c_str(), "Playlist");
     vector<PlaylistItem> list = {};
 
     for (int i = 0; i < res.size(); i++) {
@@ -116,8 +116,8 @@ vector<PlaylistItem> playlistsList(string filter, string order, int st = 1, int 
 
 int playlistsCreate(PlaylistItem item, string localization = "default") {
     stringstream sqlbuffer;
-    auto res = db.query("SELECT id FROM Playlist WHERE id = " + to_string(item.id));
-    if (res.size() == 0) res = db.query("SELECT id FROM Playlist WHERE name = \"" + item.name + "\" AND localization = \"" + localization + "\"");
+    auto res = db.query("SELECT id FROM Playlist WHERE id = " + to_string(item.id), "Playlist");
+    if (res.size() == 0) res = db.query("SELECT id FROM Playlist WHERE name = \"" + item.name + "\" AND localization = \"" + localization + "\"", "Playlist");
     Json::Value levels; levels.resize(0);
     for (int i = 0; i < item.levels.size(); i++) levels.append(item.levels[i].id);
     if (res.size() != 0) {
@@ -129,14 +129,14 @@ int playlistsCreate(PlaylistItem item, string localization = "default") {
         sqlbuffer << ", tags=\"" << serializeTagString(item.tags) << "\"";
         sqlbuffer << ", description=\"" << str_replace("\n", "\\n", item.description) << "\", localization=\"" << localization << "\" WHERE id=" << id;
     } else {
-        int id = atoi(db.query("SELECT COUNT(*) AS sum FROM Playlist;")[0]["sum"].c_str()) + 1;
+        int id = atoi(db.query("SELECT COUNT(*) AS sum FROM Playlist;", "Playlist")[0]["sum"].c_str()) + 1;
         sqlbuffer << "INSERT INTO Playlist (id, name, version, title, subtitle, author, levels, thumbnail, tags, description, localization) VALUES (";
         sqlbuffer << id << ", \"" << item.name << "\", " << item.version << ", \"" << item.title << "\", ";
         sqlbuffer << "\"" << item.subtitle << "\", \"" << item.author << "\", \"" << json_encode(levels) << "\", ";
         sqlbuffer << "\"" << item.thumbnail.hash << "\", ";
         sqlbuffer << "\"" << serializeTagString(item.tags) << "\", ";
         sqlbuffer << "\"" << str_replace("\n", "\\n", item.description) << "\", \"" << localization << "\")";
-    } return db.execute(sqlbuffer.str());
+    } return db.execute(sqlbuffer.str(), "Playlist");
 }
 
 #endif

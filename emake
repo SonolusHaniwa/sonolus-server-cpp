@@ -14,7 +14,7 @@ emcc emain.cpp -o libsonolus.js -s MODULARIZE -sALLOW_MEMORY_GROWTH\
 	--preload-file config --preload-file web --preload-file i18n --preload-file sonolus.db \
 	--js-library ./api/database.js -sVERBOSE -sASYNCIFY -O3 \
 	-L./emsdk/lib -I./emsdk/include -ljsoncpp -lcrypto -g \
-	-sASYNCIFY_IMPORTS=['__builtin_emscripten_query']
+	-sASYNCIFY_IMPORTS=['__builtin_emscripten_query','__builtin_emscripten_execute']
 echo -e "${YELLOW}Removing libsonolus.data...${WHITE}"
 rm libsonolus.data
 echo -e "${YELLOW}Modifying libsonolus.js...${WHITE}"
