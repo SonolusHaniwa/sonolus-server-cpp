@@ -12,9 +12,8 @@
 using namespace std;
 #define defineToString(str) #str
 
-std::string sonolus_server_version = "1.4.8";
-std::string Maximum_Sonolus_Version = "0.8.0";
-std::string Minimum_Sonolus_Version = "0.8.0";
+std::string sonolus_server_version = "1.6.0";
+std::string Maximum_Sonolus_Version = "0.8.2";
 std::string Sonolus_Version = Maximum_Sonolus_Version;
 Json::Value appConfig;
 Json::Value i18n, i18n_raw;
@@ -80,6 +79,8 @@ void routerRegister() {
     app.addRoute("/%s/search", GUISearch);
     app.addRoute("/%s/jump/%d", GUIJump);
     app.addRoute("/%s/%s", GUIDetails);
+    app.addRoute("/%s/%s/community/comments/list", GUICommunityCommentList);
+    app.addRoute("/%s/%s/community/comments/jump/%d", GUICommunityCommentJump);
     // app.addRoute("/levels/create", web_levels_create);
     // app.addRoute("/skins/create", web_skins_create);
     // app.addRoute("/backgrounds/create", web_backgrounds_create);

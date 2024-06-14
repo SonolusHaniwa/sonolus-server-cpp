@@ -3,8 +3,8 @@
 using namespace std;
 #define defineToString(str) #str
 
-std::string sonolus_server_version = "1.5.0";
-std::string Maximum_Sonolus_Version = "0.8.0";
+std::string sonolus_server_version = "1.6.0";
+std::string Maximum_Sonolus_Version = "0.8.2";
 std::string Sonolus_Version = Maximum_Sonolus_Version;
 Json::Value appConfig, studiosConfig;
 Json::Value i18n, i18n_raw;
@@ -119,6 +119,8 @@ void routerRegister(int argc, char** argv) {
     app.addRoute("/%s/jump/%d", GUIJump);
     app.addRoute("/%s/create", GUICreate);
     app.addRoute("/%s/%s", GUIDetails);
+    app.addRoute("/%s/%s/community/comments/list", GUICommunityCommentList);
+    app.addRoute("/%s/%s/community/comments/jump/%d", GUICommunityCommentJump);
     app.addRoute("/%s/%s/edit", GUIEdit);
     // app.addRoute("/levels/create", web_levels_create);
     // app.addRoute("/skins/create", web_skins_create);

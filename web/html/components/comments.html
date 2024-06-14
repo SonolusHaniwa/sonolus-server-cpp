@@ -1,0 +1,65 @@
+<div style="padding: 15px; background-color: #ffffff08; width: 100%">
+    <div class="flex" style="justify-content:space-between;color:#ffffffbf;font-size:12px;">
+        <span class="text-left">{{author}}</span>
+        <span class="text-right">{{time}}</span>
+    </div>
+    <p class="mt-5 whitespace-pre-wrap" style="margin:0px;min-height:24px;">{{content}}</p>
+    <div class="flex comments-actions-button" style="justify-content:right;">{{button}}</div>
+
+    <!-- Reply Interface -->
+    <div class="fixed top-0 left-0 z-50 flex h-[100vh] w-[100vw] select-none flex-col items-center justify-center bg-sonolus-main bg-opacity-90 transition-opacity" style="visibility: hidden; opacity: 0; margin-top: 0px" id="{{name}}" onclick="closeReply('{{name}}')">
+        <main class="mx-auto flex max-w-4xl flex-col space-y-9 p-9 transition-opacity v-transition:opacity-0 sm:space-y-12 sm:p-12" id="interface-{{name}}" style="opacity: 1;width: 100%;padding-top: 0px;padding-bottom: 0px">
+            <h2 class="flex-grow py-1 text-xl font-bold sm:py-1.5 sm:text-3xl">#REPLY</h2>
+            <div style="margin-top: 12px;">
+                <div class="py-2 font-bold sm:py-3">#CONTENT</div>
+                <div class="flex" style="justify-content:right;gap:8px">
+                    <button id="search-clear-content-{{name}}" class="flex select-none space-x-2 p-2 transition-colors sm:space-x-3 sm:p-3 cursor-pointer bg-sonolus-ui-button-normal hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" class="h-5 w-5 fill-current sm:h-6 sm:w-6">
+                            <path d="M310.6 361.4c12.5 12.5 12.5 32.75 0 45.25-6.2 6.25-14.4 9.35-22.6 9.35s-16.38-3.125-22.62-9.375L160 301.3 54.63 406.6C48.38 412.9 40.19 416 32 416s-16.37-3.1-22.625-9.4c-12.5-12.5-12.5-32.75 0-45.25l105.4-105.4L9.375 150.6c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0L160 210.8l105.4-105.4c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25l-105.4 105.4L310.6 361.4z"></path>
+                        </svg>
+                    </button>
+                    <button id="search-reset-content-{{name}}" class="flex select-none space-x-2 p-2 transition-colors sm:space-x-3 sm:p-3 pointer-events-none bg-sonolus-ui-button-disabled text-sonolus-ui-text-disabled">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="h-5 w-5 fill-current sm:h-6 sm:w-6">
+                            <path d="M480 256c0 123.4-100.5 223.9-223.9 223.9-48.84 0-95.17-15.58-134.2-44.86-14.12-10.59-16.97-30.66-6.375-44.81 10.59-14.12 30.62-16.94 44.81-6.375 27.84 20.91 61 31.94 95.88 31.94C344.3 415.8 416 344.1 416 256S344.31 96.2 256.2 96.2c-37.46 0-73.09 13.49-101.3 36.64l45.12 45.14c17.01 17.02 4.955 46.1-19.1 46.1H35.17C24.58 224.1 16 215.5 16 204.9V59.04C16 35 45.07 22.96 62.07 39.97l47.6 47.63C149.9 52.71 201.5 32.11 256.1 32.11 379.5 32.11 480 132.6 480 256z"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="flex flex-grow items-center space-x-2 sm:space-x-3 mt-2">
+                    <div class="flex relative flex-grow">
+                        <div class="relative flex-grow">
+                            <textarea id="search-content-{{name}}" type="text" class="w-full border-none bg-sonolus-ui-button-normal p-2 pl-9 text-center text-sm placeholder:text-sm hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed sm:p-3 sm:pl-12 sm:text-base sm:placeholder:text-base" style="min-height:150px;resize:none" placeholder="#CONTENT_PLACEHOLDER"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <script>
+                    addLoadEvent(function(){
+                        var def = ""; searchConfig["content-{{name}}"] = def;
+                        document.getElementById("search-reset-content-{{name}}").onclick =
+                        document.getElementById("search-clear-content-{{name}}").onclick = function(){
+                            searchConfig["content-{{name}}"] = def;
+                            document.getElementById("search-content-{{name}}").value = def;
+                            document.getElementById("search-reset-content-{{name}}").className = disableResetClass;
+                        };
+                        document.getElementById("search-content-{{name}}").oninput = function(){
+                            searchConfig["content-{{name}}"] = this.value;
+                            if (this.value == def) document.getElementById("search-reset-content-{{name}}").className = disableResetClass;
+                            else document.getElementById("search-reset-content-{{name}}").className = enableResetClass;
+                        };
+                        document.getElementById("interface-{{name}}").onclick = function(e){
+                            e.preventDefault();
+                            e.stopPropagation();
+                        };
+                    });
+                </script>
+                <div class="flex justify-end mt-2">
+                    <button class="flex select-none space-x-2 p-2 transition-colors sm:space-x-3 sm:p-3 cursor-pointer bg-sonolus-ui-button-normal hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed" onclick="sendReply('{{targetType}}', '{{targetName}}', '{{name}}')">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="h-5 w-5 fill-current sm:h-6 sm:w-6">
+                            <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/>
+                        </svg>
+                        <span class="min-w-[4.5rem] flex-grow text-center sm:min-w-[6rem]">{{language.submitButton}}</span>
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>

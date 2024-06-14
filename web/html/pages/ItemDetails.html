@@ -20,18 +20,188 @@
                 <div class="flex flex-col space-y-2 sm:space-y-3" style="display:{{html.enableCommunity}};">
                     <h2 class="py-1 text-xl font-bold sm:py-1.5 sm:text-3xl">{{language.community}}</h2>
                     <div class="whitespace-pre-wrap flex justify-center" style="fill:white;gap:10px">{{html.community.button}}</div>
-                    <div class="whitespace-pre-wrap flex" style="fill:white;gap:10px">
-                        <div>{{html.community.text}}</div>
-                    </div>
+                    <div class="flex" style="fill:white;gap:10px;flex-direction:column;">{{html.community.text}}</div>
                     <div class="whitespace-pre-wrap flex justify-center" style="fill:white;gap:10px">
                         <button class="flex select-none space-x-2 p-2 transition-colors sm:space-x-3 sm:p-3 cursor-pointer bg-sonolus-ui-button-normal hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed" onclick="location.href='{{comment.list.url}}'" id="info-more">
                             <div style="width:24px;fill:white">{{icon.more}}</div>
                             <span class="min-w-[4.5rem] flex-grow text-center sm:min-w-[6rem]">{{language.more}}</span>
-                    </button>
+                        </button>
                     </div>
                 </div>
                 {{html.detailsSection}}
                 <div style="position:fixed;right:0px;width:64px;fill:white;margin-top:48px;">{{html.icons}}</div>
+
+                <!-- Comment Interface -->
+                <div class="fixed top-0 left-0 z-50 flex h-[100vh] w-[100vw] select-none flex-col items-center justify-center bg-sonolus-main bg-opacity-90 transition-opacity" style="visibility: hidden; opacity: 0; margin-top: 0px" id="commentInterface" onclick="closeComment()">
+                    <main class="mx-auto flex max-w-4xl flex-col space-y-9 p-9 transition-opacity v-transition:opacity-0 sm:space-y-12 sm:p-12" id="commentInterfaceMain" style="opacity: 1;width: 100%;padding-top: 0px;padding-bottom: 0px">
+                        <h2 class="flex-grow py-1 text-xl font-bold sm:py-1.5 sm:text-3xl">#COMMENT</h2>
+                        <div style="margin-top: 12px;">
+                            <div class="py-2 font-bold sm:py-3">#CONTENT</div>
+                            <div class="flex" style="justify-content:right;gap:8px">
+                                <button id="search-clear-content" class="flex select-none space-x-2 p-2 transition-colors sm:space-x-3 sm:p-3 cursor-pointer bg-sonolus-ui-button-normal hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" class="h-5 w-5 fill-current sm:h-6 sm:w-6">
+                                        <path d="M310.6 361.4c12.5 12.5 12.5 32.75 0 45.25-6.2 6.25-14.4 9.35-22.6 9.35s-16.38-3.125-22.62-9.375L160 301.3 54.63 406.6C48.38 412.9 40.19 416 32 416s-16.37-3.1-22.625-9.4c-12.5-12.5-12.5-32.75 0-45.25l105.4-105.4L9.375 150.6c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0L160 210.8l105.4-105.4c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25l-105.4 105.4L310.6 361.4z"></path>
+                                    </svg>
+                                </button>
+                                <button id="search-reset-content" class="flex select-none space-x-2 p-2 transition-colors sm:space-x-3 sm:p-3 pointer-events-none bg-sonolus-ui-button-disabled text-sonolus-ui-text-disabled">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="h-5 w-5 fill-current sm:h-6 sm:w-6">
+                                        <path d="M480 256c0 123.4-100.5 223.9-223.9 223.9-48.84 0-95.17-15.58-134.2-44.86-14.12-10.59-16.97-30.66-6.375-44.81 10.59-14.12 30.62-16.94 44.81-6.375 27.84 20.91 61 31.94 95.88 31.94C344.3 415.8 416 344.1 416 256S344.31 96.2 256.2 96.2c-37.46 0-73.09 13.49-101.3 36.64l45.12 45.14c17.01 17.02 4.955 46.1-19.1 46.1H35.17C24.58 224.1 16 215.5 16 204.9V59.04C16 35 45.07 22.96 62.07 39.97l47.6 47.63C149.9 52.71 201.5 32.11 256.1 32.11 379.5 32.11 480 132.6 480 256z"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="flex flex-grow items-center space-x-2 sm:space-x-3 mt-2">
+                                <div class="flex relative flex-grow">
+                                    <div class="relative flex-grow">
+                                        <textarea id="search-content" type="text" class="w-full border-none bg-sonolus-ui-button-normal p-2 pl-9 text-center text-sm placeholder:text-sm hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed sm:p-3 sm:pl-12 sm:text-base sm:placeholder:text-base" style="min-height:150px;resize:none" placeholder="#CONTENT_PLACEHOLDER"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <script>
+                                addLoadEvent(function(){
+                                    var def = ""; searchConfig["content"] = def;
+                                    document.getElementById("search-reset-content").onclick =
+                                    document.getElementById("search-clear-content").onclick = function(){
+                                        searchConfig["content"] = def;
+                                        document.getElementById("search-content").value = def;
+                                        document.getElementById("search-reset-content").className = disableResetClass;
+                                    };
+                                    document.getElementById("search-content").oninput = function(){
+                                        searchConfig["content"] = this.value;
+                                        if (this.value == def) document.getElementById("search-reset-content").className = disableResetClass;
+                                        else document.getElementById("search-reset-content").className = enableResetClass;
+                                    };
+                                    document.getElementById("commentInterfaceMain").onclick = function(e){
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                    };
+                                });
+                            </script>
+                            <div class="flex justify-end mt-2">
+                                <button class="flex select-none space-x-2 p-2 transition-colors sm:space-x-3 sm:p-3 cursor-pointer bg-sonolus-ui-button-normal hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed" onclick="sendComment('{{type}}', '{{name}}')">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="h-5 w-5 fill-current sm:h-6 sm:w-6">
+                                        <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/>
+                                    </svg>
+                                    <span class="min-w-[4.5rem] flex-grow text-center sm:min-w-[6rem]">{{language.submitButton}}</span>
+                                </button>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+                <!-- Rating Interface -->
+                <div class="fixed top-0 left-0 z-50 flex h-[100vh] w-[100vw] select-none flex-col items-center justify-center bg-sonolus-main bg-opacity-90 transition-opacity" style="visibility: hidden;opacity: 0;margin-top: 0px" id="ratingInterface" onclick="closeRating()">
+                    <main class="mx-auto flex max-w-4xl flex-col space-y-9 p-9 transition-opacity v-transition:opacity-0 sm:space-y-12 sm:p-12" id="ratingInterfaceMain" style="opacity: 1;width: 100%;padding-top: 0px;padding-bottom: 0px">
+                        <h2 class="flex-grow py-1 text-xl font-bold sm:py-1.5 sm:text-3xl">#RATING</h2>
+                            <div style="margin-top: 12px;">
+                                <div class="py-2 font-bold sm:py-3">#RATING</div>
+                                <div class="ml-9 flex flex-grow items-center space-x-2 sm:ml-12 sm:space-x-3">
+                                    <div id="search-info-rating" class="w-12 text-center sm:w-16">{{search.rating}}</div>
+                                    <div class="relative flex items-center flex-grow">
+                                        <button id="search-left-rating" class="flex select-none space-x-2 p-2 transition-colors sm:space-x-3 sm:p-3 cursor-pointer bg-sonolus-ui-button-normal hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512" class="h-5 w-5 fill-current sm:h-6 sm:w-6">
+                                                <path d="M192 448c-8.188 0-16.38-3.125-22.62-9.375l-160-160c-12.5-12.5-12.5-32.75 0-45.25l160-160c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25L77.25 256l137.4 137.4c12.5 12.5 12.5 32.75 0 45.25C208.4 444.9 200.2 448 192 448z"></path>
+                                            </svg>
+                                        </button>
+                                        <button id="search-rating" class="h-full w-full flex-grow bg-sonolus-ui-button-normal p-2 hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed sm:p-3">
+                                            <div class="h-full w-full bg-sonolus-ui-surface bg-opacity-25 p-1.5 sm:p-2">
+                                                <div id="search-block-full-rating" class="h-full w-full">
+                                                    <div id="search-block-rating" class="h-2 w-full origin-left transform bg-sonolus-ui-text-normal transition-transform" style="--tw-scale-x: 0.8;"></div>
+                                                </div>
+                                            </div>
+                                        </button>
+                                        <button id="search-right-rating" class="flex select-none space-x-2 p-2 transition-colors sm:space-x-3 sm:p-3 cursor-pointer bg-sonolus-ui-button-normal hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512" class="h-5 w-5 fill-current sm:h-6 sm:w-6">
+                                                <path d="M64 448c-8.188 0-16.38-3.125-22.62-9.375-12.5-12.5-12.5-32.75 0-45.25L178.8 256 41.38 118.6c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0l160 160c12.5 12.5 12.5 32.75 0 45.25l-160 160C80.38 444.9 72.19 448 64 448z"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <button id="search-reset-rating" class="flex select-none space-x-2 p-2 transition-colors sm:space-x-3 sm:p-3 pointer-events-none bg-sonolus-ui-button-disabled text-sonolus-ui-text-disabled">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="h-5 w-5 fill-current sm:h-6 sm:w-6">
+                                            <path d="M480 256c0 123.4-100.5 223.9-223.9 223.9-48.84 0-95.17-15.58-134.2-44.86-14.12-10.59-16.97-30.66-6.375-44.81 10.59-14.12 30.62-16.94 44.81-6.375 27.84 20.91 61 31.94 95.88 31.94C344.3 415.8 416 344.1 416 256S344.31 96.2 256.2 96.2c-37.46 0-73.09 13.49-101.3 36.64l45.12 45.14c17.01 17.02 4.955 46.1-19.1 46.1H35.17C24.58 224.1 16 215.5 16 204.9V59.04C16 35 45.07 22.96 62.07 39.97l47.6 47.63C149.9 52.71 201.5 32.11 256.1 32.11 379.5 32.11 480 132.6 480 256z"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <script>
+                                    addLoadEvent(function(){
+                                        var min = 0;
+                                        var max = 5;
+                                        var def = {{search.rating}};
+                                        var step = 1
+                                        searchConfig["rating"] = def;
+                                        var block = document.getElementById("search-block-rating");
+                                        var nMax = document.getElementById("search-block-full-rating").getBoundingClientRect().width;
+                                        var info = document.getElementById("search-info-rating");
+                                        var reset = document.getElementById("search-reset-rating");
+                                        var siz = Math.round((max - min) / step);
+                                        block.style.setProperty("--tw-scale-x", (def - min) / (max - min));
+                                        document.getElementById("search-rating").onmousedown = function(event){
+                                            var nWidth = block.getBoundingClientRect().left;
+                                            var nX = event.clientX - nWidth;
+                                            console.log(nMax);
+                                            if (nX > nMax) nX = nMax;
+                                            if (nX < 0) nX = 0;
+                                            var value = Math.round(nX / nMax * siz);
+                                            info.innerHTML = value + min;
+                                            if (value + min == def) reset.className = disableResetClass;
+                                            else reset.className = enableResetClass;
+                                            searchConfig["rating"] = value + min;
+                                            block.style.setProperty("--tw-scale-x", value / siz);
+                                            document.onmousemove = function(event){
+                                                event.preventDefault();
+                                                var nX = event.clientX - nWidth;
+                                                if (nX > nMax) nX = nMax;
+                                                if (nX < 0) nX = 0;
+                                                var value = Math.round(nX / nMax * siz);
+                                                info.innerHTML = value + min;
+                                                if (value + min == def) reset.className = disableResetClass;
+                                                else reset.className = enableResetClass;
+                                                searchConfig["rating"] = value + min;
+                                                block.style.setProperty("--tw-scale-x", value / siz);
+                                            };
+                                            document.onmouseup = function(event){
+                                                document.onmousemove = null;
+                                                document.onmouseup = null;
+                                            }
+                                        };
+                                        document.getElementById("search-left-rating").onclick = function(){
+                                            if (searchConfig["rating"] == min) return false;
+                                            var s = --searchConfig["rating"];
+                                            block.style.setProperty("--tw-scale-x", (s - min) / (max - min));
+                                            info.innerHTML = searchConfig["rating"];
+                                            if (searchConfig["rating"] == def) reset.className = disableResetClass;
+                                            else reset.className = enableResetClass;
+                                        };
+                                        document.getElementById("search-right-rating").onclick = function(){
+                                            if (searchConfig["rating"] == max) return false;
+                                            var s = ++searchConfig["rating"];
+                                            block.style.setProperty("--tw-scale-x", (s - min) / (max - min));
+                                            info.innerHTML = searchConfig["rating"];
+                                            if (searchConfig["rating"] == def) reset.className = disableResetClass;
+                                            else reset.className = enableResetClass;
+                                        };
+                                        document.getElementById("search-reset-rating").onclick = function(){
+                                            searchConfig["rating"] = def;
+                                            block.style.setProperty("--tw-scale-x", (def - min) / (max - min));
+                                            info.innerHTML = searchConfig["rating"];
+                                            reset.className = disableResetClass;
+                                        };
+                                        document.getElementById("ratingInterfaceMain").onclick = function(e){
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                        };
+                                    });
+                                </script>
+                            </div>
+                            <div class="flex justify-end mt-2">
+                                <button class="flex select-none space-x-2 p-2 transition-colors sm:space-x-3 sm:p-3 cursor-pointer bg-sonolus-ui-button-normal hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed" onclick="sendRating('{{type}}', '{{name}}')">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="h-5 w-5 fill-current sm:h-6 sm:w-6">
+                                        <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/>
+                                    </svg>
+                                    <span class="min-w-[4.5rem] flex-grow text-center sm:min-w-[6rem]">{{language.submitButton}}</span>
+                                </button>
+                            </div>
+                        </div>
+                    </main>
+                </div>
             </main>
         </div>
     </div>

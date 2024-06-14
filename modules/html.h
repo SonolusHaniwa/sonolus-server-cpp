@@ -218,7 +218,7 @@ vector<string> iconName = {
     "post", "playlist", "level", "skin", "background", 
     "effect", "particle", "engine", "replay", "login", 
     "logout", "description", "tags", "more", "heartHollow",
-    "comment", "community"
+    "comment", "community", "reply"
 };
 argvar iconList;
 bool iconLoader = [](){

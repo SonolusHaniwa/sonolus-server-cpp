@@ -1601,3 +1601,14 @@ nav {
 .itemTags .tagIcon {
     width: 14px!important;
 }
+
+.comments-actions-button a {
+    width: 48px!important;
+    height: 48px!important;
+    padding: 9px!important;
+}
+
+.comments-actions-button div {
+    width: 30px!important;
+    height: 30px!important;
+}

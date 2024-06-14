@@ -9,6 +9,8 @@
 #include"./gui/ItemSearch.h"
 #include"./gui/ItemJump.h"
 #include"./gui/ItemCommunity.h"
+#include"./gui/ItemCommunityCommentList.h"
+#include"./gui/ItemCommunityCommentJump.h"
 #include"./gui/ItemDetails.h"
 #include"./gui/ItemCreate.h"
 #include"./gui/ItemEdit.h"

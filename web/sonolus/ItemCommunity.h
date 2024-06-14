@@ -18,16 +18,16 @@ auto SonolusCommunityInfo = [](client_conn conn, http_request request, param arg
     ItemDetails["topComments"].resize(0);
     if (appConfig[string(argv[0]) + ".enableLike"].asBool()) {
         int likes = db.query("SELECT uid FROM LikeTable WHERE targetType = \"" + string(argv[0]) + "\" AND targetName = \"" + string(argv[1]) + "\"").size();
-        ItemDetails["topComments"].append(ItemCommunityComment("System", 0, "Likes: " + to_string(likes), {}).toJsonObject());
+        ItemDetails["topComments"].append(ItemCommunityComment("", "System", 0, "Likes: " + to_string(likes), {}).toJsonObject());
     }
     if (appConfig[string(argv[0]) + ".enableComment"].asBool()) {
         int comments = commentsNumber("targetType = \"" + argv[0] + "\" AND targetName = \"" + argv[1] + "\"");
-        ItemDetails["topComments"].append(ItemCommunityComment("System", 0, "Comments: " + to_string(comments) + " / " + to_string((comments - 1) / 20 + 1) + " pages", {}).toJsonObject());
+        ItemDetails["topComments"].append(ItemCommunityComment("", "System", 0, "Comments: " + to_string(comments) + " / " + to_string((comments - 1) / appConfig[argv[0] + ".pageSize.community"].asInt() + 1) + " pages", {}).toJsonObject());
     }
     if (appConfig[string(argv[0]) + ".enableRating"].asBool()) {
         int ratings = db.query("SELECT uid FROM Rating WHERE targetType = \"" + string(argv[0]) + "\" AND targetName = \"" + string(argv[1]) + "\"").size();
         double rating = atof(db.query("SELECT AVG(rating) FROM Rating WHERE targetType = \"" + string(argv[0]) + "\" AND targetName = \"" + string(argv[1]) + "\"")[0]["AVG(rating)"].c_str());
-        ItemDetails["topComments"].append(ItemCommunityComment("System", 0, "Rating: " + to_string(rating) + "(" + to_string(ratings) + ")", {}).toJsonObject());
+        ItemDetails["topComments"].append(ItemCommunityComment("", "System", 0, "Rating: " + to_string(rating) + "(" + to_string(ratings) + ")", {}).toJsonObject());
     }
     quickSendObj(ItemDetails);
 };
@@ -56,7 +56,7 @@ auto SonolusCommunitySubmit = [](client_conn conn, http_request request, param a
         string name = getRef();
         db.execute("INSERT INTO Comment (name, targetType, targetName, uid, time, content) VALUES (\"" + name + "\", \"" + argv[0] + "\", \"" + argv[1] + "\", \"" + profile.id + "\", " + to_string(getMilliSeconds()) + ", \"" + $_POST["content"] + "\")");
         int comments = commentsNumber("targetType = \"" + argv[0] + "\" AND targetName = \"" + argv[1] + "\"");
-        SubmitItemCommunityActionResponse["shouldNavigateCommentsToPage"] = (comments - 1) / 20;
+        SubmitItemCommunityActionResponse["shouldNavigateCommentsToPage"] = (comments - 1) / appConfig[argv[0] + ".pageSize.community"].asInt();
     }
     if ($_POST["type"] == "rating" && appConfig[argv[0] + ".enableRating"].asBool()) {
         int rating2 = $_POST["rating"] == "" ? rating : atoi($_POST["rating"].c_str());
@@ -71,7 +71,7 @@ auto SonolusCommunitySubmit = [](client_conn conn, http_request request, param a
         string name = getRef();
         db.execute("INSERT INTO Comment (name, targetType, targetName, uid, time, content) VALUES (\"" + name + "\", \"" + argv[0] + "\", \"" + argv[1] + "\", \"" + profile.id + "\", " + to_string(getMilliSeconds()) + ", \"" + content + "\")");
         int comments = commentsNumber("targetType = \"" + argv[0] + "\" AND targetName = \"" + argv[1] + "\"");
-        SubmitItemCommunityActionResponse["shouldNavigateCommentsToPage"] = (comments - 1) / 20;
+        SubmitItemCommunityActionResponse["shouldNavigateCommentsToPage"] = (comments - 1) / appConfig[argv[0] + ".pageSize.community"].asInt();
     }
     quickSendObj(SubmitItemCommunityActionResponse);
 };
