@@ -37,9 +37,9 @@ auto GUIList = [](client_conn conn, http_request request, param argv) {
         sqlFilter += "title like \"%" + str_replace("\"", "\\\"", urldecode($_GET["keywords"])) + "%\"";
     } else {
         argvar args = argvar(); string filter = "";
-        string searchJson = readFile("./config/" + argv[0].substr(0, argv[0].size() - 1) + "_search.json"); Json::Value Searches;
+        Json::Value Searches = appConfig[argv[0] + ".searches"];
         for (auto v : $_GET) $_GET[v.first] = str_replace("\"", "\\\"", urldecode(v.second));
-        json_decode(searchJson, Searches); int searchId = -1;
+        int searchId = -1;
         for (int i = 0; i < Searches.size(); i++) if (Searches[i]["type"].asString() == $_GET["type"]) {
             searchId = i; filter = Searches[i]["filter"].asString(); order = Searches[i]["order"].asString();
             type = Searches[i]["title"].asString();

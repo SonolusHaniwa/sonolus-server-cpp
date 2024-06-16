@@ -179,6 +179,7 @@ void preload() {
     log_init(log_target_type);
     http_init();
     loadConfig();
+    loadDefaultVariable();
 
     /** 设置HTTP代码解释 */
     http_code[100] = "Continue";
