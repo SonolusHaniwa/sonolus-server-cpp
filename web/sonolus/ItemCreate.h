@@ -5,6 +5,8 @@ auto SonolusCreate = [](client_conn conn, http_request request, param argv){
     auto $_POST = argvar();
     if (request.postdata[0] == '{') request.postdata = json_decode(request.postdata)["value"].asString();
 	$_POST = postParam(request);
+	for (auto v : $_POST) $_POST[v.first] = urldecode(v.second);
+	for (auto v : $_POST) $_POST[v.first] = quote_encode(v.second);
     int raws = 0;
 	int id = $_POST["id"] == "" ? -1 : atoi($_POST["id"].c_str());
     string name = $_POST["name"];

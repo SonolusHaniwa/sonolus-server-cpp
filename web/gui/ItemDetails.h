@@ -12,7 +12,7 @@
     quickGUICommunity(request, argv[0], argv[1], argList, detailsIcon); \
     string detailsSection = ""; \
     argvar args = item.fetchParamList(); \
-    for (auto v : args) args[v.first] = str_replace("\"", "\\\"", v.second); \
+    for (auto v : args) args[v.first] = quote_encode(v.second); \
     for (int i = 0; i < appConfig[argv[0] + ".details.sections"].size(); i++) { \
         auto section = appConfig[argv[0] + ".details.sections"][i]; \
         detailsSection += "<a style=\"height:0px;margin:0px;\" name=\"" + section["title"].asString() + "\"></a>"; \

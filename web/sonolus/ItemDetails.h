@@ -12,7 +12,7 @@
         appConfig[defineToString(name2)".enableComment"].asBool() || \
         appConfig[defineToString(name2)".enableRating"].asBool(); \
     argvar args = item.fetchParamList(); \
-    for (auto v : args) args[v.first] = str_replace("\"", "\\\"", v.second); \
+    for (auto v : args) args[v.first] = quote_encode(v.second); \
     for (int i = 0; i < appConfig[defineToString(name2)".details.sections"].size(); i++) { \
         auto obj = appConfig[defineToString(name2)".details.sections"][i]; \
         string filter = obj["filter"].asString(), \
@@ -24,7 +24,7 @@
             name2##List(filter, order, 1, appConfig[defineToString(name2)".pageSize.recommends"].asInt()) \
         ).toJsonObject()); \
     } \
-    auto recommended = name2##List("author = \"" + item.author + "\"", "id DESC", 1, 5); \
+    auto recommended = name2##List("author = \"" + quote_encode(item.author) + "\"", "id DESC", 1, 5); \
     ItemDetails["recommended"].resize(0); \
     for (int i = 0; i < recommended.size(); i++) ItemDetails["recommended"].append(recommended[i].toJsonObject()); \
 }
