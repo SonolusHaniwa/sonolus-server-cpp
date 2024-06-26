@@ -123,6 +123,13 @@ unsigned char* sha1(char* data, int len) {
     int ret = SHA1_Final(sSHA, &ctx);
     return sSHA;
 }
+string sha1(string data) {
+    auto res = sha1(const_cast<char*>(data.c_str()), data.length());
+    stringstream buffer;
+    for (int i = 0; i < 20; i++) buffer << hex << setw(2) << setfill('0') << int(res[i]);
+    delete[] res;
+    return buffer.str();
+}
 
 // aes256cbc编码部分
 std::string aes_256_cbc_decode(std::string key, std::string iv, std::string data) {

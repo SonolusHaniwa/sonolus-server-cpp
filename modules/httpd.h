@@ -2,7 +2,7 @@
  * @file httpd.h
  * @author LittleYang0531 (dev@lyoj.ml)
  * @brief Web服务器核心头文件
- * @version 1.0.6
+ * @version 1.0.7
  * @date 2022-09-18
  * 
  * @copyright Copyright (c) 2023 LittleYang0531
@@ -300,7 +300,7 @@ ssize_t ws_send(client_conn __fd, string __buf, int opcode = 1) {
  * @param __fd 客户端连接符
  * @return char
 */
-char recvchar(client_conn __fd) {
+int recvchar(client_conn __fd) {
 	if (isCgi) {
 		if (cgiRequest.size() == 0) return -1;
 		char ch = cgiRequest.front();
@@ -312,7 +312,7 @@ char recvchar(client_conn __fd) {
     else s = SSL_read(__fd.ssl, __buf, 1);
     char ans = __buf[0]; 
     delete[] __buf;
-    if (s < 1) return -1;
+    if (s < 1) return -65535;
     return ans;
 }
 
@@ -328,26 +328,26 @@ string recv(client_conn __fd, int siz = -1) {
     if (siz == -1) {
         int times = 0;
         while (__buf.size() < 4 || __buf.substr(__buf.size() - 4, 4) != "\r\n\r\n") {
-            char ch = recvchar(__fd);
-            if (ch == -1) {
+            int ch = recvchar(__fd);
+            if (ch == -65535) {
                 if (times <= lim) times++;
                 else {
                     writeLog(LOG_LEVEL_WARNING, "Failed to recieve data!");
                     return "";    
                 }
             }
-            __buf.push_back(ch);
+            __buf.push_back(char(ch));
         } 
         writeLog(LOG_LEVEL_DEBUG, "Recieve " + to_string(__buf.size()) + " bytes from client.");
         return __buf;
     } else {
         while (__buf.size() != siz) {
-            char ch = recvchar(__fd);
-            if (ch == -1) {
+            int ch = recvchar(__fd);
+            if (ch == -65535) {
                 writeLog(LOG_LEVEL_WARNING, "Failed to recieve data!");
                 return "";
             }
-            __buf.push_back(ch);
+            __buf.push_back(char(ch));
         } 
         writeLog(LOG_LEVEL_DEBUG, "Recieve " + to_string(__buf.size()) + " bytes from client.");
         return __buf;

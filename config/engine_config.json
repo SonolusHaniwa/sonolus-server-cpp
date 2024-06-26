@@ -4,7 +4,8 @@
     "engines.enableRating": true,
     "engines.enableGUICreate": false,
     "engines.enableSonolusCreate": false,
-    "engines.pageSize.info": 5,
+    "engines.exceptGUICreate": [],
+    "engines.exceptSonolusCreate": [],
     "engines.pageSize.list": 20,
     "engines.pageSize.recommends": 5,
     "engines.pageSize.community": 5,
@@ -24,129 +25,144 @@
     ],
     "engines.creates": [
         {
+            "title": "#ADVANCED",
+            "icon": "plus",
+            "type": "advanced",
             "options": [
                 {
                     "query": "name",
                     "name": "#NAME",
                     "type": "text",
-                    "placeholder": "Enter engine name..."
+                    "placeholder": "#NAME_PLACEHOLDER",
+                    "required": true
                 },
                 {
                     "query": "title",
                     "name": "#TITLE",
                     "type": "text",
-                    "placeholder": "Enter engine title..."
+                    "placeholder": "#TITLE_PLACEHOLDER",
+                    "required": true
                 },
                 {
                     "query": "subtitle",
                     "name": "#SUBTITLE",
                     "type": "text",
-                    "placeholder": "Enter engine subtitle..."
+                    "placeholder": "#SUBTITLE_PLACEHOLDER"
                 },
                 {
                     "query": "author",
                     "name": "#AUTHOR",
                     "type": "text",
-                    "placeholder": "Enter engine author..."
+                    "placeholder": "#AUTHOR_PLACEHOLDER"
                 },
                 {
                     "query": "description",
-                    "name": "#description",
+                    "name": "Description",
                     "type": "textArea",
                     "placeholder": "Enter description..."
                 },
                 {
                     "query": "tags",
-                    "name": "#tags",
+                    "name": "Tags",
                     "type": "text",
                     "placeholder": "Enter tags..."
                 },
                 {
                     "query": "localization",
                     "name": "Localization",
-                    "type": "select",
-                    "def": 0,
-                    "values": [
-                        "default",
-                        "{{jsonArray.languageList}}"
-                    ]
+                    "type": "localizationItem"
                 },
                 {
                     "query": "skin",
-                    "name": "#skins",
-                    "type": "select",
-                    "def": 0,
-                    "values": [
-                        "Choose a Skin",
-                        "{{jsonArray.skinList}}"
-                    ]
+                    "name": "Skin",
+                    "type": "serverItem",
+                    "itemType": "skin",
+                    "required": true
                 },
                 {
                     "query": "background",
-                    "name": "#backgrounds",
-                    "type": "select",
-                    "def": 0,
-                    "values": [
-                        "Choose a Background",
-                        "{{jsonArray.backgroundList}}"
-                    ]
+                    "name": "Background",
+                    "type": "serverItem",
+                    "itemType": "background",
+                    "required": true
                 },
                 {
                     "query": "effect",
-                    "name": "#effects",
-                    "type": "select",
-                    "def": 0,
-                    "values": [
-                        "Choose an Effect",
-                        "{{jsonArray.effectList}}"
-                    ]
+                    "name": "Effect",
+                    "type": "serverItem",
+                    "itemType": "effect",
+                    "required": true
                 },
                 {
                     "query": "particle",
-                    "name": "#particles",
-                    "type": "select",
-                    "def": 0,
-                    "values": [
-                        "Choose a Particle", 
-                        "{{jsonArray.particleList}}"
-                    ]
+                    "name": "Particle",
+                    "type": "serverItem",
+                    "itemType": "particle",
+                    "required": true
                 },
                 {
                     "query": "thumbnail",
                     "name": "Thumbnail",
-                    "type": "file"
+                    "type": "file",
+                    "required": true
                 },
                 {
                     "query": "data",
                     "name": "Play Data",
-                    "type": "file"
+                    "type": "file",
+                    "required": true
                 },
                 {
                     "query": "tutorialData",
                     "name": "Tutorial Data",
-                    "type": "file"
+                    "type": "file",
+                    "required": true
                 },
                 {
                     "query": "previewData",
                     "name": "Preview Data",
-                    "type": "file"
+                    "type": "file",
+                    "required": true
                 },
                 {
                     "query": "watchData",
                     "name": "Watch Data",
-                    "type": "file"
+                    "type": "file",
+                    "required": true
                 },
                 {
                     "query": "configuration",
                     "name": "Configuration",
-                    "type": "file"
+                    "type": "file",
+                    "required": true
                 },
                 {
                     "query": "rom",
                     "name": "Rom",
                     "type": "file"
                 }
-            ]
+            ],
+            "values": {
+                "name": "{{name}}",
+                "title": "{{title}}",
+                "subtitle": "{{subtitle}}",
+                "author": "{{author}}",
+                "description": "{{description}}",
+                "tags": "{{tags}}",
+                "localization": "{{localization}}",
+                "skin": "{{skin}}",
+                "background": "{{background}}",
+                "effect": "{{effect}}",
+                "particle": "{{particle}}",
+                "thumbnail": "{{thumbnail}}",
+                "data": "{{data}}",
+                "tutorialData": "{{tutorialData}}",
+                "previewData": "{{previewData}}",
+                "watchData": "{{watchData}}",
+                "configuration": "{{configuration}}",
+                "rom": "{{rom}}"
+            }
         }
-    ]
+    ],
+    "engines.leaderboards": []
 }

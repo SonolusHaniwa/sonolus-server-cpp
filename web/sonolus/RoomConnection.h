@@ -65,12 +65,10 @@ void* RoomWorkThread(void* roomId) {
 					if (data.lead == "room") data.lead = res["uid"];
 				}
 				// 发送当前数据给新用户
-				cout << data.toJsonObject() << endl;
 				RoomConnectionSend(item.connArg, id, data);
 				conns.push_back(item.connArg);
 			}
 			else if (item.name == "RemoveUser") {
-				cout << "Removing..." << endl;
 				// 数据修改
 				int id1 = -1;
 				for (int i = 0; i < conns.size(); i++) {
@@ -301,7 +299,6 @@ auto SonolusRoomConnection = [](client_conn conn, http_request request, param ar
 		}
 		Json::Value Command; json_decode(command, Command);
 		string type = Command["type"].asString(); type[0] -= 'a' - 'A';
-		cout << command << endl;
 		writeLog(LOG_LEVEL_INFO, "Received " + type + "Command from client. (roomId = " + argv[0] + ", thread = " + to_string(userSessionId) + ")");
 
 		if (type == "AddChatMessage") roomEvents[argv[0]].push_back({

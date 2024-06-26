@@ -2,8 +2,10 @@
     "replays.enableLike": true,
     "replays.enableComment": true,
     "replays.enableRating": true,
-    "replays.enableGUICreate": true,
-    "replays.enableSonolusCreate": true,
+    "replays.enableGUICreate": false,
+    "replays.enableSonolusCreate": false,
+    "replays.exceptGUICreate": [],
+    "replays.exceptSonolusCreate": [],
     "replays.pageSize.info": 5,
     "replays.pageSize.list": 20,
     "replays.pageSize.recommends": 5,
@@ -24,74 +26,86 @@
     ],
     "replays.creates": [
         {
+            "title": "#ADVANCED",
+            "icon": "plus",
+            "type": "advanced",
             "options": [
                 {
                     "query": "name",
                     "name": "#NAME",
                     "type": "text",
-                    "placeholder": "Enter replay name..."
+                    "placeholder": "#NAME_PLACEHOLDER",
+                    "required": true
                 },
                 {
                     "query": "title",
                     "name": "#TITLE",
                     "type": "text",
-                    "placeholder": "Enter replay title..."
+                    "placeholder": "#TITLE_PLACEHOLDER",
+                    "required": true
                 },
                 {
                     "query": "subtitle",
                     "name": "#SUBTITLE",
                     "type": "text",
-                    "placeholder": "Enter subtitle name..."
+                    "placeholder": "#SUBTITLE_PLACEHOLDER"
                 },
                 {
                     "query": "author",
                     "name": "#AUTHOR",
                     "type": "text",
-                    "placeholder": "Enter replay author..."
+                    "placeholder": "#AUTHOR_PLACEHOLDER"
                 },
                 {
                     "query": "description",
-                    "name": "#description",
+                    "name": "Description",
                     "type": "textArea",
                     "placeholder": "Enter description..."
                 },
                 {
                     "query": "tags",
-                    "name": "#tags",
+                    "name": "Tags",
                     "type": "text",
                     "placeholder": "Enter tags..."
                 },
                 {
                     "query": "localization",
                     "name": "Localization",
-                    "type": "select",
-                    "def": 0,
-                    "values": [
-                        "default",
-                        "{{jsonArray.languageList}}"
-                    ]
+                    "type": "localizationItem"
                 },
                 {
                     "query": "level",
-                    "name": "#levels",
-                    "type": "select",
-                    "def": 0,
-                    "values": [
-                        "Choose a Level",
-                        "{{jsonArray.levelList}}"
-                    ]
+                    "name": "Level",
+                    "type": "serverItem",
+                    "itemType": "level",
+                    "required": true
                 },
                 {
                     "query": "data",
                     "name": "Data",
-                    "type": "file"
+                    "type": "file",
+                    "required": true
                 },
                 {
                     "query": "configuration",
                     "name": "Configuration",
-                    "type": "file"
+                    "type": "file",
+                    "required": true
                 }
-            ]
+            ],
+            "values": {
+                "name": "{{name}}",
+                "title": "{{title}}",
+                "subtitle": "{{subtitle}}",
+                "author": "{{author}}",
+                "description": "{{description}}",
+                "tags": "{{tags}}",
+                "localization": "{{localization}}",
+                "level": "{{level}}",
+                "data": "{{data}}",
+                "configuration": "{{configuration}}"
+            }
         }
-    ]
+    ],
+    "replays.leaderboards": []
 }

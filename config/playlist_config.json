@@ -2,8 +2,10 @@
     "playlists.enableLike": true,
     "playlists.enableComment": true,
     "playlists.enableRating": true,
-    "playlists.enableGUICreate": true,
-    "playlists.enableSonolusCreate": true,
+    "playlists.enableGUICreate": false,
+    "playlists.enableSonolusCreate": false,
+    "playlists.exceptGUICreate": [],
+    "playlists.exceptSonolusCreate": [],
     "playlists.pageSize.info": 5,
     "playlists.pageSize.list": 20,
     "playlists.pageSize.recommends": 5,
@@ -23,6 +25,78 @@
         
     ],
     "playlists.creates": [
-
-    ]
+        {
+            "title": "#ADVANCED",
+            "icon": "plus",
+            "type": "advanced",
+            "options": [
+                {
+                    "query": "name",
+                    "name": "#NAME",
+                    "type": "text",
+                    "placeholder": "#NAME_PLACEHOLDER",
+                    "required": true
+                },
+                {
+                    "query": "title",
+                    "name": "#TITLE",
+                    "type": "text",
+                    "placeholder": "#TITLE_PLACEHOLDER",
+                    "required": true
+                },
+                {
+                    "query": "subtitle",
+                    "name": "#SUBTITLE",
+                    "type": "text",
+                    "placeholder": "#SUBTITLE_PLACEHOLDER"
+                },
+                {
+                    "query": "author",
+                    "name": "#AUTHOR",
+                    "type": "text",
+                    "placeholder": "#AUTHOR_PLACEHOLDER"
+                },
+                {
+                    "query": "levels",
+                    "name": "Levels",
+                    "type": "text",
+                    "placeholder": "Enter levels..."
+                },
+                {
+                    "query": "description",
+                    "name": "Description",
+                    "type": "textArea",
+                    "placeholder": "Enter description..."
+                },
+                {
+                    "query": "tags",
+                    "name": "Tags",
+                    "type": "text",
+                    "placeholder": "Enter tags..."
+                },
+                {
+                    "query": "localization",
+                    "name": "Localization",
+                    "type": "localizationItem"
+                }, 
+                {
+                    "query": "thumbnail",
+                    "name": "Thumbnail",
+                    "type": "file"
+                }
+            ],
+            "values": {
+                "name": "{{name}}",
+                "title": "{{title}}",
+                "subtitle": "{{subtitle}}",
+                "author": "{{author}}",
+                "levels": "{{levels}}",
+                "description": "{{description}}",
+                "tags": "{{tags}}",
+                "localization": "{{localization}}",
+                "thumbnail": "{{thumbnail}}"
+            }
+        }
+    ],
+    "playlists.leaderboards": []
 }

@@ -3,8 +3,8 @@
 using namespace std;
 #define defineToString(str) #str
 
-std::string sonolus_server_version = "1.6.1";
-std::string Maximum_Sonolus_Version = "0.8.2";
+std::string sonolus_server_version = "1.6.2";
+std::string Maximum_Sonolus_Version = "0.8.3";
 std::string Sonolus_Version = Maximum_Sonolus_Version;
 Json::Value appConfig, studiosConfig;
 Json::Value i18n, i18n_raw;
@@ -103,10 +103,15 @@ void routerRegister(int argc, char** argv) {
     app.addRoute("/sonolus/%s/info", SonolusInfo);
     app.addRoute("/sonolus/%s/list", SonolusList);
     app.addRoute("/sonolus/%s/create", SonolusCreate);
+    app.addRoute("/sonolus/%s/upload", SonolusUpload);
     app.addRoute("/sonolus/rooms/%s", SonolusRoomJoin);
     app.addRoute("/sonolus/%s/%s", SonolusDetails);
-    app.addRoute("/sonolus/%s/%s/community", SonolusCommunity);
+    app.addRoute("/sonolus/%s/%s/community/info", SonolusCommunityInfo);
+    app.addRoute("/sonolus/%s/%s/community/submit", SonolusCommunitySubmit);
     app.addRoute("/sonolus/%s/%s/community/comments/list", SonolusCommunityCommentList);
+    app.addRoute("/sonolus/%s/%s/leaderboards/%s", SonolusLeaderboardDetails);
+    app.addRoute("/sonolus/%s/%s/leaderboards/%s/records/list", SonolusLeaderboardRecordList);
+    app.addRoute("/sonolus/%s/%s/leaderboards/%s/records/%s", SonolusLeaderboardRecordDetails);
     app.addRoute("/sonolus/authenticate", Authentication);
     app.addRoute("/sonolus/checklogin", CheckLogin);
 
@@ -121,20 +126,6 @@ void routerRegister(int argc, char** argv) {
     app.addRoute("/%s/%s/community/comments/list", GUICommunityCommentList);
     app.addRoute("/%s/%s/community/comments/jump/%d", GUICommunityCommentJump);
     app.addRoute("/%s/%s/edit", GUIEdit);
-    // app.addRoute("/levels/create", web_levels_create);
-    // app.addRoute("/skins/create", web_skins_create);
-    // app.addRoute("/backgrounds/create", web_backgrounds_create);
-    // app.addRoute("/effects/create", web_effects_create);
-    // app.addRoute("/particles/create", web_particles_create);
-    // app.addRoute("/engines/create", web_engines_create);
-    // app.addRoute("/replays/create", web_replays_create);
-    // app.addRoute("/levels/%s/edit", web_levels_edit);
-    // app.addRoute("/skins/%s/edit", web_skins_edit);
-    // app.addRoute("/backgrounds/%s/edit", web_backgrounds_edit);
-    // app.addRoute("/effects/%s/edit", web_effects_edit);
-    // app.addRoute("/particles/%s/edit", web_particles_edit);
-    // app.addRoute("/engines/%s/edit", web_engines_edit);
-    // app.addRoute("/replays/%s/edit", web_replays_edit);
 
     app.addRoute("/uploader", uploader);
 

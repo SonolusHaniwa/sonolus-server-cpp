@@ -11,6 +11,7 @@
         appConfig[defineToString(name2)".enableLike"].asBool() || \
         appConfig[defineToString(name2)".enableComment"].asBool() || \
         appConfig[defineToString(name2)".enableRating"].asBool(); \
+    ItemDetails["leaderboards"].resize(0); \
     argvar args = item.fetchParamList(); \
     for (auto v : args) args[v.first] = quote_encode(v.second); \
     for (int i = 0; i < appConfig[defineToString(name2)".details.sections"].size(); i++) { \

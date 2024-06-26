@@ -24,6 +24,7 @@ class ItemCommunityComment {
 
     Json::Value toJsonObject() {
         Json::Value res;
+        res["name"] = name;
         res["author"] = author;
         res["time"] = (Json::Int64)time;
         res["content"] = content;

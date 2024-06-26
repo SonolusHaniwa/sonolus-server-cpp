@@ -4,6 +4,8 @@
     "levels.enableRating": true,
     "levels.enableGUICreate": false,
     "levels.enableSonolusCreate": false,
+    "levels.exceptGUICreate": [],
+    "levels.exceptSonolusCreate": [],
     "levels.pageSize.info": 5,
     "levels.pageSize.list": 20,
     "levels.pageSize.recommends": 5,
@@ -34,19 +36,19 @@
                     "query": "keywords",
                     "name": "#KEYWORDS",
                     "type": "text",
-                    "placeholder": "Enter keywords..."
+                    "placeholder": "#KEYWORDS_PLACEHOLDER"
                 },
                 {
                     "query": "artist",
                     "name": "#ARTISTS",
                     "type": "text",
-                    "placeholder": "Enter artist name..."
+                    "placeholder": "#ARTISTS_PLACEHOLDER"
                 },
                 {
                     "query": "author",
                     "name": "#AUTHOR",
                     "type": "text",
-                    "placeholder": "Enter author name..."
+                    "placeholder": "#AUTHOR_PLACEHOLDER"
                 },
                 {
                     "query": "minRating",
@@ -79,12 +81,16 @@
     ],
     "levels.creates": [
         {
+            "title": "#ADVANCED",
+            "icon": "plus",
+            "type": "advanced",
             "options": [
                 {
                     "query": "name",
                     "name": "#NAME",
                     "type": "text",
-                    "placeholder": "Enter level name..."
+                    "placeholder": "#NAME_PLACEHOLDER",
+                    "required": true
                 },
                 {
                     "query": "rating",
@@ -99,113 +105,114 @@
                     "query": "title",
                     "name": "#TITLE",
                     "type": "text",
-                    "placeholder": "Enter level title..."
+                    "placeholder": "#TITLE_PLACEHOLDER",
+                    "required": true
                 },
                 {
                     "query": "artists",
                     "name": "#ARTISTS",
                     "type": "text",
-                    "placeholder": "Enter artists name..."
+                    "placeholder": "#ARTISTS_PLACEHOLDER"
                 },
                 {
                     "query": "author",
                     "name": "#AUTHOR",
                     "type": "text",
-                    "placeholder": "Enter chart author..."
+                    "placeholder": "#AUTHOR_PLACEHOLDER"
                 },
                 {
                     "query": "description",
-                    "name": "#description",
+                    "name": "Description",
                     "type": "textArea",
                     "placeholder": "Enter description..."
                 },
                 {
                     "query": "tags",
-                    "name": "#tags",
+                    "name": "Tags",
                     "type": "text",
                     "placeholder": "Enter tags..."
                 },
                 {
                     "query": "localization",
                     "name": "Localization",
-                    "type": "select",
-                    "def": 0,
-                    "values": [
-                        "default",
-                        "{{jsonArray.languageList}}"
-                    ]
+                    "type": "localizationItem"
                 },
                 {
                     "query": "engine",
-                    "name": "#engines",
-                    "type": "select",
-                    "def": 0,
-                    "values": [
-                        "Choose an Engine",
-                        "{{jsonArray.engineList}}"
-                    ]
+                    "name": "Engine",
+                    "type": "serverItem",
+                    "itemType": "engine",
+                    "required": true
                 },
                 {
                     "query": "skin",
-                    "name": "#skins",
-                    "type": "select",
-                    "def": 0,
-                    "values": [
-                        "Default Skin",
-                        "{{jsonArray.skinList}}"
-                    ]
+                    "name": "Skin",
+                    "type": "serverItem",
+                    "itemType": "skin"
                 },
                 {
                     "query": "background",
-                    "name": "#backgrounds",
-                    "type": "select",
-                    "def": 0,
-                    "values": [
-                        "Default Background",
-                        "{{jsonArray.backgroundList}}"
-                    ]
+                    "name": "Background",
+                    "type": "serverItem",
+                    "itemType": "background"
                 },
                 {
                     "query": "effect",
-                    "name": "#effects",
-                    "type": "select",
-                    "def": 0,
-                    "values": [
-                        "Default Effect",
-                        "{{jsonArray.effectList}}"
-                    ]
+                    "name": "Effect",
+                    "type": "serverItem",
+                    "itemType": "effect"
                 },
                 {
                     "query": "particle",
-                    "name": "#particles",
-                    "type": "select",
-                    "def": 0,
-                    "values": [
-                        "Default Particle", 
-                        "{{jsonArray.particleList}}"
-                    ]
+                    "name": "Particle",
+                    "type": "serverItem",
+                    "itemType": "particle"
                 },
                 {
                     "query": "cover",
                     "name": "Cover",
-                    "type": "file"
+                    "type": "file",
+                    "required": true
                 },
                 {
                     "query": "bgm",
                     "name": "BGM",
-                    "type": "file"
+                    "type": "file",
+                    "required": true
                 },
                 {
                     "query": "data",
                     "name": "Data",
-                    "type": "file"
+                    "type": "file",
+                    "required": true
                 },
                 {
                     "query": "preview",
                     "name": "Preview",
-                    "type": "file"
+                    "type": "file",
+                    "required": true
                 }
-            ]
+            ],
+            "values": {
+                "name": "{{name}}",
+                "rating": "{{rating}}",
+                "title": "{{title}}",
+                "artists": "{{artists}}",
+                "author": "{{author}}",
+                "description": "{{description}}",
+                "tags": "{{tags}}",
+                "localization": "{{localization}}",
+                "engine": "{{engine}}",
+                "skin": "{{skin}}",
+                "background": "{{background}}",
+                "effect": "{{effect}}",
+                "particle": "{{particle}}",
+                "cover": "{{cover}}",
+                "bgm": "{{bgm}}",
+                "data": "{{data}}",
+                "preview": "{{preview}}"
+            }
         }
-    ]
+    ],
+    "levels.leaderboards": []
 }

@@ -8,10 +8,6 @@ auto ServerInfo = [](client_conn conn, http_request request, param argv){
     Json::Value ServerInfo;
     auto $_GET = getParam(request);
     
-    // ServerInfo["levels"]["items"].resize(0);
-    // auto levels = levelsList("", "", 1, 5);
-    // for (int i = 0; i < levels.size(); i++) ServerInfo["levels"]["items"].append(levels[i].toJsonObject());
-    // ServerInfo["levels"]["search"] = LevelSearch[0].toJsonObject();
     quickServerInfo(Level, levels);
     quickServerInfo(Skin, skins);
     quickServerInfo(Background, backgrounds);
@@ -21,6 +17,7 @@ auto ServerInfo = [](client_conn conn, http_request request, param argv){
     quickServerInfo(Replay, replays);
     quickServerInfo(Post, posts);
     quickServerInfo(Playlist, playlists);
+    ServerInfo["buttons"] = appConfig["server.buttons"];
     ServerInfo["title"] = appConfig["server.title"].asString();
     ServerInfo["description"] = appConfig["server.description"].asString();
     ServerInfo["hasAuthentication"] = appConfig["server.hasAuthentication"].asBool();

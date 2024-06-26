@@ -2,8 +2,10 @@
     "skins.enableLike": true,
     "skins.enableComment": true,
     "skins.enableRating": true,
-    "skins.enableGUICreate": true,
-    "skins.enableSonolusCreate": true,
+    "skins.enableGUICreate": false,
+    "skins.enableSonolusCreate": false,
+    "skins.exceptGUICreate": [],
+    "skins.exceptSonolusCreate": [],
     "skins.pageSize.info": 5,
     "skins.pageSize.list": 20,
     "skins.pageSize.recommends": 5,
@@ -24,69 +26,85 @@
     ],
     "skins.creates": [
         {
+            "title": "#ADVANCED",
+            "icon": "plus",
+            "type": "advanced",
             "options": [
                 {
                     "query": "name",
                     "name": "#NAME",
                     "type": "text",
-                    "placeholder": "Enter skin name..."
+                    "placeholder": "#NAME_PLACEHOLDER",
+                    "required": true
                 },
                 {
                     "query": "title",
                     "name": "#TITLE",
                     "type": "text",
-                    "placeholder": "Enter skin title..."
+                    "placeholder": "#TITLE_PLACEHOLDER",
+                    "required": true
                 },
                 {
                     "query": "subtitle",
                     "name": "#SUBTITLE",
                     "type": "text",
-                    "placeholder": "Enter skin subtitle..."
+                    "placeholder": "#SUBTITLE_PLACEHOLDER"
                 },
                 {
                     "query": "author",
                     "name": "#AUTHOR",
                     "type": "text",
-                    "placeholder": "Enter skin author..."
+                    "placeholder": "#AUTHOR_PLACEHOLDER"
                 },
                 {
                     "query": "description",
-                    "name": "#description",
+                    "name": "Description",
                     "type": "textArea",
                     "placeholder": "Enter description..."
                 },
                 {
                     "query": "tags",
-                    "name": "#tags",
+                    "name": "Tags",
                     "type": "text",
                     "placeholder": "Enter tags..."
                 },
                 {
                     "query": "localization",
                     "name": "Localization",
-                    "type": "select",
-                    "def": 0,
-                    "values": [
-                        "default",
-                        "{{jsonArray.languageList}}"
-                    ]
+                    "type": "localizationItem"
                 },
                 {
                     "query": "thumbnail",
                     "name": "Thumbnail",
-                    "type": "file"
+                    "type": "file",
+                    "required": true
                 },
                 {
                     "query": "data",
                     "name": "Data",
-                    "type": "file"
+                    "type": "file",
+                    "required": true
                 },
                 {
                     "query": "texture",
                     "name": "Texture",
-                    "type": "file"
+                    "type": "file",
+                    "required": true
                 }
-            ]
+            ],
+            "values": {
+                "name": "{{name}}",
+                "title": "{{title}}",
+                "subtitle": "{{subtitle}}",
+                "author": "{{author}}",
+                "description": "{{description}}",
+                "tags": "{{tags}}",
+                "localization": "{{localization}}",
+                "thumbnail": "{{thumbnail}}",
+                "data": "{{data}}",
+                "texture": "{{texture}}"
+            }
         }
-    ]
+    ],
+    "skins.leaderboards": []
 }

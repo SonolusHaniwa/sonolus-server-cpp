@@ -25,7 +25,7 @@
     "logSystem.debug": false,
     "logSystem.target": 1,
     "logSystem.targetFile": "./log.txt",
-    "sonolus.version": "0.8.2",
+    "sonolus.version": "0.8.3",
     "sonolus.itemsPerPage": 20,
     "session.expireTime": 30,
     "export.retryTime": 5,

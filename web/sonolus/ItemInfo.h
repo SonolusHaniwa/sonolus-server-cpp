@@ -1,4 +1,9 @@
 #define quickSonolusInfo(name1, name2) {\
+    if (allowUserCreate) { \
+        ItemInfo["creates"].resize(0); \
+        for (int i = 0; i < name1##Create.size(); i++) \
+            ItemInfo["creates"].append(name1##Create[i].toJsonObject()); \
+    } \
     ItemInfo["searches"].resize(0); \
     for (int i = 0; i < name1##Search.size(); i++) \
         ItemInfo["searches"].append(name1##Search[i].toJsonObject()); \
@@ -18,6 +23,13 @@
 
 auto SonolusInfo = [](client_conn conn, http_request request, param argv){
     auto $_GET = getParam(request);
+    bool isLogin = checkLogin(request);
+    int uid = !isLogin ? -1 : atoi(getUserProfile(request).handle.c_str());
+    bool allowCreate = appConfig[argv[0] + ".enableSonolusCreate"].asBool();
+    bool isExcept = false;
+    for (int i = 0; i < appConfig[argv[0] + ".exceptSonolusCreate"].size(); i++)
+        if (appConfig[argv[0] + ".exceptSonolusCreate"][i].asInt() == uid) isExcept = true;
+    bool allowUserCreate = isLogin ? allowCreate ^ isExcept : 0;
     Json::Value ItemInfo;
     ItemInfo["banner"] = SRL<ServerBanner>(appConfig["server.banner"].asString(), 
         appConfig["server.data.prefix"].asString() + appConfig["server.banner"].asString()).toJsonObject();

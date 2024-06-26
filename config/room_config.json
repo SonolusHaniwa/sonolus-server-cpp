@@ -2,8 +2,10 @@
     "rooms.enableLike": true,
     "rooms.enableComment": true,
     "rooms.enableRating": true,
-    "rooms.enableGUICreate": true,
-    "rooms.enableSonolusCreate": true,
+    "rooms.enableGUICreate": false,
+    "rooms.enableSonolusCreate": false,
+    "rooms.exceptGUICreate": [],
+    "rooms.exceptSonolusCreate": [],
     "rooms.pageSize.info": 5,
     "rooms.pageSize.list": 20,
     "rooms.pageSize.recommends": 5,
@@ -24,12 +26,16 @@
     ],
     "rooms.creates": [
         {
+            "title": "#ADVANCED",
+            "icon": "plus",
+            "type": "advanced",
             "options": [
                 {
                     "query": "title",
                     "name": "#TITLE",
                     "type": "text",
-                    "placeholder": "#TITLE_PLACEHOLDER"
+                    "placeholder": "#TITLE_PLACEHOLDER",
+                    "required": true
                 },
                 {
                     "query": "subtitle",
@@ -37,7 +43,12 @@
                     "type": "text",
                     "placeholder": "#SUBTITLE_PLACEHOLDER"
                 }
-            ]
+            ],
+            "values": {
+                "title": "{{title}}",
+                "subtitle": "{{subtitle}}"
+            }
         }
-    ]
+    ],
+    "rooms.leaderboards": []
 }

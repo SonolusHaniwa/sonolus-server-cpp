@@ -2,8 +2,10 @@
     "particles.enableLike": true,
     "particles.enableComment": true,
     "particles.enableRating": true,
-    "particles.enableGUICreate": true,
-    "particles.enableSonolusCreate": true,
+    "particles.enableGUICreate": false,
+    "particles.enableSonolusCreate": false,
+    "particles.exceptGUICreate": [],
+    "particles.exceptSonolusCreate": [],
     "particles.pageSize.info": 5,
     "particles.pageSize.list": 20,
     "particles.pageSize.recommends": 5,
@@ -24,69 +26,85 @@
     ],
     "particles.creates": [
         {
+            "title": "#ADVANCED",
+            "icon": "plus",
+            "type": "advanced",
             "options": [
                 {
                     "query": "name",
                     "name": "#NAME",
                     "type": "text",
-                    "placeholder": "Enter particle name..."
+                    "placeholder": "#NAME_PLACEHOLDER",
+                    "required": true
                 },
                 {
                     "query": "title",
                     "name": "#TITLE",
                     "type": "text",
-                    "placeholder": "Enter particle title..."
+                    "placeholder": "#TITLE_PLACEHOLDER",
+                    "required": true
                 },
                 {
                     "query": "subtitle",
                     "name": "#SUBTITLE",
                     "type": "text",
-                    "placeholder": "Enter particle subtitle..."
+                    "placeholder": "#SUBTITLE_PLACEHOLDER"
                 },
                 {
                     "query": "author",
                     "name": "#AUTHOR",
                     "type": "text",
-                    "placeholder": "Enter particle author..."
+                    "placeholder": "#AUTHOR_PLACEHOLDER"
                 },
                 {
                     "query": "description",
-                    "name": "#description",
+                    "name": "Description",
                     "type": "textArea",
                     "placeholder": "Enter description..."
                 },
                 {
                     "query": "tags",
-                    "name": "#tags",
+                    "name": "Tags",
                     "type": "text",
                     "placeholder": "Enter tags..."
                 },
                 {
                     "query": "localization",
                     "name": "Localization",
-                    "type": "select",
-                    "def": 0,
-                    "values": [
-                        "default",
-                        "{{jsonArray.languageList}}"
-                    ]
+                    "type": "localizationItem"
                 },
                 {
                     "query": "thumbnail",
                     "name": "Thumbnail",
-                    "type": "file"
+                    "type": "file",
+                    "required": true
                 },
                 {
                     "query": "data",
                     "name": "Data",
-                    "type": "file"
+                    "type": "file",
+                    "required": true
                 },
                 {
                     "query": "texture",
                     "name": "Texture",
-                    "type": "file"
+                    "type": "file",
+                    "required": true
                 }
-            ]
+            ],
+            "values": {
+                "name": "{{name}}",
+                "title": "{{title}}",
+                "subtitle": "{{subtitle}}",
+                "author": "{{author}}",
+                "description": "{{description}}",
+                "tags": "{{tags}}",
+                "localization": "{{localization}}",
+                "thumbnail": "{{thumbnail}}",
+                "data": "{{data}}",
+                "texture": "{{texture}}"
+            }
         }
-    ]
+    ],
+    "particles.leaderboards": []
 }

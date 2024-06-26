@@ -4,6 +4,8 @@
     "backgrounds.enableRating": true,
     "backgrounds.enableGUICreate": false,
     "backgrounds.enableSonolusCreate": false,
+    "backgrounds.exceptGUICreate": [],
+    "backgrounds.exceptSonolusCreate": [],
     "backgrounds.pageSize.info": 5,
     "backgrounds.pageSize.list": 20,
     "backgrounds.pageSize.recommends": 5,
@@ -24,74 +26,92 @@
     ],
     "backgrounds.creates": [
         {
+            "title": "#ADVANCED",
+            "icon": "plus",
+            "type": "advanced",
             "options": [
                 {
                     "query": "name",
                     "name": "#NAME",
                     "type": "text",
-                    "placeholder": "Enter background name..."
+                    "placeholder": "#NAME_PLACEHOLDER",
+                    "required": true
                 },
                 {
                     "query": "title",
                     "name": "#TITLE",
                     "type": "text",
-                    "placeholder": "Enter background title..."
+                    "placeholder": "#TITLE_PLACEHOLDER",
+                    "required": true
                 },
                 {
                     "query": "subtitle",
                     "name": "#SUBTITLE",
                     "type": "text",
-                    "placeholder": "Enter background subtitle..."
+                    "placeholder": "#SUBTITLE_PLACEHOLDER"
                 },
                 {
                     "query": "author",
                     "name": "#AUTHOR",
                     "type": "text",
-                    "placeholder": "Enter background author..."
+                    "placeholder": "#AUTHOR_PLACEHOLDER"
                 },
                 {
                     "query": "description",
-                    "name": "#description",
+                    "name": "Description",
                     "type": "textArea",
                     "placeholder": "Enter description..."
                 },
                 {
                     "query": "tags",
-                    "name": "#tags",
+                    "name": "Tags",
                     "type": "text",
                     "placeholder": "Enter tags..."
                 },
                 {
                     "query": "localization",
                     "name": "Localization",
-                    "type": "select",
-                    "def": 0,
-                    "values": [
-                        "default",
-                        "{{jsonArray.languageList}}"
-                    ]
+                    "type": "localizationItem"
                 },
                 {
                     "query": "thumbnail",
                     "name": "Thumbnail",
-                    "type": "file"
+                    "type": "file",
+                    "required": true
                 },
                 {
                     "query": "data",
                     "name": "Data",
-                    "type": "file"
+                    "type": "file",
+                    "required": true
                 },
                 {
                     "query": "image",
                     "name": "Image",
-                    "type": "file"
+                    "type": "file",
+                    "required": true
                 },
                 {
                     "query": "configuration",
                     "name": "Configuration",
-                    "type": "file"
+                    "type": "file",
+                    "required": true
                 }
-            ]
+            ],
+            "values": {
+                "name": "{{name}}",
+                "title": "{{title}}",
+                "subtitle": "{{subtitle}}",
+                "author": "{{author}}",
+                "description": "{{description}}",
+                "tags": "{{tags}}",
+                "localization": "{{localization}}",
+                "thumbnail": "{{thumbnail}}",
+                "data": "{{data}}",
+                "image": "{{image}}",
+                "configuration": "{{configuration}}"
+            }
         }
-    ]
+    ],
+    "backgrounds.leaderboards": []
 }
