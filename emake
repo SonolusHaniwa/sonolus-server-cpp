@@ -7,7 +7,7 @@ YELLOW='\033[0;33m'
 
 # Compile
 echo -e "${YELLOW}Compiling Sonolus Server using emscripten...${WHITE}"
-emcc emain.cpp -o libsonolus.js -s MODULARIZE -sALLOW_MEMORY_GROWTH\
+emcc emain.cpp -o libsonolus.js -w -s MODULARIZE -sALLOW_MEMORY_GROWTH\
 	-sDEFAULT_LIBRARY_FUNCS_TO_INCLUDE=['$stringToNewUTF8','$UTF8ToString']\
 	-sEXPORTED_RUNTIME_METHODS=['stringToNewUTF8','UTF8ToString','FS']\
 	-sASSERTIONS -lnodefs.js \
