@@ -82,7 +82,7 @@ class EngineItem {
 		res["tutorialData"] = tutorialData.toJsonObject();
 		res["previewData"] = previewData.toJsonObject();
 		res["watchData"] = watchData.toJsonObject();
-        res["rom"] = rom.toJsonObject();
+        if (rom.hash != "") res["rom"] = rom.toJsonObject();
         res["tags"].resize(0);
         for (int i = 0; i < tags.size(); i++) res["tags"].append(tags[i].toJsonObject());
         res["description"] = description;

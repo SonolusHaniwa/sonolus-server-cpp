@@ -59,6 +59,7 @@ auto GUIEdit = [](client_conn conn, http_request request, param argv){
     for (int i = 0; i < dataSet["tags"].size(); i++) tags.push_back(Tag(dataSet["tags"][i]));
     argListData["tags"] = serializeTagString(tags);
     for (auto v : argListData) argListData[v.first] = quote_encode2(v.second);
+    if (argListData.find("rom.hash") == argListData.end()) argListData["rom.hash"] = ""; // 解决引擎 ROM 不存在的问题
 
     Json::Value Searches = appConfig[argv[0] + ".creates"];
     string searchOptions = "";
