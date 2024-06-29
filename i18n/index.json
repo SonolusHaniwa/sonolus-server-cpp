@@ -11,5 +11,9 @@
         "name": "ja",
         "title": "日本語 (Japanese)",
         "path": "./i18n/ja-jp.json"
-    } 
+    },{
+        "name": "ko",
+        "title": "한국어 (Korean)",
+        "path": "./i18n/ko.json"
+    }
 ]
