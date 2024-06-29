@@ -2,7 +2,7 @@
     "backgrounds.enableLike": true,
     "backgrounds.enableComment": true,
     "backgrounds.enableRating": true,
-    "backgrounds.enableGUICreate": true,
+    "backgrounds.enableGUICreate": false,
     "backgrounds.enableSonolusCreate": false,
     "backgrounds.exceptGUICreate": [],
     "backgrounds.exceptSonolusCreate": [],

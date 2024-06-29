@@ -2,7 +2,7 @@
     "posts.enableLike": true,
     "posts.enableComment": true,
     "posts.enableRating": true,
-    "posts.enableGUICreate": true,
+    "posts.enableGUICreate": false,
     "posts.enableSonolusCreate": false,
     "posts.exceptGUICreate": [],
     "posts.exceptSonolusCreate": [],

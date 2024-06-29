@@ -2,7 +2,7 @@
     "particles.enableLike": true,
     "particles.enableComment": true,
     "particles.enableRating": true,
-    "particles.enableGUICreate": true,
+    "particles.enableGUICreate": false,
     "particles.enableSonolusCreate": false,
     "particles.exceptGUICreate": [],
     "particles.exceptSonolusCreate": [],

@@ -2,7 +2,7 @@
     "playlists.enableLike": true,
     "playlists.enableComment": true,
     "playlists.enableRating": true,
-    "playlists.enableGUICreate": true,
+    "playlists.enableGUICreate": false,
     "playlists.enableSonolusCreate": false,
     "playlists.exceptGUICreate": [],
     "playlists.exceptSonolusCreate": [],

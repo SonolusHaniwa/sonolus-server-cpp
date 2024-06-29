@@ -2,7 +2,7 @@
     "rooms.enableLike": true,
     "rooms.enableComment": true,
     "rooms.enableRating": true,
-    "rooms.enableGUICreate": true,
+    "rooms.enableGUICreate": false,
     "rooms.enableSonolusCreate": false,
     "rooms.exceptGUICreate": [],
     "rooms.exceptSonolusCreate": [],

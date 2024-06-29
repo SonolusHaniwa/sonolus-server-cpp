@@ -2,7 +2,7 @@
     "skins.enableLike": true,
     "skins.enableComment": true,
     "skins.enableRating": true,
-    "skins.enableGUICreate": true,
+    "skins.enableGUICreate": false,
     "skins.enableSonolusCreate": false,
     "skins.exceptGUICreate": [],
     "skins.exceptSonolusCreate": [],

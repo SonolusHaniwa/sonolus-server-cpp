@@ -2,7 +2,7 @@
     "engines.enableLike": true,
     "engines.enableComment": true,
     "engines.enableRating": true,
-    "engines.enableGUICreate": true,
+    "engines.enableGUICreate": false,
     "engines.enableSonolusCreate": false,
     "engines.exceptGUICreate": [],
     "engines.exceptSonolusCreate": [],

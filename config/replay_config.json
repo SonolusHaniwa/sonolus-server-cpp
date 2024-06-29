@@ -2,7 +2,7 @@
     "replays.enableLike": true,
     "replays.enableComment": true,
     "replays.enableRating": true,
-    "replays.enableGUICreate": true,
+    "replays.enableGUICreate": false,
     "replays.enableSonolusCreate": false,
     "replays.exceptGUICreate": [],
     "replays.exceptSonolusCreate": [],

@@ -2,7 +2,7 @@
     "levels.enableLike": true,
     "levels.enableComment": true,
     "levels.enableRating": true,
-    "levels.enableGUICreate": true,
+    "levels.enableGUICreate": false,
     "levels.enableSonolusCreate": false,
     "levels.exceptGUICreate": [],
     "levels.exceptSonolusCreate": [],
