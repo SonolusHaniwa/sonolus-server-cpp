@@ -133,10 +133,18 @@ async function hideJump() {
     document.getElementById("bottomBar").style.display = "none";
 }
 
-async function create(path, return_path, id = -1) {
-    console.log(id);
-    postdata = "";
-    for (index in searchConfig) postdata += index + "=" + searchConfig[index] + "&";
+var checkFunc = {};
+
+async function create(path, type, return_path, id = -1) {
+    postdata = "type=" + type + "&";
+    var ok = true;
+    for (index in searchConfig) {
+        if (index.substr(0, type.length + 1) != type + "_") continue;
+        if (typeof checkFunc[index] == "function" && !checkFunc[index]()) ok = false;
+        var tmp_index = index.substr(type.length + 1);
+        postdata += tmp_index + "=" + searchConfig[index] + "&";
+    }
+    if (!ok) return;
     postdata += "id=" + id;
     $.ajax({
         url: path,
@@ -144,14 +152,13 @@ async function create(path, return_path, id = -1) {
         async: true,
         data: postdata,
         success: async function(msg) {
-            console.log(msg);
             if (msg["code"] != 200) {
                 alert("Create Failed, " + msg["msg"]);
                 return false;
             } document.getElementsByTagName("main")[0].style.opacity = "0";
             document.getElementsByTagName("nav")[0].style.transform = "translateY(-100%)";
             await sleep(150);
-            location.href = return_path + searchConfig["name"]; 
+            location.href = return_path + msg["name"]; 
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
             if (XMLHttpRequest["responseJSON"] != null) alert("Create Failed, " + XMLHttpRequest["responseJSON"]["msg"]);

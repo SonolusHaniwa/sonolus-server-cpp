@@ -2,7 +2,7 @@
     "backgrounds.enableLike": true,
     "backgrounds.enableComment": true,
     "backgrounds.enableRating": true,
-    "backgrounds.enableGUICreate": false,
+    "backgrounds.enableGUICreate": true,
     "backgrounds.enableSonolusCreate": false,
     "backgrounds.exceptGUICreate": [],
     "backgrounds.exceptSonolusCreate": [],
@@ -110,6 +110,19 @@
                 "data": "{{data}}",
                 "image": "{{image}}",
                 "configuration": "{{configuration}}"
+            },
+            "constructs": {
+                "name": "\"{{name}}\"",
+                "title": "\"{{title}}\"",
+                "subtitle": "\"{{subtitle}}\"",
+                "author": "\"{{author}}\"",
+                "description": "\"{{description}}\"",
+                "tags": "\"{{tags}}\"",
+                "localization": "\"{{localization}}\"",
+                "thumbnail": "\"{{thumbnail.hash}}\"",
+                "data": "\"{{data.hash}}\"",
+                "image": "\"{{image.hash}}\"",
+                "configuration": "\"{{configuration.hash}}\""
             }
         }
     ],

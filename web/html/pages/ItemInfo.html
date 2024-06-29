@@ -7,14 +7,6 @@
                 <h1 class="overflow-hidden text-ellipsis whitespace-nowrap py-1 text-center text-xl font-bold sm:py-1.5 sm:text-3xl">{{server.title}}</h1>
                 <div class="flex justify-center" style="gap:10px">
                     {{html.open_in_sonolus}}
-                    <button class="flex select-none space-x-2 p-2 transition-colors sm:space-x-3 sm:p-3 cursor-pointer bg-sonolus-ui-button-normal hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed" onclick="location.href='{{createUrl}}'">
-                        <div style="width:24px;fill:white">
-                        	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10" class="h-5 w-5 fill-current sm:h-6 sm:w-6">
-                        	    <path d="M6 4h4v2H6v4H4V6H0V4h4V0h2v4Z" fill-rule="evenodd"/>
-                        	</svg>
-                        </div>
-                        <span class="min-w-[4.5rem] flex-grow text-center sm:min-w-[6rem]">{{language.createButton}}</span>
-                    </button>
                 </div>
 
                 <a style="height:0px;margin:0px;" name="SearchText"></a>
@@ -30,6 +22,16 @@
                     </button>
                 </div>
                 <div class="flex justify-center" style="margin-top:20px;gap:10px;">
+                    <div {{allowUserCreate}}>
+                        <button class="flex select-none space-x-2 p-2 transition-colors sm:space-x-3 sm:p-3 cursor-pointer bg-sonolus-ui-button-normal hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed" onclick="location.href='{{createUrl}}'">
+                            <div style="width:24px;fill:white">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10" class="h-5 w-5 fill-current sm:h-6 sm:w-6">
+                                    <path d="M6 4h4v2H6v4H4V6H0V4h4V0h2v4Z" fill-rule="evenodd"/>
+                                </svg>
+                            </div>
+                            <span class="min-w-[4.5rem] flex-grow text-center sm:min-w-[6rem]">{{language.createButton}}</span>
+                        </button>    
+                    </div>
                     <button class="flex select-none space-x-2 p-2 transition-colors sm:space-x-3 sm:p-3 cursor-pointer bg-sonolus-ui-button-normal hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed" onclick="location.href='{{searchUrl}}'">
                         <div style="width:24px;fill:white">{{icon.advanced}}</div>
                         <span class="min-w-[4.5rem] flex-grow text-center sm:min-w-[6rem]">{{language.advanced}}</span>

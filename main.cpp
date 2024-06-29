@@ -106,6 +106,7 @@ void routerRegister(int argc, char** argv) {
     app.addRoute("/sonolus/%s/upload", SonolusUpload);
     app.addRoute("/sonolus/rooms/%s", SonolusRoomJoin);
     app.addRoute("/sonolus/%s/%s", SonolusDetails);
+    app.addRoute("/sonolus/%s/%s/community", SonolusCommunity);
     app.addRoute("/sonolus/%s/%s/community/info", SonolusCommunityInfo);
     app.addRoute("/sonolus/%s/%s/community/submit", SonolusCommunitySubmit);
     app.addRoute("/sonolus/%s/%s/community/comments/list", SonolusCommunityCommentList);

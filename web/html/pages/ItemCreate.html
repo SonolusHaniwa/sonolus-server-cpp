@@ -4,19 +4,7 @@
             {{html.navbar}}
             <div class="h-11 sm:h-16"></div>
             <main class="mx-auto flex max-w-4xl flex-col space-y-9 p-9 transition-opacity v-transition:opacity-0 sm:space-y-12 sm:p-12">
-                <div class="flex flex-col space-y-2 sm:space-y-3">
-                    <div>
-                        {{html.createOption}}
-                    </div>
-                </div>
-                <div class="flex justify-end">
-                    <button class="flex select-none space-x-2 p-2 transition-colors sm:space-x-3 sm:p-3 cursor-pointer bg-sonolus-ui-button-normal hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed" onclick="create('/sonolus/{{item.type}}/create', '/{{item.type}}/', {{item.id}})">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2048 2048" class="h-5 w-5 fill-current sm:h-6 sm:w-6">
-                            <path d="M1792 960q0 26-19 45t-45 19h-704v704q0 26-19 45t-45 19q-26 0-45-19t-19-45v-704H192q-26 0-45-19t-19-45q0-26 19-45t45-19h704V192q0-26 19-45t45-19q26 0 45 19t19 45v704h704q26 0 45 19t19 45z"/>
-                        </svg>
-                        <span class="min-w-[4.5rem] flex-grow text-center sm:min-w-[6rem]">{{language.createButton}}</span>
-                    </button>
-                </div>
+                {{html.searchOptions}}
             </main>
         </div>
     </div>

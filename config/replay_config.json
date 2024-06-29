@@ -2,7 +2,7 @@
     "replays.enableLike": true,
     "replays.enableComment": true,
     "replays.enableRating": true,
-    "replays.enableGUICreate": false,
+    "replays.enableGUICreate": true,
     "replays.enableSonolusCreate": false,
     "replays.exceptGUICreate": [],
     "replays.exceptSonolusCreate": [],
@@ -104,6 +104,18 @@
                 "level": "{{level}}",
                 "data": "{{data}}",
                 "configuration": "{{configuration}}"
+            },
+            "constructs": {
+                "name": "\"{{name}}\"",
+                "title": "\"{{title}}\"",
+                "subtitle": "\"{{subtitle}}\"",
+                "author": "\"{{author}}\"",
+                "description": "\"{{description}}\"",
+                "tags": "\"{{tags}}\"",
+                "localization": "\"{{localization}}\"",
+                "level": "\"{{level.name}}\"",
+                "data": "\"{{data.hash}}\"",
+                "configuration": "\"{{configuration.hash}}\""
             }
         }
     ],

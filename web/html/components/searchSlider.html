@@ -1,7 +1,7 @@
 <div {{search.isMargin}}>
-    <div class="py-2 font-bold sm:py-3">{{search.name}}</div>
+    <div class="my-2 font-bold sm:my-3" id="search-name-{{search.query}}">{{search.name}}</div>
     <div class="ml-9 flex flex-grow items-center space-x-2 sm:ml-12 sm:space-x-3">
-        <div id="search-info-{{search.query}}" class="w-12 text-center sm:w-16">{{search.default}}</div>
+        <div id="search-info-{{search.query}}" class="w-12 text-center sm:w-16"></div>
         <div class="relative flex items-center flex-grow">
             <button id="search-left-{{search.query}}" class="flex select-none space-x-2 p-2 transition-colors sm:space-x-3 sm:p-3 cursor-pointer bg-sonolus-ui-button-normal hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512" class="h-5 w-5 fill-current sm:h-6 sm:w-6">
@@ -90,6 +90,20 @@
                 info.innerHTML = searchConfig["{{search.query}}"];
                 reset.className = disableResetClass;
             };
+            document.getElementById("search-info-{{search.query}}").innerHTML = def;
+            if ({{search.isRequired}}) {
+                const realDef = {{search.realDefault}};
+                checkFunc["{{search.query}}"] = function() {
+                    if (searchConfig["{{search.query}}"] != realDef) {
+                        document.getElementById("search-name-{{search.query}}").style.backgroundColor = "";
+                        return true;
+                    } else {
+                        document.getElementById("search-name-{{search.query}}").style.backgroundColor = "#fd5572";
+                        return false;
+                    }
+                };
+                document.getElementById("search-name-{{search.query}}").innerHTML += " <span style=\"color: red\">*</span>";
+            }
         });
     </script>
 </div>

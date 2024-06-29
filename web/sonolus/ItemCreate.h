@@ -26,7 +26,7 @@ auto SonolusCreate = [](client_conn conn, http_request request, param argv){
 	for (auto v : args) args[v.first] = quote_encode(v.second);
 
     int raws = 0;
-	// int id = args["id"] == "" ? -1 : atoi(args["id"].c_str());
+	id = args["id"] == "" ? -1 : atoi(args["id"].c_str());
     string name = args["name"];
     int rating = atoi(args["rating"].c_str());
     string title = args["title"];
@@ -54,7 +54,7 @@ auto SonolusCreate = [](client_conn conn, http_request request, param argv){
 	if (level != "" && levelsNumber("name = \"" + level + "\"") == 0) quickSendMsg(404);
 	for (int i = 0; i < levels.size(); i++) if (levelsNumber("name = \"" + levels[i].asString() + "\"") == 0) quickSendMsg(404);
 
-    if (argv[0] == "levels") raws = levelsCreate(LevelItem(-1,
+    if (argv[0] == "levels") raws = levelsCreate(LevelItem(id,
 	    	name, rating, title, artists, author, 
 	    	enginesList("name = \"" + engine + "\"", "")[0],
 	    	(skin == "" ? UseItem<SkinItem>(true, SkinItem()) : UseItem<SkinItem>(false, skinsList("name = \"" + skin + "\"", "")[0])),
@@ -65,31 +65,31 @@ auto SonolusCreate = [](client_conn conn, http_request request, param argv){
 	    	SRL<LevelData>(args["data"], ""), SRL<LevelPreview>(args["preview"], ""),
 	    	tags, description
 	    ), localization);
-	else if (argv[0] == "skins") raws = skinsCreate(SkinItem(-1,
+	else if (argv[0] == "skins") raws = skinsCreate(SkinItem(id,
 			name, title, subtitle, author,
 			SRL<SkinThumbnail>(args["thumbnail"], ""), SRL<SkinData>(args["data"], ""),
 			SRL<SkinTexture>(args["texture"], ""),
 	    	tags, description
 		), localization);
-	else if (argv[0] == "backgrounds") raws = backgroundsCreate(BackgroundItem(-1,
+	else if (argv[0] == "backgrounds") raws = backgroundsCreate(BackgroundItem(id,
 			name, title, subtitle, author,
 			SRL<BackgroundThumbnail>(args["thumbnail"], ""), SRL<BackgroundData>(args["data"], ""),
 			SRL<BackgroundImage>(args["image"], ""), SRL<BackgroundConfiguration>(args["configuration"], ""),
 	    	tags, description
 		), localization);
-	else if (argv[0] == "effects") raws = effectsCreate(EffectItem(-1,
+	else if (argv[0] == "effects") raws = effectsCreate(EffectItem(id,
 			name, title, subtitle, author,
 			SRL<EffectThumbnail>(args["thumbnail"], ""), SRL<EffectData>(args["data"], ""),
 			SRL<EffectAudio>(args["audio"], ""),
 	    	tags, description
 		), localization);
-	else if (argv[0] == "particles") raws = particlesCreate(ParticleItem(-1,
+	else if (argv[0] == "particles") raws = particlesCreate(ParticleItem(id,
 			name, title, subtitle, author,
 			SRL<ParticleThumbnail>(args["thumbnail"], ""), SRL<ParticleData>(args["data"], ""),
 			SRL<ParticleTexture>(args["texture"], ""),
 	    	tags, description
 		), localization);
-	else if (argv[0] == "engines") raws = enginesCreate(EngineItem(-1,
+	else if (argv[0] == "engines") raws = enginesCreate(EngineItem(id,
 	    	name, title, subtitle, author, 
 	 		skinsList("name = \"" + skin + "\"", "")[0],
 	    	backgroundsList("name = \"" + background + "\"", "")[0],
@@ -105,18 +105,18 @@ auto SonolusCreate = [](client_conn conn, http_request request, param argv){
 	    	SRL<EngineRom>(args["rom"], ""),
 	    	description
 	    ), localization);
-	else if (argv[0] == "replays") raws = replaysCreate(ReplayItem(-1,
+	else if (argv[0] == "replays") raws = replaysCreate(ReplayItem(id,
 	    	name, title, subtitle, author, 
 	    	levelsList("name = \"" + level + "\"", "")[0],
 	    	SRL<ReplayData>(args["data"], ""), SRL<ReplayConfiguration>(args["configuration"], ""),
 	    	tags, description
 	    ), localization);
-	else if (argv[0] == "posts") raws = postsCreate(PostItem(-1,
+	else if (argv[0] == "posts") raws = postsCreate(PostItem(id,
 			name, title, time, author,
 	    	SRL<PostThumbnail>(args["thumbnail"], ""),
 	    	tags, description
 		), localization);
-	else if (argv[0] == "playlists") raws = playlistsCreate(PlaylistItem(-1,
+	else if (argv[0] == "playlists") raws = playlistsCreate(PlaylistItem(id,
 			name, title, subtitle, author, [&](){
 				vector<LevelItem> items;
 				for (int i = 0; i < levels.size(); i++) items.push_back(levelsList("name = \"" + levels[i].asString() + "\"", "")[0]);
@@ -130,7 +130,7 @@ auto SonolusCreate = [](client_conn conn, http_request request, param argv){
 		string name = generateSession();
 		string key = generateSession();
 		auto user = getUserProfile(request);
-		raws = roomsCreate(RoomItem(-1, 
+		raws = roomsCreate(RoomItem(id, 
 			name, user.name + "#" + user.handle + "'s Room", "", user.id, 
 			SRL<Unknown>("", ""), 
 			SRL<Unknown>("", ""), 
@@ -145,6 +145,7 @@ auto SonolusCreate = [](client_conn conn, http_request request, param argv){
 	else quickSendMsg(404);
 
 	if (argv[0] != "rooms") CreateItemResponse["name"] = name;
+	CreateItemResponse["code"] = 200;
 	if (raws) { quickSendObj(CreateItemResponse); }
 	else { quickSendMsg(400); }
 };

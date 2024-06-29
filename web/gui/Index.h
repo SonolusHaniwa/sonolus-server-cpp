@@ -12,32 +12,33 @@ auto GUIIndex = [](client_conn conn, http_request request, param argv) {
     argvar argList = argvar(); string session = "";
     auto response = __default_response;
     bool isLogin = checkLogin(request);
-    if (!isLogin && cookie["sessionId"] == "") {
+    bool hasSession = db.query("SELECT uid FROM UserSession WHERE session = \"" + cookie["sessionId"] + 
+        "\" AND expire <= " + to_string(time(NULL)) + " LIMIT 1", "UserSession").size() > 0;
+    if (!isLogin && !hasSession) {
         session = generateSession();
         response["Set-Cookie"] = "sessionId=" + session + "; expires=" + toGMTDate(time(NULL) + appConfig["session.expireTime"].asInt64() * 24 * 60 * 60) + "; path=/",
         db.execute("INSERT INTO UserSession (uid, session, expire) VALUES (\"\", \"" + session + "\", " + to_string(time(NULL) + appConfig["session.expireTime"].asInt64() * 24 * 60 * 60) + ")", "UserSession");
     } else session = cookie["sessionId"];
 
     // TODO: add the argList here
+    bool hasAuthentication = false;
     argList["page.title"] = appConfig["server.title"].asString();
     argList["html.navbar"] = fetchNavBar(appConfig["server.title"].asString()).output();
     argList["html.open_in_sonolus"] = fetchOpenInSonolus("sonolus://" + appConfig["server.rootUrl"].asString()).output();
+    set<string> allowButton = {"authentication", "multiplayer", "post", "playlist", "level", "skin", "background", "effect", "particle", "engine", "replay"};
     string buttons = "";
-    if (appConfig["server.hasAuthentication"].asBool()) {
-        if (!isLogin) buttons += indexButton("{{icon.login}}", "Sign In", "javascript:displayLogin()").output();
-        else buttons += indexButton("{{icon.logout}}", "Sign Out", "javascript:logout()").output();
-    } buttons += indexButton("{{icon.post}}", "{{language.posts}}", "/posts/info").output();
-    buttons += indexButton("{{icon.playlist}}", "{{language.playlists}}", "/playlists/info").output();
-    buttons += indexButton("{{icon.level}}", "{{language.levels}}", "/levels/info").output();
-    buttons += indexButton("{{icon.skin}}", "{{language.skins}}", "/skins/info").output();
-    buttons += indexButton("{{icon.background}}", "{{language.backgrounds}}", "/backgrounds/info").output();
-    buttons += indexButton("{{icon.effect}}", "{{language.effects}}", "/effects/info").output();
-    buttons += indexButton("{{icon.particle}}", "{{language.particles}}", "/particles/info").output();
-    buttons += indexButton("{{icon.engine}}", "{{language.engines}}", "/engines/info").output();
-    buttons += indexButton("{{icon.replay}}", "{{language.replays}}", "/replays/info").output();
+    for (int i = 0; i < appConfig["server.buttons"].size(); i++) {
+        auto button = appConfig["server.buttons"][i]["type"].asString();
+        if (button == "authentication") {
+            hasAuthentication = true;
+            if (!isLogin) buttons += indexButton("{{icon.login}}", "Sign In", "javascript:displayLogin()").output();
+            else buttons += indexButton("{{icon.logout}}", "Sign Out", "javascript:logout()").output();
+        } else if (allowButton.find(button) != allowButton.end() && button != "multiplayer") 
+            buttons += indexButton("{{icon." + button + "}}", "{{language." + button + "s}}", "/" + button + "s/info").output();
+    }
     argList["html.buttons"] = buttons;
     argList["url"] = "sonolus://external-login/" + appConfig["server.rootUrl"].asString() + "/sonolus/authenticate?sessionId=" + session;
-    argList["isLogin"] = to_string(appConfig["server.hasAuthentication"].asBool() && !isLogin);
+    argList["isLogin"] = to_string(hasAuthentication && !isLogin);
 
     argList = merge(argList, merge(
         transfer(appConfig), merge(

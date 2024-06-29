@@ -33,6 +33,16 @@ auto GUIInfo = [](client_conn conn, http_request request, param argv) {
     argList["searchUrl"] = "/" + argv[0] + "/search";
     argList["listUrl"] = "/" + argv[0] + "/list";
     argList["createUrl"] = "/" + argv[0] + "/create";
+
+    bool isLogin = checkLogin(request);
+    int uid = !isLogin ? -1 : atoi(getUserProfile(request).handle.c_str());
+    bool allowCreate = appConfig[argv[0] + ".enableGUICreate"].asBool();
+    bool isExcept = false;
+    for (int i = 0; i < appConfig[argv[0] + ".exceptGUICreate"].size(); i++)
+        if (appConfig[argv[0] + ".exceptGUICreate"][i].asInt() == uid) isExcept = true;
+    bool allowUserCreate = isLogin ? allowCreate ^ isExcept : 0;
+    argList["allowUserCreate"] = allowUserCreate ? "" : "style=\"display:none\"";
+
     string sections = ""; string icons = fetchIconButton("#SearchText", "{{icon.search}}").output();
     for (int i = 0; i < appConfig[argv[0] + ".info.sections"].size(); i++) {
         auto item = appConfig[argv[0] + ".info.sections"][i];

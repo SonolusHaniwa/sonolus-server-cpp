@@ -217,5 +217,8 @@ bool ecdsa_sha256_verify(string msg, string sig, string pemKey) {
 string quote_encode(string source) {
     return str_replace("\"", "\"\"", str_replace("\n", "\\n", source));
 }
+string quote_encode2(string source) {
+    return str_replace("\"", "\\\"", str_replace("\n", "\\n", source));
+}
 
 #endif

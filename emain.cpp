@@ -60,7 +60,9 @@ void routerRegister() {
     app.addRoute("/sonolus/%s/list", SonolusList);
     app.addRoute("/sonolus/%s/create", SonolusCreate);
     // app.addRoute("/sonolus/%s/upload", SonolusUpload);
+    // app.addRoute("/sonolus/rooms/%s", SonolusRoomJoin);
     app.addRoute("/sonolus/%s/%s", SonolusDetails);
+    app.addRoute("/sonolus/%s/%s/community", SonolusCommunity);
     app.addRoute("/sonolus/%s/%s/community/info", SonolusCommunityInfo);
     app.addRoute("/sonolus/%s/%s/community/submit", SonolusCommunitySubmit);
     app.addRoute("/sonolus/%s/%s/community/comments/list", SonolusCommunityCommentList);
@@ -76,9 +78,11 @@ void routerRegister() {
     app.addRoute("/%s/list", GUIList);
     app.addRoute("/%s/search", GUISearch);
     app.addRoute("/%s/jump/%d", GUIJump);
+    app.addRoute("/%s/create", GUICreate);
     app.addRoute("/%s/%s", GUIDetails);
     app.addRoute("/%s/%s/community/comments/list", GUICommunityCommentList);
     app.addRoute("/%s/%s/community/comments/jump/%d", GUICommunityCommentJump);
+    app.addRoute("/%s/%s/edit", GUIEdit);
 
     // app.addRoute("/uploader", uploader);
 }

@@ -254,7 +254,7 @@ class DB_Total_Controller {
     sql = "SELECT name FROM (" + sql + ") AS A GROUP BY name"; \
     sql = "SELECT COUNT(*) AS sum FROM (" + sql + ") AS B";
 #define itemListTemplate(item, filter, order, st, en) if (order == "") order = "id DESC"; \
-	string sql = "SELECT * FROM " defineToString(item) " WHERE (" + filter + ") ORDER BY " + order; \
+	string sql = "SELECT * FROM " defineToString(item) " WHERE (" + filter + ") ORDER BY CASE WHEN localization = \"default\" THEN 1 WHEN localization != \"default\" THEN 0 END ASC"; \
     sql = "SELECT * FROM (" + sql + ") AS A GROUP BY name"; \
     sql = "SELECT * FROM (" + sql + ") AS B ORDER BY " + order + " LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);      
                                                                                                                                                                         

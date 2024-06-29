@@ -2,7 +2,7 @@
     "effects.enableLike": true,
     "effects.enableComment": true,
     "effects.enableRating": true,
-    "effects.enableGUICreate": false,
+    "effects.enableGUICreate": true,
     "effects.enableSonolusCreate": false,
     "effects.exceptGUICreate": [],
     "effects.exceptSonolusCreate": [],
@@ -103,6 +103,18 @@
                 "thumbnail": "{{thumbnail}}",
                 "data": "{{data}}",
                 "audio": "{{audio}}"
+            },
+            "constructs": {
+                "name": "\"{{name}}\"",
+                "title": "\"{{title}}\"",
+                "subtitle": "\"{{subtitle}}\"",
+                "author": "\"{{author}}\"",
+                "description": "\"{{description}}\"",
+                "tags": "\"{{tags}}\"",
+                "localization": "\"{{localization}}\"",
+                "thumbnail": "\"{{thumbnail.hash}}\"",
+                "data": "\"{{data.hash}}\"",
+                "audio": "\"{{audio.hash}}\""
             }
         }
     ],

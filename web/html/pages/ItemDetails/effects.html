@@ -12,14 +12,16 @@
     </div>
     <div class="mt-8 sm:mt-0 sm:ml-24">
         {{html.open_in_sonolus}}
-        <button class="flex select-none space-x-2 p-2 transition-colors sm:space-x-3 sm:p-3 cursor-pointer bg-sonolus-ui-button-normal hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed" onclick="location.href='{{editUrl}}'" style="width: 100%; margin-top: 10px;">
-            <div style="width:24px;fill:white">
-            	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10" class="h-5 w-5 fill-current sm:h-6 sm:w-6">
-            	    <path d="M6 4h4v2H6v4H4V6H0V4h4V0h2v4Z" fill-rule="evenodd"/>
-            	</svg>
-            </div>
-            <span class="min-w-[4.5rem] flex-grow text-center sm:min-w-[6rem]">{{language.effectEdit}}</span>
-        </button>
+        <div {{allowUserCreate}}>
+            <button class="flex select-none space-x-2 p-2 transition-colors sm:space-x-3 sm:p-3 cursor-pointer bg-sonolus-ui-button-normal hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed" onclick="location.href='{{editUrl}}'" style="width: 100%; margin-top: 10px;">
+                <div style="width:24px;fill:white">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10" class="h-5 w-5 fill-current sm:h-6 sm:w-6">
+                        <path d="M6 4h4v2H6v4H4V6H0V4h4V0h2v4Z" fill-rule="evenodd"/>
+                    </svg>
+                </div>
+                <span class="min-w-[4.5rem] flex-grow text-center sm:min-w-[6rem]">{{language.effectEdit}}</span>
+            </button>    
+        </div>
     </div>
 </div>
 <div class="fixed top-2 left-0 -z-10 flex w-full justify-center sm:top-4">

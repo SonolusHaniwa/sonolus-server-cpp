@@ -2,7 +2,7 @@
     "skins.enableLike": true,
     "skins.enableComment": true,
     "skins.enableRating": true,
-    "skins.enableGUICreate": false,
+    "skins.enableGUICreate": true,
     "skins.enableSonolusCreate": false,
     "skins.exceptGUICreate": [],
     "skins.exceptSonolusCreate": [],
@@ -103,6 +103,18 @@
                 "thumbnail": "{{thumbnail}}",
                 "data": "{{data}}",
                 "texture": "{{texture}}"
+            },
+            "constructs": {
+                "name": "\"{{name}}\"",
+                "title": "\"{{title}}\"",
+                "subtitle": "\"{{subtitle}}\"",
+                "author": "\"{{author}}\"",
+                "description": "\"{{description}}\"",
+                "tags": "\"{{tags}}\"",
+                "localization": "\"{{localization}}\"",
+                "thumbnail": "\"{{thumbnail.hash}}\"",
+                "data": "\"{{data.hash}}\"",
+                "texture": "\"{{texture.hash}}\""
             }
         }
     ],

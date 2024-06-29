@@ -1,9 +1,9 @@
 <div {{search.isMargin}}>
-    <div class="py-2 font-bold sm:py-3">{{search.name}}</div>
+    <div class="py-2 font-bold sm:py-3" id="search-name-{{search.query}}">{{search.name}}</div>
     <div class="ml-9 flex flex-grow items-center space-x-2 sm:ml-12 sm:space-x-3">
         <div class="flex relative flex-grow">
             <div class="relative flex-grow">
-                <input id="search-{{search.query}}" type="text" class="w-full border-none bg-sonolus-ui-button-normal p-2 pl-9 text-center text-sm placeholder:text-sm hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed sm:p-3 sm:pl-12 sm:text-base sm:placeholder:text-base" value="{{search.default}}">
+                <input id="search-{{search.query}}" type="text" class="w-full border-none bg-sonolus-ui-button-normal p-2 pl-9 text-center text-sm placeholder:text-sm hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed sm:p-3 sm:pl-12 sm:text-base sm:placeholder:text-base">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="absolute top-2 left-2 h-5 w-5 fill-current sm:top-3 sm:left-3 sm:h-6 sm:w-6">
                     <path d="M512 448H64c-35.35 0-64-28.65-64-64V128c0-35.35 28.65-64 64-64h448c35.35 0 64 28.65 64 64v256c0 35.3-28.7 64-64 64zM128 180v-40c0-6.6-5.4-12-12-12H76c-6.62 0-12 5.4-12 12v40c0 6.6 5.38 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-384 96v-40c0-6.6-5.4-12-12-12H76c-6.62 0-12 5.4-12 12v40c0 6.6 5.38 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-384 96v-40c0-6.6-5.4-12-12-12H76c-6.62 0-12 5.4-12 12v40c0 6.6 5.38 12 12 12h40c6.6 0 12-5.4 12-12zm288 0v-40c0-6.6-5.4-12-12-12H172c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h232c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12z"></path>
                 </svg>
@@ -28,7 +28,7 @@
     </div>
     <script>
         addLoadEvent(function(){
-            var def = "{{search.default}}"; searchConfig["{{search.query}}"] = def;
+            var def = {{search.default}}; searchConfig["{{search.query}}"] = def;
             document.getElementById("search-reset-{{search.query}}").onclick =
             document.getElementById("search-clear-{{search.query}}").onclick = function(){
                 searchConfig["{{search.query}}"] = def;
@@ -40,6 +40,7 @@
                 if (this.value == def) document.getElementById("search-reset-{{search.query}}").className = disableResetClass;
                 else document.getElementById("search-reset-{{search.query}}").className = enableResetClass;
             }
+            document.getElementById("search-{{search.query}}").value = def;
         });
     </script>
 </div>

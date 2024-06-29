@@ -85,7 +85,7 @@ H fetchBottomBar(string sonolusUrl, string topUrl, string previousUrl, string ne
     return str_replace(source, args);
 }
 
-H fetchSearchText(string query, string name, string placeholder, string def, bool isMargin) {
+H fetchSearchText(string query, string name, string placeholder, string def, string realDef, bool isMargin, bool isRequired) {
     string source = readFile("./web/html/components/searchText.html");
     argvar args;
     args["search.query"] = query;
@@ -93,60 +93,67 @@ H fetchSearchText(string query, string name, string placeholder, string def, boo
     args["search.placeholder"] = placeholder;
     args["search.isMargin"] = isMargin ? "style=\"margin-top: 12px;\"" : "";
     args["search.default"] = def;
+    args["search.isRequired"] = to_string(isRequired);
+    args["search.realDefault"] = realDef;
     return str_replace(source, args);
 }
 
-H fetchSearchToggle(string query, string name, bool def, bool isMargin) {
+H fetchSearchToggle(string query, string name, string def, string realDef, bool isMargin, bool isRequired) {
     string source = readFile("./web/html/components/searchToggle.html");
     argvar args;
     args["search.query"] = query;
     args["search.name"] = name;
-    args["search.defaultLang"] = def ? "{{language.yes}}" : "{{language.no}}";
-    args["search.default"] = to_string(def);
+    args["search.default"] = def;
     args["search.isMargin"] = isMargin ? "style=\"margin-top: 12px;\"" : "";
+    args["search.isRequired"] = to_string(isRequired);
+    args["search.realDefault"] = realDef;
     return str_replace(source, args);
 }
 
-H fetchSearchSelect(string query, string name, vector<string> options, int def, bool isMargin) {
+H fetchSearchSelect(string query, string name, vector<string> options, string def, string realDef, bool isMargin, bool isRequired) {
     string source = readFile("./web/html/components/searchSelect.html");
     argvar args;
     args["search.query"] = query;
     args["search.name"] = name;
-    args["search.defaultValues"] = def < options.size() && def >= 0 ? options[def] : "";
-    args["search.default"] = to_string(def);
+    args["search.default"] = def;
     args["search.options"] = "";
     for (int i = 0; i < options.size(); i++) {
         H optionsObject = H(true, "option", options[i]);
         optionsObject["class"] = "bg-sonolus-ui-surface";
         optionsObject["id"] = "search-" + query + "-" + to_string(i);
         optionsObject["value"] = to_string(i);
-        if (i == def) optionsObject["selected"] = "selected";
         args["search.options"] += optionsObject.output();
     }
     args["search.isMargin"] = isMargin ? "style=\"margin-top: 12px;\"" : "";
+    args["search.isRequired"] = to_string(isRequired);
+    args["search.realDefault"] = realDef;
     return str_replace(source, args);
 }
 
-H fetchSearchSlider(string query, string name, int def, int min, int max, int step, bool isMargin) {
+H fetchSearchSlider(string query, string name, string def, string realDef, int min, int max, int step, bool isMargin, bool isRequired) {
     string source = readFile("./web/html/components/searchSlider.html");
     argvar args;
     args["search.query"] = query;
     args["search.name"] = name;
-    args["search.default"] = to_string(def);
+    args["search.default"] = def;
     args["search.min"] = to_string(min);
     args["search.max"] = to_string(max);
     args["search.step"] = to_string(step);
     args["search.isMargin"] = isMargin ? "style=\"margin-top: 12px;\"" : "";
+    args["search.isRequired"] = to_string(isRequired);
+    args["search.realDefault"] = realDef;
     return str_replace(source, args);
 }
 
-H fetchSearchFile(string query, string name, string def, bool isMargin) {
+H fetchSearchFile(string query, string name, string def, string realDef, bool isMargin, bool isRequired) {
     string source = readFile("./web/html/components/searchFile.html");
     argvar args;
     args["search.query"] = query;
     args["search.name"] = name;
     args["search.isMargin"] = isMargin ? "style=\"margin-top: 12px;\"" : "";
     args["search.def"] = def;
+    args["search.isRequired"] = to_string(isRequired);
+    args["search.realDefault"] = realDef;
     return str_replace(source, args);
 }
 
@@ -157,6 +164,69 @@ H fetchSearchTitle(string name, int level, bool isMargin) {
     args["search.name"] = name;
     args["search.isMargin"] = isMargin ? "style=\"margin-top: 12px;\"" : "";
     args["search.isStyle"] = isMargin ? "style=\"padding-top: " + to_string((7 - level) * 12) + "px\"" : "";
+    return str_replace(source, args);
+}
+
+H fetchSearchTextArea(string query, string name, string placeholder, string def, string realDef, bool isMargin, bool isRequired) {
+    string source = readFile("./web/html/components/searchTextArea.html");
+    argvar args;
+    args["search.query"] = query;
+    args["search.name"] = name;
+    args["search.placeholder"] = placeholder;
+    args["search.isMargin"] = isMargin ? "style=\"margin-top: 12px;\"" : "";
+    args["search.default"] = def;
+    args["search.isRequired"] = to_string(isRequired);
+    args["search.realDefault"] = realDef;
+    return str_replace(source, args);
+}
+
+H fetchSearchServerItem(string query, string name, string itemType, string def, string realDef, string localization, bool isMargin, bool isRequired) {
+    string source = readFile("./web/html/components/searchSelect.html");
+    argvar args, options;
+    string tableName = itemType;
+    tableName[0] += 'A' - 'a';
+    string sql = "SELECT id, name, title FROM " + tableName + " WHERE (localization = \"" + localization +
+        "\" OR localization = \"default\") ORDER BY CASE WHEN localization = \"default\" THEN 1 WHEN localization != \"default\" THEN 0 END ASC";
+    sql = "SELECT * FROM (" + sql + ") AS A GROUP BY name";
+    sql = "SELECT * FROM (" + sql + ") AS B ORDER BY id ASC";
+    auto result = db.query(sql, tableName);
+    for (int i = 0; i < result.size(); i++) options[result[i]["name"]] = result[i]["title"];
+    args["search.query"] = query;
+    args["search.name"] = name;
+    args["search.default"] = def;
+    args["search.options"] = "";
+    options[""] = "Default";
+    for (auto v : options) {
+        H optionsObject = H(true, "option", v.second);
+        optionsObject["class"] = "bg-sonolus-ui-surface";
+        optionsObject["id"] = "search-" + query + "-" + v.first;
+        optionsObject["value"] = v.first;
+        args["search.options"] += optionsObject.output();
+    }
+    args["search.isMargin"] = isMargin ? "style=\"margin-top: 12px;\"" : "";
+    args["search.isRequired"] = to_string(isRequired);
+    args["search.realDefault"] = realDef;
+    return str_replace(source, args);
+}
+
+H fetchSearchLocalizationItem(string query, string name, string def, string realDef, bool isMargin, bool isRequired) {
+    string source = readFile("./web/html/components/searchSelect.html");
+    argvar args; map<string, string> options = { {"default", "default"} };
+    for (int i = 0; i < i18n_raw.size(); i++) options[i18n_raw[i]["name"].asString()] = i18n_raw[i]["name"].asString();
+    args["search.query"] = query;
+    args["search.name"] = name;
+    args["search.default"] = def;
+    args["search.options"] = "";
+    for (auto v : options) {
+        H optionsObject = H(true, "option", v.second);
+        optionsObject["class"] = "bg-sonolus-ui-surface";
+        optionsObject["id"] = "search-" + query + "-" + v.first;
+        optionsObject["value"] = v.first;
+        args["search.options"] += optionsObject.output();
+    }
+    args["search.isMargin"] = isMargin ? "style=\"margin-top: 12px;\"" : "";
+    args["search.isRequired"] = to_string(isRequired);
+    args["search.realDefault"] = realDef;
     return str_replace(source, args);
 }
 
@@ -176,6 +246,17 @@ H fetchSectionSearch(string searchOptions, string url, string type) {
     args["html.searchOptions"] = searchOptions;
     args["url"] = url;
     args["type"] = type;
+    return str_replace(source, args);
+}
+
+H fetchSectionCreate(string searchOptions, string url, string returnUrl, string type, string id = "-1") {
+    string source = readFile("./web/html/components/sectionCreate.html");
+    argvar args;
+    args["html.searchOptions"] = searchOptions;
+    args["url"] = url;
+    args["returnUrl"] = returnUrl;
+    args["type"] = type;
+    args["id"] = id;
     return str_replace(source, args);
 }
 

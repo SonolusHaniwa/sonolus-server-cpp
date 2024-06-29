@@ -98,6 +98,7 @@ string generateSession() {
 #include"ItemCommunityInfo.h"
 #include"ItemCommunitySubmit.h"
 #include"ItemCommunityCommentList.h"
+#include"ItemCommunity.h"
 #include"ItemLeaderboardDetails.h"
 #include"ItemLeaderboardRecordList.h"
 #include"ItemLeaderboardRecordDetails.h"

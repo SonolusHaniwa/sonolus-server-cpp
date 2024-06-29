@@ -59,6 +59,15 @@ auto GUIDetails = [](client_conn conn, http_request request, param argv) {
     else if (argv[0] == "posts") { quickGUIDetails(posts); }
     else if (argv[0] == "playlists") { quickGUIDetails(playlists); }
 
+    bool isLogin = checkLogin(request);
+    int uid = !isLogin ? -1 : atoi(getUserProfile(request).handle.c_str());
+    bool allowCreate = appConfig[argv[0] + ".enableGUICreate"].asBool();
+    bool isExcept = false;
+    for (int i = 0; i < appConfig[argv[0] + ".exceptGUICreate"].size(); i++)
+        if (appConfig[argv[0] + ".exceptGUICreate"][i].asInt() == uid) isExcept = true;
+    bool allowUserCreate = isLogin ? allowCreate ^ isExcept : 0;
+    argList["allowUserCreate"] = allowUserCreate ? "" : "style=\"display:none\"";
+
     argList = merge(argList, merge(
         transfer(appConfig), merge(
             transfer(i18n[cookie["lang"] == "" ? appConfig["language.default"].asString() : cookie["lang"]], "language."), 

@@ -2,7 +2,7 @@
     "levels.enableLike": true,
     "levels.enableComment": true,
     "levels.enableRating": true,
-    "levels.enableGUICreate": false,
+    "levels.enableGUICreate": true,
     "levels.enableSonolusCreate": false,
     "levels.exceptGUICreate": [],
     "levels.exceptSonolusCreate": [],
@@ -211,6 +211,25 @@
                 "bgm": "{{bgm}}",
                 "data": "{{data}}",
                 "preview": "{{preview}}"
+            },
+            "constructs": {
+                "name": "\"{{name}}\"",
+                "rating": "\"{{rating}}\"",
+                "title": "\"{{title}}\"",
+                "artists": "\"{{artists}}\"",
+                "author": "\"{{author}}\"",
+                "description": "\"{{description}}\"",
+                "tags": "\"{{tags}}\"",
+                "localization": "\"{{localization}}\"",
+                "engine": "\"{{engine.name}}\"",
+                "skin": "{{useSkin.useDefault}} ? \"\" : \"{{useSkin.item.name}}\"",
+                "background": "{{useBackground.useDefault}} ? \"\" : \"{{useBackground.item.name}}\"",
+                "effect": "{{useEffect.useDefault}} ? \"\" : \"{{useEffect.item.name}}\"",
+                "particle": "{{useParticle.useDefault}} ? \"\" : \"{{useParticle.item.name}}\"",
+                "cover": "\"{{cover.hash}}\"",
+                "bgm": "\"{{bgm.hash}}\"",
+                "data": "\"{{data.hash}}\"",
+                "preview": "\"{{preview.hash}}\""
             }
         }
     ],

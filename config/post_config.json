@@ -2,7 +2,7 @@
     "posts.enableLike": true,
     "posts.enableComment": true,
     "posts.enableRating": true,
-    "posts.enableGUICreate": false,
+    "posts.enableGUICreate": true,
     "posts.enableSonolusCreate": false,
     "posts.exceptGUICreate": [],
     "posts.exceptSonolusCreate": [],
@@ -70,7 +70,8 @@
                 {
                     "query": "thumbnail",
                     "name": "Thumbnail",
-                    "type": "file"
+                    "type": "file",
+                    "required": true
                 }
             ],
             "values": {
@@ -81,6 +82,15 @@
                 "tags": "{{tags}}",
                 "localization": "{{localization}}",
                 "thumbnail": "{{thumbnail}}"
+            },
+            "constructs": {
+                "name": "\"{{name}}\"",
+                "title": "\"{{title}}\"",
+                "author": "\"{{author}}\"",
+                "description": "\"{{description}}\"",
+                "tags": "\"{{tags}}\"",
+                "localization": "\"{{localization}}\"",
+                "thumbnail": "\"{{thumbnail.hash}}\""
             }
         }
     ],

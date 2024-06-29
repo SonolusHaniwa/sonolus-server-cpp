@@ -2,7 +2,7 @@
     "rooms.enableLike": true,
     "rooms.enableComment": true,
     "rooms.enableRating": true,
-    "rooms.enableGUICreate": false,
+    "rooms.enableGUICreate": true,
     "rooms.enableSonolusCreate": false,
     "rooms.exceptGUICreate": [],
     "rooms.exceptSonolusCreate": [],
@@ -47,6 +47,10 @@
             "values": {
                 "title": "{{title}}",
                 "subtitle": "{{subtitle}}"
+            },
+            "constructs": {
+                "title": "\"{{title}}\"",
+                "subtitle": "\"{{subtitle}}\""
             }
         }
     ],

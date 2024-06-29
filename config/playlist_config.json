@@ -2,7 +2,7 @@
     "playlists.enableLike": true,
     "playlists.enableComment": true,
     "playlists.enableRating": true,
-    "playlists.enableGUICreate": false,
+    "playlists.enableGUICreate": true,
     "playlists.enableSonolusCreate": false,
     "playlists.exceptGUICreate": [],
     "playlists.exceptSonolusCreate": [],
@@ -82,7 +82,8 @@
                 {
                     "query": "thumbnail",
                     "name": "Thumbnail",
-                    "type": "file"
+                    "type": "file",
+                    "required": true
                 }
             ],
             "values": {
@@ -95,6 +96,17 @@
                 "tags": "{{tags}}",
                 "localization": "{{localization}}",
                 "thumbnail": "{{thumbnail}}"
+            },
+            "constructs": {
+                "name": "\"{{name}}\"",
+                "title": "\"{{title}}\"",
+                "subtitle": "\"{{subtitle}}\"",
+                "author": "\"{{author}}\"",
+                "levels": "\"\"",
+                "description": "\"{{description}}\"",
+                "tags": "\"{{tags}}\"",
+                "localization": "\"{{localization}}\"",
+                "thumbnail": "\"{{thumbnail.hash}}\""
             }
         }
     ],

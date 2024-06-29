@@ -34,23 +34,22 @@ auto GUISearch = [](client_conn conn, http_request request, param argv) {
     argList["page.title"] = "{{language.search}} | " + appConfig["server.title"].asString();
     argList["html.navbar"] = fetchNavBar("{{language.search}}").output(); string searchOptions = "";
     searchOptions += "<h2 class=\"flex-grow py-1 text-xl font-bold sm:py-1.5 sm:text-3xl\">{{language.quick}}</h2>";
-    searchOptions += fetchSectionSearch(fetchSearchText("quick_keywords", "{{language.KEYWORDS}}", "{{language.KEYWORDS_PLACEHOLDER}}", args["quick_keywords"], 0).output(), "/" + argv[0] + "/list", "quick").output();
+    searchOptions += fetchSectionSearch(fetchSearchText("quick_keywords", "{{language.KEYWORDS}}", "{{language.KEYWORDS_PLACEHOLDER}}", args["quick_keywords"], "", 0, 0).output(), "/" + argv[0] + "/list", "quick").output();
     for (int i = 0; i < Searches.size(); i++) {
         searchOptions += "<h2 class=\"flex-grow py-1 text-xl font-bold sm:py-1.5 sm:text-3xl\">" + Searches[i]["title"].asString() + "</h2>";
         string sections = ""; string type = Searches[i]["type"].asString();
         for (int j = 0; j < Searches[i]["options"].size(); j++) {
             auto item = Searches[i]["options"][j]; string query = item["query"].asString();
             if (item["type"].asString() == "text") sections += fetchSearchText(
-                type + "_" + query, item["name"].asString(), item["placeholder"].asString(), args[type + "_" + query], 0).output();
+                type + "_" + query, item["name"].asString(), item["placeholder"].asString(), "\"" + args[type + "_" + query] + "\"", "", 0, 0).output();
             if (item["type"].asString() == "toggle") sections += fetchSearchToggle(
-                type + "_" + query, item["name"].asString(), atoi(args[type + "_" + query].c_str()), 0).output();
+                type + "_" + query, item["name"].asString(), args[type + "_" + query].c_str(), "", 0, 0).output();
             if (item["type"].asString() == "slider") sections += fetchSearchSlider(
-                type + "_" + query, item["name"].asString(), atoi(args[type + "_" + query].c_str()), item["min"].asInt(), item["max"].asInt(), item["step"].asInt(), 0).output();
+                type + "_" + query, item["name"].asString(), args[type + "_" + query].c_str(), "", item["min"].asInt(), item["max"].asInt(), item["step"].asInt(), 0, 0).output();
             if (item["type"].asString() == "select") {
                 vector<string> values = {};
                 for (int k = 0; k < item["values"].size(); k++) values.push_back(item["values"][k].asString());
-                sections += fetchSearchSelect(
-                    type + "_" + query, item["name"].asString(), values, atoi(args[type + "_" + query].c_str()), 0).output();
+                sections += fetchSearchSelect(type + "_" + query, item["name"].asString(), values, args[type + "_" + query].c_str(), "", 0, 0).output();
             }
         } searchOptions += fetchSectionSearch(sections, "/" + argv[0] + "/list", type).output();
     } argList["html.searchOptions"] = searchOptions;

@@ -64,7 +64,8 @@ int usersNumber(string filter) {
 }
 
 vector<UserProfile> usersList(string filter, string order, int st = 1, int en = 20) {
-    itemListTemplate(UserProfile, filter, order, st, en);
+    if (order == "") order = "id ASC";
+	string sql = "SELECT * FROM UserProfile WHERE (" + filter + ") ORDER BY " + order + " LIMIT " + to_string(st - 1) + ", " + to_string(en - st + 1);      
 
     auto res = db.query(sql.c_str(), "UserProfile");
     vector<UserProfile> list = {};
