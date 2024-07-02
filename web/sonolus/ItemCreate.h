@@ -23,7 +23,7 @@ auto SonolusCreate = [](client_conn conn, http_request request, param argv){
 	Json::Value::Members members = CreateItem["values"].getMemberNames();
 	argvar args = argvar();
 	for (int i = 0; i < members.size(); i++) args[members[i]] = str_replace(CreateItem["values"][members[i]].asString(), argList);
-	for (auto v : args) args[v.first] = quote_encode(v.second);
+	for (auto v : args) if (v.first != "levels") args[v.first] = quote_encode(v.second);
 
     int raws = 0;
 	id = args["id"] == "" ? -1 : atoi(args["id"].c_str());
