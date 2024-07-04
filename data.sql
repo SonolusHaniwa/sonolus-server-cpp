@@ -12,7 +12,7 @@ CREATE TABLE Level (
     effect int, 
     particle int, 
     cover text, 
-    bgm text, 
+    bgm text,
     data text, 
     preview text
 );
