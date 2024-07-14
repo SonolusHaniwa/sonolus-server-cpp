@@ -6,23 +6,28 @@ using namespace std;
 class SearchTextOption {
     public:
 
-    string query;
-    string name;
+    string query = "";
+    string name = "";
     string type = "text";
-    string placeholder;
+    string def = "";
+    string placeholder = "";
     int limit = 0;
     string description = "";
     bool required = false;
+    vector<string> shortcuts;
 
     Json::Value toJsonObject() {
         Json::Value res;
         res["query"] = query;
         res["name"] = name;
         res["type"] = type;
+        res["def"] = def;
         res["placeholder"] = placeholder;
-        if (limit != 0) res["limit"] = limit;
+        res["limit"] = limit;
         if (description != "") res["description"] = description;
-        if (required) res["required"] = required;
+        res["required"] = required;
+        res["shortcuts"].resize(0);
+        for (int i = 0; i < shortcuts.size(); i++) res["shortcuts"].append(shortcuts[i]);
         return res;
     }
 };
@@ -30,14 +35,14 @@ class SearchTextOption {
 class SearchSliderOption {
     public:
 
-    string query;
-    string name;
+    string query = "";
+    string name = "";
     string type = "slider";
-    int def;
-    int min;
-    int max;
-    int step;
-    string unit;
+    int def = 0;
+    int min = 0;
+    int max = 0;
+    int step = 0;
+    string unit = "";
     string description = "";
     bool required = false;
 
@@ -52,7 +57,7 @@ class SearchSliderOption {
         res["step"] = step;
         res["unit"] = unit;
         if (description != "") res["description"] = description;
-        if (required) res["required"] = required;
+        res["required"] = required;
         return res;
     }
 };
@@ -60,10 +65,10 @@ class SearchSliderOption {
 class SearchToggleOption {
     public:
 
-    string query;
-    string name;
+    string query = "";
+    string name = "";
     string type = "toggle";
-    bool def = 0;
+    bool def = false;
     string description = "";
     bool required = false;
 
@@ -74,7 +79,7 @@ class SearchToggleOption {
         res["type"] = type;
         res["def"] = def;
         if (description != "") res["description"] = description;
-        if (required) res["required"] = required;
+        res["required"] = required;
         return res;
     }
 };
@@ -82,11 +87,11 @@ class SearchToggleOption {
 class SearchSelectOption {
     public:
 
-    string query;
-    string name;
+    string query = "";
+    string name = "";
     string type = "select";
-    int def;
-    vector<string> values;
+    int def = 0;
+    vector<string> values = {};
     string description = "";
     bool required = false;
 
@@ -99,7 +104,7 @@ class SearchSelectOption {
         for (int i = 0; i < values.size(); i++)
             res["values"].append(values[i]);
         if (description != "") res["description"] = description;
-        if (required) res["required"] = required;
+        res["required"] = required;
         return res;
     }
 };
@@ -107,8 +112,8 @@ class SearchSelectOption {
 class SearchFileOption {
     public:
 
-    string query;
-    string name;
+    string query = "";
+    string name = "";
     string type = "file";
     string description = "";
     bool required = false;
@@ -119,7 +124,7 @@ class SearchFileOption {
         res["name"] = name;
         res["type"] = type;
         if (description != "") res["description"] = description;
-        if (required) res["required"] = required;
+        res["required"] = required;
         return res;
     }
 };
@@ -127,8 +132,8 @@ class SearchFileOption {
 class SearchTitleOption {
     public:
 
-    string name;
-    int level;
+    string name = "";
+    int level = 1;
     string type = "title";
     string description = "";
     bool required = false;
@@ -139,7 +144,7 @@ class SearchTitleOption {
         res["level"] = level;
         res["type"] = type;
         if (description != "") res["description"] = description;
-        if (required) res["required"] = required;
+        res["required"] = required;
         return res; 
     }
 };
@@ -147,8 +152,8 @@ class SearchTitleOption {
 class SearchColorOption {
     public:
 
-    string query;
-    string name;
+    string query = "";
+    string name = "";
     string type = "color";
     string description = "";
     bool required = false;
@@ -159,7 +164,7 @@ class SearchColorOption {
         res["name"] = name;
         res["type"] = type;
         if (description != "") res["description"] = description;
-        if (required) res["required"] = required;
+        res["required"] = required;
         return res;
     }
 };
@@ -167,11 +172,11 @@ class SearchColorOption {
 class SearchMultiOption {
     public:
 
-    string query;
-    string name;
+    string query = "";
+    string name = "";
     string type = "multi";
-    vector<bool> defs;
-    vector<string> values;
+    vector<bool> def = {};
+    vector<string> values = {};
     string description = "";
     bool required = false;
     
@@ -180,13 +185,11 @@ class SearchMultiOption {
         res["query"] = query;
         res["name"] = name;
         res["type"] = type;
-        res["defs"].resize(0);
-        for (int i = 0; i < defs.size(); i++)
-            res["defs"].append((int)defs[i]);
-        for (int i = 0; i < values.size(); i++)
-            res["values"].append(values[i]);
+        res["def"].resize(0);
+        for (int i = 0; i < def.size(); i++) res["def"].append((int)def[i]);
+        for (int i = 0; i < values.size(); i++) res["values"].append(values[i]);
         if (description != "") res["description"] = description;
-        if (required) res["required"] = required;
+        res["required"] = required;
         return res;
     }
 };
@@ -194,23 +197,28 @@ class SearchMultiOption {
 class SearchTextAreaOption {
     public:
 
-    string query;
-    string name;
+    string query = "";
+    string name = "";
     string type = "textArea";
-    string placeholder;
+    string def = "";
+    string placeholder = "";
     int limit = 0;
     string description = "";
     bool required = false;
+    vector<string> shortcuts;
     
     Json::Value toJsonObject() {
         Json::Value res;
         res["query"] = query;
         res["name"] = name;
         res["type"] = type;
+        res["def"] = def;
         res["placeholder"] = placeholder;
-        if (limit != 0) res["limit"] = limit;
+        res["limit"] = limit;
         if (description != "") res["description"] = description;
-        if (required) res["required"] = required;
+        res["required"] = required;
+        res["shortcuts"].resize(0);
+        for (int i = 0; i < shortcuts.size(); i++) res["shortcuts"].append(shortcuts[i]);
         return res;
     }
 };
@@ -218,10 +226,10 @@ class SearchTextAreaOption {
 class SearchServerItemOption {
     public:
 
-    string query;
-    string name;
+    string query = "";
+    string name = "";
     string type = "serverItem";
-    string itemType;
+    string itemType = "";
     string description = "";
     bool required = false;
 
@@ -232,7 +240,9 @@ class SearchServerItemOption {
         res["type"] = type;
         res["itemType"] = itemType;
         if (description != "") res["description"] = description;
-        if (required) res["required"] = required;
+        res["required"] = required;
+        res["def"] = Json::Value::null;
+        res["allowOtherServers"] = false;
         return res;
     }
 };
@@ -240,8 +250,8 @@ class SearchServerItemOption {
 class SearchCollectionItemOption {
     public:
 
-    string query;
-    string name;
+    string query = "";
+    string name = "";
     string type = "collectionItem";
     string collectionType;
     string description = "";
@@ -254,7 +264,7 @@ class SearchCollectionItemOption {
         res["type"] = type;
         res["collectionType"] = collectionType;
         if (description != "") res["description"] = description;
-        if (required) res["required"] = required;
+        res["required"] = required;
         return res;
     }
 };
@@ -262,8 +272,8 @@ class SearchCollectionItemOption {
 class SearchLocalizationItemOption {
     public:
 
-    string query;
-    string name;
+    string query = "";
+    string name = "";
     string type = "localizationItem";
     string description = "";
     bool required = false;
@@ -324,17 +334,34 @@ class SearchOption {
         collectionItem(collectionItem), type("collectionItem"){}
     SearchOption(SearchLocalizationItemOption localizationItem):
         localizationItem(localizationItem), type("localizationItem"){}
+
+    Json::Value toJsonObject() {
+        if (type == "text") return text.toJsonObject();
+        if (type == "slider") return slider.toJsonObject();
+        if (type == "toggle") return toggle.toJsonObject();
+        if (type == "select") return select.toJsonObject();
+        if (type == "file") return file.toJsonObject();
+        if (type == "title") return title.toJsonObject();
+        if (type == "color") return color.toJsonObject();
+        if (type == "multi") return multi.toJsonObject();
+        if (type == "textArea") return textArea.toJsonObject();
+        if (type == "serverItem") return serverItem.toJsonObject();
+        if (type == "collectionItem") return collectionItem.toJsonObject();
+        if (type == "localizationItem") return localizationItem.toJsonObject();
+        return Json::Value::null;
+    }
 };
 
 class Search {
     public:
 
     string type = "quick";
-    string title;
-    string icon;
-    string filter;
-    string order;
-    vector<SearchOption> options;
+    string title = "";
+    string icon = "";
+    string filter = "";
+    string order = "";
+    bool requireConfirmation = false;
+    vector<SearchOption> options = {};
 
     void append(SearchOption option) {
         options.push_back(option);
@@ -345,24 +372,150 @@ class Search {
         res["type"] = type;
         res["title"] = title;
         res["icon"] = icon;
+        res["requireConfirmation"] = requireConfirmation;
         res["options"].resize(0);
-        for (int i = 0; i < options.size(); i++) {
-            if (options[i].type == "text") res["options"].append(options[i].text.toJsonObject());
-            if (options[i].type == "slider") res["options"].append(options[i].slider.toJsonObject());
-            if (options[i].type == "toggle") res["options"].append(options[i].toggle.toJsonObject());
-            if (options[i].type == "select") res["options"].append(options[i].select.toJsonObject());
-            if (options[i].type == "file") res["options"].append(options[i].file.toJsonObject());
-            if (options[i].type == "title") res["options"].append(options[i].title.toJsonObject());
-            if (options[i].type == "color") res["options"].append(options[i].color.toJsonObject());
-            if (options[i].type == "multi") res["options"].append(options[i].multi.toJsonObject());
-            if (options[i].type == "textArea") res["options"].append(options[i].textArea.toJsonObject());
-            if (options[i].type == "serverItem") res["options"].append(options[i].serverItem.toJsonObject());
-            if (options[i].type == "collectionItem") res["options"].append(options[i].collectionItem.toJsonObject());
-            if (options[i].type == "localizationItem") res["options"].append(options[i].localizationItem.toJsonObject());
-        }
+        for (int i = 0; i < options.size(); i++) res["options"].append(options[i].toJsonObject());
         return res;
     }
 };
+
+vector<SearchOption> constructSearchOptions(Json::Value orig) {
+    vector<SearchOption> search;
+    for (int i = 0; i < orig.size(); i++) {
+        if (orig[i]["type"].asString() == "text") {
+            search.push_back(SearchTextOption({
+                query: orig[i]["query"].asString(), 
+                name: orig[i]["name"].asString(), 
+                def: orig[i]["def"].asString(),
+                placeholder: orig[i]["placeholder"].asString(),
+                limit: orig[i]["limit"].asInt(),
+                description: orig[i]["description"].asString(),
+                required: orig[i]["required"].asBool(),
+                shortcuts: [&](){
+                    vector<string> res;
+                    for (int j = 0; j < orig[i]["shortcuts"].size(); j++) 
+                        res.push_back(orig[i]["shortcuts"][j].asString());
+                    return res;
+                }()
+            }));
+        } else if (orig[i]["type"].asString() == "slider") {
+            search.push_back(SearchSliderOption({
+                query: orig[i]["query"].asString(), 
+                name: orig[i]["name"].asString(),
+                def: orig[i]["def"].asInt(), 
+                min: orig[i]["min"].asInt(), 
+                max: orig[i]["max"].asInt(),
+                step: orig[i]["step"].asInt(),
+                unit: orig[i].isMember("unit") ? "" : orig[i]["unit"].asString(),
+                description: orig[i]["description"].asString(),
+                required: orig[i]["required"].asBool()
+            }));
+        } else if (orig[i]["type"].asString() == "toggle") {
+            search.push_back(SearchToggleOption({
+                query: orig[i]["query"].asString(), 
+                name: orig[i]["name"].asString(),
+                def: orig[i]["def"].asBool(),
+                description: orig[i]["description"].asString(),
+                required: orig[i]["required"].asBool()
+            }));
+        } else if (orig[i]["type"].asString() == "select") {
+            search.push_back(SearchSelectOption({
+                query: orig[i]["query"].asString(), 
+                name: orig[i]["name"].asString(),
+                def: orig[i]["def"].asInt(),
+                values: [&](){
+                    vector<string> res;
+                    for (int j = 0; j < orig[i]["values"].size(); j++) 
+                        res.push_back(orig[i]["values"][j].asString());
+                    return res;
+                }()
+            }));
+        } else if (orig[i]["type"].asString() == "file") {
+            search.push_back(SearchFileOption({
+                query: orig[i]["query"].asString(), 
+                name: orig[i]["name"].asString(),
+                description: orig[i]["description"].asString(),
+                required: orig[i]["required"].asBool()
+            }));
+        } else if (orig[i]["type"].asString() == "title") {
+            search.push_back(SearchTitleOption({
+                name: orig[i]["name"].asString(),
+                level: orig[i]["level"].asInt(),
+                description: orig[i]["description"].asString(),
+                required: orig[i]["required"].asBool()
+            }));
+        } else if (orig[i]["type"].asString() == "color") {
+            search.push_back(SearchColorOption({
+                query: orig[i]["query"].asString(), 
+                name: orig[i]["name"].asString(),
+                description: orig[i]["description"].asString(),
+                required: orig[i]["required"].asBool()
+            }));
+        } else if (orig[i]["type"].asString() == "multi") {
+            search.push_back(SearchMultiOption({
+                query: orig[i]["query"].asString(), 
+                name: orig[i]["name"].asString(),
+                def: [&](){
+                    vector<bool> res;
+                    for (int j = 0; j < orig[i]["def"].size(); j++) 
+                        res.push_back(orig[i]["def"][j].asBool());
+                    return res;
+                }(),
+                values: [&](){
+                    vector<string> res;
+                    for (int j = 0; j < orig[i]["values"].size(); j++) 
+                        res.push_back(orig[i]["values"][j].asString());
+                    return res;
+                }(),
+                description: orig[i]["description"].asString(),
+                required: orig[i]["required"].asBool()
+            }));
+        } else if (orig[i]["type"].asString() == "textArea") {
+            search.push_back(SearchTextAreaOption({
+                query: orig[i]["query"].asString(), 
+                name: orig[i]["name"].asString(),
+                def: orig[i]["def"].asString(),
+                placeholder: orig[i]["placeholder"].asString(),
+                limit: orig[i]["limit"].asInt(),
+                description: orig[i]["description"].asString(),
+                required: orig[i]["required"].asBool(),
+                shortcuts: [&](){
+                    vector<string> res;
+                    for (int j = 0; j < orig[i]["shortcuts"].size(); j++) 
+                        res.push_back(orig[i]["shortcuts"][j].asString());
+                    return res;
+                }()
+            }));
+        } else if (orig[i]["type"].asString() == "serverItem") {
+            search.push_back(SearchServerItemOption({
+                query: orig[i]["query"].asString(), 
+                name: orig[i]["name"].asString(),
+                itemType: orig[i]["itemType"].asString(),
+                description: orig[i]["description"].asString(),
+                required: orig[i]["required"].asBool()
+            }));
+        } else if (orig[i]["type"].asString() == "collectionItem") {
+            search.push_back(SearchCollectionItemOption({
+                query: orig[i]["query"].asString(), 
+                name: orig[i]["name"].asString(),
+                collectionType: orig[i]["collectionType"].asString(),
+                description: orig[i]["description"].asString(),
+                required: orig[i]["required"].asBool()
+            }));
+        } else if (orig[i]["type"].asString() == "localizationItem") {
+            search.push_back(SearchLocalizationItemOption({
+                query: orig[i]["query"].asString(), 
+                name: orig[i]["name"].asString(),
+                description: orig[i]["description"].asString(),
+                required: orig[i]["required"].asBool()
+            }));
+        } else {
+            writeLog(LOG_LEVEL_ERROR, ("Invalid search option type \"" + orig[i]["type"].asString()).c_str());  
+            continue;
+        }
+    }
+    return search;
+}
 
 Search constructSingleSearch(Json::Value orig) {
     Search search;
@@ -371,116 +524,7 @@ Search constructSingleSearch(Json::Value orig) {
     search.icon = orig["icon"].asString();
     search.filter = orig["filter"].asString();
     search.order = orig["order"].asString();
-    for (int i = 0; i < orig["options"].size(); i++) {
-        if (orig["options"][i]["type"].asString() == "text") {
-            search.append(SearchTextOption({
-                query: orig["options"][i]["query"].asString(), 
-                name: orig["options"][i]["name"].asString(), 
-                placeholder: orig["options"][i]["placeholder"].asString(),
-                limit: orig["options"][i]["limit"].asInt(),
-                description: orig["options"][i]["description"].asString(),
-                required: orig["options"][i]["required"].asBool()
-            }));
-        } else if (orig["options"][i]["type"].asString() == "slider") {
-            search.append(SearchSliderOption({
-                query: orig["options"][i]["query"].asString(), 
-                name: orig["options"][i]["name"].asString(),
-                def: orig["options"][i]["def"].asInt(), 
-                min: orig["options"][i]["min"].asInt(), 
-                max: orig["options"][i]["max"].asInt(),
-                step: orig["options"][i]["step"].asInt(),
-                unit: orig["options"][i].isMember("unit") ? "" : orig["options"][i]["unit"].asString(),
-                description: orig["options"][i]["description"].asString(),
-                required: orig["options"][i]["required"].asBool()
-            }));
-        } else if (orig["options"][i]["type"].asString() == "toggle") {
-            search.append(SearchToggleOption({
-                query: orig["options"][i]["query"].asString(), 
-                name: orig["options"][i]["name"].asString(),
-                def: orig["options"][i]["def"].asBool(),
-                description: orig["options"][i]["description"].asString(),
-                required: orig["options"][i]["required"].asBool()
-            }));
-        } else if (orig["options"][i]["type"].asString() == "select") {
-            search.append(SearchSelectOption({
-                query: orig["options"][i]["query"].asString(), 
-                name: orig["options"][i]["name"].asString(),
-                def: orig["options"][i]["def"].asInt(),
-                values: vector<string>()
-            }));
-            for (int j = 0; j < orig["options"][i]["values"].size(); j++) 
-                search.options.back().select.values.push_back(orig["options"][i]["values"][j].asString());
-        } else if (orig["options"][i]["type"].asString() == "file") {
-            search.append(SearchFileOption({
-                query: orig["options"][i]["query"].asString(), 
-                name: orig["options"][i]["name"].asString(),
-                description: orig["options"][i]["description"].asString(),
-                required: orig["options"][i]["required"].asBool()
-            }));
-        } else if (orig["options"][i]["type"].asString() == "title") {
-            search.append(SearchTitleOption({
-                name: orig["options"][i]["name"].asString(),
-                level: orig["options"][i]["level"].asInt(),
-                description: orig["options"][i]["description"].asString(),
-                required: orig["options"][i]["required"].asBool()
-            }));
-        } else if (orig["options"][i]["type"].asString() == "color") {
-            search.append(SearchColorOption({
-                query: orig["options"][i]["query"].asString(), 
-                name: orig["options"][i]["name"].asString(),
-                description: orig["options"][i]["description"].asString(),
-                required: orig["options"][i]["required"].asBool()
-            }));
-        } else if (orig["options"][i]["type"].asString() == "multi") {
-            search.append(SearchMultiOption({
-                query: orig["options"][i]["query"].asString(), 
-                name: orig["options"][i]["name"].asString(),
-                defs: vector<bool>(),
-                values: vector<string>(),
-                description: orig["options"][i]["description"].asString(),
-                required: orig["options"][i]["required"].asBool()
-            }));
-            for (int j = 0; j < orig["options"][i]["defs"].size(); j++) 
-                search.options.back().multi.defs.push_back(orig["options"][i]["defs"][j].asBool());
-            for (int j = 0; j < orig["options"][i]["values"].size(); j++) 
-                search.options.back().multi.values.push_back(orig["options"][i]["values"][j].asString());
-        } else if (orig["options"][i]["type"].asString() == "textArea") {
-            search.append(SearchTextAreaOption({
-                query: orig["options"][i]["query"].asString(), 
-                name: orig["options"][i]["name"].asString(),
-                placeholder: orig["options"][i]["placeholder"].asString(),
-                limit: orig["options"][i]["limit"].asInt(),
-                description: orig["options"][i]["description"].asString(),
-                required: orig["options"][i]["required"].asBool()
-            }));
-        } else if (orig["options"][i]["type"].asString() == "serverItem") {
-            search.append(SearchServerItemOption({
-                query: orig["options"][i]["query"].asString(), 
-                name: orig["options"][i]["name"].asString(),
-                itemType: orig["options"][i]["itemType"].asString(),
-                description: orig["options"][i]["description"].asString(),
-                required: orig["options"][i]["required"].asBool()
-            }));
-        } else if (orig["options"][i]["type"].asString() == "collectionItem") {
-            search.append(SearchCollectionItemOption({
-                query: orig["options"][i]["query"].asString(), 
-                name: orig["options"][i]["name"].asString(),
-                collectionType: orig["options"][i]["collectionType"].asString(),
-                description: orig["options"][i]["description"].asString(),
-                required: orig["options"][i]["required"].asBool()
-            }));
-        } else if (orig["options"][i]["type"].asString() == "localizationItem") {
-            search.append(SearchLocalizationItemOption({
-                query: orig["options"][i]["query"].asString(), 
-                name: orig["options"][i]["name"].asString(),
-                description: orig["options"][i]["description"].asString(),
-                required: orig["options"][i]["required"].asBool()
-            }));
-        } else {
-            writeLog(LOG_LEVEL_ERROR, ("Invalid search option type \"" + orig["options"][i]["type"].asString()).c_str());  
-            continue;
-        }
-    }
+    search.options = constructSearchOptions(orig["options"]);
     return search;
 }
 

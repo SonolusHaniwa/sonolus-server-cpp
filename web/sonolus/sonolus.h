@@ -57,10 +57,11 @@ void loadDefaultVariable() {
     exitRequest(conn); \
 }
 
-#define quickSendObj(obj) {\
-    __api_default_response["Content-Length"] = to_string(json_encode(obj).size()); \
+#define quickSendObj(obj) { \
+    string E2BAAF3B97DBEEF01C0043275F9A0E7 = str_replace(dataPrefix.c_str(), appConfig["server.data.prefix"][atoi(getParam(request)["source"].c_str())]["url"].asCString(), json_encode(obj).c_str()); \
+    __api_default_response["Content-Length"] = to_string(E2BAAF3B97DBEEF01C0043275F9A0E7.size()); \
     putRequest(conn, 200, __api_default_response); \
-    send(conn, json_encode(obj)); \
+    send(conn, E2BAAF3B97DBEEF01C0043275F9A0E7); \
     exitRequest(conn); \
 }
 
@@ -90,14 +91,17 @@ string generateSession() {
 #include"ServerInfo.h"
 #include"ItemInfo.h"
 #include"ItemList.h"
-#include"ItemDetails.h"
-#include"ItemCreate.h"
 #include"ItemUpload.h"
+#include"ItemDetails.h"
+#include"ItemDetailsSubmit.h"
+#include"ItemDetailsUpload.h"
+#include"ItemCreate.h"
 #include"Authentication.h"
 #include"CheckLogin.h"
 #include"ItemCommunityInfo.h"
 #include"ItemCommunitySubmit.h"
 #include"ItemCommunityCommentList.h"
+#include"ItemCommunityCommentSubmit.h"
 #include"ItemCommunity.h"
 #include"ItemLeaderboardDetails.h"
 #include"ItemLeaderboardRecordList.h"

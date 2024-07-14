@@ -98,7 +98,11 @@ vector<PlaylistItem> playlistsList(string filter, string order, int st = 1, int 
         vector<LevelItem> levels = {};
         string levelsJson = res[i]["levels"]; Json::Value levelsId;
         json_decode(levelsJson, levelsId);
-        for (int j = 0; j < levelsId.size(); j++) levels.push_back(levelsList("id = " + levelsId[j].asString(), "", 1, 1)[0]);
+        for (int j = 0; j < levelsId.size(); j++) {
+            auto res = levelsList("id = " + levelsId[j].asString(), "", 1, 1);
+            if (res.size() == 0) continue;
+            levels.push_back(res[0]);
+        }
         PlaylistItem data = PlaylistItem(
             atoi(res[i]["id"].c_str()),
             res[i]["name"],

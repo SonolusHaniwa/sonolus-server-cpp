@@ -1,3 +1,8 @@
+string getRef(int len = 32) {
+	string res = "", key = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+	for (int i = 0; i < len; i++) res += key[rand() % key.size()];
+	return res;
+}
 auto SonolusCommunityInfo = [](client_conn conn, http_request request, param argv) {
     auto $_GET = getParam(request);
     bool isLogin = checkLogin(request);
@@ -18,16 +23,16 @@ auto SonolusCommunityInfo = [](client_conn conn, http_request request, param arg
     ItemDetails["topComments"].resize(0);
     if (appConfig[string(argv[0]) + ".enableLike"].asBool()) {
         int likes = db.query("SELECT uid FROM LikeTable WHERE targetType = \"" + string(argv[0]) + "\" AND targetName = \"" + string(argv[1]) + "\"", "LikeTable").size();
-        ItemDetails["topComments"].append(ItemCommunityComment("", "System", 0, "Likes: " + to_string(likes), {}).toJsonObject());
+        ItemDetails["topComments"].append(ItemCommunityComment(getRef(), "System", 0, "Likes: " + to_string(likes), {}).toJsonObject());
     }
     if (appConfig[string(argv[0]) + ".enableComment"].asBool()) {
         int comments = commentsNumber("targetType = \"" + argv[0] + "\" AND targetName = \"" + argv[1] + "\"");
-        ItemDetails["topComments"].append(ItemCommunityComment("", "System", 0, "Comments: " + to_string(comments) + " / " + to_string((comments - 1) / appConfig[argv[0] + ".pageSize.community"].asInt() + 1) + " pages", {}).toJsonObject());
+        ItemDetails["topComments"].append(ItemCommunityComment(getRef(), "System", 0, "Comments: " + to_string(comments) + " / " + to_string((comments - 1) / appConfig[argv[0] + ".pageSize.community"].asInt() + 1) + " pages", {}).toJsonObject());
     }
     if (appConfig[string(argv[0]) + ".enableRating"].asBool()) {
         int ratings = db.query("SELECT uid FROM Rating WHERE targetType = \"" + string(argv[0]) + "\" AND targetName = \"" + string(argv[1]) + "\"", "Rating").size();
         double rating = atof(db.query("SELECT AVG(rating) FROM Rating WHERE targetType = \"" + string(argv[0]) + "\" AND targetName = \"" + string(argv[1]) + "\"", "Rating")[0]["AVG(rating)"].c_str());
-        ItemDetails["topComments"].append(ItemCommunityComment("", "System", 0, "Rating: " + to_string(rating) + "(" + to_string(ratings) + ")", {}).toJsonObject());
+        ItemDetails["topComments"].append(ItemCommunityComment(getRef(), "System", 0, "Rating: " + to_string(rating) + "(" + to_string(ratings) + ")", {}).toJsonObject());
     }
     quickSendObj(ItemDetails);
 };

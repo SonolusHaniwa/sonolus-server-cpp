@@ -79,7 +79,6 @@ vector<ItemCommunityComment> commentsList(string filter, string order, int st = 
     for (int i = 0; i < res.size(); i++) {
         UserProfile author = usersList("id = \"" + res[i]["uid"] + "\"", "")[0];
         Search replyObject = replyCommunityObject;
-        replyObject.type = "reply-" + res[i]["name"];
         ItemCommunityComment comment = ItemCommunityComment(
             res[i]["name"],
             author.name + "#" + author.handle,

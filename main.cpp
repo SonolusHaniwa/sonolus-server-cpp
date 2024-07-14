@@ -3,13 +3,13 @@
 using namespace std;
 #define defineToString(str) #str
 
-std::string sonolus_server_version = "1.6.2";
-std::string Maximum_Sonolus_Version = "0.8.3";
+std::string sonolus_server_version = "1.6.3";
+std::string Maximum_Sonolus_Version = "0.8.4";
 std::string Sonolus_Version = Maximum_Sonolus_Version;
 Json::Value appConfig, studiosConfig;
 Json::Value i18n, i18n_raw;
 Json::Value enableListJson;
-std::string dataPrefix = "/data/";
+std::string dataPrefix = "{{dataPrefix}}/";
 
 const int exportLevelId = 1;
 const int exportSkinId = 2;
@@ -106,10 +106,13 @@ void routerRegister(int argc, char** argv) {
     app.addRoute("/sonolus/%s/upload", SonolusUpload);
     app.addRoute("/sonolus/rooms/%s", SonolusRoomJoin);
     app.addRoute("/sonolus/%s/%s", SonolusDetails);
+    app.addRoute("/sonolus/%s/%s/submit", SonolusDetailsSubmit);
+    app.addRoute("/sonolus/%s/%s/upload", SonolusDetailsUpload);
     app.addRoute("/sonolus/%s/%s/community", SonolusCommunity);
     app.addRoute("/sonolus/%s/%s/community/info", SonolusCommunityInfo);
     app.addRoute("/sonolus/%s/%s/community/submit", SonolusCommunitySubmit);
     app.addRoute("/sonolus/%s/%s/community/comments/list", SonolusCommunityCommentList);
+    app.addRoute("/sonolus/%s/%s/community/comments/%s/submit", SonolusCommunityCommentSubmit);
     app.addRoute("/sonolus/%s/%s/leaderboards/%s", SonolusLeaderboardDetails);
     app.addRoute("/sonolus/%s/%s/leaderboards/%s/records/list", SonolusLeaderboardRecordList);
     app.addRoute("/sonolus/%s/%s/leaderboards/%s/records/%s", SonolusLeaderboardRecordDetails);
@@ -369,8 +372,12 @@ void preload() {
     db = DB_Total_Controller(dbConfig);
 
     Sonolus_Version = appConfig["sonolus.version"].asString();
-    if (appConfig["server.data.prefix"].asString() == "") appConfig["server.data.prefix"] = "/data/";
-    dataPrefix = appConfig["server.data.prefix"].asString();
+    for (int i = 0; i < appConfig["server.data.prefix"].size(); i++)
+        if (appConfig["server.data.prefix"][i]["url"].asString() == "") 
+            appConfig["server.data.prefix"][i]["url"] = 
+                (appConfig["server.enableSSL"].asBool() ? "https://" : "http://") + 
+                appConfig["server.rootUrl"].asString() + 
+                "/data/";
     appConfig["server.logo"] = dataPrefix + appConfig["server.logo"].asString();
     appConfig["server.bannerHash"] = appConfig["server.banner"].asString();
     appConfig["server.bannerUrl"] = dataPrefix + appConfig["server.banner"].asString();

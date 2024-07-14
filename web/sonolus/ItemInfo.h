@@ -14,10 +14,14 @@
             (item["filter"].asString() == "" ? "1" : item["filter"].asString()) + ")"; \
         item["order"] = "CASE WHEN localization = \"default\" THEN 1 WHEN localization != \"default\" THEN 0 END ASC, " + \
             (item["order"].asString() == "" ? "id DESC" : item["order"].asString()); \
-        ItemInfo["sections"].append(ItemSection<name1##Item>( \
-            item["title"].asString(), item["icon"].asString(), \
-            name2##List(item["filter"].asString(), item["order"].asString(), 1, appConfig[defineToString(name2)".pageSize.info"].asInt()) \
-        ).toJsonObject()); \
+        ItemInfo["sections"].append(ItemSection<name1##Item>({ \
+            title: item["title"].asString(), \
+            icon: item["icon"].asString(), \
+            itemType: argv[0].substr(0, argv[0].size() - 1),\
+            items: name2##List(item["filter"].asString(), item["order"].asString(), 1, appConfig[defineToString(name2)".pageSize.info"].asInt()), \
+            search: constructSearchOptions(item["search"]), \
+            searchValues: item["searchValues"].asString() \
+        }).toJsonObject()); \
     } \
 }
 
@@ -32,7 +36,7 @@ auto SonolusInfo = [](client_conn conn, http_request request, param argv){
     bool allowUserCreate = isLogin ? allowCreate ^ isExcept : 0;
     Json::Value ItemInfo;
     ItemInfo["banner"] = SRL<ServerBanner>(appConfig["server.banner"].asString(), 
-        appConfig["server.data.prefix"].asString() + appConfig["server.banner"].asString()).toJsonObject();
+        dataPrefix + appConfig["server.banner"].asString()).toJsonObject();
     if (argv[0] == "levels") { quickSonolusInfo(Level, levels); }
     else if (argv[0] == "skins") { quickSonolusInfo(Skin, skins); }
     else if (argv[0] == "backgrounds") { quickSonolusInfo(Background, backgrounds); }

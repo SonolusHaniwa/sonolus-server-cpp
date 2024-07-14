@@ -13,12 +13,17 @@
         { "type": "background" },
         { "type": "effect" },
         { "type": "particle" },
-        { "type": "engine" }
+        { "type": "engine" },
+        { "type": "configuration" }
     ],
     "server.logo": "c3e27937fb9578065038d7988c6d4f955b584d95",
     "server.banner": "b4b42df0b336e852d14b4d334c3d99f8992626d8",
     "server.rootUrl": "192.168.0.18:8080",
-    "server.data.prefix": "",
+    "server.data.prefix": [
+        { "name": "dev", "url": "" },
+        { "name": "global", "url": "https://cdn.jsdelivr.net/gh/LittleYang0531/sirius-data/" },
+        { "name": "mirror", "url": "https://cdn.jsdelivr.us/gh/LittleYang0531/sirius-data/" }
+    ],
     "server.multiplayer.address": "ws://192.168.0.18:8080",
     "language.default": "zhs"
 }

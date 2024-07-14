@@ -15,7 +15,9 @@
             "title": "#NEWEST",
             "icon": "level",
             "filter": "",
-            "order": "id DESC"
+            "order": "id DESC",
+            "search": [],
+            "searchValue": "type=quick"
         }
     ],
     "levels.details.sections": [

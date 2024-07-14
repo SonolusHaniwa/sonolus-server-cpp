@@ -13,8 +13,8 @@
 using namespace std;
 #define defineToString(str) #str
 
-std::string sonolus_server_version = "1.6.2";
-std::string Maximum_Sonolus_Version = "0.8.3";
+std::string sonolus_server_version = "1.6.3";
+std::string Maximum_Sonolus_Version = "0.8.4";
 std::string Sonolus_Version = Maximum_Sonolus_Version;
 Json::Value appConfig;
 Json::Value i18n, i18n_raw;
@@ -62,10 +62,13 @@ void routerRegister() {
     // app.addRoute("/sonolus/%s/upload", SonolusUpload);
     // app.addRoute("/sonolus/rooms/%s", SonolusRoomJoin);
     app.addRoute("/sonolus/%s/%s", SonolusDetails);
+    app.addRoute("/sonolus/%s/%s/submit", SonolusDetailsSubmit);
+    // app.addRoute("/sonolus/%s/%s/upload", SonolusDetailsUpload);
     app.addRoute("/sonolus/%s/%s/community", SonolusCommunity);
     app.addRoute("/sonolus/%s/%s/community/info", SonolusCommunityInfo);
     app.addRoute("/sonolus/%s/%s/community/submit", SonolusCommunitySubmit);
     app.addRoute("/sonolus/%s/%s/community/comments/list", SonolusCommunityCommentList);
+    app.addRoute("/sonolus/%s/%s/community/comments/%s/submit", SonolusCommunityCommentSubmit);
     app.addRoute("/sonolus/%s/%s/leaderboards/%s", SonolusLeaderboardDetails);
     app.addRoute("/sonolus/%s/%s/leaderboards/%s/records/list", SonolusLeaderboardRecordList);
     app.addRoute("/sonolus/%s/%s/leaderboards/%s/records/%s", SonolusLeaderboardRecordDetails);
