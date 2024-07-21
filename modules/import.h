@@ -62,7 +62,7 @@ void importDataFromOfficialPackage(string path, Json::Value obj, int& fileCnt) {
     	// } 
     	if (obj["url"].asString().size() == 0) return;
     	string fileContent = getFileFromZip(path, obj["url"].asString().substr(1));
-        ofstream fout("./data/" + obj["hash"].asString());
+        ofstream fout("./data/" + obj["hash"].asString(), ios::binary);
         fout.write(const_cast<char*>(fileContent.c_str()), fileContent.size());
         fout.close();
         writeLog(LOG_LEVEL_DEBUG, "Saved file " + obj["hash"].asString() + " into data.");
