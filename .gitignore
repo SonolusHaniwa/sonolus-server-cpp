@@ -22,6 +22,7 @@ sirius
 !data/18d418a036faf35bbd17c9d265a782e32723356c
 !data/c3e27937fb9578065038d7988c6d4f955b584d95
 !data/b4b42df0b336e852d14b4d334c3d99f8992626d8
+!data/ff4aeb7f818d14508dd98699d71102fc57547c44
 !web/sonolus
 !web/sonolus/sonolus.h
 *.srp
@@ -36,5 +37,7 @@ plugins/enableList.json
 # make
 public
 phigros
+phigros2
 guide
 sonolus.h
+sync
