@@ -15,7 +15,8 @@ class UpdateLevelEvent {
     Json::Value toJsonObject() {
         Json::Value res;
         res["type"] = type;
-        res["level"] = level.toJsonObject();
+        if (level.name == "") res["level"] = Json::nullValue;
+        else res["level"] = level.toJsonObject();
         return res;
     }
 };

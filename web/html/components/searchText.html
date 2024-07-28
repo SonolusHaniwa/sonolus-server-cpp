@@ -31,7 +31,7 @@
             document.getElementById("search-clear-{{search.query}}").onclick = function(){
                 searchConfig["{{search.query}}"] = "";
                 document.getElementById("search-{{search.query}}").value = "";
-                document.getElementById("search-reset-{{search.query}}").className = disableResetClass;
+                document.getElementById("search-reset-{{search.query}}").className = def == "" ? disableResetClass : enableResetClass;
             };
             document.getElementById("search-{{search.query}}").oninput = function(){
                 searchConfig["{{search.query}}"] = this.value;

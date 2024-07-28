@@ -48,6 +48,116 @@
                     </script>
                 </div>
                 
+                <div class="fixed top-0 left-0 z-50 flex h-[100vh] w-[100vw] select-none flex-col items-center justify-center bg-sonolus-main bg-opacity-90 transition-opacity" style="visibility: hidden; opacity: 0; margin-top: 0px" id="configurationInterface" onclick="closeConfiguration()">
+                    <main class="mx-auto flex max-w-4xl flex-col space-y-9 p-9 transition-opacity v-transition:opacity-0 sm:space-y-12 sm:p-12" id="configurationInterfaceMain" style="opacity: 1;width: 100%;padding-top: 0px;padding-bottom: 0px">
+                        <h2 class="flex-grow py-1 text-xl font-bold sm:py-1.5 sm:text-3xl">{{language.configuration}}</h2>
+                        <div>
+                            <div class="my-2 font-bold sm:my-3" id="search-name-source">Data Source</div>
+                            <div class="ml-9 flex flex-grow items-center space-x-2 sm:ml-12 sm:space-x-3">
+                                <div id="search-info-source" class="flex-grow overflow-hidden text-ellipsis whitespace-nowrap"></div>
+                                <select id="search-source" class="w-36 text-ellipsis border-none bg-sonolus-ui-button-normal p-2 text-center text-sm hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed sm:w-48 sm:p-3 sm:text-base">
+                                    {{search.sourceOptions}}
+                                </select>
+                                <button id="search-reset-source" class="flex select-none space-x-2 p-2 transition-colors sm:space-x-3 sm:p-3 pointer-events-none bg-sonolus-ui-button-disabled text-sonolus-ui-text-disabled">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="h-5 w-5 fill-current sm:h-6 sm:w-6">
+                                        <path d="M480 256c0 123.4-100.5 223.9-223.9 223.9-48.84 0-95.17-15.58-134.2-44.86-14.12-10.59-16.97-30.66-6.375-44.81 10.59-14.12 30.62-16.94 44.81-6.375 27.84 20.91 61 31.94 95.88 31.94C344.3 415.8 416 344.1 416 256S344.31 96.2 256.2 96.2c-37.46 0-73.09 13.49-101.3 36.64l45.12 45.14c17.01 17.02 4.955 46.1-19.1 46.1H35.17C24.58 224.1 16 215.5 16 204.9V59.04C16 35 45.07 22.96 62.07 39.97l47.6 47.63C149.9 52.71 201.5 32.11 256.1 32.11 379.5 32.11 480 132.6 480 256z"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            <script>
+                                addLoadEvent(function(){
+                                    var def = getCookie("source");
+                                    setCookie("source", def);
+                                    document.getElementById("search-source").oninput = function(){
+                                        setCookie("source", this.value);
+                                        document.getElementById("search-info-source").innerHTML = document.getElementById("search-source-" + this.value).innerHTML;
+                                        if (this.value == def) document.getElementById("search-reset-source").className = disableResetClass;
+                                        else document.getElementById("search-reset-source").className = enableResetClass;
+                                    }
+                                    document.getElementById("search-reset-source").onclick = function(){
+                                        setCookie("source", def);
+                                        document.getElementById("search-source").value = def;
+                                        document.getElementById("search-info-source").innerHTML = document.getElementById("search-source-" + def).innerHTML;
+                                        document.getElementById("search-reset-source").className = disableResetClass;
+                                    }
+                                    var sons = document.getElementById("search-source").children;
+                                    var hasDefault = false;
+                                    for (var i = 0; i < sons.length; i++) {
+                                        var son = sons[i];
+                                        if (son.value == def) {
+                                            son.setAttribute("selected", "selected");
+                                            document.getElementById("search-info-source").innerHTML = son.innerHTML;
+                                            hasDefault = true;
+                                        }
+                                    }
+                                    if (!hasDefault) {
+                                        var son = sons[0];
+                                        son.setAttribute("selected", "selected");
+                                        setCookie("source", son.value);
+                                        document.getElementById("search-info-source").innerHTML = son.innerHTML;
+                                    }
+                                });
+                            </script>
+                        </div>
+                        <div style="margin-top: 0px">
+                            <div class="my-2 font-bold sm:my-3" id="search-name-banner">Banner Image</div>
+                            <div class="ml-9 flex flex-grow items-center space-x-2 sm:ml-12 sm:space-x-3">
+                                <div id="search-info-banner" class="flex-grow overflow-hidden text-ellipsis whitespace-nowrap"></div>
+                                <select id="search-banner" class="w-36 text-ellipsis border-none bg-sonolus-ui-button-normal p-2 text-center text-sm hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed sm:w-48 sm:p-3 sm:text-base">
+                                    {{search.bannerOptions}}
+                                </select>
+                                <button id="search-reset-banner" class="flex select-none space-x-2 p-2 transition-colors sm:space-x-3 sm:p-3 pointer-events-none bg-sonolus-ui-button-disabled text-sonolus-ui-text-disabled">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="h-5 w-5 fill-current sm:h-6 sm:w-6">
+                                        <path d="M480 256c0 123.4-100.5 223.9-223.9 223.9-48.84 0-95.17-15.58-134.2-44.86-14.12-10.59-16.97-30.66-6.375-44.81 10.59-14.12 30.62-16.94 44.81-6.375 27.84 20.91 61 31.94 95.88 31.94C344.3 415.8 416 344.1 416 256S344.31 96.2 256.2 96.2c-37.46 0-73.09 13.49-101.3 36.64l45.12 45.14c17.01 17.02 4.955 46.1-19.1 46.1H35.17C24.58 224.1 16 215.5 16 204.9V59.04C16 35 45.07 22.96 62.07 39.97l47.6 47.63C149.9 52.71 201.5 32.11 256.1 32.11 379.5 32.11 480 132.6 480 256z"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            <script>
+                                addLoadEvent(function(){
+                                    var def = getCookie("banner");
+                                    setCookie("banner", def);
+                                    document.getElementById("search-banner").oninput = function(){
+                                        setCookie("banner", this.value);
+                                        document.getElementById("search-info-banner").innerHTML = document.getElementById("search-banner-" + this.value).innerHTML;
+                                        if (this.value == def) document.getElementById("search-reset-banner").className = disableResetClass;
+                                        else document.getElementById("search-reset-banner").className = enableResetClass;
+                                    }
+                                    document.getElementById("search-reset-banner").onclick = function(){
+                                        setCookie("banner", def);
+                                        document.getElementById("search-banner").value = def;
+                                        document.getElementById("search-info-banner").innerHTML = document.getElementById("search-banner-" + def).innerHTML;
+                                        document.getElementById("search-reset-banner").className = disableResetClass;
+                                    }
+                                    var sons = document.getElementById("search-banner").children;
+                                    var hasDefault = false;
+                                    for (var i = 0; i < sons.length; i++) {
+                                        var son = sons[i];
+                                        if (son.value == def) {
+                                            son.setAttribute("selected", "selected");
+                                            document.getElementById("search-info-banner").innerHTML = son.innerHTML;
+                                            hasDefault = true;
+                                        }
+                                    }
+                                    if (!hasDefault) {
+                                        var son = sons[0];
+                                        son.setAttribute("selected", "selected");
+                                        setCookie("banner", son.value);
+                                        document.getElementById("search-info-banner").innerHTML = son.innerHTML;
+                                    }
+                                });
+                            </script>
+                        </div>
+                    </main>
+                    <script>
+                        addLoadEvent(function(){
+                            document.getElementById("configurationInterfaceMain").onclick = function(e){
+                                e.preventDefault();
+                                e.stopPropagation();
+                            };
+                        });
+                    </script>
+                </div>
+
                 <div class="fixed top-2 left-0 -z-10 flex w-full justify-center sm:top-4">
                     <img class="banner pointer-events-none h-[11.25rem] object-cover opacity-40 sm:h-60" data-src="{{server.bannerUrl}}" alt="Banner">
                 </div>

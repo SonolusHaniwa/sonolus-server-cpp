@@ -56,13 +56,13 @@ void* RoomWorkThread(void* roomId) {
 					RoomConnectionSend(conns[i], id, AddUserEvent(RoomUser(res["body"], res["signature"])));
 					RoomConnectionSend(conns[i], id, InsertScoreboardSectionScoreEvent(0, conns.size(), data.scoreboardSections[0].scores.back()));
 					if (res["uid"] == creatorId) {
-						if (data.master == "room") RoomConnectionSend(conns[i], id, UpdateMasterEvent(res["uid"]));
-						if (data.lead == "room") RoomConnectionSend(conns[i], id, UpdateLeadEvent(res["uid"]));
+						if (data.master == roomCode) RoomConnectionSend(conns[i], id, UpdateMasterEvent(res["uid"]));
+						if (data.lead == roomCode) RoomConnectionSend(conns[i], id, UpdateLeadEvent(res["uid"]));
 					}
 				}
 				if (res["uid"] == creatorId) {
-					if (data.master == "room") data.master = res["uid"];
-					if (data.lead == "room") data.lead = res["uid"];
+					if (data.master == roomCode) data.master = res["uid"];
+					if (data.lead == roomCode) data.lead = res["uid"];
 				}
 				// 发送当前数据给新用户
 				RoomConnectionSend(item.connArg, id, data);
@@ -97,12 +97,12 @@ void* RoomWorkThread(void* roomId) {
 				}
 				// 推送给其他用户
 				for (int i = 0; i < conns.size(); i++) {
-					if (data.master == res["uid"]) RoomConnectionSend(conns[i], id, UpdateMasterEvent(string("room")));
-					if (data.lead == res["uid"]) RoomConnectionSend(conns[i], id, UpdateLeadEvent(string("room")));
+					if (data.master == res["uid"]) RoomConnectionSend(conns[i], id, UpdateMasterEvent(roomCode));
+					if (data.lead == res["uid"]) RoomConnectionSend(conns[i], id, UpdateLeadEvent(roomCode));
 					RoomConnectionSend(conns[i], id, RemoveUserEvent(RoomUser(res["body"], res["signature"])));
 				}
-				if (data.master == res["uid"]) data.master = "room";
-				if (data.lead == res["uid"]) data.lead = "room";
+				if (data.master == res["uid"]) data.master = roomCode;
+				if (data.lead == res["uid"]) data.lead = roomCode;
 			}
 			else if (item.name == "UpdateLevel") {
 				data.level = item.level;

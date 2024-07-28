@@ -1,6 +1,11 @@
 [
     {
         "database": "sqlite",
-        "sqlite.dbfile": "sonolus.db"
+        "sqlite.dbfile": "sonolus.db",
+        "mysql.hostname": "127.0.0.1",
+        "mysql.port": 3309,
+        "mysql.username": "root",
+        "mysql.password": "root",
+        "mysql.database": "sonolus"
     }
 ]

@@ -1,3 +1,19 @@
+#define quickSonolusDetailsSection(name1, name2) { \
+    string filter = obj["filter"].asString() == "" ? "1" : obj["filter"].asString(), \
+           order = obj["order"].asString() == "" ? "1" : obj["order"].asString(); \
+    filter = str_replace(filter, args); \
+    order = str_replace(order, args); \
+    string searchValues = str_replace(obj["searchValues"].asString(), args); \
+    ItemDetails["sections"].append(ItemSection<name1##Item>({ \
+        title: obj["title"].asString(), \
+        icon: obj["icon"].asString(), \
+        itemType: obj["itemType"].asString(), \
+        items: name2##List(filter, order, 1, appConfig[defineToString(name2)".pageSize.recommends"].asInt()), \
+        search: constructDefaultSearchOption(name1##Search, obj["searchValues"].asString()), \
+        searchValues: searchValues \
+    }).toJsonObject()); \
+}
+
 #define quickSonolusDetails(name1, name2) {\
     auto items = name2##List( \
     	"name = \"" + argv[1] + "\" AND (localization = \"" + $_GET["localization"] + "\" OR localization = \"default\")", \
@@ -27,16 +43,15 @@
     for (auto v : args) args[v.first] = quote_encode(v.second); \
     for (int i = 0; i < appConfig[defineToString(name2)".details.sections"].size(); i++) { \
         auto obj = appConfig[defineToString(name2)".details.sections"][i]; \
-        string filter = obj["filter"].asString(), \
-               order = obj["order"].asString(); \
-        filter = str_replace(filter, args); \
-        order = str_replace(order, args); \
-        ItemDetails["sections"].append(ItemSection<name1##Item>({ \
-            title: obj["title"].asString(), \
-            icon: obj["icon"].asString(), \
-            itemType: argv[0].substr(0, argv[0].size() - 1),\
-            items: name2##List(filter, order, 1, appConfig[defineToString(name2)".pageSize.recommends"].asInt()), \
-        }).toJsonObject()); \
+        if (obj["itemType"].asString() == "level") { quickSonolusDetailsSection(Level, levels); } \
+        else if (obj["itemType"].asString() == "skin") { quickSonolusDetailsSection(Skin, skins); } \
+        else if (obj["itemType"].asString() == "background") { quickSonolusDetailsSection(Background, backgrounds); } \
+        else if (obj["itemType"].asString() == "effect") { quickSonolusDetailsSection(Effect, effects); } \
+        else if (obj["itemType"].asString() == "particle") { quickSonolusDetailsSection(Particle, particles); } \
+        else if (obj["itemType"].asString() == "engine") { quickSonolusDetailsSection(Engine, engines); } \
+        else if (obj["itemType"].asString() == "replay") { quickSonolusDetailsSection(Replay, replays); } \
+        else if (obj["itemType"].asString() == "post") { quickSonolusDetailsSection(Post, posts); } \
+        else if (obj["itemType"].asString() == "playlist") { quickSonolusDetailsSection(Playlist, playlists); } \
     } \
     auto recommended = name2##List("author = \"" + quote_encode(item.author) + "\"", "id DESC", 1, 5); \
     ItemDetails["recommended"].resize(0); \

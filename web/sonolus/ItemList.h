@@ -27,13 +27,7 @@ auto SonolusList = [](client_conn conn, http_request request, param argv){
         
         for (int i = 0; i < Searches.size(); i++) if (Searches[i]["type"].asString() == $_GET["type"]) {
             searchId = i; filter = Searches[i]["filter"].asString(); order = Searches[i]["order"].asString();
-            for (int j = 0; j < Searches[i]["options"].size(); j++) {
-                auto item = Searches[i]["options"][j]; string query = item["query"].asString();
-                if (item["type"].asString() == "text") args[query] = $_GET.find(query) == $_GET.end() ? "" : $_GET[query];
-                if (item["type"].asString() == "slider") args[query] = $_GET.find(query) == $_GET.end() ? item["def"].asString() : $_GET[query];
-                if (item["type"].asString() == "toggle") args[query] = $_GET.find(query) == $_GET.end() ? item["def"].asString() : $_GET[query];
-                if (item["type"].asString() == "select") args[query] = item["values"][$_GET.find(query) == $_GET.end() ? item["def"].asInt() : atoi($_GET[query].c_str())].asString();
-            }
+            args = argResolver($_GET, Searches[i]["options"], $_GET["localization"]);
         }
 
         if (searchId == -1) quickSendMsg(404);

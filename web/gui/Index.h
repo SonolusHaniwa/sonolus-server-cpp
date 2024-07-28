@@ -25,20 +25,39 @@ auto GUIIndex = [](client_conn conn, http_request request, param argv) {
     argList["page.title"] = appConfig["server.title"].asString();
     argList["html.navbar"] = fetchNavBar(appConfig["server.title"].asString()).output();
     argList["html.open_in_sonolus"] = fetchOpenInSonolus("sonolus://" + appConfig["server.rootUrl"].asString()).output();
+    argList["search.sourceOptions"] = "";
+    for (int i = 0; i < appConfig["server.data.prefix"].size(); i++) {
+        auto source = appConfig["server.data.prefix"][i];
+        argList["search.sourceOptions"] += 
+            "<option class=\"bg-sonolus-ui-surface\" value=\"" + to_string(i) + "\" id=\"search-source-" + to_string(i) + "\">" + 
+                source["name"].asString() + 
+            "</option>";
+    }
+    argList["search.bannerOptions"] = "";
+    for (int i = 0; i < appConfig["server.banner"].size(); i++) {
+        auto banner = appConfig["server.banner"][i];
+        argList["search.bannerOptions"] += 
+            "<option class=\"bg-sonolus-ui-surface\" value=\"" + to_string(i) + "\" id=\"search-banner-" + to_string(i) + "\">" + 
+                banner["name"].asString() + 
+            "</option>";
+    }
     set<string> allowButton = {"authentication", "multiplayer", "post", "playlist", "level", "skin", "background", "effect", "particle", "engine", "replay"};
     string buttons = "";
     for (int i = 0; i < appConfig["server.buttons"].size(); i++) {
         auto button = appConfig["server.buttons"][i]["type"].asString();
         if (button == "authentication") {
             hasAuthentication = true;
-            if (!isLogin) buttons += indexButton("{{icon.login}}", "Sign In", "javascript:displayLogin()").output();
-            else buttons += indexButton("{{icon.logout}}", "Sign Out", "javascript:logout()").output();
+            if (!isLogin) buttons += indexButton("{{icon.login}}", "{{language.signIn}}", "javascript:displayLogin()").output();
+            else buttons += indexButton("{{icon.logout}}", "{{language.signOut}}", "javascript:logout()").output();
+        } else if (button == "configuration") {
+            buttons += indexButton("{{icon.configuration}}", "{{language.configuration}}", "javascript: displayConfiguration()").output();
         } else if (allowButton.find(button) != allowButton.end() && button != "multiplayer") 
             buttons += indexButton("{{icon." + button + "}}", "{{language." + button + "s}}", "/" + button + "s/info").output();
     }
     argList["html.buttons"] = buttons;
     argList["url"] = "sonolus://external-login/" + appConfig["server.rootUrl"].asString() + "/sonolus/authenticate?sessionId=" + session;
     argList["isLogin"] = to_string(hasAuthentication && !isLogin);
+    argList["server.bannerUrl"] = dataPrefix + appConfig["server.banner"][atoi(cookieParam(request)["banner"].c_str())]["hash"].asString();
 
     argList = merge(argList, merge(
         transfer(appConfig), merge(
@@ -50,8 +69,10 @@ auto GUIIndex = [](client_conn conn, http_request request, param argv) {
     H root = H(true, "html");
     root.append(header);
     root.append(body);
-    response["Content-Length"] = to_string(root.output().size());
+    string res = root.output();
+    res = str_replace(dataPrefix.c_str(), appConfig["server.data.prefix"][atoi(cookieParam(request)["source"].c_str())]["url"].asCString(), res);
+    response["Content-Length"] = to_string(res.size());
     putRequest(conn, 200, response);
-    send(conn, root.output());
+    send(conn, res);
     exitRequest(conn);
 };

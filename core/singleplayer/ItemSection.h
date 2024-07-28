@@ -9,7 +9,7 @@ class ItemSection {
     string icon = "'";
     string itemType = "";
     vector<T> items = {};
-    vector<SearchOption> search;
+    Search search = Search();
     string searchValues = "";
     
     void append(T item) {
@@ -24,10 +24,7 @@ class ItemSection {
         res["items"].resize(0);
         for (int i = 0; i < items.size(); i++) 
             res["items"].append(items[i].toJsonObject());
-        if (search.size() != 0) {
-            res["search"].resize(0);
-            for (int i = 0; i < search.size(); i++) res["search"].append(search[i].toJsonObject());
-        }
+        if (search.type != "quick") res["search"] = search.toJsonObject();
         if (searchValues != "") res["searchValues"] = searchValues;
         return res;
     }

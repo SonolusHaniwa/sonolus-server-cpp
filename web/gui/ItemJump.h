@@ -19,6 +19,7 @@ auto GUIJump = [](client_conn conn, http_request request, param argv) {
     argList["html.navbar"] = fetchNavBar("{{language.jumpTitle}}").output();
     argList["pages.current"] = to_string(atoi(argv[1].c_str()) + 1);
     argList["url.base"] = "/" + argv[0] + "/list?" + getStringfy(getParam(request));
+    argList["server.bannerUrl"] = dataPrefix + appConfig["server.banner"][atoi(cookieParam(request)["banner"].c_str())]["hash"].asString();
 
     argList = merge(argList, merge(
         transfer(appConfig), merge(
@@ -30,8 +31,10 @@ auto GUIJump = [](client_conn conn, http_request request, param argv) {
     H root = H(true, "html");
     root.append(header);
     root.append(body);
-    __default_response["Content-Length"] = to_string(root.output().size());
+    string res = root.output();
+    res = str_replace(dataPrefix.c_str(), appConfig["server.data.prefix"][atoi(cookieParam(request)["source"].c_str())]["url"].asCString(), res);
+    __default_response["Content-Length"] = to_string(res.size());
     putRequest(conn, 200, __default_response);
-    send(conn, root.output());
+    send(conn, res);
     exitRequest(conn);
 };

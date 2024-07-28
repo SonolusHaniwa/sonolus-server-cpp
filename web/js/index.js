@@ -136,7 +136,7 @@ async function hideJump() {
 var checkFunc = {};
 
 async function create(path, type, return_path, id = -1) {
-    postdata = "type=" + type + "&";
+    postdata = "localization=" + getCookie("lang") + "&type=" + type + "&";
     var ok = true;
     for (index in searchConfig) {
         if (index.substr(0, type.length + 1) != type + "_") continue;
@@ -191,6 +191,16 @@ function setCookie(cname, cvalue, exdays = 30) {
 
 function deleteCookie(cname) {
     document.cookie = cname + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+}
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i].trim();
+        if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
+    }
+    return "";
 }
 
 function logout() {
@@ -352,4 +362,15 @@ function generateQRCode(id = "qrcode") {
         if (error) console.error(error);
         console.log('success!');
     });
+}
+
+async function displayConfiguration() {
+    document.getElementById("configurationInterface").style.visibility = "";
+    await sleep(10);
+    document.getElementById("configurationInterface").style.opacity = 1;
+}
+async function closeConfiguration() {
+    document.getElementById("configurationInterface").style.opacity = 0;
+    await sleep(150);
+    document.getElementById("configurationInterface").style.visibility = "hidden";
 }

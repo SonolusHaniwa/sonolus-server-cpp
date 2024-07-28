@@ -14,6 +14,8 @@ void jsonToArgvar(Json::Value json, argvar& argList, string prefix = "") {
         for (int i = 0; i < members.size(); i++) jsonToArgvar(json[members[i]], argList, prefix + members[i] + ".");
     } else if (json.isArray()) {
         for (int i = 0; i < json.size(); i++) jsonToArgvar(json[i], argList, prefix + to_string(i) + ".");
+        if (prefix == "levels.") 
+            argList[prefix.size() ? prefix.substr(0, prefix.size() - 1) : prefix] = json_encode(json);
     } else argList[prefix.size() ? prefix.substr(0, prefix.size() - 1) : prefix] = json.asString();
 }
 
@@ -58,7 +60,13 @@ auto GUIEdit = [](client_conn conn, http_request request, param argv){
     vector<Tag> tags;
     for (int i = 0; i < dataSet["tags"].size(); i++) tags.push_back(Tag(dataSet["tags"][i]));
     argListData["tags"] = serializeTagString(tags);
-    for (auto v : argListData) argListData[v.first] = quote_encode2(v.second);
+    for (auto v : argListData) if (v.first != "levels")
+        argListData[v.first] = quote_encode2(v.second);
+    argListData["levels"] = [&](){
+        Json::Value res, org = json_decode(argListData["levels"]);
+        for (int i = 0; i < org.size(); i++) res.append(org[i]["name"].asString());
+        return json_encode(res);
+    }();
     if (argListData.find("rom.hash") == argListData.end()) argListData["rom.hash"] = ""; // 解决引擎 ROM 不存在的问题
 
     Json::Value Searches = appConfig[argv[0] + ".creates"];
@@ -82,9 +90,15 @@ auto GUIEdit = [](client_conn conn, http_request request, param argv){
             if (item["type"].asString() == "title") sections += fetchSearchTitle(item["name"].asString(), item["level"].asInt(), 0).output();
             if (item["type"].asString() == "textArea") sections += fetchSearchTextArea(type + "_" + query, item["name"].asString(), item["placeholder"].asString(), defValue, "\"\"", 0, item["required"].asBool()).output();
             if (item["type"].asString() == "serverItem") sections += fetchSearchServerItem(type + "_" + query, item["name"].asString(), item["itemType"].asString(), defValue, "\"\"", localization, 0, item["required"].asBool()).output();
+            if (item["type"].asString() == "serverItems") sections += fetchSearchServerItems(type + "_" + query, item["name"].asString(), item["itemType"].asString(), [&](){
+                vector<string> res; auto tmp = json_decode(defValue);
+                for (int i = 0; i < tmp.size(); i++) res.push_back(tmp[i].asString());
+                return res;
+            }(), {}, localization, 0, item["required"].asBool()).output();
             if (item["type"].asString() == "localizationItem") sections += fetchSearchLocalizationItem(type + "_" + query, item["name"].asString(), defValue, "\"default\"", 0, item["required"].asBool()).output();
         } searchOptions += fetchSectionCreate(sections, "/sonolus/" + argv[0] + "/create", "/" + argv[0] + "/", type).output();
     } argList["html.searchOptions"] = searchOptions;
+    argList["server.bannerUrl"] = dataPrefix + appConfig["server.banner"][atoi(cookieParam(request)["banner"].c_str())]["hash"].asString();
 
     argList = merge(argList, merge(
         transfer(appConfig), merge(
@@ -96,8 +110,10 @@ auto GUIEdit = [](client_conn conn, http_request request, param argv){
     H root = H(true, "html");
     root.append(header);
     root.append(body);
-    __default_response["Content-Length"] = to_string(root.output().size());
+    string res = root.output();
+    res = str_replace(dataPrefix.c_str(), appConfig["server.data.prefix"][atoi(cookieParam(request)["source"].c_str())]["url"].asCString(), res);
+    __default_response["Content-Length"] = to_string(res.size());
     putRequest(conn, 200, __default_response);
-    send(conn, root.output());
+    send(conn, res);
     exitRequest(conn);
 };

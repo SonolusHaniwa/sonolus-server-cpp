@@ -33,7 +33,7 @@ class ReplayItem {
         title = arr["title"].asString();
         subtitle = arr["subtitle"].asString();
         author = arr["author"].asString();
-        level = LevelItem(-1, arr["level"]);
+        level = LevelItem(arr["level"]["id"].asInt(), arr["level"]);
         data = SRL<ReplayData>(arr["data"]);
         configuration = SRL<ReplayConfiguration>(arr["configuration"]);
         for (int i = 0; i < arr["tags"].size(); i++) tags.push_back(Tag(arr["tags"][i]));

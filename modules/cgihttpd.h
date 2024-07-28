@@ -814,4 +814,13 @@ time_t getMilliSeconds() {
     return chrono::duration_cast<chrono::milliseconds>(chrono::system_clock::now().time_since_epoch()).count();
 }
 
+argvar transfer(Json::Value source, string prefix = "") {
+    argvar result;
+    Json::Value::Members mem = source.getMemberNames();
+    for (auto it = mem.begin(); it != mem.end(); it++) {
+        if (source[*it].type() == Json::objectValue || source[*it].type() == Json::arrayValue) continue;
+        result[prefix + (*it)] = source[*it].asString();
+    } return result;
+}
+
 #endif

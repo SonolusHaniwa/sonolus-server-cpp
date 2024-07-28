@@ -24,17 +24,22 @@ auto GUISearch = [](client_conn conn, http_request request, param argv) {
         string type = Searches[i]["type"].asString();
         for (int j = 0; j < Searches[i]["options"].size(); j++) {
             auto item = Searches[i]["options"][j]; string query = item["query"].asString();
-            if (item["type"].asString() == "text") args[type + "_" + query] = $_GET.find(query) == $_GET.end() || type != $_GET["type"] ? "" : $_GET[query];
+            if (item["type"].asString() == "text") args[type + "_" + query] = $_GET.find(query) == $_GET.end() || type != $_GET["type"] ? item["def"].asString() : $_GET[query];
             if (item["type"].asString() == "slider") args[type + "_" + query] = $_GET.find(query) == $_GET.end() || type != $_GET["type"] ? item["def"].asString() : $_GET[query];
             if (item["type"].asString() == "toggle") args[type + "_" + query] = $_GET.find(query) == $_GET.end() || type != $_GET["type"] ? item["def"].asString() : $_GET[query];
             if (item["type"].asString() == "select") args[type + "_" + query] = $_GET.find(query) == $_GET.end() || type != $_GET["type"] ? item["def"].asString() : $_GET[query];
+            if (item["type"].asString() == "multi") args[type + "_" + query] = $_GET.find(query) == $_GET.end() || type != $_GET["type"] ? [&](){
+                string res;
+                for (int i = 0; i < item["def"].size(); i++) res += item["def"][i].asString();
+                return res;
+            }() : $_GET[query];
         }
     }
 
     argList["page.title"] = "{{language.search}} | " + appConfig["server.title"].asString();
     argList["html.navbar"] = fetchNavBar("{{language.search}}").output(); string searchOptions = "";
     searchOptions += "<h2 class=\"flex-grow py-1 text-xl font-bold sm:py-1.5 sm:text-3xl\">{{language.quick}}</h2>";
-    searchOptions += fetchSectionSearch(fetchSearchText("quick_keywords", "{{language.KEYWORDS}}", "{{language.KEYWORDS_PLACEHOLDER}}", "\"" + args["quick_keywords"] + "\"", "", 0, 0).output(), "/" + argv[0] + "/list", "quick").output();
+    searchOptions += fetchSectionSearch(fetchSearchText("quick_keywords", "{{language.KEYWORDS}}", "{{language.KEYWORDS_PLACEHOLDER}}", "\"" + args["quick_keywords"] + "\"", "\"\"", 0, 0).output(), "/" + argv[0] + "/list", "quick").output();
     for (int i = 0; i < Searches.size(); i++) {
         searchOptions += "<h2 class=\"flex-grow py-1 text-xl font-bold sm:py-1.5 sm:text-3xl\">" + Searches[i]["title"].asString() + "</h2>";
         string sections = ""; string type = Searches[i]["type"].asString();
@@ -51,8 +56,23 @@ auto GUISearch = [](client_conn conn, http_request request, param argv) {
                 for (int k = 0; k < item["values"].size(); k++) values.push_back(item["values"][k].asString());
                 sections += fetchSearchSelect(type + "_" + query, item["name"].asString(), values, args[type + "_" + query].c_str(), "0", 0, 0).output();
             }
+            if (item["type"].asString() == "multi") sections += fetchSearchMulti(
+                type + "_" + query, item["name"].asString(), [&](){
+                    vector<bool> defs;
+                    for (int k = 0; k < args[type + "_" + query].size(); k++) defs.push_back(args[type + "_" + query][k] - '0');
+                    return defs;
+                }(), [&](){
+                    vector<string> values;
+                    for (int k = 0; k < item["values"].size(); k++) values.push_back(item["values"][k].asString());
+                    return values;
+                }(), [&](){
+                    vector<bool> defs;
+                    for (int k = 0; k < item["def"].size(); k++) defs.push_back(false);
+                    return defs;
+                }(), 0, 0).output();
         } searchOptions += fetchSectionSearch(sections, "/" + argv[0] + "/list", type).output();
     } argList["html.searchOptions"] = searchOptions;
+    argList["server.bannerUrl"] = dataPrefix + appConfig["server.banner"][atoi(cookieParam(request)["banner"].c_str())]["hash"].asString();
 
     argList = merge(argList, merge(
         transfer(appConfig), merge(
@@ -64,8 +84,10 @@ auto GUISearch = [](client_conn conn, http_request request, param argv) {
     H root = H(true, "html");
     root.append(header);
     root.append(body);
-    __default_response["Content-Length"] = to_string(root.output().size());
+    string res = root.output();
+    res = str_replace(dataPrefix.c_str(), appConfig["server.data.prefix"][atoi(cookieParam(request)["source"].c_str())]["url"].asCString(), res);
+    __default_response["Content-Length"] = to_string(res.size());
     putRequest(conn, 200, __default_response);
-    send(conn, root.output());
+    send(conn, res);
     exitRequest(conn);
 };

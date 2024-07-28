@@ -1,7 +1,7 @@
 <div {{search.isMargin}}>
     <div class="my-2 font-bold sm:my-3" id="search-name-{{search.query}}">{{search.name}}</div>
-    <div class="flex" style="justify-content:right;gap:8px">
-        <button id="search-clear-{{search.query}}" class="flex select-none space-x-2 p-2 transition-colors sm:space-x-3 sm:p-3 cursor-pointer bg-sonolus-ui-button-normal hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed">
+    <div class="flex" style="justify-content:right;">
+        <button id="search-clear-{{search.query}}" class="second-button flex select-none space-x-2 p-2 transition-colors sm:space-x-3 sm:p-3 cursor-pointer bg-sonolus-ui-button-normal hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" class="h-5 w-5 fill-current sm:h-6 sm:w-6">
                 <path d="M310.6 361.4c12.5 12.5 12.5 32.75 0 45.25-6.2 6.25-14.4 9.35-22.6 9.35s-16.38-3.125-22.62-9.375L160 301.3 54.63 406.6C48.38 412.9 40.19 416 32 416s-16.37-3.1-22.625-9.4c-12.5-12.5-12.5-32.75 0-45.25l105.4-105.4L9.375 150.6c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0L160 210.8l105.4-105.4c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25l-105.4 105.4L310.6 361.4z"></path>
             </svg>
@@ -12,10 +12,10 @@
             </svg>
         </button>
     </div>
-    <div class="flex flex-grow items-center space-x-2 sm:space-x-3 mt-2">
+    <div class="flex flex-grow items-center space-x-2 sm:space-x-3">
         <div class="flex relative flex-grow">
-            <div class="relative flex-grow">
-                <textarea id="search-{{search.query}}" type="text" class="w-full border-none bg-sonolus-ui-button-normal p-2 pl-9 text-center text-sm placeholder:text-sm hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed sm:p-3 sm:pl-12 sm:text-base sm:placeholder:text-base" style="min-height:150px;resize:none" placeholder="{{search.placeholder}}"></textarea>
+            <div class="relative flex-grow flex" style="flex-direction: column;">
+                <textarea id="search-{{search.query}}" type="text" class="w-full border-none bg-sonolus-ui-button-normal p-2 pl-9 text-center text-sm placeholder:text-sm hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed sm:p-3 sm:pl-12 sm:text-base sm:placeholder:text-base textarea-input" style="min-height:150px;resize:none" placeholder="{{search.placeholder}}"></textarea>
             </div>
         </div>
     </div>
@@ -30,12 +30,14 @@
             document.getElementById("search-clear-{{search.query}}").onclick = function(){
                 searchConfig["{{search.query}}"] = "";
                 document.getElementById("search-{{search.query}}").value = "";
-                document.getElementById("search-reset-{{search.query}}").className = disableResetClass;
+                document.getElementById("search-reset-{{search.query}}").className = def == "" ? disableResetClass : enableResetClass;
             };
             document.getElementById("search-{{search.query}}").oninput = function(){
                 searchConfig["{{search.query}}"] = this.value;
                 if (this.value == def) document.getElementById("search-reset-{{search.query}}").className = disableResetClass;
                 else document.getElementById("search-reset-{{search.query}}").className = enableResetClass;
+                document.getElementById("search-{{search.query}}").style.height = "inherit";
+                document.getElementById("search-{{search.query}}").style.height = document.getElementById("search-{{search.query}}").scrollHeight + "px";
             };
             document.getElementById("search-{{search.query}}").value = def;
             if ({{search.isRequired}}) {

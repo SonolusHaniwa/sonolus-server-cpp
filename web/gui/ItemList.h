@@ -45,10 +45,7 @@ auto GUIList = [](client_conn conn, http_request request, param argv) {
             type = Searches[i]["title"].asString();
             for (int j = 0; j < Searches[i]["options"].size(); j++) {
                 auto item = Searches[i]["options"][j]; string query = item["query"].asString();
-                if (item["type"].asString() == "text") args[query] = $_GET.find(query) == $_GET.end() ? "" : $_GET[query];
-                if (item["type"].asString() == "slider") args[query] = $_GET.find(query) == $_GET.end() ? item["def"].asString() : $_GET[query];
-                if (item["type"].asString() == "toggle") args[query] = $_GET.find(query) == $_GET.end() ? item["def"].asString() : $_GET[query];
-                if (item["type"].asString() == "select") args[query] = item["values"][$_GET.find(query) == $_GET.end() ? item["def"].asInt() : atoi($_GET[query].c_str())].asString();
+                args = argResolver($_GET, Searches[i]["options"], $_GET["localization"]);
                 if (args[query] != "") filterWords += item["name"].asString() + ": " + urldecode(args[query]) + "、";
             }
         }
@@ -87,6 +84,7 @@ auto GUIList = [](client_conn conn, http_request request, param argv) {
     argList["search.display"] = $_GET["keywords"] == "" && $_GET["type"] == "quick" ? "style=\"display: none\"" : "";
     argList["search.filterWords"] = type + "、" + filterWords;
     argList["search.filterWords"] = argList["search.filterWords"].substr(0, argList["search.filterWords"].size() - 3);
+    argList["server.bannerUrl"] = dataPrefix + appConfig["server.banner"][atoi(cookieParam(request)["banner"].c_str())]["hash"].asString();
 
     argList = merge(argList, merge(
         transfer(appConfig), merge(
@@ -98,8 +96,10 @@ auto GUIList = [](client_conn conn, http_request request, param argv) {
     H root = H(true, "html");
     root.append(header);
     root.append(body);
-    __default_response["Content-Length"] = to_string(root.output().size());
+    string res = root.output();
+    res = str_replace(dataPrefix.c_str(), appConfig["server.data.prefix"][atoi(cookieParam(request)["source"].c_str())]["url"].asCString(), res);
+    __default_response["Content-Length"] = to_string(res.size());
     putRequest(conn, 200, __default_response);
-    send(conn, root.output());
+    send(conn, res);
     exitRequest(conn);
 };

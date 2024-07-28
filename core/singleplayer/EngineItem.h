@@ -45,10 +45,10 @@ class EngineItem {
         title = arr["title"].asString();
         subtitle = arr["subtitle"].asString();
         author = arr["author"].asString();
-        skin = SkinItem(-1, arr["skin"]);
-        background = BackgroundItem(-1, arr["background"]);
-        effect = EffectItem(-1, arr["effect"]);
-        particle = ParticleItem(-1, arr["particle"]);
+        skin = SkinItem(arr["skin"]["id"].asInt(), arr["skin"]);
+        background = BackgroundItem(arr["background"]["id"].asInt(), arr["background"]);
+        effect = EffectItem(arr["effect"]["id"].asInt(), arr["effect"]);
+        particle = ParticleItem(arr["particle"]["id"].asInt(), arr["particle"]);
         thumbnail = SRL<EngineThumbnail>(arr["thumbnail"]);
         data = SRL<EngineData>(arr["data"]);
         configuration = SRL<EngineConfiguration>(arr["configuration"]);

@@ -240,6 +240,55 @@ H fetchSearchColor(string query, string name, string def, bool isMargin) {
     return str_replace(source, args);
 }
 
+H fetchSearchMulti(string query, string name, vector<bool> defs, vector<string> values, vector<bool> realDefs, bool isMargin, bool isRequired) {
+    string source = readFile("./web/html/components/searchMulti.html");
+    argvar args;
+    args["search.isMargin"] = isMargin ? "style=\"margin-top: 12px;\"" : "";
+    args["search.query"] = query;
+    args["search.name"] = name;
+    args["search.default"] = "\"" + [&](){
+        string res = "";
+        for (int i = 0; i < defs.size(); i++) res += defs[i] + '0';
+        return res;
+    }() + "\"";
+    args["search.realDefault"] = "\"" + [&](){
+        string res = "";
+        for (int i = 0; i < realDefs.size(); i++) res += realDefs[i] + '0';
+        return res;
+    }() + "\"";
+    args["search.isRequired"] = to_string(isRequired);
+    args["search.options"] = "";
+    for (int i = 0; i < values.size(); i++) {
+        string source = readFile("./web/html/components/searchMultiOption.html");
+        argvar args2;
+        args2["id"] = "search-option-" + query + "-" + to_string(i);
+        args2["text"] = values[i];
+        args2["name"] = query;
+        args2["index"] = to_string(i);
+        args["search.options"] += str_replace(source, args2);
+    }
+    return str_replace(source, args);
+}
+
+H fetchSearchServerItems(string query, string name, string itemType, vector<string> def, vector<string> realDef, string localization, bool isMargin, bool isRequired) {
+    argvar args, options;
+    string tableName = itemType;
+    tableName[0] += 'A' - 'a';
+    string sql = "SELECT id, name, title FROM " + tableName + " WHERE (localization = \"" + localization +
+        "\" OR localization = \"default\") ORDER BY CASE WHEN localization = \"default\" THEN 1 WHEN localization != \"default\" THEN 0 END ASC";
+    sql = "SELECT * FROM (" + sql + ") AS A GROUP BY name";
+    sql = "SELECT * FROM (" + sql + ") AS B ORDER BY id ASC";
+    auto result = db.query(sql, tableName);
+    vector<bool> defs, realDefs; vector<string> values;
+    map<string, int> index;
+    for (int i = 0; i < result.size(); i++) 
+        values.push_back(result[i]["title"]), index[result[i]["name"]] = i,
+        defs.push_back(false), realDefs.push_back(false);
+    for (int i = 0; i < def.size(); i++) if (index.find(def[i]) != index.end()) defs[index[def[i]]] = true;
+    for (int i = 0; i < realDef.size(); i++) if (index.find(realDef[i]) != index.end()) realDefs[index[realDef[i]]] = true;
+    return fetchSearchMulti(query, name, defs, values, realDefs, isMargin, isRequired);
+}
+
 H fetchSectionSearch(string searchOptions, string url, string type) {
     string source = readFile("./web/html/components/sectionSearch.html");
     argvar args;
@@ -292,6 +341,31 @@ H fetchIconTextButton(string onclick, string icon, string text) {
     return str_replace(source, args);
 }
 
+H fetchSectionTitle(string title, string searchUrl, string listUrl) {
+    string source = readFile("./web/html/components/sectionTitle.html");
+    argvar args;
+    args["title"] = title;
+    if (searchUrl == "") args["search.isDisplay"] = "style=\"display: none;\"";
+    else args["search.isDisplay"] = "";
+    args["searchUrl"] = searchUrl;
+    if (listUrl == "") args["list.isDisplay"] = "style=\"display: none;\"";
+    else args["list.isDisplay"] = "";
+    args["listUrl"] = listUrl;
+    return str_replace(source, args);
+}
+
+H fetchSectionBottom(string searchUrl, string listUrl) {
+    string source = readFile("./web/html/components/sectionBottom.html");
+    argvar args;
+    if (searchUrl == "") args["search.isDisplay"] = "style=\"display: none;\"";
+    else args["search.isDisplay"] = "";
+    args["searchUrl"] = searchUrl;
+    if (listUrl == "") args["list.isDisplay"] = "style=\"display: none;\"";
+    else args["list.isDisplay"] = "";
+    args["listUrl"] = listUrl;
+    return str_replace(source, args);
+}
+
 vector<string> iconName = {
     "advanced", "award", "bookmark", "crown", "heart", 
     "medal", "ranking", "search", "shuffle", "star", 
@@ -299,7 +373,7 @@ vector<string> iconName = {
     "post", "playlist", "level", "skin", "background", 
     "effect", "particle", "engine", "replay", "login", 
     "logout", "description", "tags", "more", "heartHollow",
-    "comment", "community", "reply"
+    "comment", "community", "reply", "configuration"
 };
 argvar iconList;
 bool iconLoader = [](){

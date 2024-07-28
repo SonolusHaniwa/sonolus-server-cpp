@@ -26,6 +26,7 @@ auto GUICommunityCommentList = [](client_conn conn, http_request request, param 
     argList["pages.all"] = to_string(pageCount);
     argList["class.previous"] = page > 0 ? enableClass : disableClass;
     argList["class.next"] = page < pageCount - 1 ? enableClass : disableClass;
+    argList["server.bannerUrl"] = dataPrefix + appConfig["server.banner"][atoi(cookieParam(request)["banner"].c_str())]["hash"].asString();
 
     argList = merge(argList, merge(
         transfer(appConfig), merge(
@@ -37,8 +38,10 @@ auto GUICommunityCommentList = [](client_conn conn, http_request request, param 
     H root = H(true, "html");
     root.append(header);
     root.append(body);
-    __default_response["Content-Length"] = to_string(root.output().size());
+    string res = root.output();
+    res = str_replace(dataPrefix.c_str(), appConfig["server.data.prefix"][atoi(cookieParam(request)["source"].c_str())]["url"].asCString(), res);
+    __default_response["Content-Length"] = to_string(res.size());
     putRequest(conn, 200, __default_response);
-    send(conn, root.output());
+    send(conn, res);
     exitRequest(conn);
 };

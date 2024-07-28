@@ -15,7 +15,9 @@
             "title": "#NEWEST",
             "icon": "effect",
             "filter": "",
-            "order": "id DESC"
+            "itemType": "effect",
+            "order": "id DESC",
+            "searchValues": "type=quick"
         }
     ],
     "effects.details.sections": [

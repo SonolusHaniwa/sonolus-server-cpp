@@ -1,3 +1,5 @@
+const string roomCode = "27a5a05c01ee6e7b614f4055d6908eaee91d9c95";
+
 #include"items/AutoExit.h"
 #include"items/ChatMessage.h"
 #include"items/GameplayResult.h"

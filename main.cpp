@@ -379,8 +379,6 @@ void preload() {
                 appConfig["server.rootUrl"].asString() + 
                 "/data/";
     appConfig["server.logo"] = dataPrefix + appConfig["server.logo"].asString();
-    appConfig["server.bannerHash"] = appConfig["server.banner"].asString();
-    appConfig["server.bannerUrl"] = dataPrefix + appConfig["server.banner"].asString();
     log_init(log_target_type);
     setConfiguration();
     loadConfig();

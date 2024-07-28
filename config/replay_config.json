@@ -15,7 +15,9 @@
             "title": "#NEWEST",
             "icon": "replay",
             "filter": "",
-            "order": "id DESC"
+            "itemType": "replay",
+            "order": "id DESC",
+            "searchValues": "type=quick"
         }
     ],
     "replays.details.sections": [
@@ -75,7 +77,7 @@
                 },
                 {
                     "query": "level",
-                    "name": "Level",
+                    "name": "#LEVEL",
                     "type": "serverItem",
                     "itemType": "level",
                     "required": true

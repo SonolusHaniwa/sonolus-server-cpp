@@ -43,13 +43,14 @@ class TextChatMessage {
 	TextChatMessage(){}
 	TextChatMessage(string userId, string value): userId(userId), value(value){}
 	TextChatMessage(Json::Value obj) {
-		userId = obj["userId"].asString();
+		userId = obj["userId"] == Json::nullValue ? roomCode : obj["userId"].asString();
 		value = obj["value"].asString();
 	}
 
 	Json::Value toJsonObject() {
 		Json::Value res;
-		res["userId"] = userId;
+		if (userId == roomCode) res["userId"] = Json::nullValue;
+		else res["userId"] = userId;
 		res["type"] = type;
 		res["value"] = value;
 		return res;

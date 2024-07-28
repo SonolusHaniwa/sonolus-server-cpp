@@ -1,0 +1,22 @@
+<button class="flex items-center bg-button-normal p-5 transition-colors bg-sonolus-ui-button-normal hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed sm:p-6 gap-5 sm:gap-6" type="button" id="{{id}}">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="size-20 fill-current sm:size-24" id="{{id}}-disabled">
+        <path d="M384 80c8.8 0 16 7.2 16 16V416c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V96c0-8.8 7.2-16 16-16H384zM64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64z"></path>
+    </svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="size-20 fill-current sm:size-24" id="{{id}}-enabled">
+        <path d="M64 80c-8.8 0-16 7.2-16 16V416c0 8.8 7.2 16 16 16H384c8.8 0 16-7.2 16-16V96c0-8.8-7.2-16-16-16H64zM0 96C0 60.7 28.7 32 64 32H384c35.3 0 64 28.7 64 64V416c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V96zM337 209L209 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L303 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"></path>
+    </svg>
+    <span class="px-2.5 text-center sm:px-3">{{text}}</span>
+    <script>
+        addLoadEvent(function() {
+            document.getElementById("{{id}}-enabled").style.display = "none";
+            document.getElementById("{{id}}").onclick = function() {
+                searchConfig["{{name}}"] = 
+                    searchConfig["{{name}}"].substr(0, {{index}}) + 
+                    (1 - searchConfig["{{name}}"][{{index}}]) + 
+                    searchConfig["{{name}}"].substr({{index}} + 1);
+                document.getElementById("{{id}}-enabled").style.display = searchConfig["{{name}}"][{{index}}] == 1 ? "" : "none";
+                document.getElementById("{{id}}-disabled").style.display = searchConfig["{{name}}"][{{index}}] == 1 ? "none" : "";
+            };
+        });
+    </script>
+</button>

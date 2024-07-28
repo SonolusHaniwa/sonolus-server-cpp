@@ -115,6 +115,7 @@ class SearchFileOption {
     string query = "";
     string name = "";
     string type = "file";
+    string def = "";
     string description = "";
     bool required = false;
 
@@ -123,6 +124,7 @@ class SearchFileOption {
         res["query"] = query;
         res["name"] = name;
         res["type"] = type;
+        res["def"] = def;
         if (description != "") res["description"] = description;
         res["required"] = required;
         return res;
@@ -186,7 +188,7 @@ class SearchMultiOption {
         res["name"] = name;
         res["type"] = type;
         res["def"].resize(0);
-        for (int i = 0; i < def.size(); i++) res["def"].append((int)def[i]);
+        for (int i = 0; i < def.size(); i++) res["def"].append((bool)def[i]);
         for (int i = 0; i < values.size(); i++) res["values"].append(values[i]);
         if (description != "") res["description"] = description;
         res["required"] = required;
@@ -229,6 +231,7 @@ class SearchServerItemOption {
     string query = "";
     string name = "";
     string type = "serverItem";
+    string def = "";
     string itemType = "";
     string description = "";
     bool required = false;
@@ -238,10 +241,13 @@ class SearchServerItemOption {
         res["query"] = query;
         res["name"] = name;
         res["type"] = type;
+        if (def != "") {
+            res["def"]["address"] = "sonolus://" + appConfig["server.rootUrl"].asString() + "/sonolus/" + itemType + "s/" + def;
+            res["def"]["name"] = def;
+        } else res["def"] = Json::nullValue;
         res["itemType"] = itemType;
         if (description != "") res["description"] = description;
         res["required"] = required;
-        res["def"] = Json::Value::null;
         res["allowOtherServers"] = false;
         return res;
     }
@@ -253,6 +259,7 @@ class SearchCollectionItemOption {
     string query = "";
     string name = "";
     string type = "collectionItem";
+    string def = "";
     string collectionType;
     string description = "";
     bool required = false;
@@ -262,6 +269,7 @@ class SearchCollectionItemOption {
         res["query"] = query;
         res["name"] = name;
         res["type"] = type;
+        res["def"] = def;
         res["collectionType"] = collectionType;
         if (description != "") res["description"] = description;
         res["required"] = required;
@@ -275,6 +283,7 @@ class SearchLocalizationItemOption {
     string query = "";
     string name = "";
     string type = "localizationItem";
+    int def = 0;
     string description = "";
     bool required = false;
 
@@ -284,11 +293,43 @@ class SearchLocalizationItemOption {
         return SearchSelectOption({
             query: query,
             name: name,
-            def: 0,
+            def: def,
             values: values,
             description: description,
             required: required
         }).toJsonObject();
+    }
+};
+
+class SearchServerItemsOption {
+    public:
+
+    string query = "";
+    string name = "";
+    string type = "serverItems";
+    vector<string> def;
+    string itemType = "";
+    bool allowOtherServers = false;
+    int limit = 0;
+    string description = "";
+    bool required = false;
+
+    Json::Value toJsonObject() {
+        Json::Value res;
+        res["query"] = query;
+        res["name"] = name;
+        res["type"] = type;
+        res["def"].resize(0);
+        for (int i = 0; i < def.size(); i++) 
+            res["def"][i]["address"] = "sonolus://" + appConfig["server.rootUrl"].asString() + "/sonolus/" + itemType + "s/" + def[i],
+            res["def"][i]["name"] = def[i];
+        res["itemType"] = itemType;
+        if (description != "") res["description"] = description;
+        res["allowOtherServers"] = allowOtherServers;
+        res["limit"] = limit;
+        res["required"] = required;
+        return res;
+    
     }
 };
 
@@ -308,6 +349,7 @@ class SearchOption {
     SearchServerItemOption serverItem;
     SearchCollectionItemOption collectionItem;
     SearchLocalizationItemOption localizationItem;
+    SearchServerItemsOption serverItems;
 
     SearchOption(){}
     SearchOption(SearchTextOption text):
@@ -334,6 +376,8 @@ class SearchOption {
         collectionItem(collectionItem), type("collectionItem"){}
     SearchOption(SearchLocalizationItemOption localizationItem):
         localizationItem(localizationItem), type("localizationItem"){}
+    SearchOption(SearchServerItemsOption serverItems):
+        serverItems(serverItems), type("serverItems"){}
 
     Json::Value toJsonObject() {
         if (type == "text") return text.toJsonObject();
@@ -348,6 +392,7 @@ class SearchOption {
         if (type == "serverItem") return serverItem.toJsonObject();
         if (type == "collectionItem") return collectionItem.toJsonObject();
         if (type == "localizationItem") return localizationItem.toJsonObject();
+        if (type == "serverItems") return serverItems.toJsonObject();
         return Json::Value::null;
     }
 };
@@ -360,6 +405,7 @@ class Search {
     string icon = "";
     string filter = "";
     string order = "";
+    string description = "";
     bool requireConfirmation = false;
     vector<SearchOption> options = {};
 
@@ -372,6 +418,7 @@ class Search {
         res["type"] = type;
         res["title"] = title;
         res["icon"] = icon;
+        if (description != "") res["description"] = description;
         res["requireConfirmation"] = requireConfirmation;
         res["options"].resize(0);
         for (int i = 0; i < options.size(); i++) res["options"].append(options[i].toJsonObject());
@@ -509,12 +556,79 @@ vector<SearchOption> constructSearchOptions(Json::Value orig) {
                 description: orig[i]["description"].asString(),
                 required: orig[i]["required"].asBool()
             }));
+        } else if (orig[i]["type"].asString() == "serverItems") {
+            search.push_back(SearchServerItemsOption({
+                query: orig[i]["query"].asString(), 
+                name: orig[i]["name"].asString(),
+                def: [&](){
+                    vector<string> res;
+                    for (int j = 0; j < orig[i]["def"].size(); j++) 
+                        res.push_back(orig[i]["def"][j].asString());
+                    return res;
+                }(),
+                itemType: orig[i]["itemType"].asString(),
+                allowOtherServers: orig[i]["allowOtherServers"].asBool(),
+                limit: orig[i]["limit"].asInt(),
+                description: orig[i]["description"].asString(),
+                required: orig[i]["required"].asBool()
+            }));
         } else {
             writeLog(LOG_LEVEL_ERROR, ("Invalid search option type \"" + orig[i]["type"].asString()).c_str());  
             continue;
         }
     }
     return search;
+}
+
+Search constructDefaultSearchOption(vector<Search> searches, string defaultSearch) {
+    int id = -1;
+    auto options = getParam(defaultSearch);
+    for (int i = 0; i < searches.size(); i++) {
+        if (searches[i].type != options["type"]) continue;
+        id = i;
+    }
+    if (id == -1) return Search();
+    Search result = searches[id];
+    for (int i = 0; i < result.options.size(); i++) {
+        if (result.options[i].type == "text" && options.find(result.options[i].text.query) != options.end()) {
+            result.options[i].text.def = options[result.options[i].text.query];
+        } else if (result.options[i].type == "slider" && options.find(result.options[i].slider.query) != options.end()){
+            result.options[i].slider.def = atoi(options[result.options[i].slider.query].c_str());
+        } else if (result.options[i].type == "toggle" && options.find(result.options[i].toggle.query) != options.end()){
+            result.options[i].toggle.def = (bool)atoi(options[result.options[i].toggle.query].c_str());
+        } else if (result.options[i].type == "select" && options.find(result.options[i].select.query) != options.end()){
+            result.options[i].select.def = atoi(options[result.options[i].select.query].c_str());
+        } else if (result.options[i].type == "file" && options.find(result.options[i].file.query) != options.end()){
+            result.options[i].file.def = options[result.options[i].file.query];
+        } else if (result.options[i].type == "multi" && options.find(result.options[i].multi.query) != options.end()){
+            for (int j = 0; j < result.options[i].multi.def.size(); j++) 
+                result.options[i].multi.def[j] = (bool)atoi(options[result.options[i].multi.query + to_string(j)].c_str());
+        } else if (result.options[i].type == "textArea" && options.find(result.options[i].textArea.query) != options.end()){
+            result.options[i].textArea.def = options[result.options[i].textArea.query];
+        } else if (result.options[i].type == "serverItem" && options.find(result.options[i].serverItem.query) != options.end()){
+            result.options[i].serverItem.def = options[result.options[i].serverItem.query];
+        } else if (result.options[i].type == "collectionItem" && options.find(result.options[i].collectionItem.query) != options.end()){
+            result.options[i].collectionItem.def = options[result.options[i].collectionItem.query];
+        } else if (result.options[i].type == "localizationItem" && options.find(result.options[i].localizationItem.query) != options.end()){
+            result.options[i].localizationItem.def = atoi(options[result.options[i].localizationItem.query].c_str());
+        } else if (result.options[i].type == "serverItems" && options.find(result.options[i].serverItems.query) != options.end()){
+            for (int j = 0; j < result.options[i].serverItems.def.size(); j++) 
+                result.options[i].serverItems.def[j] = options[result.options[i].serverItems.query + to_string(j)];
+        }
+    }
+    return result;
+}
+
+vector<Search> constructDefaultSearchOptions(vector<Search> searches, string defaultSearch) {
+    int id = -1;
+    auto options = getParam(defaultSearch);
+    for (int i = 0; i < searches.size(); i++) {
+        if (searches[i].type != options["type"]) continue;
+        id = i;
+    }
+    if (id == -1) return searches;
+    searches[id] = constructDefaultSearchOption(searches, defaultSearch);
+    return searches;
 }
 
 Search constructSingleSearch(Json::Value orig) {
@@ -528,7 +642,7 @@ Search constructSingleSearch(Json::Value orig) {
     return search;
 }
 
-argvar argResolver(argvar source, Json::Value options) {
+argvar argResolver(argvar source, Json::Value options, string localization) {
     argvar result;
     for (int i = 0; i < options.size(); i++) {
         string name = options[i]["query"].asString();
@@ -542,6 +656,40 @@ argvar argResolver(argvar source, Json::Value options) {
             int id = atoi(source[name].c_str());
             if (id == 0) result[name] = "default";
             else result[name] = i18n_raw[id - 1]["name"].asString();
+        } else if (options[i]["type"].asString() == "multi") {
+            if (source[name].size() != options[i]["values"].size()) {
+                source[name] = "";
+                for (int j = 0; j < options[i]["values"].size(); j++) source[name] += '0' + options[i]["def"][j].asInt();
+            } vector<string> res; Json::Value tmp = Json::arrayValue;
+            for (int j = 0; j < options[i]["values"].size(); j++)
+                if (source[name][j] == '1')
+                    res.push_back(options[i]["values"][j].asString()),
+                    tmp.append(options[i]["values"][j].asString());
+            result[name] = json_encode(tmp);
+            for (int j = 0; j < options[i]["variables"].size(); j++) {
+                auto item = options[i]["variables"][j];
+                string varName = item["name"].asString();
+                string connector = item["connector"].asString();
+                result[varName] = "(";
+                for (int k = 0; k < res.size(); k++) {
+                    string value = str_replace("{{" + name + "}}", res[k], item["expr"].asCString());
+                    if (k != 0) result[varName] += " " + connector + " ";
+                    result[varName] += value;
+                }
+                if (res.size() == 0) result[varName] += item["default"].asString(); // 防爆用
+                result[varName] += ")";
+            }
+        } else if (options[i]["type"].asString() == "serverItems") {
+            string tableName = options[i]["itemType"].asString();
+            tableName[0] += 'A' - 'a';
+            string sql = "SELECT id, name, title FROM " + tableName + " WHERE (localization = \"" + localization +
+                "\" OR localization = \"default\") ORDER BY CASE WHEN localization = \"default\" THEN 1 WHEN localization != \"default\" THEN 0 END ASC";
+            sql = "SELECT * FROM (" + sql + ") AS A GROUP BY name";
+            sql = "SELECT * FROM (" + sql + ") AS B ORDER BY id ASC";
+            auto res = db.query(sql, tableName);
+            Json::Value tmp;
+            for (int j = 0; j < source[name].size(); j++) if (source[name][j] == '1') tmp.append(res[j]["name"]);
+            result[name] = json_encode(tmp);
         } else result[name] = source[name];
     } return result;
 }

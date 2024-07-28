@@ -15,7 +15,9 @@
             "title": "#NEWEST",
             "icon": "playlist",
             "filter": "",
-            "order": "id DESC"
+            "itemType": "playlist",
+            "order": "id DESC",
+            "searchValues": "type=quick"
         }
     ],
     "playlists.details.sections": [
@@ -59,8 +61,8 @@
                 {
                     "query": "levels",
                     "name": "Levels",
-                    "type": "text",
-                    "placeholder": "Enter levels..."
+                    "type": "serverItems",
+                    "itemType": "level"
                 },
                 {
                     "query": "description",
@@ -102,7 +104,7 @@
                 "title": "\"{{title}}\"",
                 "subtitle": "\"{{subtitle}}\"",
                 "author": "\"{{author}}\"",
-                "levels": "\"\"",
+                "levels": "{{levels}}",
                 "description": "\"{{description}}\"",
                 "tags": "\"{{tags}}\"",
                 "localization": "\"{{localization}}\"",

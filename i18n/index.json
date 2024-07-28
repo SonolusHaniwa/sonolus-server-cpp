@@ -2,15 +2,15 @@
     {
         "name": "zhs",
         "title": "简体中文 (Simplified Chinese)",
-        "path": "./i18n/zh-cn.json"
+        "path": "./i18n/zhs.json"
     },{
         "name": "en",
         "title": "English (United States)",
-        "path": "./i18n/en-us.json"
+        "path": "./i18n/en.json"
     },{
         "name": "ja",
         "title": "日本語 (Japanese)",
-        "path": "./i18n/ja-jp.json"
+        "path": "./i18n/ja.json"
     },{
         "name": "ko",
         "title": "한국어 (Korean)",

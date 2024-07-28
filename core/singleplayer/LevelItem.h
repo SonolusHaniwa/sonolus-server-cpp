@@ -14,7 +14,7 @@ class UseItem {
     UseItem(bool useDefault, T item = T()): useDefault(useDefault), item(item){}
     UseItem(Json::Value arr) {
         useDefault = arr["useDefault"].asInt();
-        item = T(-1, arr["item"]);
+        item = T(arr["item"]["id"].asInt(), arr["item"]);
     }
 
     Json::Value toJsonObject() {
@@ -64,7 +64,7 @@ class LevelItem {
         title = arr["title"].asString();
         artists = arr["artists"].asString();
         author = arr["author"].asString();
-        engine = EngineItem(-1, arr["engine"]);
+        engine = EngineItem(arr["engine"]["id"].asInt(), arr["engine"]);
         useSkin = UseItem<SkinItem>(arr["useSkin"]);
         useBackground = UseItem<BackgroundItem>(arr["useBackground"]);
         useEffect = UseItem<EffectItem>(arr["useEffect"]);

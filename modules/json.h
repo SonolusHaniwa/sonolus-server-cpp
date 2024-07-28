@@ -25,15 +25,6 @@ Json::Value json_decode(string json) {
     return res;
 }
 
-argvar transfer(Json::Value source, string prefix = "") {
-    argvar result;
-    Json::Value::Members mem = source.getMemberNames();
-    for (auto it = mem.begin(); it != mem.end(); it++) {
-        if (source[*it].type() == Json::objectValue || source[*it].type() == Json::arrayValue) continue;
-        result[prefix + (*it)] = source[*it].asString();
-    } return result;
-}
-
 void json_merge(Json::Value& origin, Json::Value source) {
     if (origin == Json::nullValue) { origin = source; return; }
     if (source.type() == Json::objectValue) {

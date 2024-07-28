@@ -30,7 +30,7 @@ class PlaylistItem {
         title = arr["title"].asString();
         subtitle = arr["subtitle"].asString();
         author = arr["author"].asString();
-        for (int i = 0; i < arr["levels"].size(); i++) levels.push_back(LevelItem(-1, arr["levels"][i]));
+        for (int i = 0; i < arr["levels"].size(); i++) levels.push_back(LevelItem(arr["levels"][i]["id"].asInt(), arr["levels"][i]));
         thumbnail = SRL<PlaylistThumbnail>(arr["thumbnail"]);
         for (int i = 0; i < arr["tags"].size(); i++) tags.push_back(Tag(arr["tags"][i]));
         description = arr["description"].asString();

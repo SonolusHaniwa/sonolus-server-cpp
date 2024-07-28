@@ -15,7 +15,9 @@
             "title": "#NEWEST",
             "icon": "skin",
             "filter": "",
-            "order": "id DESC"
+            "itemType": "skin",
+            "order": "id DESC",
+            "searchValues": "type=quick"
         }
     ],
     "skins.details.sections": [

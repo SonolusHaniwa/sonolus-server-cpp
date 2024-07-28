@@ -3,7 +3,7 @@
     "rooms.enableComment": true,
     "rooms.enableRating": true,
     "rooms.enableGUICreate": false,
-    "rooms.enableSonolusCreate": false,
+    "rooms.enableSonolusCreate": true,
     "rooms.exceptGUICreate": [],
     "rooms.exceptSonolusCreate": [],
     "rooms.pageSize.info": 5,
@@ -15,7 +15,9 @@
             "title": "#NEWEST",
             "icon": "room",
             "filter": "",
-            "order": "id DESC"
+            "itemType": "room",
+            "order": "id DESC",
+            "searchValues": "type=quick"
         }
     ],
     "rooms.details.sections": [

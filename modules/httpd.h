@@ -624,7 +624,7 @@ void exitRequest(client_conn& conn) {
     #endif
     if (https) SSL_clear(conn.ssl);
 
-    writeLog(LOG_LEVEL_INFO, "Close connection of conn " + to_string(conn.conn));
+    writeLog(LOG_LEVEL_DEBUG, "Close connection of conn " + to_string(conn.conn));
     longjmp(buf[conn.thread_id], 0);
 }
 
@@ -786,6 +786,34 @@ argvar getParam(http_request request) {
 
     /** 提取参数信息 */
     string param = path.substr(path.find("?") + 1);
+    vector<string> __arg = explode("&", param.c_str());
+    writeLog(LOG_LEVEL_DEBUG, "GET parameter length: " + to_string(__arg.size()));
+
+    /** 逐个处理 */
+    argvar $_GET;
+    for (int i = 0; i < __arg.size(); i++) {
+        if (__arg[i].find("=") == string::npos) 
+            writeLog(LOG_LEVEL_DEBUG, "Could find value of key \"" + __arg[i] + "\""),
+            $_GET.insert(make_pair(__arg[i], ""));
+        else {
+            string key = __arg[i].substr(0, __arg[i].find("="));
+            string val = __arg[i].substr(__arg[i].find("=") + 1);
+            writeLog(LOG_LEVEL_DEBUG, "Add key \"" + key + "\" $_GET");
+            $_GET.insert(make_pair(key, val));
+        }
+    } 
+    
+    /** 返回 */
+    return $_GET;
+}
+
+/**
+ * @brief 获取GET参数
+ * 
+ * @param param 参数
+ * @return argvar
+ */
+argvar getParam(string param) {
     vector<string> __arg = explode("&", param.c_str());
     writeLog(LOG_LEVEL_DEBUG, "GET parameter length: " + to_string(__arg.size()));
 
@@ -1511,6 +1539,15 @@ int getThreadId() {
 
 time_t getMilliSeconds() {
     return chrono::duration_cast<chrono::milliseconds>(chrono::system_clock::now().time_since_epoch()).count();
+}
+
+argvar transfer(Json::Value source, string prefix = "") {
+    argvar result;
+    Json::Value::Members mem = source.getMemberNames();
+    for (auto it = mem.begin(); it != mem.end(); it++) {
+        if (source[*it].type() == Json::objectValue || source[*it].type() == Json::arrayValue) continue;
+        result[prefix + (*it)] = source[*it].asString();
+    } return result;
 }
 
 #endif

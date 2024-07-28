@@ -15,7 +15,9 @@
             "title": "#NEWEST",
             "icon": "post",
             "filter": "",
-            "order": "id DESC"
+            "itemType": "post",
+            "order": "id DESC",
+            "searchValues": "type=quick"
         }
     ],
     "posts.details.sections": [

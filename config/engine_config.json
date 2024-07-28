@@ -15,7 +15,9 @@
             "title": "#NEWEST",
             "icon": "engine",
             "filter": "",
-            "order": "id DESC"
+            "itemType": "engine",
+            "order": "id DESC",
+            "searchValues": "type=quick"
         }
     ],
     "engines.details.sections": [
@@ -75,28 +77,28 @@
                 },
                 {
                     "query": "skin",
-                    "name": "Skin",
+                    "name": "#SKIN",
                     "type": "serverItem",
                     "itemType": "skin",
                     "required": true
                 },
                 {
                     "query": "background",
-                    "name": "Background",
+                    "name": "#BACKGROUND",
                     "type": "serverItem",
                     "itemType": "background",
                     "required": true
                 },
                 {
                     "query": "effect",
-                    "name": "Effect",
+                    "name": "#EFFECT",
                     "type": "serverItem",
                     "itemType": "effect",
                     "required": true
                 },
                 {
                     "query": "particle",
-                    "name": "Particle",
+                    "name": "#PARTICLE",
                     "type": "serverItem",
                     "itemType": "particle",
                     "required": true

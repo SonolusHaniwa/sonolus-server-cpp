@@ -9,13 +9,14 @@ class UpdateMasterEvent {
     UpdateMasterEvent(){}
     UpdateMasterEvent(string master): master(master){}
     UpdateMasterEvent(Json::Value obj) {
-        master = obj["master"].asString();
+        master = obj["master"] == Json::nullValue ? roomCode : obj["master"].asString();
     }
 
     Json::Value toJsonObject() {
         Json::Value res;
         res["type"] = type;
-        res["master"] = master;
+        if (master == roomCode) res["master"] = Json::nullValue;
+        else res["master"] = master;
         return res;
     }
 };

@@ -731,15 +731,15 @@ type ServerSubmitItemCommunityActionResponse = {
 }
 ```
 
-## Item Leaderboard
-- Now can have description.
-```diff
-type ServerItemLeaderboard = {
-    name: string
-    title: Text | (string & {})
-+   description?: string
-}
-```
+> ## Item Leaderboard
+> - Now can have description.
+> ```diff
+> type ServerItemLeaderboard = {
+>     name: string
+>     title: Text | (string & {})
+> +   description?: string
+> }
+> ```
 
 ## Server Item Section
 - Now can display items of any type, specified by `itemType` (eg `'level'`).

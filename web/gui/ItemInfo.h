@@ -47,26 +47,34 @@ auto GUIInfo = [](client_conn conn, http_request request, param argv) {
     for (int i = 0; i < appConfig[argv[0] + ".info.sections"].size(); i++) {
         auto item = appConfig[argv[0] + ".info.sections"][i];
         sections += "<a style=\"height:0px;\" name=\"" + item["title"].asString() + "\"></a>";
-        sections += "<div class=\"flex flex-col space-y-2 sm:space-y-3\"><div class=\"flex space-x-2 sm:space-x-3\">"
-        "<h2 class=\"flex-grow py-1 text-xl font-bold sm:py-1.5 sm:text-3xl\">" + item["title"].asString() + "</h2></div>";
+        string searchUrl = "", listUrl = "";
+        auto fakeGet = getParam(item["searchValues"].asString());
+        if (item["searchValues"].asString() == "") ;
+        else if (fakeGet["type"] == "quick") 
+            listUrl = "/" + item["itemType"].asString() + "s/list?" + item["searchValues"].asString();
+        else searchUrl = "/" + item["itemType"].asString() + "s/search?" + item["searchValues"].asString(),
+            listUrl = "/" + item["itemType"].asString() + "s/list?" + item["searchValues"].asString();
+        sections += "<div class=\"flex flex-col space-y-2 sm:space-y-3\">" + fetchSectionTitle(item["title"].asString(), searchUrl, listUrl).output();
         icons += fetchIconButton("#" + item["title"].asString(), "{{icon." + item["icon"].asString() + "}}").output();
         item["filter"] = "(localization = \"" + $_GET["localization"] + "\" OR localization = \"default\") AND (" + 
         	(item["filter"].asString() == "" ? "1" : item["filter"].asString()) + ")";
         item["order"] = "CASE WHEN localization = \"default\" THEN 1 WHEN localization != \"default\" THEN 0 END ASC, " + 
         	(item["order"].asString() == "" ? "id DESC" : item["order"].asString());
-        if (argv[0] == "levels") { quickGUIInfo(levels); }
-        else if (argv[0] == "skins") { quickGUIInfo(skins); }
-        else if (argv[0] == "backgrounds") { quickGUIInfo(backgrounds); }
-        else if (argv[0] == "effects") { quickGUIInfo(effects); }
-        else if (argv[0] == "particles") { quickGUIInfo(particles); }
-        else if (argv[0] == "engines") { quickGUIInfo(engines); }
-        else if (argv[0] == "replays") { quickGUIInfo(replays); }
-        else if (argv[0] == "posts") { quickGUIInfo(posts); }
-        else if (argv[0] == "playlists") { quickGUIInfo(playlists); }
+        if (item["itemType"].asString() == "level") { quickGUIInfo(levels); }
+        else if (item["itemType"].asString() == "skin") { quickGUIInfo(skins); }
+        else if (item["itemType"].asString() == "background") { quickGUIInfo(backgrounds); }
+        else if (item["itemType"].asString() == "effect") { quickGUIInfo(effects); }
+        else if (item["itemType"].asString() == "particle") { quickGUIInfo(particles); }
+        else if (item["itemType"].asString() == "engine") { quickGUIInfo(engines); }
+        else if (item["itemType"].asString() == "replay") { quickGUIInfo(replays); }
+        else if (item["itemType"].asString() == "post") { quickGUIInfo(posts); }
+        else if (item["itemType"].asString() == "playlist") { quickGUIInfo(playlists); }
+        sections += fetchSectionBottom(searchUrl, listUrl).output();
         sections += "</div>";
     }
     argList["html.icons"] = icons;
     argList["html.sections"] = sections;
+    argList["server.bannerUrl"] = dataPrefix + appConfig["server.banner"][atoi(cookieParam(request)["banner"].c_str())]["hash"].asString();
 
     argList = merge(argList, merge(
         transfer(appConfig), merge(
@@ -78,8 +86,10 @@ auto GUIInfo = [](client_conn conn, http_request request, param argv) {
     H root = H(true, "html");
     root.append(header);
     root.append(body);
-    __default_response["Content-Length"] = to_string(root.output().size());
+    string res = root.output();
+    res = str_replace(dataPrefix.c_str(), appConfig["server.data.prefix"][atoi(cookieParam(request)["source"].c_str())]["url"].asCString(), res);
+    __default_response["Content-Length"] = to_string(res.size());
     putRequest(conn, 200, __default_response);
-    send(conn, root.output());
+    send(conn, res);
     exitRequest(conn);
 };

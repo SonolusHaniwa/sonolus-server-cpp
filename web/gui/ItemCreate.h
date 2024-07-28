@@ -43,9 +43,11 @@ auto GUICreate = [](client_conn conn, http_request request, param argv){
             if (item["type"].asString() == "title") sections += fetchSearchTitle(item["name"].asString(), item["level"].asInt(), 0).output();
             if (item["type"].asString() == "textArea") sections += fetchSearchTextArea(type + "_" + query, item["name"].asString(), item["placeholder"].asString(), "\"\"", "\"\"", 0, item["required"].asBool()).output();
             if (item["type"].asString() == "serverItem") sections += fetchSearchServerItem(type + "_" + query, item["name"].asString(), item["itemType"].asString(), "\"\"", "\"\"", localization, 0, item["required"].asBool()).output();
+            if (item["type"].asString() == "serverItems") sections += fetchSearchServerItems(type + "_" + query, item["name"].asString(), item["itemType"].asString(), {}, {}, localization, 0, item["required"].asBool()).output();
             if (item["type"].asString() == "localizationItem") sections += fetchSearchLocalizationItem(type + "_" + query, item["name"].asString(), "\"default\"", "\"default\"", 0, item["required"].asBool()).output();
         } searchOptions += fetchSectionCreate(sections, "/sonolus/" + argv[0] + "/create", "/" + argv[0] + "/", type).output();
     } argList["html.searchOptions"] = searchOptions;
+    argList["server.bannerUrl"] = dataPrefix + appConfig["server.banner"][atoi(cookieParam(request)["banner"].c_str())]["hash"].asString();
 
     argList = merge(argList, merge(
         transfer(appConfig), merge(
@@ -57,8 +59,10 @@ auto GUICreate = [](client_conn conn, http_request request, param argv){
     H root = H(true, "html");
     root.append(header);
     root.append(body);
-    __default_response["Content-Length"] = to_string(root.output().size());
+    string res = root.output();
+    res = str_replace(dataPrefix.c_str(), appConfig["server.data.prefix"][atoi(cookieParam(request)["source"].c_str())]["url"].asCString(), res);
+    __default_response["Content-Length"] = to_string(res.size());
     putRequest(conn, 200, __default_response);
-    send(conn, root.output());
+    send(conn, res);
     exitRequest(conn);
 };

@@ -33,7 +33,18 @@ auto ServerInfo = [](client_conn conn, http_request request, param argv){
             return values;
         }(),
     }).toJsonObject());
-    ServerInfo["banner"] = SRL<ServerBanner>(appConfig["server.banner"].asString(),
-        dataPrefix + appConfig["server.banner"].asString()).toJsonObject();
+    ServerInfo["configuration"]["options"].append(SearchSelectOption({
+        query: "banner",
+        name: "Banner Image",
+        def: 0,
+        values: [&](){
+            vector<string> values;
+            for (int i = 0; i < appConfig["server.banner"].size(); i++) values.push_back(appConfig["server.banner"][i]["name"].asString());
+            return values;
+        }(),
+    }).toJsonObject());
+    int banner = $_GET["banner"] == "" ? 0 : atoi($_GET["banner"].c_str());
+    ServerInfo["banner"] = SRL<ServerBanner>(appConfig["server.banner"][banner]["hash"].asString(),
+        dataPrefix + appConfig["server.banner"][banner]["hash"].asString()).toJsonObject();
     quickSendObj(ServerInfo);
 };

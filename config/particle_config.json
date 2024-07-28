@@ -15,7 +15,9 @@
             "title": "#NEWEST",
             "icon": "particle",
             "filter": "",
-            "order": "id DESC"
+            "itemType": "particle",
+            "order": "id DESC",
+            "searchValues": "type=quick"
         }
     ],
     "particles.details.sections": [
