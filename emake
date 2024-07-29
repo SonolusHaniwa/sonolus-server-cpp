@@ -10,7 +10,7 @@ echo -e "${YELLOW}Compiling Sonolus Server using emscripten...${WHITE}"
 emcc emain.cpp -o libsonolus.js -w -s MODULARIZE -sALLOW_MEMORY_GROWTH\
 	-sDEFAULT_LIBRARY_FUNCS_TO_INCLUDE=['$stringToNewUTF8','$UTF8ToString']\
 	-sEXPORTED_RUNTIME_METHODS=['stringToNewUTF8','UTF8ToString','FS']\
-	-sASSERTIONS -lnodefs.js \
+	-sASSERTIONS -lnodefs.js -sNO_DISABLE_EXCEPTION_CATCHING \
 	--preload-file config --preload-file web --preload-file i18n --preload-file sonolus.db \
 	--js-library ./api/database.js -sVERBOSE -sASYNCIFY -O3 \
 	-L./emsdk/lib -I./emsdk/include -ljsoncpp -lcrypto -g \
