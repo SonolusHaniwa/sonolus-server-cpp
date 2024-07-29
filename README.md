@@ -12,4 +12,4 @@
 
 # 开始使用
 
-[点我](https://github.com/SonolusHaniwa/sonolus-server-cpp/wiki) 前往 Wiki 界面查看全部信息。
+[点我](https://docs.littleyang.icu/sonolus-server/1.%20intro.html) 前往 Wiki 界面查看全部信息。
