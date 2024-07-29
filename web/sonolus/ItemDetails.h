@@ -39,20 +39,7 @@
         ratingSearch.options[0].slider.def = defaultRating; \
         ItemDetails["actions"].append(ratingSearch.toJsonObject()); \
     } \
-    argvar args = item.fetchParamList(); \
-    for (auto v : args) args[v.first] = quote_encode(v.second); \
-    for (int i = 0; i < appConfig[defineToString(name2)".details.sections"].size(); i++) { \
-        auto obj = appConfig[defineToString(name2)".details.sections"][i]; \
-        if (obj["itemType"].asString() == "level") { quickSonolusDetailsSection(Level, levels); } \
-        else if (obj["itemType"].asString() == "skin") { quickSonolusDetailsSection(Skin, skins); } \
-        else if (obj["itemType"].asString() == "background") { quickSonolusDetailsSection(Background, backgrounds); } \
-        else if (obj["itemType"].asString() == "effect") { quickSonolusDetailsSection(Effect, effects); } \
-        else if (obj["itemType"].asString() == "particle") { quickSonolusDetailsSection(Particle, particles); } \
-        else if (obj["itemType"].asString() == "engine") { quickSonolusDetailsSection(Engine, engines); } \
-        else if (obj["itemType"].asString() == "replay") { quickSonolusDetailsSection(Replay, replays); } \
-        else if (obj["itemType"].asString() == "post") { quickSonolusDetailsSection(Post, posts); } \
-        else if (obj["itemType"].asString() == "playlist") { quickSonolusDetailsSection(Playlist, playlists); } \
-    } \
+    args = item.fetchParamList(); \
     auto recommended = name2##List("author = \"" + quote_encode(item.author) + "\"", "id DESC", 1, 5); \
     ItemDetails["recommended"].resize(0); \
     for (int i = 0; i < recommended.size(); i++) ItemDetails["recommended"].append(recommended[i].toJsonObject()); \
@@ -63,6 +50,7 @@ auto SonolusDetails = [](client_conn conn, http_request request, param argv){
     Json::Value ItemDetails;
     bool isLogin = checkLogin(request);
     bool isLike = isLogin && (db.query("SELECT uid FROM LikeTable WHERE targetType = \"" + string(argv[0]) + "\" AND targetName = \"" + string(argv[1]) + "\" AND uid = \"" + getUserProfile(request).id + "\"", "LikeTable").size());
+    argvar args;
     if (argv[0] == "levels") { quickSonolusDetails(Level, levels); }
     else if (argv[0] == "skins") { quickSonolusDetails(Skin, skins); }
     else if (argv[0] == "backgrounds") { quickSonolusDetails(Background, backgrounds); }
@@ -73,5 +61,18 @@ auto SonolusDetails = [](client_conn conn, http_request request, param argv){
     else if (argv[0] == "posts") { quickSonolusDetails(Post, posts); }
     else if (argv[0] == "playlists") { quickSonolusDetails(Playlist, playlists); }
     else quickSendMsg(404);
+    for (auto v : args) args[v.first] = quote_encode(v.second);
+    for (int i = 0; i < appConfig[argv[0] + ".details.sections"].size(); i++) {
+        auto obj = appConfig[argv[0] + ".details.sections"][i];
+        if (obj["itemType"].asString() == "level") { quickSonolusDetailsSection(Level, levels); }
+        else if (obj["itemType"].asString() == "skin") { quickSonolusDetailsSection(Skin, skins); }
+        else if (obj["itemType"].asString() == "background") { quickSonolusDetailsSection(Background, backgrounds); }
+        else if (obj["itemType"].asString() == "effect") { quickSonolusDetailsSection(Effect, effects); }
+        else if (obj["itemType"].asString() == "particle") { quickSonolusDetailsSection(Particle, particles); }
+        else if (obj["itemType"].asString() == "engine") { quickSonolusDetailsSection(Engine, engines); }
+        else if (obj["itemType"].asString() == "replay") { quickSonolusDetailsSection(Replay, replays); }
+        else if (obj["itemType"].asString() == "post") { quickSonolusDetailsSection(Post, posts); }
+        else if (obj["itemType"].asString() == "playlist") { quickSonolusDetailsSection(Playlist, playlists); }
+    }
     quickSendObj(ItemDetails);
 };

@@ -23,18 +23,6 @@
     for (int i = 0; i < name1##Search.size(); i++) \
         ItemInfo["searches"].append(name1##Search[i].toJsonObject()); \
     ItemInfo["sections"].resize(0); \
-    for (int i = 0; i < appConfig[defineToString(name2)".info.sections"].size(); i++) { \
-        auto item = appConfig[defineToString(name2)".info.sections"][i]; \
-        if (item["itemType"].asString() == "level") { quickSonolusInfoSection(Level, levels); } \
-        else if (item["itemType"].asString() == "skin") { quickSonolusInfoSection(Skin, skins); } \
-        else if (item["itemType"].asString() == "background") { quickSonolusInfoSection(Background, backgrounds); } \
-        else if (item["itemType"].asString() == "effect") { quickSonolusInfoSection(Effect, effects); } \
-        else if (item["itemType"].asString() == "particle") { quickSonolusInfoSection(Particle, particles); } \
-        else if (item["itemType"].asString() == "engine") { quickSonolusInfoSection(Engine, engines); } \
-        else if (item["itemType"].asString() == "replay") { quickSonolusInfoSection(Replay, replays); } \
-        else if (item["itemType"].asString() == "post") { quickSonolusInfoSection(Post, posts); } \
-        else if (item["itemType"].asString() == "playlist") { quickSonolusInfoSection(Playlist, playlists); } \
-    } \
 }
 
 auto SonolusInfo = [](client_conn conn, http_request request, param argv){
@@ -61,5 +49,17 @@ auto SonolusInfo = [](client_conn conn, http_request request, param argv){
     else if (argv[0] == "playlists") { quickSonolusInfo(Playlist, playlists); }
     else if (argv[0] == "rooms") { quickSonolusInfo(Room, rooms); }
     else quickSendMsg(404);
+    for (int i = 0; i < appConfig[argv[0] + ".info.sections"].size(); i++) {
+        auto item = appConfig[argv[0] + ".info.sections"][i];
+        if (item["itemType"].asString() == "level") { quickSonolusInfoSection(Level, levels); }
+        else if (item["itemType"].asString() == "skin") { quickSonolusInfoSection(Skin, skins); }
+        else if (item["itemType"].asString() == "background") { quickSonolusInfoSection(Background, backgrounds); }
+        else if (item["itemType"].asString() == "effect") { quickSonolusInfoSection(Effect, effects); }
+        else if (item["itemType"].asString() == "particle") { quickSonolusInfoSection(Particle, particles); }
+        else if (item["itemType"].asString() == "engine") { quickSonolusInfoSection(Engine, engines); }
+        else if (item["itemType"].asString() == "replay") { quickSonolusInfoSection(Replay, replays); }
+        else if (item["itemType"].asString() == "post") { quickSonolusInfoSection(Post, posts); }
+        else if (item["itemType"].asString() == "playlist") { quickSonolusInfoSection(Playlist, playlists); }
+    }
     quickSendObj(ItemInfo);
 };

@@ -139,11 +139,13 @@ void preload() {
     db = DB_Total_Controller(dbConfig);
 
     Sonolus_Version = appConfig["sonolus.version"].asString();
-    if (appConfig["server.data.prefix"].asString() == "") appConfig["server.data.prefix"] = "/data/";
-    dataPrefix = appConfig["server.data.prefix"].asString();
+    for (int i = 0; i < appConfig["server.data.prefix"].size(); i++)
+        if (appConfig["server.data.prefix"][i]["url"].asString() == "") 
+            appConfig["server.data.prefix"][i]["url"] = 
+                (appConfig["server.enableSSL"].asBool() ? "https://" : "http://") + 
+                appConfig["server.rootUrl"].asString() + 
+                "/data/";
     appConfig["server.logo"] = dataPrefix + appConfig["server.logo"].asString();
-    appConfig["server.bannerHash"] = appConfig["server.banner"].asString();
-    appConfig["server.bannerUrl"] = dataPrefix + appConfig["server.banner"].asString();
     appConfig["database"] = "emscripten";
     log_init(log_target_type);
     http_init();

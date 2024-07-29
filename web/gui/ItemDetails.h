@@ -19,44 +19,8 @@
     argList["html.navbar"] = fetchNavBar(item.title).output(); \
     argList["editUrl"] = "/" + argv[0] + "/" + argv[1] + "/edit"; \
     quickGUICommunity(request, argv[0], argv[1], argList, detailsIcon); \
-    string detailsSection = ""; \
-    if (defineToString(name) == "playlists") { \
-        PlaylistItem playlist(item.id, item.toJsonObject()); \
-        detailsIcon += fetchIconButton("##LEVEL", "{{icon.level}}").output(); \
-        detailsSection += "<a style=\"height:0px;margin:0px;\" name=\"#LEVEL\"></a>"; \
-        detailsSection += "<div class=\"flex flex-col space-y-2 sm:space-y-3\"><h2 class=\"py-1 text-xl font-bold sm:py-1.5 sm:text-3xl\">{{language.LEVEL}}</h2>"; \
-        for (int i = 0; i < playlist.levels.size(); i++) { \
-            auto level = playlist.levels[i]; \
-            detailsSection += level.toHTMLObject().output(); \
-        } \
-        detailsSection += "</div>"; \
-    } \
-    argvar args = item.fetchParamList(); \
-    for (auto v : args) args[v.first] = quote_encode(v.second); \
-    for (int i = 0; i < appConfig[argv[0] + ".details.sections"].size(); i++) { \
-        auto section = appConfig[argv[0] + ".details.sections"][i]; \
-        string searchUrl = "", listUrl = ""; \
-        section["searchValues"] = str_replace(section["searchValues"].asString(), args); \
-        section["order"] = str_replace(section["order"].asString(), args); \
-        section["filter"] = str_replace(section["filter"].asString(), args); \
-        auto fakeGet = getParam(section["searchValues"].asString()); \
-        if (section["searchValues"].asString() == "") ; \
-        else if (fakeGet["type"] == "quick") \
-            listUrl = "/" + section["itemType"].asString() + "s/list?" + section["searchValues"].asString(); \
-        else searchUrl = "/" + section["itemType"].asString() + "s/search?" + section["searchValues"].asString(), \
-            listUrl = "/" + section["itemType"].asString() + "s/list?" + section["searchValues"].asString(); \
-        if (section["itemType"].asString() == "level") { quickGUIDetailsSection(levels); } \
-        else if (section["itemType"].asString() == "skin") { quickGUIDetailsSection(skins); } \
-        else if (section["itemType"].asString() == "background") { quickGUIDetailsSection(backgrounds); } \
-        else if (section["itemType"].asString() == "effect") { quickGUIDetailsSection(effects); } \
-        else if (section["itemType"].asString() == "particle") { quickGUIDetailsSection(particles); } \
-        else if (section["itemType"].asString() == "engine") { quickGUIDetailsSection(engines); } \
-        else if (section["itemType"].asString() == "replay") { quickGUIDetailsSection(replays); } \
-        else if (section["itemType"].asString() == "post") { quickGUIDetailsSection(posts); } \
-        else if (section["itemType"].asString() == "playlist") { quickGUIDetailsSection(playlists); } \
-        detailsIcon += fetchIconButton("#" + section["title"].asString(), "{{icon." + section["icon"].asString() + "}}").output(); \
-    } argList["html.detailsSection"] = detailsSection; \
-    argList["html.icons"] += detailsIcon; \
+    playlistValue = item.toJsonObject(); \
+    args = item.fetchParamList(); \
 }
 
 auto GUIDetails = [](client_conn conn, http_request request, param argv) {
@@ -76,12 +40,13 @@ auto GUIDetails = [](client_conn conn, http_request request, param argv) {
     auto cookie = cookieParam(request);
     auto $_GET = getParam(request);
     $_GET["localization"] = cookie["lang"] == "" ? appConfig["language.default"].asString() : cookie["lang"];
-    argvar argList = argvar();
+    argvar argList = argvar(), args = argvar();
 
     // TODO: add the argList here
     string detailsIcon = fetchIconButton("#ItemDetails", "{{icon." + argv[0].substr(0, argv[0].size() - 1) + "}}").output();
     detailsIcon += fetchIconButton("##DESCRIPTION", "{{icon.description}}").output();
     detailsIcon += fetchIconButton("##TAGS", "{{icon.tags}}").output();
+    Json::Value playlistValue;
     if (argv[0] == "levels") { quickGUIDetails(levels); }
     else if (argv[0] == "skins") { quickGUIDetails(skins); }
     else if (argv[0] == "backgrounds") { quickGUIDetails(backgrounds); }
@@ -91,6 +56,44 @@ auto GUIDetails = [](client_conn conn, http_request request, param argv) {
     else if (argv[0] == "replays") { quickGUIDetails(replays); }
     else if (argv[0] == "posts") { quickGUIDetails(posts); }
     else if (argv[0] == "playlists") { quickGUIDetails(playlists); }
+
+    string detailsSection = "";
+    if (argv[0] == "playlists") {
+        PlaylistItem playlist(playlistValue["id"].asInt(), playlistValue);
+        detailsIcon += fetchIconButton("##LEVEL", "{{icon.level}}").output();
+        detailsSection += "<a style=\"height:0px;margin:0px;\" name=\"#LEVEL\"></a>";
+        detailsSection += "<div class=\"flex flex-col space-y-2 sm:space-y-3\"><h2 class=\"py-1 text-xl font-bold sm:py-1.5 sm:text-3xl\">{{language.LEVEL}}</h2>";
+        for (int i = 0; i < playlist.levels.size(); i++) {
+            auto level = playlist.levels[i];
+            detailsSection += level.toHTMLObject().output();
+        }
+        detailsSection += "</div>";
+    }
+    for (auto v : args) args[v.first] = quote_encode(v.second);
+    for (int i = 0; i < appConfig[argv[0] + ".details.sections"].size(); i++) {
+        auto section = appConfig[argv[0] + ".details.sections"][i];
+        string searchUrl = "", listUrl = "";
+        section["searchValues"] = str_replace(section["searchValues"].asString(), args);
+        section["order"] = str_replace(section["order"].asString(), args);
+        section["filter"] = str_replace(section["filter"].asString(), args);
+        auto fakeGet = getParam(section["searchValues"].asString());
+        if (section["searchValues"].asString() == "") ;
+        else if (fakeGet["type"] == "quick")
+            listUrl = "/" + section["itemType"].asString() + "s/list?" + section["searchValues"].asString();
+        else searchUrl = "/" + section["itemType"].asString() + "s/search?" + section["searchValues"].asString(),
+            listUrl = "/" + section["itemType"].asString() + "s/list?" + section["searchValues"].asString();
+        if (section["itemType"].asString() == "level") { quickGUIDetailsSection(levels); }
+        else if (section["itemType"].asString() == "skin") { quickGUIDetailsSection(skins); }
+        else if (section["itemType"].asString() == "background") { quickGUIDetailsSection(backgrounds); }
+        else if (section["itemType"].asString() == "effect") { quickGUIDetailsSection(effects); }
+        else if (section["itemType"].asString() == "particle") { quickGUIDetailsSection(particles); }
+        else if (section["itemType"].asString() == "engine") { quickGUIDetailsSection(engines); }
+        else if (section["itemType"].asString() == "replay") { quickGUIDetailsSection(replays); }
+        else if (section["itemType"].asString() == "post") { quickGUIDetailsSection(posts); }
+        else if (section["itemType"].asString() == "playlist") { quickGUIDetailsSection(playlists); }
+        detailsIcon += fetchIconButton("#" + section["title"].asString(), "{{icon." + section["icon"].asString() + "}}").output();
+    } argList["html.detailsSection"] = detailsSection;
+    argList["html.icons"] += detailsIcon;
 
     bool isLogin = checkLogin(request);
     int uid = !isLogin ? -1 : atoi(getUserProfile(request).handle.c_str());
