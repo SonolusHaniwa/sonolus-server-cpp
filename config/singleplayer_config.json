@@ -13,19 +13,18 @@
         { "type": "background" },
         { "type": "effect" },
         { "type": "particle" },
-        { "type": "engine" }
+        { "type": "engine" },
+        { "type": "configuration" }
     ],
     "server.logo": "c3e27937fb9578065038d7988c6d4f955b584d95",
     "server.banner": [
         { "name": "Phigros Banner", "hash": "b4b42df0b336e852d14b4d334c3d99f8992626d8" },
         { "name": "Sirius 1st Anniversary", "hash": "ff4aeb7f818d14508dd98699d71102fc57547c44" }
     ],
-    "server.rootUrl": "192.168.0.18:8080",
+    "server.rootUrl": "127.0.0.1:8080",
     "server.data.prefix": [
-        { "name": "Default Data Source", "url": "" },
-        { "name": "Global", "url": "https://cdn.jsdelivr.net/gh/LittleYang0531/phigros-private-data/" },
-        { "name": "Proxy", "url": "https://cdn.jsdmirror.com/gh/LittleYang0531/phigros-private-data/" }
+        { "name": "Default Data Source", "url": "" }
     ],
-    "server.multiplayer.address": "ws://192.168.0.18:8080",
+    "server.multiplayer.address": "ws://127.0.0.1:8080",
     "language.default": "zhs"
 }
