@@ -189,6 +189,7 @@ class SearchMultiOption {
         res["type"] = type;
         res["def"].resize(0);
         for (int i = 0; i < def.size(); i++) res["def"].append((bool)def[i]);
+        res["defs"] = res["def"];
         for (int i = 0; i < values.size(); i++) res["values"].append(values[i]);
         if (description != "") res["description"] = description;
         res["required"] = required;

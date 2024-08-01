@@ -13,8 +13,7 @@
         { "type": "background" },
         { "type": "effect" },
         { "type": "particle" },
-        { "type": "engine" },
-        { "type": "configuration" }
+        { "type": "engine" }
     ],
     "server.logo": "c3e27937fb9578065038d7988c6d4f955b584d95",
     "server.banner": [
