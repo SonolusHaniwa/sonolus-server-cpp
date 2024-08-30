@@ -448,5 +448,6 @@
 	"configuration": "Configuration",
 	"selectAll": "Select All",
 	"unselectAll": "Select None",
-	"selected": "{0} Selected"
+	"selected": "{0} Selected",
+	"helpButton": "Help"
 }

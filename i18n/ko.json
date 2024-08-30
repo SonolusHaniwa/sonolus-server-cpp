@@ -448,5 +448,6 @@
 	"configuration": "구성",
 	"selectAll": "전부 선택",
 	"unselectAll": "선택 해제",
-	"selected": "{0} 선택됨"
+	"selected": "{0} 선택됨",
+	"helpButton": "도움말"
 }
