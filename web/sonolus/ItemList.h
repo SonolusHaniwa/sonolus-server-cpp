@@ -30,7 +30,7 @@ auto SonolusList = [](client_conn conn, http_request request, param argv){
             args = argResolver($_GET, Searches[i]["options"], $_GET["localization"]);
         }
 
-        if (searchId == -1) quickSendMsg(404);
+        if (searchId == -1) quickSendMsg(404, "Search type not found.");
         sqlFilter += str_replace(filter, args);
         order = str_replace(order, args);
         if (filter == "") sqlFilter += "1";
@@ -50,6 +50,6 @@ auto SonolusList = [](client_conn conn, http_request request, param argv){
     else if (argv[0] == "posts") { quickSonolusList(Post, posts); }
     else if (argv[0] == "playlists") { quickSonolusList(Playlist, playlists); }
     else if (argv[0] == "rooms") { quickSonolusList(Room, rooms); }
-    else quickSendMsg(404);
+    else quickSendMsg(404, "Item type not found.");
     quickSendObj(ItemList);
 };

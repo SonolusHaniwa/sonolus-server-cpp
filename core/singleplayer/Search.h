@@ -407,6 +407,7 @@ class Search {
     string filter = "";
     string order = "";
     string description = "";
+    string help = "";
     bool requireConfirmation = false;
     vector<SearchOption> options = {};
 
@@ -422,6 +423,7 @@ class Search {
         if (description != "") res["description"] = description;
         res["requireConfirmation"] = requireConfirmation;
         res["options"].resize(0);
+        if (help != "") res["help"] = help;
         for (int i = 0; i < options.size(); i++) res["options"].append(options[i].toJsonObject());
         return res;
     }
@@ -639,6 +641,7 @@ Search constructSingleSearch(Json::Value orig) {
     search.icon = orig["icon"].asString();
     search.filter = orig["filter"].asString();
     search.order = orig["order"].asString();
+    if (orig.isMember("help")) search.help = orig["help"].asString();
     search.options = constructSearchOptions(orig["options"]);
     return search;
 }
@@ -680,6 +683,8 @@ argvar argResolver(argvar source, Json::Value options, string localization) {
                 if (res.size() == 0) result[varName] += item["default"].asString(); // 防爆用
                 result[varName] += ")";
             }
+        } else if (options[i]["type"].asString() == "serverItem") {
+            result[name] = json_decode(source[name])["name"].asString();
         } else if (options[i]["type"].asString() == "serverItems") {
             string tableName = options[i]["itemType"].asString();
             tableName[0] += 'A' - 'a';

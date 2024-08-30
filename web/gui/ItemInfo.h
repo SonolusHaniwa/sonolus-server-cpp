@@ -16,7 +16,7 @@ auto GUIInfo = [](client_conn conn, http_request request, param argv) {
         argv[0] != "engines" && 
         argv[0] != "replays" && 
         argv[0] != "posts" && 
-        argv[0] != "playlists") { quickSendMsg(404); }
+        argv[0] != "playlists") { quickSendMsg(404, "Item type not found."); }
     
     string header = readFile("./web/html/components/header.html");
     string body = readFile("./web/html/pages/ItemInfo.html");
@@ -54,7 +54,8 @@ auto GUIInfo = [](client_conn conn, http_request request, param argv) {
             listUrl = "/" + item["itemType"].asString() + "s/list?" + item["searchValues"].asString();
         else searchUrl = "/" + item["itemType"].asString() + "s/search?" + item["searchValues"].asString(),
             listUrl = "/" + item["itemType"].asString() + "s/list?" + item["searchValues"].asString();
-        sections += "<div class=\"flex flex-col space-y-2 sm:space-y-3\">" + fetchSectionTitle(item["title"].asString(), searchUrl, listUrl).output();
+        sections += "<div class=\"flex flex-col space-y-2 sm:space-y-3\">" + fetchSectionTitle(item["title"].asString(), searchUrl, listUrl, item["help"].asString() != "", item["help"].asString()).output();
+        if (item["description"].asString() != "") sections += "<div class=\"flex flex-col space-y-2 sm:space-y-3\"><p class=\"whitespace-pre-wrap\">" + item["description"].asString() + "</p></div>";
         icons += fetchIconButton("#" + item["title"].asString(), "{{icon." + item["icon"].asString() + "}}").output();
         item["filter"] = "(localization = \"" + $_GET["localization"] + "\" OR localization = \"default\") AND (" + 
         	(item["filter"].asString() == "" ? "1" : item["filter"].asString()) + ")";
@@ -69,7 +70,7 @@ auto GUIInfo = [](client_conn conn, http_request request, param argv) {
         else if (item["itemType"].asString() == "replay") { quickGUIInfo(replays); }
         else if (item["itemType"].asString() == "post") { quickGUIInfo(posts); }
         else if (item["itemType"].asString() == "playlist") { quickGUIInfo(playlists); }
-        sections += fetchSectionBottom(searchUrl, listUrl).output();
+        sections += fetchSectionBottom(searchUrl, listUrl, item["help"].asString() != "", item["help"].asString()).output();
         sections += "</div>";
     }
     argList["html.icons"] = icons;

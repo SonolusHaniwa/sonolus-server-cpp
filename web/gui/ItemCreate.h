@@ -7,9 +7,9 @@ auto GUICreate = [](client_conn conn, http_request request, param argv){
         argv[0] != "engines" && 
         argv[0] != "replays" && 
         argv[0] != "posts" && 
-        argv[0] != "playlists") { quickSendMsg(404); }
+        argv[0] != "playlists") { quickSendMsg(404, "Item type not found."); }
         
-    if (!checkLogin(request)) { quickSendMsg(401); }
+    if (!checkLogin(request)) { quickSendMsg(401, "Unauthorized."); }
     
     string header = readFile("./web/html/components/header.html");
     string body = readFile("./web/html/pages/ItemCreate.html");

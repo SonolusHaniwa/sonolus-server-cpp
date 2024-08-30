@@ -1,6 +1,6 @@
 using namespace std;
 auto uploader = [](client_conn conn, http_request request, param argv){
-    if (!checkLogin(request)) quickSendMsg(401);
+    if (!checkLogin(request)) quickSendMsg(401, "Unauthorized.");
     auto $_POST = postParam(request);
     string filePointerBeg = base64_decode($_POST["file"]);
     int len = filePointerBeg.size();

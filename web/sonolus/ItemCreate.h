@@ -1,6 +1,6 @@
 auto SonolusCreate = [](client_conn conn, http_request request, param argv){
-    if (request.method != "POST") quickSendMsg(405);
-    if (!checkLogin(request)) quickSendMsg(401);
+    if (request.method != "POST") quickSendMsg(405, "Request method not allowed.");
+    if (!checkLogin(request)) quickSendMsg(401, "Unauthorized.");
     
 	Json::Value CreateItemResponse;
     if (request.postdata[0] == '{') request.postdata = json_decode(request.postdata)["values"].asString();
@@ -11,7 +11,7 @@ auto SonolusCreate = [](client_conn conn, http_request request, param argv){
 	for (int i = 0; i < appConfig[argv[0] + ".creates"].size(); i++)
 		if (appConfig[argv[0] + ".creates"][i]["type"].asString() == $_POST["type"]) id = i;
 	if (argv[0] == "rooms") id = 0;
-	if (id == -1) quickSendMsg(404);
+	if (id == -1) quickSendMsg(404, "Create type not found.");
 	auto CreateItem = appConfig[argv[0] + ".creates"][id];
 	CreateItemResponse["hashes"].resize(0);
 	CreateItemResponse["key"] = generateSession();
@@ -47,13 +47,13 @@ auto SonolusCreate = [](client_conn conn, http_request request, param argv){
     string description = args["description"];
     localization = args["localization"];
     
-	if (engine != "" && enginesNumber("name = \"" + engine + "\"") == 0) quickSendMsg(404);
-	if (skin != "" && skinsNumber("name = \"" + skin + "\"") == 0) quickSendMsg(404);
-	if (background != "" && backgroundsNumber("name = \"" + background + "\"") == 0) quickSendMsg(404);
-	if (effect != "" && effectsNumber("name = \"" + effect + "\"") == 0) quickSendMsg(404);
-	if (particle != "" && particlesNumber("name = \"" + particle + "\"") == 0) quickSendMsg(404);
-	if (level != "" && levelsNumber("name = \"" + level + "\"") == 0) quickSendMsg(404);
-	for (int i = 0; i < levels.size(); i++) if (levelsNumber("name = \"" + levels[i].asString() + "\"") == 0) quickSendMsg(404);
+	if (engine != "" && enginesNumber("name = \"" + engine + "\"") == 0) quickSendMsg(404, "Engine not found.");
+	if (skin != "" && skinsNumber("name = \"" + skin + "\"") == 0) quickSendMsg(404, "Skin not found.");
+	if (background != "" && backgroundsNumber("name = \"" + background + "\"") == 0) quickSendMsg(404, "Background not found.");
+	if (effect != "" && effectsNumber("name = \"" + effect + "\"") == 0) quickSendMsg(404, "Effect not found.");
+	if (particle != "" && particlesNumber("name = \"" + particle + "\"") == 0) quickSendMsg(404, "Particle not found.");
+	if (level != "" && levelsNumber("name = \"" + level + "\"") == 0) quickSendMsg(404, "Level not found.");
+	for (int i = 0; i < levels.size(); i++) if (levelsNumber("name = \"" + levels[i].asString() + "\"") == 0) quickSendMsg(404, "Level not found.");
 
     if (argv[0] == "levels") raws = levelsCreate(LevelItem(id,
 	    	name, rating, title, artists, author, 
@@ -143,10 +143,14 @@ auto SonolusCreate = [](client_conn conn, http_request request, param argv){
 		CreateItemResponse["key"] = key;
 		db.execute("UPDATE Room SET creatorId = \"" + user.id + "\" WHERE name = \"" + name + "\"", "Room");
 	}
-	else quickSendMsg(404);
+	else quickSendMsg(404, "Item type not found.");
 
-	if (argv[0] != "rooms") CreateItemResponse["name"] = name;
+	if (argv[0] != "rooms") {
+		CreateItemResponse["shouldUpdateInfo"] = true;
+		CreateItemResponse["shouldNavigateToItem"] = name;
+		CreateItemResponse["name"] = name;
+	}
 	CreateItemResponse["code"] = 200;
 	if (raws) { quickSendObj(CreateItemResponse); }
-	else { quickSendMsg(400); }
+	else { quickSendMsg(400, "Database error."); }
 };

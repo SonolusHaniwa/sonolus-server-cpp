@@ -14,9 +14,9 @@ auto Authentication = [](client_conn conn, http_request request, param argv){
         auto userProfile = AuthenticateServerRequest["userProfile"];
         Json::Value AuthenticateServerResponse;
         string json = request.postdata;
-        if (!ecdsa_sha256_verify(json, base64_decode(request.argv["sonolus-signature"]), SonolusPublicKey)) quickSendMsg(401);
-        if (abs(times / 1000 - time(0)) > appConfig["session.expireTime"].asInt() * 24 * 60 * 60) quickSendMsg(401);
-        // if (address.size() < realAddress.size() || address.substr(0, realAddress.size()) != realAddress) quickSendMsg(401);
+        if (!ecdsa_sha256_verify(json, base64_decode(request.argv["sonolus-signature"]), SonolusPublicKey)) quickSendMsg(401, "Signature verification failed.");
+        if (abs(times / 1000 - time(0)) > appConfig["session.expireTime"].asInt() * 24 * 60 * 60) quickSendMsg(401, "Timed out.");
+        // if (address.size() < realAddress.size() || address.substr(0, realAddress.size()) != realAddress) quickSendMsg(401, "Invalid address.");
 		string session = generateSession();
         AuthenticateServerResponse["session"] = session;
         AuthenticateServerResponse["expiration"] = (Json::Int64)(times += appConfig["session.expireTime"].asInt64() * 24 * 60 * 60 * 1000);
@@ -30,14 +30,15 @@ auto Authentication = [](client_conn conn, http_request request, param argv){
         auto userProfile = AuthenticateServerRequest["userProfile"];
         Json::Value AuthenticateServerResponse;
         string json = request.postdata;
-        if (!ecdsa_sha256_verify(json, base64_decode(request.argv["sonolus-signature"]), SonolusPublicKey)) quickSendMsg(401);
-        if (abs(times / 1000 - time(0)) > appConfig["session.expireTime"].asInt() * 24 * 60 * 60) quickSendMsg(401);
-        // if (address.size() < realAddress.size() || address.substr(0, realAddress.size()) != realAddress) quickSendMsg(401);
+        if (!ecdsa_sha256_verify(json, base64_decode(request.argv["sonolus-signature"]), SonolusPublicKey)) quickSendMsg(401, "Signature verification failed.");
+        if (abs(times / 1000 - time(0)) > appConfig["session.expireTime"].asInt() * 24 * 60 * 60) quickSendMsg(401, "Timed out.");
+        // if (address.size() < realAddress.size() || address.substr(0, realAddress.size()) != realAddress) quickSendMsg(401, "Invalid address");
         AuthenticateServerResponse["session"] = getParam(request)["sessionId"];
         AuthenticateServerResponse["expiration"] = (Json::Int64)(times += appConfig["session.expireTime"].asInt64() * 24 * 60 * 60 * 1000);
         // 保存用户信息
         db.execute("UPDATE UserSession SET uid = \"" + userProfile["id"].asString() + "\" WHERE session = \"" + getParam(request)["sessionId"] + "\"", "UserSession");
         usersCreate(UserProfile(userProfile));
+        AuthenticateServerResponse["message"] = "success.";
         quickSendObj(AuthenticateServerResponse);
-    } else quickSendMsg(404);
+    } else quickSendMsg(404, "Authentication type not found.");
 };

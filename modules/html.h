@@ -289,12 +289,14 @@ H fetchSearchServerItems(string query, string name, string itemType, vector<stri
     return fetchSearchMulti(query, name, defs, values, realDefs, isMargin, isRequired);
 }
 
-H fetchSectionSearch(string searchOptions, string url, string type) {
+H fetchSectionSearch(string searchOptions, string url, string type, bool hasHelp, string helpText) {
     string source = readFile("./web/html/components/sectionSearch.html");
     argvar args;
     args["html.searchOptions"] = searchOptions;
     args["url"] = url;
     args["type"] = type;
+    args["hasHelp"] = hasHelp ? "style=\"margin-right: 10px;\"" : "style=\"display: none;\"";
+    args["helpText"] = helpText;
     return str_replace(source, args);
 }
 
@@ -341,7 +343,7 @@ H fetchIconTextButton(string onclick, string icon, string text) {
     return str_replace(source, args);
 }
 
-H fetchSectionTitle(string title, string searchUrl, string listUrl) {
+H fetchSectionTitle(string title, string searchUrl, string listUrl, bool hasHelp, string helpText) {
     string source = readFile("./web/html/components/sectionTitle.html");
     argvar args;
     args["title"] = title;
@@ -351,10 +353,12 @@ H fetchSectionTitle(string title, string searchUrl, string listUrl) {
     if (listUrl == "") args["list.isDisplay"] = "style=\"display: none;\"";
     else args["list.isDisplay"] = "";
     args["listUrl"] = listUrl;
+    args["hasHelp"] = hasHelp ? "" : "style=\"display: none;\"";
+    args["helpText"] = helpText;
     return str_replace(source, args);
 }
 
-H fetchSectionBottom(string searchUrl, string listUrl) {
+H fetchSectionBottom(string searchUrl, string listUrl, bool hasHelp, string helpText) {
     string source = readFile("./web/html/components/sectionBottom.html");
     argvar args;
     if (searchUrl == "") args["search.isDisplay"] = "style=\"display: none;\"";
@@ -363,6 +367,8 @@ H fetchSectionBottom(string searchUrl, string listUrl) {
     if (listUrl == "") args["list.isDisplay"] = "style=\"display: none;\"";
     else args["list.isDisplay"] = "";
     args["listUrl"] = listUrl;
+    args["hasHelp"] = hasHelp ? "" : "style=\"display: none;\"";
+    args["helpText"] = helpText;
     return str_replace(source, args);
 }
 
@@ -373,7 +379,7 @@ vector<string> iconName = {
     "post", "playlist", "level", "skin", "background", 
     "effect", "particle", "engine", "replay", "login", 
     "logout", "description", "tags", "more", "heartHollow",
-    "comment", "community", "reply", "configuration"
+    "comment", "community", "reply", "configuration", "question"
 };
 argvar iconList;
 bool iconLoader = [](){

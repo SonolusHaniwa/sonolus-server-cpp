@@ -3,7 +3,7 @@ using namespace std;
 auto css_import = [](client_conn conn, http_request request, param argv) {
     string filename = argv[0];
     ifstream fin(("./web/css/" + filename).c_str());
-    if (!fin) quickSendMsg(404);
+    if (!fin) quickSendMsg(404, "File not found.");
     fin.seekg(0, ios::end);
     int len = fin.tellg();
     fin.seekg(0, ios::beg);

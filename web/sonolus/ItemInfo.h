@@ -9,7 +9,9 @@
             1, appConfig[defineToString(name2)".pageSize.info"].asInt() \
         ), \
         search: constructDefaultSearchOption(name1##Search, item["searchValues"].asString()), \
-        searchValues: item["searchValues"].asString() \
+        searchValues: item["searchValues"].asString(), \
+        description: item["description"].asString(), \
+        help: item["help"].asString() \
     }).toJsonObject()); \
 }
 
@@ -48,7 +50,7 @@ auto SonolusInfo = [](client_conn conn, http_request request, param argv){
     else if (argv[0] == "posts") { quickSonolusInfo(Post, posts); }
     else if (argv[0] == "playlists") { quickSonolusInfo(Playlist, playlists); }
     else if (argv[0] == "rooms") { quickSonolusInfo(Room, rooms); }
-    else quickSendMsg(404);
+    else quickSendMsg(404, "Item type not found.");
     for (int i = 0; i < appConfig[argv[0] + ".info.sections"].size(); i++) {
         auto item = appConfig[argv[0] + ".info.sections"][i];
         if (item["itemType"].asString() == "level") { quickSonolusInfoSection(Level, levels); }

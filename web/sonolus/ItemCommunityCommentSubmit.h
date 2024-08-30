@@ -1,7 +1,7 @@
 auto SonolusCommunityCommentSubmit = [](client_conn conn, http_request request, param argv) {
     request.postdata = json_decode(request.postdata)["values"].asString();
     auto $_POST = postParam(request);
-    if (!checkLogin(request)) quickSendMsg(401);
+    if (!checkLogin(request)) quickSendMsg(401, "Unauthorized.");
     UserProfile profile = getUserProfile(request);
     Json::Value SubmitItemCommunityActionResponse;
     SubmitItemCommunityActionResponse["shouldUpdateCommunity"] = true;

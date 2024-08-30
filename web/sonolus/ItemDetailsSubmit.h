@@ -1,7 +1,7 @@
 auto SonolusDetailsSubmit = [](client_conn conn, http_request request, param argv){
     request.postdata = json_decode(request.postdata)["values"].asString();
     auto $_POST = postParam(request);
-    if (!checkLogin(request)) quickSendMsg(401);
+    if (!checkLogin(request)) quickSendMsg(401, "Unauthorized.");
     UserProfile profile = getUserProfile(request);
     Json::Value ServerSubmitItemActionResponse;
     bool isLike = db.query("SELECT uid FROM LikeTable WHERE targetType = \"" + argv[0] + "\" AND targetName = \"" + argv[1] + "\" AND uid = \"" + profile.id + "\"", "LikeTable").size();
@@ -20,5 +20,7 @@ auto SonolusDetailsSubmit = [](client_conn conn, http_request request, param arg
     ServerSubmitItemActionResponse["shouldRemove"] = false;
     ServerSubmitItemActionResponse["key"] = "";
     ServerSubmitItemActionResponse["hashes"].resize(0);
+    ServerSubmitItemActionResponse["shouldUpdateItem"] = true;
+    ServerSubmitItemActionResponse["shouldRemoveItem"] = false;
     quickSendObj(ServerSubmitItemActionResponse);
 };

@@ -7,7 +7,7 @@ auto GUICommunityCommentJump = [](client_conn conn, http_request request, param 
         argv[0] != "engines" && 
         argv[0] != "replays" && 
         argv[0] != "posts" && 
-        argv[0] != "playlists") { quickSendMsg(404); }
+        argv[0] != "playlists") { quickSendMsg(404, "Item type not found."); }
 
     string header = readFile("./web/html/components/header.html");
     string body = readFile("./web/html/pages/ItemJump.html");

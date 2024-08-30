@@ -13,7 +13,7 @@ auto GUIList = [](client_conn conn, http_request request, param argv) {
         argv[0] != "engines" && 
         argv[0] != "replays" && 
         argv[0] != "posts" && 
-        argv[0] != "playlists") { quickSendMsg(404); }
+        argv[0] != "playlists") { quickSendMsg(404, "Item type not found."); }
 
     string header = readFile("./web/html/components/header.html");
     string body = readFile("./web/html/pages/ItemList.html");
@@ -50,7 +50,7 @@ auto GUIList = [](client_conn conn, http_request request, param argv) {
             }
         }
         
-        if (searchId == -1) quickSendMsg(404);
+        if (searchId == -1) quickSendMsg(404, "Search type not found.");
         sqlFilter += str_replace(filter, args);
         order = str_replace(order, args);
         if (filter == "") sqlFilter += "1";
@@ -67,7 +67,7 @@ auto GUIList = [](client_conn conn, http_request request, param argv) {
     else if (argv[0] == "replays") { quickGUIList(replays); }
     else if (argv[0] == "posts") { quickGUIList(posts); }
     else if (argv[0] == "playlists") { quickGUIList(playlists); }
-    else quickSendMsg(404);
+    else quickSendMsg(404, "Iten type not found.");
 
     argList["page.title"] = "{{language." + argv[0] + "}} | " + appConfig["server.title"].asString();
     argList["html.navbar"] = fetchNavBar("{{language." + argv[0] + "}}").output();

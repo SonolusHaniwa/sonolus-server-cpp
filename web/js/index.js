@@ -374,3 +374,16 @@ async function closeConfiguration() {
     await sleep(150);
     document.getElementById("configurationInterface").style.visibility = "hidden";
 }
+
+async function showHelp(content) {
+    document.getElementById("helpContent").innerHTML = content;
+    document.getElementById("helpInterface").style.visibility = "";
+    await sleep(10);
+    document.getElementById("helpInterface").style.opacity = 1;
+}
+
+async function hideHelp() {
+    document.getElementById("helpInterface").style.opacity = 0;
+    await sleep(150);
+    document.getElementById("helpInterface").style.visibility = "hidden";
+}

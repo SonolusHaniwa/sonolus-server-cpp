@@ -4,7 +4,7 @@ using namespace std;
 auto downloader = [](client_conn conn, http_request request, param argv){
     /** 打开文件 */
     ifstream fin(("./data/" + argv[0]).c_str(), ios::binary);
-    if (!fin) quickSendMsg(404);
+    if (!fin) quickSendMsg(404, "File not found.");
 
     /** 构造基础响应头 */
     argvar response = __default_response;

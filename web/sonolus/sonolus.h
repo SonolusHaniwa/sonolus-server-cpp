@@ -50,14 +50,15 @@ void loadDefaultVariable() {
     msg[505]["msg"] = "505 HTTP Version not supported";
 }
 
-#define quickSendMsg(code) {\
+#define quickSendMsg(code, message) {\
+    msg[code]["message"] = message; \
     __api_default_response["Content-Length"] = to_string(json_encode(msg[code]).size()); \
     putRequest(conn, code, __api_default_response); \
     send(conn, json_encode(msg[code])); \
     exitRequest(conn); \
 }
 
-#define quickSendObj(obj) { \
+#define quickSendObj(obj) {\
     string E2BAAF3B97DBEEF01C0043275F9A0E7 = str_replace(dataPrefix.c_str(), appConfig["server.data.prefix"][atoi(getParam(request)["source"].c_str())]["url"].asCString(), json_encode(obj).c_str()); \
     __api_default_response["Content-Length"] = to_string(E2BAAF3B97DBEEF01C0043275F9A0E7.size()); \
     putRequest(conn, 200, __api_default_response); \

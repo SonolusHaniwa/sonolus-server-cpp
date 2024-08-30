@@ -1,5 +1,5 @@
 auto SonolusUpload = [](client_conn conn, http_request request, param argv){
-    if (!checkLogin(request)) quickSendMsg(401);
+    if (!checkLogin(request)) quickSendMsg(401, "Unauthorized.");
     
     string boundary = request.argv["content-type"].substr(request.argv["content-type"].find("boundary=") + 9);
     string data = request.postdata;
@@ -9,11 +9,11 @@ auto SonolusUpload = [](client_conn conn, http_request request, param argv){
         string hash = data.substr(data.find("filename=\"") + 10, 40);
         string file = data.substr(data.find("\r\n\r\n") + 4);
         string realHash = sha1(file);
-        if (hash != realHash) quickSendMsg(403);
+        if (hash != realHash) quickSendMsg(403, "Hash mismatch.");
         ofstream fout("./data/" + hash, ios::binary);
         fout.write(file.c_str(), file.size());
         fout.close();
     }
 
-    quickSendMsg(200);
+    quickSendMsg(200, "OK.");
 };

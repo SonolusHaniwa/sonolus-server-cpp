@@ -731,15 +731,15 @@ type ServerSubmitItemCommunityActionResponse = {
 }
 ```
 
-> ## Item Leaderboard
-> - Now can have description.
-> ```diff
-> type ServerItemLeaderboard = {
->     name: string
->     title: Text | (string & {})
-> +   description?: string
-> }
-> ```
+## Item Leaderboard
+- Now can have description.
+```diff
+type ServerItemLeaderboard = {
+    name: string
+    title: Text | (string & {})
++   description?: string
+}
+```
 
 ## Server Item Section
 - Now can display items of any type, specified by `itemType` (eg `'level'`).
@@ -956,3 +956,78 @@ type TextChatMessage = {
     value: string
 }
 ```
+
+# Upcoming `0.8.5` Custom Server Changes (1/1)
+
+Specs and types are not yet available. This update includes breaking changes.
+
+## Error Response
+- In all endpoints and SRL resources, when returning an error status code, server can optionally return `ServerMessage`, which will be displayed to user.
+
+## External Authentication
+- Now required to respond with `ServerMessage`.
+
+## `GET /sonolus/levels/result/info`
+- When user creates a replay at result screen, Sonolus will ask user if they want to upload the created replay to `source` server.
+- If confirmed, this endpoint will be requested.
+- Respond with a list of submit forms for user to fill out, or respond with empty array/no `submits` to indicate uploading replay is not supported.
+- Server must implement this endpoint even if uploading replay is not supported.
+```ts
+type ServerLevelResultInfo = {
+    submits?: ServerForm[]
+}
+```
+
+## `POST /sonolus/levels/result/submit` and `POST /sonolus/levels/result/upload`
+- Similar to other submit/upload endpoints.
+```ts
+type ServerSubmitLevelResultRequest = {
+    replay: ReplayItem
+    values: string
+}
+
+type ServerSubmitLevelResultResponse = {
+    key: string
+    hashes: string
+}
+```
+
+## Create Item
+- Now has actions server can instruct client to take.
+```diff
+type ServerCreateItemResponse = {
+-   name: string
+    key: string
+    hashes: string[]
++   shouldUpdateInfo?: boolean
++   shouldNavigateToItem?: string
+}
+```
+
+## Submit Item Action
+- Now has actions server can instruct client to take.
+```diff
+type ServerSubmitItemActionResponse = {
+-   shouldUpdate?: boolean
+-   shouldRemove?: boolean
+    key: string
+    hashes: string[]
++   shouldUpdateItem?: boolean
++   shouldRemoveItem?: boolean
++   shouldNavigateToItem?: string
+}
+```
+
+## `ServerMessage`
+```ts
+type ServerMessage = {
+    message?: string
+}
+```
+
+## `ServerItemSection`
+- New optional `description` property.
+- New optional `help` property.
+
+## `ServerForm`
+- New optional `help` property.

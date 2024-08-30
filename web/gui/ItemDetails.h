@@ -1,9 +1,10 @@
 #define quickGUIDetailsSection(type) {\
     detailsSection += "<a style=\"height:0px;margin:0px;\" name=\"" + section["title"].asString() + "\"></a>"; \
-    detailsSection += "<div class=\"flex flex-col space-y-2 sm:space-y-3\">" + fetchSectionTitle(section["title"].asString(), searchUrl, listUrl).output(); \
+    detailsSection += "<div class=\"flex flex-col space-y-2 sm:space-y-3\">" + fetchSectionTitle(section["title"].asString(), searchUrl, listUrl, section["help"].asString() != "", section["help"].asString()).output(); \
+    if (section["description"].asString() != "") detailsSection += "<div class=\"flex flex-col space-y-2 sm:space-y-3\"><p class=\"whitespace-pre-wrap\">" + section["description"].asString() + "</p></div>"; \
     auto list = type##List(section["filter"].asString(), section["order"].asString(), 1, appConfig[string(argv[0]) + ".pageSize.recommends"].asInt()); \
     for (int j = 0; j < list.size(); j++) detailsSection += list[j].toHTMLObject().output(); \
-    detailsSection += fetchSectionBottom(searchUrl, listUrl).output(); \
+    detailsSection += fetchSectionBottom(searchUrl, listUrl, section["help"].asString() != "", section["help"].asString()).output(); \
     detailsSection += "</div>"; \
 }
 
@@ -11,7 +12,7 @@
     auto items = name##List( \
     	"name = \"" + argv[1] + "\" AND (localization = \"" + $_GET["localization"] + "\" OR localization = \"default\")", \
     	"CASE WHEN localization = \"default\" THEN 1 WHEN localization != \"default\" THEN 0 END ASC"); \
-    if (items.size() == 0) { quickSendMsg(404); } \
+    if (items.size() == 0) { quickSendMsg(404, "Item not found."); } \
     auto item = items[0]; argList = merge(argList, item.fetchParamList()); \
     argList["html.open_in_sonolus"] = fetchOpenInSonolus(item.fetchParamList()["sonolus.url"]).output(); \
     argList["html.itemDetails"] = str_replace(ItemDetails, argList); \
@@ -32,7 +33,7 @@ auto GUIDetails = [](client_conn conn, http_request request, param argv) {
         argv[0] != "engines" && 
         argv[0] != "replays" && 
         argv[0] != "posts" && 
-        argv[0] != "playlists") { quickSendMsg(404); }
+        argv[0] != "playlists") { quickSendMsg(404, "Item type not found."); }
 
     string header = readFile("./web/html/components/header.html");
     string ItemDetails = readFile("./web/html/pages/ItemDetails/" + argv[0] + ".html");

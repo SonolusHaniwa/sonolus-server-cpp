@@ -11,6 +11,8 @@ class ItemSection {
     vector<T> items = {};
     Search search = Search();
     string searchValues = "";
+    string description = "";
+    string help = "";
     
     void append(T item) {
         items.push_back(item);
@@ -26,6 +28,8 @@ class ItemSection {
             res["items"].append(items[i].toJsonObject());
         if (search.type != "quick") res["search"] = search.toJsonObject();
         if (searchValues != "") res["searchValues"] = searchValues;
+        if (description != "") res["description"] = description;
+        if (help != "") res["help"] = help;
         return res;
     }
 };

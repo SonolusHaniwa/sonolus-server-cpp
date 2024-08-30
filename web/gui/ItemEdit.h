@@ -2,7 +2,7 @@
     auto items = name2##List( \
     	"name == \"" + argv[1] + "\" AND (localization = \"" + $_GET["localization"] + "\" OR localization = \"default\")", \
     	"CASE WHEN localization = \"default\" THEN 1 WHEN localization != \"default\" THEN 0 END ASC"); \
-    if (items.size() == 0) { quickSendMsg(404); } \
+    if (items.size() == 0) { quickSendMsg(404, "Item not found."); } \
     auto item = items[0]; dataSet = item.toJsonObject(); \
     dataSet["localization"] = name2##Number("name = \"" + argv[1] + "\" AND localization = \"" + $_GET["localization"] + "\"") == 0 ? "default" : $_GET["localization"]; \
     argList["item.id"] = to_string(item.id); \
@@ -28,9 +28,9 @@ auto GUIEdit = [](client_conn conn, http_request request, param argv){
         argv[0] != "engines" && 
         argv[0] != "replays" && 
         argv[0] != "posts" && 
-        argv[0] != "playlists") { quickSendMsg(404); }
+        argv[0] != "playlists") { quickSendMsg(404, "Item type not found."); }
         
-    if (!checkLogin(request)) { quickSendMsg(401); }
+    if (!checkLogin(request)) { quickSendMsg(401, "Unauthorized."); }
     
     string header = readFile("./web/html/components/header.html");
     string body = readFile("./web/html/pages/ItemCreate.html");

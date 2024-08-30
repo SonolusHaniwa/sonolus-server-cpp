@@ -1,6 +1,6 @@
 auto SonolusRoomJoin = [](client_conn conn, http_request request, param argv){
 	auto items = roomsList("name = \"" + argv[0] + "\"", "");
-	if (items.size() == 0) quickSendMsg(404);
+	if (items.size() == 0) quickSendMsg(404, "Item not found.");
 	string creatorId = db.query("SELECT creatorId FROM Room where name = \"" + argv[0] + "\"", "Room")[0]["creatorId"];
 	
 	string id = argv[0];
@@ -13,9 +13,9 @@ auto SonolusRoomJoin = [](client_conn conn, http_request request, param argv){
     string address = JoinRoomRequest["address"].asString();
     time_t times = JoinRoomRequest["time"].asInt64();
     auto userProfile = JoinRoomRequest["userProfile"];
-    if (type != "authenticateMultiplayer") quickSendMsg(401);
-    if (!ecdsa_sha256_verify(json, base64_decode(request.argv["sonolus-signature"]), SonolusPublicKey)) quickSendMsg(401);
-    if (abs(times / 1000 - time(0)) > appConfig["session.expireTime"].asInt() * 24 * 60 * 60) quickSendMsg(401);
+    if (type != "authenticateMultiplayer") quickSendMsg(404, "Authentication type not found.");
+    if (!ecdsa_sha256_verify(json, base64_decode(request.argv["sonolus-signature"]), SonolusPublicKey)) quickSendMsg(401, "Signature verification failed.");
+    if (abs(times / 1000 - time(0)) > appConfig["session.expireTime"].asInt() * 24 * 60 * 60) quickSendMsg(401, "Timed out.");
 
     if (userProfile["id"].asString() == creatorId) {
     	auto $_GET = getParam(request);

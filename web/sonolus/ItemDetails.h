@@ -10,7 +10,9 @@
         itemType: obj["itemType"].asString(), \
         items: name2##List(filter, order, 1, appConfig[defineToString(name2)".pageSize.recommends"].asInt()), \
         search: constructDefaultSearchOption(name1##Search, obj["searchValues"].asString()), \
-        searchValues: searchValues \
+        searchValues: searchValues, \
+        description: obj["description"].asString(), \
+        help: obj["help"].asString() \
     }).toJsonObject()); \
 }
 
@@ -18,7 +20,7 @@
     auto items = name2##List( \
     	"name = \"" + argv[1] + "\" AND (localization = \"" + $_GET["localization"] + "\" OR localization = \"default\")", \
     	"CASE WHEN localization = \"default\" THEN 1 WHEN localization != \"default\" THEN 0 END ASC"); \
-    if (items.size() == 0) { quickSendMsg(404); } \
+    if (items.size() == 0) { quickSendMsg(404, "Item not found."); } \
     auto item = items[0]; \
     ItemDetails["item"] = item.toJsonObject(); \
     ItemDetails["description"] = item.description; \
@@ -60,7 +62,7 @@ auto SonolusDetails = [](client_conn conn, http_request request, param argv){
     else if (argv[0] == "replays") { quickSonolusDetails(Replay, replays); }
     else if (argv[0] == "posts") { quickSonolusDetails(Post, posts); }
     else if (argv[0] == "playlists") { quickSonolusDetails(Playlist, playlists); }
-    else quickSendMsg(404);
+    else quickSendMsg(404, "Item type not found.");
     for (auto v : args) args[v.first] = quote_encode(v.second);
     for (int i = 0; i < appConfig[argv[0] + ".details.sections"].size(); i++) {
         auto obj = appConfig[argv[0] + ".details.sections"][i];
