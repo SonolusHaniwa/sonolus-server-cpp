@@ -22,6 +22,7 @@ sed -i "s/var byteArray = this.byteArray.subarray(this.start, this.end);/var byt
 sed -i "s/Module\['addRunDependency'\]/\/\/ Module\['addRunDependency'\]/g" libsonolus.js
 sed -i "s/Module\['removeRunDependency'\]/\/\/ Module\['removeRunDependency'\]/g" libsonolus.js
 sed -i "s/require('fs').readFile(packageName, function(err, contents)/return; require('fs').readFile(packageName, function(err, contents)/g" libsonolus.js
+sed -i "s/require('fs').readFile(packageName, (err, contents)/return; require('fs').readFile(packageName, (err, contents)/g" libsonolus.js
 sed -i "s/Module.preloadResults\[PACKAGE_NAME\] = {fromCache: false};/Module.preloadResults\[PACKAGE_NAME\] = {fromCache: false}; fetched = new ArrayBuffer(114514);/g" libsonolus.js
 cp ./libsonolus.js ./public/
 cp ./libsonolus.wasm ./public/
