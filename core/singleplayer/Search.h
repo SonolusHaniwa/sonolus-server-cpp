@@ -261,7 +261,7 @@ class SearchCollectionItemOption {
     string name = "";
     string type = "collectionItem";
     string def = "";
-    string collectionType;
+    string itemType = "";
     string description = "";
     bool required = false;
 
@@ -271,7 +271,7 @@ class SearchCollectionItemOption {
         res["name"] = name;
         res["type"] = type;
         res["def"] = def;
-        res["collectionType"] = collectionType;
+        res["itemType"] = itemType;
         if (description != "") res["description"] = description;
         res["required"] = required;
         return res;
@@ -429,6 +429,196 @@ class Search {
     }
 };
 
+Search quickSearchObject = [](){
+	return Search({
+        type: "quick",
+		title: "Quick Search",
+		icon: "search",
+		filter: "title LIKE \"keywords\"",
+		order: "",
+		options: {
+            SearchTextOption({
+                query: "keywords",
+                name: "#KEYWORDS",
+                placeholder: "#KEYWORDS_PLACEHOLDER"
+            })
+		}
+	});
+}();
+
+Search likeCommunityObject = [](){
+    return Search({
+        type: "like",
+        title: "#LIKE",
+        icon: "heartHollow"
+    });
+}();
+
+Search unlikeCommunityObject = [](){
+    return Search({
+        type: "dislike",
+        title: "#DISLIKE",
+        icon: "heart"
+    });
+}();
+
+Search commentCommunityObject = [](){
+    return Search({
+        type: "comment",
+        title: "#COMMENT",
+        icon: "comment",
+        options: {
+            SearchTextAreaOption({
+                query: "content",
+                name: "#CONTENT",
+                placeholder: "#CONTENT_PLACEHOLDER"
+            })
+        }
+    });
+}();
+
+Search ratingCommunityObject = [](){
+    return Search({
+        type: "rating",
+        title: "#RATING",
+        icon: "star",
+        options: {
+            SearchSliderOption({
+                query: "rating",
+                name: "#RATING",
+                def: 5,
+                min: 0,
+                max: 5,
+                step: 1
+            })
+        }
+    });
+}();
+
+Search replyCommunityObject = [](){
+    return Search({
+        type: "reply",
+        title: "#REPLY",
+        icon: "reply",
+        options: {
+            SearchTextAreaOption({
+                query: "content",
+                name: "#CONTENT",
+                placeholder: "#CONTENT_PLACEHOLDER"
+            })
+        }
+    });
+}();
+
+// Search editCommunityObject = [](){
+//     return Search({
+//         type: "edit",
+//         title: "#EDIT",
+//         icon: "edit",
+//         options: {
+//             SearchTextAreaOption("content", "#CONTENT", "#CONTENT_PLACEHOLDER")
+//         }
+//     });
+// }();
+
+Search deleteCommunityObject = [](){
+    return Search({
+        type: "delete",
+        title: "#DELETE",
+        icon: "delete"
+    });
+}();
+
+Search createRecordObject = [](){
+    auto res = Search({
+        type: "record",
+        title: "Create Record",
+        icon: "plus",
+        description: "Upload your record here.",
+        options: {
+            SearchCollectionItemOption({
+                query: "item",
+                name: "Item",
+                itemType: "replay",
+                description: "Select your record here.",
+                required: true
+            })
+        }
+    });
+    res.append(SearchToggleOption({
+        query: "private",
+        name: "Private",
+        def: false,
+        description: "Set the record to private."
+    }));
+    res.append(SearchToggleOption({
+        query: "rank",
+        name: "Rank",
+        def: true,
+        description: "Allow the record to be ranked."
+    }));
+    return res;
+}();
+
+Search levelResultObject = [](){
+    auto res = Search({
+        type: "record",
+        title: "Create Record",
+        icon: "plus",
+        description: "Upload your record here.",
+        options: {}
+    });
+    res.append(SearchToggleOption({
+        query: "private",
+        name: "Private",
+        def: false,
+        description: "Set the record to private."
+    }));
+    res.append(SearchToggleOption({
+        query: "rank",
+        name: "Rank",
+        def: true,
+        description: "Allow the record to be ranked."
+    }));
+    return res;
+}();
+
+Search publicReplayObject = [](){
+    return Search({
+        type: "public",
+        title: "#PUBLIC",
+        icon: "hide",
+        options: {}
+    });
+}();
+
+Search privateReplayObject = [](){
+    return Search({
+        type: "private",
+        title: "#PRIVATE",
+        icon: "show",
+        options: {}
+    });
+}();
+
+Search rankReplayObject = [](){
+    return Search({
+        type: "rank",
+        title: "#SHOW",
+        icon: "delete",
+        options: {}
+    });
+}();
+
+Search unrankReplayObject = [](){
+    return Search({
+        type: "unrank",
+        title: "#HIDE",
+        icon: "ranking",
+        options: {}
+    });
+}();
+
 vector<SearchOption> constructSearchOptions(Json::Value orig) {
     vector<SearchOption> search;
     for (int i = 0; i < orig.size(); i++) {
@@ -548,7 +738,7 @@ vector<SearchOption> constructSearchOptions(Json::Value orig) {
             search.push_back(SearchCollectionItemOption({
                 query: orig[i]["query"].asString(), 
                 name: orig[i]["name"].asString(),
-                collectionType: orig[i]["collectionType"].asString(),
+                itemType: orig[i]["itemType"].asString(),
                 description: orig[i]["description"].asString(),
                 required: orig[i]["required"].asBool()
             }));
@@ -643,6 +833,7 @@ Search constructSingleSearch(Json::Value orig) {
     search.order = orig["order"].asString();
     if (orig.isMember("help")) search.help = orig["help"].asString();
     search.options = constructSearchOptions(orig["options"]);
+    if (search.type == "record") search = createRecordObject;
     return search;
 }
 
@@ -684,7 +875,9 @@ argvar argResolver(argvar source, Json::Value options, string localization) {
                 result[varName] += ")";
             }
         } else if (options[i]["type"].asString() == "serverItem") {
+            source[name] = str_replace("\\\"", "\"", source[name]);
             result[name] = json_decode(source[name])["name"].asString();
+            if (result[name] == "") result[name] = source[name];
         } else if (options[i]["type"].asString() == "serverItems") {
             string tableName = options[i]["itemType"].asString();
             tableName[0] += 'A' - 'a';
@@ -705,105 +898,5 @@ vector<Search> constructSearch(Json::Value orig) {
 	for (int k = 0; k < orig.size(); k++) result.push_back(constructSingleSearch(orig[k]));
     return result;
 }
-
-Search quickSearchObject = [](){
-	return Search({
-        type: "quick",
-		title: "Quick Search",
-		icon: "search",
-		filter: "title LIKE \"keywords\"",
-		order: "",
-		options: {
-            SearchTextOption({
-                query: "keywords",
-                name: "#KEYWORDS",
-                placeholder: "#KEYWORDS_PLACEHOLDER"
-            })
-		}
-	});
-}();
-
-Search likeCommunityObject = [](){
-    return Search({
-        type: "like",
-        title: "#LIKE",
-        icon: "heartHollow"
-    });
-}();
-
-Search unlikeCommunityObject = [](){
-    return Search({
-        type: "dislike",
-        title: "#DISLIKE",
-        icon: "heart"
-    });
-}();
-
-Search commentCommunityObject = [](){
-    return Search({
-        type: "comment",
-        title: "#COMMENT",
-        icon: "comment",
-        options: {
-            SearchTextAreaOption({
-                query: "content",
-                name: "#CONTENT",
-                placeholder: "#CONTENT_PLACEHOLDER"
-            })
-        }
-    });
-}();
-
-Search ratingCommunityObject = [](){
-    return Search({
-        type: "rating",
-        title: "#RATING",
-        icon: "star",
-        options: {
-            SearchSliderOption({
-                query: "rating",
-                name: "#RATING",
-                def: 5,
-                min: 0,
-                max: 5,
-                step: 1
-            })
-        }
-    });
-}();
-
-Search replyCommunityObject = [](){
-    return Search({
-        type: "reply",
-        title: "#REPLY",
-        icon: "reply",
-        options: {
-            SearchTextAreaOption({
-                query: "content",
-                name: "#CONTENT",
-                placeholder: "#CONTENT_PLACEHOLDER"
-            })
-        }
-    });
-}();
-
-// Search editCommunityObject = [](){
-//     return Search({
-//         type: "edit",
-//         title: "#EDIT",
-//         icon: "edit",
-//         options: {
-//             SearchTextAreaOption("content", "#CONTENT", "#CONTENT_PLACEHOLDER")
-//         }
-//     });
-// }();
-
-Search deleteCommunityObject = [](){
-    return Search({
-        type: "delete",
-        title: "#DELETE",
-        icon: "delete"
-    });
-}();
 
 #endif

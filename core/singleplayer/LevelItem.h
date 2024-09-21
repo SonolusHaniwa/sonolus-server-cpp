@@ -105,6 +105,7 @@ class LevelItem {
 
     argvar fetchParamList() {
         argvar args;
+        args["id"] = to_string(id);
         args["name"] = name;
         args["version"] = to_string(version);
         args["rating"] = to_string(rating);

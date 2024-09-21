@@ -83,7 +83,7 @@ UserProfile getUserProfile(http_request request) {
 }
 
 string generateSession() {
-    srand(time(NULL));
+    srand(time(NULL) + clock());
     string session = "", key = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     for (int i = 0; i < 32; i++) session += key[rand() % 62];
     return session;
@@ -107,6 +107,9 @@ string generateSession() {
 #include"ItemLeaderboardDetails.h"
 #include"ItemLeaderboardRecordList.h"
 #include"ItemLeaderboardRecordDetails.h"
+#include"LevelsResultInfo.h"
+#include"LevelsResultSubmit.h"
+#include"LevelsResultUpload.h"
 #ifndef __EMSCRIPTEN__
 #include"RoomJoin.h"
 #include"RoomConnection.h"

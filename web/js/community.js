@@ -15,12 +15,42 @@ async function communityActions(type, name, value) {
     }
 }
 
+async function detailActions(type, name, value) {
+    let response = await fetch("/sonolus/" + type + "/" + name + "/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ values: value })
+    });
+    if (response.ok) {
+        location.href = location.href;
+    } else {
+        let json = await response.json();
+        alert(json.msg);
+    }
+}
+
 function like(type, name) {
     communityActions(type, name, "type=like");
 }
 
 function unlike(type, name) {
     communityActions(type, name, "type=dislike")
+}
+
+function public(type, name) {
+    detailActions(type, name, "type=public");
+}
+
+function private(type, name) {
+    detailActions(type, name, "type=private");
+}
+
+function rank(type, name) {
+    detailActions(type, name, "type=rank");
+}
+
+function unrank(type, name) {
+    detailActions(type, name, "type=unrank");
 }
 
 async function comment() {

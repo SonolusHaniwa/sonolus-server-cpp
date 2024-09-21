@@ -14,7 +14,8 @@
         "Room": 0,
         "LikeTable": 0,
         "Comment": 0,
-        "Rating": 0
+        "Rating": 0,
+        "Record": 0
     },
     "server.listenHost": "0.0.0.0",
     "server.listenPort": 8080,

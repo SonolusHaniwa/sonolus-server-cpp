@@ -296,7 +296,7 @@ void exportReplay(ReplayItem replay, tmpFile& tmp) {
 }
 
 string solveUrl(string url) {
-    auto path = explode("/", url.c_str());
+    auto path = explode("/", url);
     if (path.size() < 3) return "";
     string rootUrl = "";
     for (int i = 0; i < path.size() - 2; i++) rootUrl += path[i] + "/";
@@ -307,7 +307,7 @@ string solveUrl(string url) {
 }
 
 string getRootUrl(string url) {
-    auto path = explode("/", url.c_str());
+    auto path = explode("/", url);
     if (path.size() < 3) return "";
     string rootUrl = "";
     for (int i = 0; i < path.size() - 3; i++) rootUrl += path[i] + "/";
@@ -375,7 +375,7 @@ void callExportError(string text) {
 
 void remoteExport(string origUrl, tmpFile& tmp) {
     string url = solveUrl(origUrl);
-    auto path = explode("/", url.c_str());
+    auto path = explode("/", url);
     if (path.size() < 2) {
         writeLog(LOG_LEVEL_INFO, "Invalid resource link.");
         writeLog(LOG_LEVEL_DEBUG, "0 files were written");

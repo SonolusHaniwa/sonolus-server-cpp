@@ -6,6 +6,7 @@
 #include<openssl/ec.h>
 #include<openssl/ecdsa.h>
 #include<openssl/obj_mac.h>
+#include<zlib.h>
 
 string str_replace(string from, string to, string source, bool supportTranfer = false) {
     string result = source;
@@ -219,6 +220,127 @@ string quote_encode(string source) {
 }
 string quote_encode2(string source) {
     return str_replace("\"", "\\\"", str_replace("\n", "\\n", source));
+}
+
+// gzip
+using std::string;
+using std::stringstream;
+
+#define MOD_GZIP_ZLIB_WINDOWSIZE 15
+#define MOD_GZIP_ZLIB_CFACTOR    9
+#define MOD_GZIP_ZLIB_BSIZE      8096
+
+string compress_gzip(string str, int compressionlevel = Z_BEST_COMPRESSION) {
+    // cout << str.asString() << endl;
+    z_stream zs;
+    memset(&zs, 0, sizeof(zs));
+    if (deflateInit2(&zs, 
+                     compressionlevel,
+                     Z_DEFLATED,
+                     MOD_GZIP_ZLIB_WINDOWSIZE + 16, 
+                     MOD_GZIP_ZLIB_CFACTOR,
+                     Z_DEFAULT_STRATEGY) != Z_OK
+    ) throw(std::runtime_error("deflateInit2 failed while compressing."));
+    char* x = new char[str.size()];
+    for (int i = 0; i < str.size(); i++) x[i] = str[i];
+    zs.next_in = (Bytef*)x;
+    zs.avail_in = str.size();
+    int ret;
+    char outbuffer[32768];
+    std::string outstring;
+    do {
+        zs.next_out = reinterpret_cast<Bytef*>(outbuffer);
+        zs.avail_out = sizeof(outbuffer);
+        ret = deflate(&zs, Z_FINISH);
+        if (outstring.size() < zs.total_out) outstring.append(outbuffer, zs.total_out - outstring.size());
+    } while (ret == Z_OK);
+    deflateEnd(&zs);
+    if (ret != Z_STREAM_END) {
+        std::ostringstream oss;
+        oss << "Exception during zlib compression: (" << ret << ") " << zs.msg;
+        throw(std::runtime_error(oss.str()));
+    } delete[] x;
+    return outstring;
+}
+
+string compress_deflate(string str, int compressionlevel = Z_BEST_COMPRESSION) {
+    z_stream zs;
+    memset(&zs, 0, sizeof(zs));
+    if (deflateInit(&zs, compressionlevel) != Z_OK)
+        throw(std::runtime_error("deflateInit failed while compressing."));
+    zs.next_in = (Bytef*)str.c_str();
+    zs.avail_in = str.size();
+    int ret;
+    char outbuffer[32768];
+    std::string outstring;
+    do {
+        zs.next_out = reinterpret_cast<Bytef*>(outbuffer);
+        zs.avail_out = sizeof(outbuffer);
+        ret = deflate(&zs, Z_FINISH);
+        if (outstring.size() < zs.total_out)
+            outstring.append(outbuffer, zs.total_out - outstring.size());
+    } while (ret == Z_OK);
+    deflateEnd(&zs);
+    if (ret != Z_STREAM_END) {
+        std::ostringstream oss;
+        oss << "Exception during zlib compression: (" << ret << ") " << zs.msg;
+        throw(std::runtime_error(oss.str()));
+    }
+	return outstring;
+}
+
+string decompress_deflate(string str) {
+    z_stream zs;
+    memset(&zs, 0, sizeof(zs));
+    if (inflateInit(&zs) != Z_OK)
+        throw(std::runtime_error("inflateInit failed while decompressing."));
+    zs.next_in = (Bytef*)str.c_str();
+    zs.avail_in = str.size();
+    int ret;
+    char outbuffer[32768];
+    std::string outstring;
+    do {
+        zs.next_out = reinterpret_cast<Bytef*>(outbuffer);
+        zs.avail_out = sizeof(outbuffer);
+        ret = inflate(&zs, 0);
+        if (outstring.size() < zs.total_out)
+            outstring.append(outbuffer, zs.total_out - outstring.size());
+    } while (ret == Z_OK);
+    inflateEnd(&zs);
+    if (ret != Z_STREAM_END) {
+        std::ostringstream oss;
+        oss << "Exception during zlib decompression: (" << ret << ") " << zs.msg;
+        throw(std::runtime_error(oss.str()));
+    }
+    return outstring;
+}
+
+string decompress_gzip(string str) {
+    z_stream zs;
+    memset(&zs, 0, sizeof(zs));
+    if (inflateInit2(&zs, MOD_GZIP_ZLIB_WINDOWSIZE + 16) != Z_OK)
+        throw(std::runtime_error("inflateInit failed while decompressing."));
+    char* x = new char[str.size()];
+    for (int i = 0; i < str.size(); i++) x[i] = str[i];
+    zs.next_in = (Bytef*)x;
+    zs.avail_in = str.size();
+    int ret;
+    char outbuffer[100010];
+    std::string outstring;
+    do {
+        zs.next_out = reinterpret_cast<Bytef*>(outbuffer);
+        zs.avail_out = sizeof(outbuffer);
+        ret = inflate(&zs, 0);
+        if (outstring.size() < zs.total_out)
+            outstring.append(outbuffer, zs.total_out - outstring.size());
+    } while (ret == Z_OK);
+    inflateEnd(&zs);
+    if (ret != Z_STREAM_END) {
+        std::ostringstream oss;
+        oss << "Exception during zlib decompression: (" << ret << ") " << zs.msg;
+        throw(std::runtime_error(oss.str()));
+    } delete[] x;
+    return outstring;
 }
 
 #endif

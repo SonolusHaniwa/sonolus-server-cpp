@@ -19,6 +19,7 @@ vector<Search> LevelCreate, SkinCreate, BackgroundCreate, EffectCreate, Particle
 #include"PlaylistItem.h"
 #include"RoomItem.h"
 #include"UserProfile.h"
+#include"Record.h"
 #include"ItemCommunityComment.h"
 using namespace std;
 

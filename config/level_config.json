@@ -4,12 +4,16 @@
     "levels.enableRating": true,
     "levels.enableGUICreate": false,
     "levels.enableSonolusCreate": false,
+    "levels.enableResultUpload": true,
     "levels.exceptGUICreate": [],
     "levels.exceptSonolusCreate": [],
+    "levels.exceptResultUpload": [],
     "levels.pageSize.info": 5,
     "levels.pageSize.list": 20,
     "levels.pageSize.recommends": 5,
     "levels.pageSize.community": 5,
+    "levels.pageSize.leaderboard.topRecord": 5,
+    "levels.pageSize.leaderboard.record": 10,
     "levels.info.sections": [
         {
             "title": "#NEWEST",
@@ -257,5 +261,104 @@
             }
         }
     ],
-    "levels.leaderboards": []
+    "levels.leaderboards": [
+        {
+            "name": "arcScore",
+            "title": "Top Arcade Score",
+            "description": "Ranking by Arcade Score",
+            "groupFunction": "MAX",
+            "groupVariable": "arcadeScore",
+            "filter": "type = \"levels\" AND item = \"{{id}}\" AND isPrivate = false AND allowRank = true AND isRank = true",
+            "order": "arcadeScore DESC",
+            "constructor": {
+                "rank": "#{{order}}",
+                "player": "{{player.name}}#{{player.handle}}",
+                "value": "{{arcadeScore}}"
+            }
+        },
+        {
+            "name": "accScore",
+            "title": "Top Accuracy Score",
+            "description": "Ranking by Accuracy Score",
+            "groupFunction": "MAX",
+            "groupVariable": "accuracyScore",
+            "filter": "type = \"levels\" AND item = \"{{id}}\" AND isPrivate = false AND allowRank = true AND isRank = true",
+            "order": "accuracyScore DESC",
+            "constructor": {
+                "rank": "#{{order}}",
+                "player": "{{player.name}}#{{player.handle}}",
+                "value": "{{accuracyScore}}"
+            }
+        },
+        {
+            "name": "combo",
+            "title": "Top Combo",
+            "description": "Ranking by Max Combo",
+            "groupFunction": "MAX",
+            "groupVariable": "combo",
+            "filter": "type = \"levels\" AND item = \"{{id}}\" AND isPrivate = false AND allowRank = true AND isRank = true",
+            "order": "combo DESC",
+            "constructor": {
+                "rank": "#{{order}}",
+                "player": "{{player.name}}#{{player.handle}}",
+                "value": "{{combo}}"
+            }
+        },
+        {
+            "name": "perfect",
+            "title": "Top Perfect",
+            "description": "Ranking by Number of Perfect",
+            "groupFunction": "MAX",
+            "groupVariable": "perfect",
+            "filter": "type = \"levels\" AND item = \"{{id}}\" AND isPrivate = false AND allowRank = true AND isRank = true",
+            "order": "perfect DESC",
+            "constructor": {
+                "rank": "#{{order}}",
+                "player": "{{player.name}}#{{player.handle}}",
+                "value": "{{perfect}}"
+            }
+        },
+        {
+            "name": "great",
+            "title": "Top Great",
+            "description": "Ranking by Number of Graat",
+            "groupFunction": "MIN",
+            "groupVariable": "great",
+            "filter": "type = \"levels\" AND item = \"{{id}}\" AND isPrivate = false AND allowRank = true AND isRank = true",
+            "order": "great DESC",
+            "constructor": {
+                "rank": "#{{order}}",
+                "player": "{{player.name}}#{{player.handle}}",
+                "value": "{{great}}"
+            }
+        },
+        {
+            "name": "good",
+            "title": "Top Good",
+            "description": "Ranking by Number of Good",
+            "groupFunction": "MIN",
+            "groupVariable": "good",
+            "filter": "type = \"levels\" AND item = \"{{id}}\" AND isPrivate = false AND allowRank = true AND isRank = true",
+            "order": "good DESC",
+            "constructor": {
+                "rank": "#{{order}}",
+                "player": "{{player.name}}#{{player.handle}}",
+                "value": "{{good}}"
+            }
+        },
+        {
+            "name": "miss",
+            "title": "Top Miss",
+            "description": "Ranking by Number of Miss",
+            "groupFunction": "MIN",
+            "groupVariable": "miss",
+            "filter": "type = \"levels\" AND item = \"{{id}}\" AND isPrivate = false AND allowRank = true AND isRank = true",
+            "order": "miss DESC",
+            "constructor": {
+                "rank": "#{{order}}",
+                "player": "{{player.name}}#{{player.handle}}",
+                "value": "{{miss}}"
+            }
+        }
+    ]
 }

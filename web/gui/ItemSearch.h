@@ -33,6 +33,7 @@ auto GUISearch = [](client_conn conn, http_request request, param argv) {
                 for (int i = 0; i < item["def"].size(); i++) res += item["def"][i].asString();
                 return res;
             }() : $_GET[query];
+            if (item["type"].asString() == "serverItem") args[type + "_" + query] = $_GET.find(query) == $_GET.end() || type != $_GET["type"] ? item["def"].asString() : $_GET[query];
         }
     }
 
@@ -52,6 +53,7 @@ auto GUISearch = [](client_conn conn, http_request request, param argv) {
         false,
         "quick"
     ).output();
+    string localization = cookie["lang"] == "" ? appConfig["language.default"].asString() : cookie["lang"];
     for (int i = 0; i < Searches.size(); i++) {
         searchOptions += "<div class=\"flex\" style=\"align-items: between\">"
                              "<h2 class=\"flex-grow py-1 text-xl font-bold sm:py-1.5 sm:text-3xl\">" + 
@@ -91,6 +93,7 @@ auto GUISearch = [](client_conn conn, http_request request, param argv) {
                     for (int k = 0; k < item["def"].size(); k++) defs.push_back(false);
                     return defs;
                 }(), 0, 0).output();
+            if (item["type"].asString() == "serverItem") sections += fetchSearchServerItem(type + "_" + query, item["name"].asString(), item["itemType"].asString(), "\"" + args[type + "_" + query] + "\"", "\"\"", localization, 0, 0).output();
         } searchOptions += fetchSectionSearch(
             sections, 
             "/" + argv[0] + "/list", 

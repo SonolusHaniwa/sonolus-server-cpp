@@ -4,14 +4,14 @@ using namespace std;
 class UserProfile {
     public:
 
-	string id;
-	string handle;
-	string name;
-	string avatarForegroundColor;
-	string avatarBackgroundColor;
-	string aboutMe;
-	vector<pair<string, string> > socialLinks;
-	vector<string> favorites;
+	string id = "";
+	string handle = "-1";
+	string name = "";
+	string avatarForegroundColor = "";
+	string avatarBackgroundColor = "";
+	string aboutMe = "";
+	vector<pair<string, string> > socialLinks = {};
+	vector<string> favorites = {};
 
     UserProfile(){}
     UserProfile(string id, string handle, string name, 
@@ -32,29 +32,26 @@ class UserProfile {
 		for (int i = 0; i < arr["favorites"].size(); i++) favorites.push_back(arr["favorites"][i].asString());
     }
 
-    // Json::Value toJsonObject() {
-    //     Json::Value res;
-    //     res["name"] = name;
-    //     res["version"] = version;
-    //     res["rating"] = rating;
-    //     res["title"] = title;
-    //     res["artists"] = artists;
-    //     res["author"] = author;
-    //     res["engine"] = engine.toJsonObject();
-    //     res["useSkin"] = useSkin.toJsonObject();
-    //     res["useBackground"] = useBackground.toJsonObject();
-    //     res["useEffect"] = useEffect.toJsonObject();
-    //     res["useParticle"] = useParticle.toJsonObject();
-    //     res["cover"] = cover.toJsonObject();
-    //     res["bgm"] = bgm.toJsonObject();
-    //     res["data"] = data.toJsonObject();
-    //     res["preview"] = preview.toJsonObject();
-    //     res["tags"].resize(0);
-    //     for (int i = 0; i < tags.size(); i++) res["tags"].append(tags[i].toJsonObject());
-    //     res["description"] = description;
-    //     res["source"] = source;
-    //     return res;
-    // }
+    Json::Value toJsonObject() {
+    	Json::Value obj;
+    	obj["id"] = id;
+    	obj["handle"] = handle;
+    	obj["name"] = name;
+    	obj["avatarForegroundColor"] = avatarForegroundColor;
+    	obj["avatarBackgroundColor"] = avatarBackgroundColor;
+    	obj["aboutMe"] = aboutMe;
+    	Json::Value arr;
+    	for (int i = 0; i < socialLinks.size(); i++) {
+    		Json::Value item;
+    		item["title"] = socialLinks[i].first;
+    		item["address"] = socialLinks[i].second;
+    		arr.append(item);
+    	} obj["socialLinks"] = arr;
+    	arr = Json::Value();
+    	for (int i = 0; i < favorites.size(); i++) arr.append(favorites[i]);
+    	obj["favorites"] = arr;
+    	return obj;
+    }
 };
 
 int usersNumber(string filter) {

@@ -248,7 +248,7 @@ void http_init() {
  * @param source 源字符串
  * @return vector<string> 
  */
-vector<string> explode(const char* seperator, const char* source) {
+vector<string> explode(string seperator, string source) {
 	string src = source; vector<string> res;
 	while (src.find(seperator) != string::npos) {
 		int wh = src.find(seperator);
@@ -283,7 +283,7 @@ http_request getRequest(client_conn& conn) {
     writeLog(LOG_LEVEL_DEBUG, "Recieved Request Header from client!");
 
     /** 判断请求方式 */
-    vector<string> __arg = explode("\r\n", s.c_str());
+    vector<string> __arg = explode("\r\n", s);
     if (__arg.size() < 1) {
         writeLog(LOG_LEVEL_WARNING, "Invalid HTTP Request in line 1: eof!");
         stringstream buffer;
@@ -302,7 +302,7 @@ http_request getRequest(client_conn& conn) {
 
 
     /** 读取请求头的第一行 */
-    vector<string> header = explode(" ", __arg[0].c_str());
+    vector<string> header = explode(" ", __arg[0]);
     if (header.size() < 3 || (
         header[0] != "GET" && header[0] != "HEAD" && header[0] != "POST" &&
         header[0] != "PUT" && header[0] != "DELETE" && header[0] != "CONNECT" && 
@@ -402,7 +402,7 @@ argvar getParam(http_request request) {
 
     /** 提取参数信息 */
     string param = path.substr(path.find("?") + 1);
-    vector<string> __arg = explode("&", param.c_str());
+    vector<string> __arg = explode("&", param);
     writeLog(LOG_LEVEL_DEBUG, "GET parameter length: " + to_string(__arg.size()));
 
     /** 逐个处理 */
@@ -430,7 +430,7 @@ argvar getParam(http_request request) {
  * @return argvar
  */
 argvar getParam(string param) {
-    vector<string> __arg = explode("&", param.c_str());
+    vector<string> __arg = explode("&", param);
     writeLog(LOG_LEVEL_DEBUG, "GET parameter length: " + to_string(__arg.size()));
 
     /** 逐个处理 */
@@ -477,7 +477,7 @@ argvar postParam(http_request request) {
 
 
     /** 提取参数信息 */
-    vector<string> __arg = explode("&", request.postdata.c_str());
+    vector<string> __arg = explode("&", request.postdata);
     writeLog(LOG_LEVEL_DEBUG, "POST parameter length: " + to_string(__arg.size()));
 
     /** 逐个处理 */
@@ -516,7 +516,7 @@ argvar cookieParam(http_request request) {
     string s = request.argv["cookie"];
 
     /** 拆散字符串 */
-    vector<string> arr = explode("; ", s.c_str());
+    vector<string> arr = explode("; ", s);
     writeLog(LOG_LEVEL_DEBUG, "COOKIE parameter length: " + to_string(arr.size()));
     argvar $_COOKIE;
     for (int i = 0; i < arr.size(); i++) {
@@ -685,8 +685,8 @@ class application {
          */
         bool matchPath(r __route, string path) {
             /** 拆散字符串 */
-            vector<string> __goal = explode("/", __route.path.c_str());
-            vector<string> __path = explode("/", path.c_str());
+            vector<string> __goal = explode("/", __route.path);
+            vector<string> __path = explode("/", path);
             while (__goal.size() && __goal.back() == "") __goal.pop_back();
             while (__path.size() && __path.back() == "") __path.pop_back();
             if (__goal.size() != __path.size()) return false;
@@ -743,8 +743,8 @@ class application {
 						param argv;
 						string __goal = route[i].path;
 						string __path = rlpath;
-						vector<string> __a1 = explode("/", __goal.c_str());
-						vector<string> __a2 = explode("/", __path.c_str());
+						vector<string> __a1 = explode("/", __goal);
+						vector<string> __a2 = explode("/", __path);
 						for (int j = 0; j < __a1.size(); j++)
 							if (__a1[j] == "%d" || __a1[j] == "%D" ||
 								__a1[j] == "%f" || __a1[j] == "%F" ||

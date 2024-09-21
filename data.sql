@@ -217,3 +217,34 @@ CREATE TABLE Rating (
     uid text,
     rating int
 );
+
+/* Sonolus v0.8.5 */
+CREATE TABLE Record (
+    id int,
+    name text,
+    type text,
+    item int,
+    replay int,
+    player text,
+    startTime int,
+    saveTime int,
+    duration float,
+    inputOffset float,
+    playAreaWidth int,
+    playAreaHeight int,
+    grade text,
+    arcadeScore int,
+    accuracyScore int,
+    combo int,
+    perfect int,
+    great int,
+    good int,
+    miss int,
+    totalCount int,
+    isPrivate boolean,
+    allowRank boolean,
+    isRank boolean
+);
+ALTER TABLE Replay ADD COLUMN isPrivate boolean DEFAULT 0;
+ALTER TABLE Replay ADD COLUMN isRank boolean DEFAULT 1;
+ALTER TABLE Replay ADD COLUMN allowRank boolean DEFAULT 0;

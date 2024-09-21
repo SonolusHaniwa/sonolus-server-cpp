@@ -9,12 +9,17 @@
 auto SonolusList = [](client_conn conn, http_request request, param argv){
     auto $_GET = getParam(request);
     Json::Value ItemList;
+    bool isLogin = checkLogin(request);
+    UserProfile user = !isLogin ? UserProfile() : getUserProfile(request);
 
     // 准备 Filter
     string sqlFilter = "(localization = \"" + $_GET["localization"] + "\" OR localization = \"default\") AND (";
     string order = "id DESC";
-    if ($_GET["type"] == "quick") sqlFilter += "title like \"%" + str_replace("\"", "\\\"", urldecode($_GET["keywords"])) + "%\"";
-    else {
+    if ($_GET["type"] == "quick") {
+        sqlFilter += "title like \"%" + str_replace("\"", "\\\"", urldecode($_GET["keywords"])) + "%\"";
+        // 特判 itemType = replay, searchType = quick 的情况
+        if (argv[0] == "replays") sqlFilter += " AND (isPrivate = false OR author LIKE \"%#" + user.handle + "\")";
+    } else {
         argvar args = argvar(); string filter = "";
         Json::Value Searches = appConfig[argv[0] + ".searches"];
         for (auto v : $_GET) $_GET[v.first] = str_replace("\"", "\\\"", urldecode(v.second));
@@ -29,6 +34,9 @@ auto SonolusList = [](client_conn conn, http_request request, param argv){
             searchId = i; filter = Searches[i]["filter"].asString(); order = Searches[i]["order"].asString();
             args = argResolver($_GET, Searches[i]["options"], $_GET["localization"]);
         }
+        args["user.id"] = user.id;
+        args["user.name"] = user.name;
+        args["user.handle"] = user.handle;
 
         if (searchId == -1) quickSendMsg(404, "Search type not found.");
         sqlFilter += str_replace(filter, args);

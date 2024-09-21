@@ -15,6 +15,40 @@ auto SonolusCreate = [](client_conn conn, http_request request, param argv){
 	auto CreateItem = appConfig[argv[0] + ".creates"][id];
 	CreateItemResponse["hashes"].resize(0);
 	CreateItemResponse["key"] = generateSession();
+
+	// 特判 itemType = replays, searchType = record
+	if (argv[0] == "replays" && $_POST["type"] == "record") {
+		auto replay = ReplayItem(-1, json_decode($_POST["item"]));
+		LevelItem level = replay.level;
+		if (!levelsNumber("name = \"" + replay.level.name + "\"")) 
+			quickSendMsg(404, "Level not found.");
+    	level = levelsList("name = \"" + replay.level.name + "\"", "")[0];
+		if (replaysNumber("data = \"" + replay.data.hash + "\" AND configuration = \"" + replay.configuration.hash + "\""))
+			quickSendMsg(409, "Conflict.");
+
+		replay.name = "replay-" + generateSession();
+		replay.isPrivate = $_POST.find("private") != $_POST.end();
+		replay.isRank = $_POST.find("rank") == $_POST.end();
+		replay.allowRank = false;
+		replaysCreate(replay);
+		replay = replaysList("name = \"" + replay.name + "\"", "")[0];
+		Record<LevelItem> record = Record<LevelItem>(
+			-1, generateSession(), "levels", level, replay, getUserProfile(request),
+			0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, $_POST.find("private") != $_POST.end(), true, $_POST.find("rank") == $_POST.end()
+		);
+		recordsCreate(record);
+		Json::Value CreateItemResponse;
+		CreateItemResponse["key"] = record.name;
+		CreateItemResponse["hashes"].resize(0);
+		CreateItemResponse["hashes"].append(replay.configuration.hash);
+		CreateItemResponse["hashes"].append(replay.data.hash);
+		CreateItemResponse["shouldUpdateInfo"] = true;
+		CreateItemResponse["shouldNavigateToItem"] = replay.name;
+		CreateItemResponse["name"] = replay.name;
+		quickSendObj(CreateItemResponse);
+		return;
+	}
+
 	for (int i = 0; i < CreateItem["options"].size(); i++) if (CreateItem["options"][i]["type"] == "file")
 		if ($_POST[CreateItem["options"][i]["query"].asString()] != "")
 			CreateItemResponse["hashes"].append($_POST[CreateItem["options"][i]["query"].asString()]);

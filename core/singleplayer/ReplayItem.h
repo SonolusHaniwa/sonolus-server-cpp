@@ -18,14 +18,17 @@ class ReplayItem {
     vector<Tag> tags;
     string description;
     string source;
+    bool isPrivate = false;
+    bool isRank = true;
+    bool allowRank = true;
 
     ReplayItem(){}
     ReplayItem(int id, string name, string title, string subtitle, string author, LevelItem level, 
         SRL<ReplayData> data, SRL<ReplayConfiguration> configuration, 
-        vector<Tag> tags, string description = "", string source = ""):
+        vector<Tag> tags, string description = "", string source = "", bool isPrivate = false, bool isRank = true, bool allowRank = true):
         id(id), name(name), title(title), subtitle(subtitle), author(author), level(level), 
         data(data), configuration(configuration), 
-        tags(tags), description(description), source(source){}
+        tags(tags), description(description), source(source), isPrivate(isPrivate), isRank(isRank), allowRank(allowRank){}
     ReplayItem(int replay_id, Json::Value arr) {
         id = replay_id;
         name = arr["name"].asString();
@@ -61,6 +64,7 @@ class ReplayItem {
 
     argvar fetchParamList() {
         argvar args;
+        args["id"] = to_string(id);
         args["name"] = name;
         args["version"] = to_string(version);
         args["title"] = title;
@@ -115,7 +119,10 @@ vector<ReplayItem> replaysList(string filter, string order, int st = 1, int en =
             SRL<ReplayConfiguration>(res[i]["configuration"], dataPrefix + res[i]["configuration"]),
             deserializeTagString(res[i]["tags"]),
             str_replace("\\n", "\n", res[i]["description"]),
-            (appConfig["server.enableSSL"].asBool() ? "https://" : "http://") + appConfig["server.rootUrl"].asString()
+            (appConfig["server.enableSSL"].asBool() ? "https://" : "http://") + appConfig["server.rootUrl"].asString(),
+            atoi(res[i]["isPrivate"].c_str()),
+            atoi(res[i]["isRank"].c_str()),
+            atoi(res[i]["allowRank"].c_str())
         ); list.push_back(data);
     } return list;
 }
@@ -131,14 +138,16 @@ int replaysCreate(ReplayItem item, string localization = "default") {
         sqlbuffer << ", title=\"" << item.title << "\", subtitle=\"" << item.subtitle << "\", author=\"" << item.author;
         sqlbuffer << "\", level=" << levelId << ", data=\"" << item.data.hash << "\", configuration=\"" << item.configuration.hash << "\", ";
         sqlbuffer << "tags=\"" << serializeTagString(item.tags) << "\", ";
-        sqlbuffer << "description=\"" << str_replace("\n", "\\n", item.description) << "\", localization=\"" << localization << "\" WHERE id=" << id;
+        sqlbuffer << "description=\"" << str_replace("\n", "\\n", item.description) << "\", localization=\"" << localization << "\", ";
+        sqlbuffer << "isPrivate=" << item.isPrivate << ", isRank=" << item.isRank << ", allowRank=" << item.allowRank << " WHERE id=" << id;
     } else {
         int id = atoi(db.query("SELECT COUNT(*) AS sum FROM Replay;", "Replay")[0]["sum"].c_str()) + 1;
-        sqlbuffer << "INSERT INTO Replay (id, name, version, title, subtitle, author, level, tags, data, configuration, description, localization) VALUES (";
+        sqlbuffer << "INSERT INTO Replay (id, name, version, title, subtitle, author, level, tags, data, configuration, description, localization, isPrivate, isRank, allowRank) VALUES (";
         sqlbuffer << id << ", \"" << item.name << "\", " << item.version << ", \"" << item.title << "\", ";
         sqlbuffer << "\"" << item.subtitle << "\", \"" << item.author << "\", " << levelId << ", ";
-        sqlbuffer << "\"" << serializeTagString(item.tags) << "\", ";
-        sqlbuffer << "\"" << item.data.hash << "\", \"" << item.configuration.hash << "\", \"" << str_replace("\n", "\\n", item.description) << "\", \"" << localization << "\")";
+        sqlbuffer << "\"" << serializeTagString(item.tags) << "\", \"" << item.data.hash << "\", \"" << item.configuration.hash << "\", ";
+        sqlbuffer << "\"" << str_replace("\n", "\\n", item.description) << "\", \"" << localization << "\", ";
+        sqlbuffer << item.isPrivate << ", " << item.isRank << ", " << item.allowRank << ")";
     } return db.execute(sqlbuffer.str(), "Replay");
 }
 

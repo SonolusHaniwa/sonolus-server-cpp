@@ -18,8 +18,8 @@ auto downloader = [](client_conn conn, http_request request, param argv){
 
     /** 获取断点续传范围信息 */
     if (request.argv.find("range") != request.argv.end()) {
-        string range = explode("=", request.argv["range"].c_str())[1];
-        param val = explode("-", range.c_str());
+        string range = explode("=", request.argv["range"])[1];
+        param val = explode("-", range);
         st = atoi(val[0].c_str()), en = atoi(val[1].c_str());
         if (en == 0) en = filesize - 1;
     }

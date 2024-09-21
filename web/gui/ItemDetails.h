@@ -42,6 +42,8 @@ auto GUIDetails = [](client_conn conn, http_request request, param argv) {
     auto $_GET = getParam(request);
     $_GET["localization"] = cookie["lang"] == "" ? appConfig["language.default"].asString() : cookie["lang"];
     argvar argList = argvar(), args = argvar();
+    bool isLogin = checkLogin(request);
+    UserProfile user = !isLogin ? UserProfile() : getUserProfile(request);
 
     // TODO: add the argList here
     string detailsIcon = fetchIconButton("#ItemDetails", "{{icon." + argv[0].substr(0, argv[0].size() - 1) + "}}").output();
@@ -73,6 +75,9 @@ auto GUIDetails = [](client_conn conn, http_request request, param argv) {
     for (auto v : args) args[v.first] = quote_encode(v.second);
     for (int i = 0; i < appConfig[argv[0] + ".details.sections"].size(); i++) {
         auto section = appConfig[argv[0] + ".details.sections"][i];
+        args["user.id"] = user.id;
+        args["user.name"] = user.name;
+        args["user.handle"] = user.handle;
         string searchUrl = "", listUrl = "";
         section["searchValues"] = str_replace(section["searchValues"].asString(), args);
         section["order"] = str_replace(section["order"].asString(), args);
@@ -96,7 +101,6 @@ auto GUIDetails = [](client_conn conn, http_request request, param argv) {
     } argList["html.detailsSection"] = detailsSection;
     argList["html.icons"] += detailsIcon;
 
-    bool isLogin = checkLogin(request);
     int uid = !isLogin ? -1 : atoi(getUserProfile(request).handle.c_str());
     bool allowCreate = appConfig[argv[0] + ".enableGUICreate"].asBool();
     bool isExcept = false;
@@ -106,14 +110,29 @@ auto GUIDetails = [](client_conn conn, http_request request, param argv) {
     argList["allowUserCreate"] = allowUserCreate ? "" : "style=\"display:none\"";
 
     argList["html.itemActions"] = "";
-    string type = argv[0], name = argv[1];
-    bool isLike = isLogin && (db.query("SELECT uid FROM LikeTable WHERE targetType = \"" + type + "\" AND targetName = \"" + name + "\" AND uid = \"" + getUserProfile(request).id + "\"", "LikeTable").size());
-    if (appConfig[type + ".enableLike"].asBool()) {
-        if (isLike) argList["html.itemActions"] += fetchIconTextButton("unlike('" + type + "', '" + name + "')", "heart", "#DISLIKE").output();
-        else argList["html.itemActions"] += fetchIconTextButton("like('" + type + "', '" + name + "')", "heartHollow", "#LIKE").output();
+    // string type = argv[0], name = argv[1];
+    // bool isLike = isLogin && (db.query("SELECT uid FROM LikeTable WHERE targetType = \"" + type + "\" AND targetName = \"" + name + "\" AND uid = \"" + getUserProfile(request).id + "\"", "LikeTable").size());
+    // if (appConfig[type + ".enableLike"].asBool()) {
+    //     if (isLike) argList["html.itemActions"] += fetchIconTextButton("unlike('" + type + "', '" + name + "')", "heart", "#DISLIKE").output();
+    //     else argList["html.itemActions"] += fetchIconTextButton("like('" + type + "', '" + name + "')", "heartHollow", "#LIKE").output();
+    // }
+    // if (appConfig[type + ".enableRating"].asBool())
+    //     argList["html.itemActions"] += fetchIconTextButton("rating()", "star", "#RATING").output();
+    if (argv[0] == "replays") {
+        auto replay = replaysList("name = \"" + argv[1] + "\"", "")[0];
+        if (replay.author.substr(replay.author.rfind("#") + 1) == user.handle) {
+            argList["html.itemActions"] += fetchIconTextButton(
+                string(replay.isPrivate ? "public" : "private") + "('" + argv[0] + "', '" + argv[1] + "')",
+                replay.isPrivate ? "hide" : "show",
+                replay.isPrivate ? "#PUBLIC" : "#PRIVATE"
+            ).output();
+            if (replay.allowRank) argList["html.itemActions"] += fetchIconTextButton(
+                string(replay.isRank ? "unrank" : "rank") + "('" + argv[0] + "', '" + argv[1] + "')",
+                replay.isRank ? "ranking" : "delete",
+                replay.isRank ? "#HIDE" : "#SHOW"
+            ).output();    
+        }
     }
-    if (appConfig[type + ".enableRating"].asBool())
-        argList["html.itemActions"] += fetchIconTextButton("rating()", "star", "#RATING").output();
     argList["server.bannerUrl"] = dataPrefix + appConfig["server.banner"][atoi(cookieParam(request)["banner"].c_str())]["hash"].asString();
 
     argList = merge(argList, merge(

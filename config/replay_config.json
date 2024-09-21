@@ -3,7 +3,7 @@
     "replays.enableComment": true,
     "replays.enableRating": true,
     "replays.enableGUICreate": false,
-    "replays.enableSonolusCreate": false,
+    "replays.enableSonolusCreate": true,
     "replays.exceptGUICreate": [],
     "replays.exceptSonolusCreate": [],
     "replays.pageSize.info": 5,
@@ -14,44 +14,41 @@
         {
             "title": "#NEWEST",
             "icon": "replay",
-            "filter": "",
+            "filter": "isPrivate = false OR author LIKE \"%#{{user.handle}}\"",
             "itemType": "replay",
             "order": "id DESC",
             "searchValues": "type=quick"
         }
     ],
     "replays.details.sections": [
-        
+        {
+            "title": "#SAME_AUTHOR",
+            "icon": "star",
+            "filter": "author = \"{{author}}\" AND (isPrivate = false OR author LIKE \"%#{{user.handle}}\")",
+            "itemType": "replay",
+            "order": "id DESC"
+        },
+        {
+            "title": "Same Level",
+            "icon": "star",
+            "filter": "level IN (SELECT id FROM Level WHERE title = \"{{level}}\") AND (isPrivate = false OR author LIKE \"%#{{user.handle}}\")",
+            "itemType": "replay",
+            "order": "id DESC"
+        },
+        {
+            "title": "#SAME_CATEGORY",
+            "icon": "star",
+            "filter": "author = \"{{author}}\" AND level IN (SELECT id FROM Level WHERE title = \"{{level}}\") AND (isPrivate = false OR author LIKE \"%#{{user.handle}}\")",
+            "itemType": "replay",
+            "order": "id DESC"
+        }
     ],
     "replays.searches": [
-        
-    ],
-    "replays.creates": [
         {
             "title": "#ADVANCED",
-            "icon": "plus",
+            "icon": "search",
             "type": "advanced",
             "options": [
-                {
-                    "query": "name",
-                    "name": "#NAME",
-                    "type": "text",
-                    "placeholder": "#NAME_PLACEHOLDER",
-                    "required": true
-                },
-                {
-                    "query": "title",
-                    "name": "#TITLE",
-                    "type": "text",
-                    "placeholder": "#TITLE_PLACEHOLDER",
-                    "required": true
-                },
-                {
-                    "query": "subtitle",
-                    "name": "#SUBTITLE",
-                    "type": "text",
-                    "placeholder": "#SUBTITLE_PLACEHOLDER"
-                },
                 {
                     "query": "author",
                     "name": "#AUTHOR",
@@ -59,66 +56,20 @@
                     "placeholder": "#AUTHOR_PLACEHOLDER"
                 },
                 {
-                    "query": "description",
-                    "name": "Description",
-                    "type": "textArea",
-                    "placeholder": "Enter description..."
-                },
-                {
-                    "query": "tags",
-                    "name": "Tags",
-                    "type": "text",
-                    "placeholder": "Enter tags..."
-                },
-                {
-                    "query": "localization",
-                    "name": "Localization",
-                    "type": "localizationItem"
-                },
-                {
                     "query": "level",
                     "name": "#LEVEL",
                     "type": "serverItem",
                     "itemType": "level",
-                    "required": true
-                },
-                {
-                    "query": "data",
-                    "name": "Data",
-                    "type": "file",
-                    "required": true
-                },
-                {
-                    "query": "configuration",
-                    "name": "Configuration",
-                    "type": "file",
-                    "required": true
+                    "allowOtherServers": false
                 }
             ],
-            "values": {
-                "name": "{{name}}",
-                "title": "{{title}}",
-                "subtitle": "{{subtitle}}",
-                "author": "{{author}}",
-                "description": "{{description}}",
-                "tags": "{{tags}}",
-                "localization": "{{localization}}",
-                "level": "{{level}}",
-                "data": "{{data}}",
-                "configuration": "{{configuration}}"
-            },
-            "constructs": {
-                "name": "\"{{name}}\"",
-                "title": "\"{{title}}\"",
-                "subtitle": "\"{{subtitle}}\"",
-                "author": "\"{{author}}\"",
-                "description": "\"{{description}}\"",
-                "tags": "\"{{tags}}\"",
-                "localization": "\"{{localization}}\"",
-                "level": "\"{{level.name}}\"",
-                "data": "\"{{data.hash}}\"",
-                "configuration": "\"{{configuration.hash}}\""
-            }
+            "filter": "author LIKE \"%{{author}}%\" AND (\"{{level}}\" = \"\" OR level in (SELECT id FROM Level WHERE name = \"{{level}}\")) AND (isPrivate = false OR author LIKE \"%#{{user.handle}}\")",
+            "order": "id DESC"
+        }
+    ],
+    "replays.creates": [
+        {
+            "type": "record"
         }
     ],
     "replays.leaderboards": []

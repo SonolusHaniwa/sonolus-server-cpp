@@ -40,6 +40,11 @@ auto SonolusInfo = [](client_conn conn, http_request request, param argv){
     int banner = $_GET["banner"] == "" ? 0 : atoi($_GET["banner"].c_str());
     ItemInfo["banner"] = SRL<ServerBanner>(appConfig["server.banner"][banner]["hash"].asString(),
         dataPrefix + appConfig["server.banner"][banner]["hash"].asString()).toJsonObject();
+    argvar args;
+    UserProfile user = !isLogin ? UserProfile() : getUserProfile(request);
+    args["user.id"] = user.id;
+    args["user.name"] = user.name;
+    args["user.handle"] = user.handle;
     if (argv[0] == "levels") { quickSonolusInfo(Level, levels); }
     else if (argv[0] == "skins") { quickSonolusInfo(Skin, skins); }
     else if (argv[0] == "backgrounds") { quickSonolusInfo(Background, backgrounds); }
@@ -53,6 +58,8 @@ auto SonolusInfo = [](client_conn conn, http_request request, param argv){
     else quickSendMsg(404, "Item type not found.");
     for (int i = 0; i < appConfig[argv[0] + ".info.sections"].size(); i++) {
         auto item = appConfig[argv[0] + ".info.sections"][i];
+        item["filter"] = str_replace(item["filter"].asString(), args);
+        item["order"] = str_replace(item["order"].asString(), args);
         if (item["itemType"].asString() == "level") { quickSonolusInfoSection(Level, levels); }
         else if (item["itemType"].asString() == "skin") { quickSonolusInfoSection(Skin, skins); }
         else if (item["itemType"].asString() == "background") { quickSonolusInfoSection(Background, backgrounds); }

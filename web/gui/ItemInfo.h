@@ -42,10 +42,17 @@ auto GUIInfo = [](client_conn conn, http_request request, param argv) {
         if (appConfig[argv[0] + ".exceptGUICreate"][i].asInt() == uid) isExcept = true;
     bool allowUserCreate = isLogin ? allowCreate ^ isExcept : 0;
     argList["allowUserCreate"] = allowUserCreate ? "" : "style=\"display:none\"";
+    UserProfile user = !isLogin ? UserProfile() : getUserProfile(request);
+    argvar args;
+    args["user.id"] = user.id;
+    args["user.name"] = user.name;
+    args["user.handle"] = user.handle;
 
     string sections = ""; string icons = fetchIconButton("#SearchText", "{{icon.search}}").output();
     for (int i = 0; i < appConfig[argv[0] + ".info.sections"].size(); i++) {
         auto item = appConfig[argv[0] + ".info.sections"][i];
+        item["filter"] = str_replace(item["filter"].asString(), args);
+        item["order"] = str_replace(item["order"].asString(), args);
         sections += "<a style=\"height:0px;\" name=\"" + item["title"].asString() + "\"></a>";
         string searchUrl = "", listUrl = "";
         auto fakeGet = getParam(item["searchValues"].asString());

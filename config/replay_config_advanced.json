@@ -1,0 +1,97 @@
+{
+    "replays.creates": [
+        {
+            "title": "#ADVANCED",
+            "icon": "plus",
+            "type": "advanced",
+            "options": [
+                {
+                    "query": "name",
+                    "name": "#NAME",
+                    "type": "text",
+                    "placeholder": "#NAME_PLACEHOLDER",
+                    "required": true
+                },
+                {
+                    "query": "title",
+                    "name": "#TITLE",
+                    "type": "text",
+                    "placeholder": "#TITLE_PLACEHOLDER",
+                    "required": true
+                },
+                {
+                    "query": "subtitle",
+                    "name": "#SUBTITLE",
+                    "type": "text",
+                    "placeholder": "#SUBTITLE_PLACEHOLDER"
+                },
+                {
+                    "query": "author",
+                    "name": "#AUTHOR",
+                    "type": "text",
+                    "placeholder": "#AUTHOR_PLACEHOLDER"
+                },
+                {
+                    "query": "description",
+                    "name": "Description",
+                    "type": "textArea",
+                    "placeholder": "Enter description..."
+                },
+                {
+                    "query": "tags",
+                    "name": "Tags",
+                    "type": "text",
+                    "placeholder": "Enter tags..."
+                },
+                {
+                    "query": "localization",
+                    "name": "Localization",
+                    "type": "localizationItem"
+                },
+                {
+                    "query": "level",
+                    "name": "#LEVEL",
+                    "type": "serverItem",
+                    "itemType": "level",
+                    "required": true
+                },
+                {
+                    "query": "data",
+                    "name": "Data",
+                    "type": "file",
+                    "required": true
+                },
+                {
+                    "query": "configuration",
+                    "name": "Configuration",
+                    "type": "file",
+                    "required": true
+                }
+            ],
+            "values": {
+                "name": "{{name}}",
+                "title": "{{title}}",
+                "subtitle": "{{subtitle}}",
+                "author": "{{author}}",
+                "description": "{{description}}",
+                "tags": "{{tags}}",
+                "localization": "{{localization}}",
+                "level": "{{level}}",
+                "data": "{{data}}",
+                "configuration": "{{configuration}}"
+            },
+            "constructs": {
+                "name": "\"{{name}}\"",
+                "title": "\"{{title}}\"",
+                "subtitle": "\"{{subtitle}}\"",
+                "author": "\"{{author}}\"",
+                "description": "\"{{description}}\"",
+                "tags": "\"{{tags}}\"",
+                "localization": "\"{{localization}}\"",
+                "level": "\"{{level.name}}\"",
+                "data": "\"{{data.hash}}\"",
+                "configuration": "\"{{configuration.hash}}\""
+            }
+        }
+    ]
+}

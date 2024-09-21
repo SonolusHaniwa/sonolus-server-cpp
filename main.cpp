@@ -104,6 +104,9 @@ void routerRegister(int argc, char** argv) {
     app.addRoute("/sonolus/%s/list", SonolusList);
     app.addRoute("/sonolus/%s/create", SonolusCreate);
     app.addRoute("/sonolus/%s/upload", SonolusUpload);
+    app.addRoute("/sonolus/levels/result/info", SonolusLevelsResultInfo);
+    app.addRoute("/sonolus/levels/result/submit", SonolusLevelsResultSubmit);
+    app.addRoute("/sonolus/levels/result/upload", SonolusLevelsResultUpload);
     app.addRoute("/sonolus/rooms/%s", SonolusRoomJoin);
     app.addRoute("/sonolus/%s/%s", SonolusDetails);
     app.addRoute("/sonolus/%s/%s/submit", SonolusDetailsSubmit);

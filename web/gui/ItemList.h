@@ -19,6 +19,8 @@ auto GUIList = [](client_conn conn, http_request request, param argv) {
     string body = readFile("./web/html/pages/ItemList.html");
     auto cookie = cookieParam(request);
     argvar argList = argvar();
+    bool isLogin = checkLogin(request);
+    UserProfile user = !isLogin ? UserProfile() : getUserProfile(request);
 
     // TODO: add the argList here
     argvar $_GET = getParam(request);
@@ -35,6 +37,8 @@ auto GUIList = [](client_conn conn, http_request request, param argv) {
         type = "{{language.quick}}";
         if ($_GET["keywords"] != "") filterWords = "{{language.KEYWORDS}}: " + urldecode($_GET["keywords"]) + "、";
         sqlFilter += "title like \"%" + str_replace("\"", "\\\"", urldecode($_GET["keywords"])) + "%\"";
+        // 特判 itemType = replay, searchType = quick 的情况
+        if (argv[0] == "replays") sqlFilter += " AND (isPrivate = false OR author LIKE \"%#" + user.handle + "\")";
     } else {
         argvar args = argvar(); string filter = "";
         Json::Value Searches = appConfig[argv[0] + ".searches"];
@@ -49,6 +53,9 @@ auto GUIList = [](client_conn conn, http_request request, param argv) {
                 if (args[query] != "") filterWords += item["name"].asString() + ": " + urldecode(args[query]) + "、";
             }
         }
+        args["user.id"] = user.id;
+        args["user.name"] = user.name;
+        args["user.handle"] = user.handle;
         
         if (searchId == -1) quickSendMsg(404, "Search type not found.");
         sqlFilter += str_replace(filter, args);
