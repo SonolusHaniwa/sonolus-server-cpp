@@ -10,6 +10,8 @@
     "particles.pageSize.list": 20,
     "particles.pageSize.recommends": 5,
     "particles.pageSize.community": 5,
+    "particles.pageSize.leaderboard.topRecord": 5,
+    "particles.pageSize.leaderboard.record": 10,
     "particles.info.sections": [
         {
             "title": "#NEWEST",

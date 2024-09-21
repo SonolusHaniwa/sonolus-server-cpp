@@ -10,6 +10,8 @@
     "posts.pageSize.list": 20,
     "posts.pageSize.recommends": 5,
     "posts.pageSize.community": 5,
+    "posts.pageSize.leaderboard.topRecord": 5,
+    "posts.pageSize.leaderboard.record": 10,
     "posts.info.sections": [
         {
             "title": "#NEWEST",

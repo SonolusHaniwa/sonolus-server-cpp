@@ -10,6 +10,8 @@
     "effects.pageSize.list": 20,
     "effects.pageSize.recommends": 5,
     "effects.pageSize.community": 5,
+    "effects.pageSize.leaderboard.topRecord": 5,
+    "effects.pageSize.leaderboard.record": 10,
     "effects.info.sections": [
         {
             "title": "#NEWEST",

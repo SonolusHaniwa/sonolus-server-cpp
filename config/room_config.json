@@ -10,6 +10,8 @@
     "rooms.pageSize.list": 20,
     "rooms.pageSize.recommends": 5,
     "rooms.pageSize.community": 5,
+    "rooms.pageSize.leaderboard.topRecord": 5,
+    "rooms.pageSize.leaderboard.record": 10,
     "rooms.info.sections": [
         {
             "title": "#NEWEST",

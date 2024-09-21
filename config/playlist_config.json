@@ -10,6 +10,8 @@
     "playlists.pageSize.list": 20,
     "playlists.pageSize.recommends": 5,
     "playlists.pageSize.community": 5,
+    "playlists.pageSize.leaderboard.topRecord": 5,
+    "playlists.pageSize.leaderboard.record": 10,
     "playlists.info.sections": [
         {
             "title": "#NEWEST",

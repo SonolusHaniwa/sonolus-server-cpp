@@ -10,6 +10,8 @@
     "replays.pageSize.list": 20,
     "replays.pageSize.recommends": 5,
     "replays.pageSize.community": 5,
+    "replays.pageSize.leaderboard.topRecord": 5,
+    "replays.pageSize.leaderboard.record": 10,
     "replays.info.sections": [
         {
             "title": "#NEWEST",
