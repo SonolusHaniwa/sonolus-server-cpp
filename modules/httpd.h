@@ -751,6 +751,7 @@ void putRequest(client_conn& conn, int code, argvar argv) {
         putRequest(conn, 500, __default_response);
         send(conn, buffer.str());
         exitRequest(conn);
+        return;
     } 
     writeLog(LOG_LEVEL_DEBUG, "Valid Response Code!");
 
