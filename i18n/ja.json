@@ -449,5 +449,6 @@
 	"selectAll": "全選択",
 	"unselectAll": "全解除",
 	"selected": "選択中：{0}個",
-	"helpButton": "ヘルプ"
+	"helpButton": "ヘルプ",
+	"leaderboard": "ランキング"
 }
