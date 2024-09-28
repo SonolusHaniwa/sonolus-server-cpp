@@ -31,13 +31,13 @@ jobs:
             g++ --version
             mkdir packages
             cd sources
-            g++ main.cpp -o../packages/sonolus -ldl -lmysqlclient -lpthread -lcrypto -lssl -ljsoncpp -lsqlite3 -DENABLE_SQLITE -DENABLE_MYSQL -std=c++14 -O2 -w -DENABLE_CURL -lcurl -DENABLE_ZIP -lzip
+            g++ main.cpp -o../packages/sonolus -ldl -lmysqlclient -lpthread -lcrypto -lssl -ljsoncpp -lsqlite3 -DENABLE_SQLITE -DENABLE_MYSQL -std=c++14 -O2 -w -DENABLE_CURL -lcurl -DENABLE_ZIP -lzip -lz
             cd ..
             mkdir ./packages/plugins
             cd sources
-            g++ plugins/libsonolush/libsonolush.cpp -o ../packages/plugins/libsonolush.so -ldl -fPIC -shared -lmysqlclient -lpthread -lcrypto -lssl -ljsoncpp -lsqlite3 -std=c++17 -O2 -DENABLE_MYSQL -DENABLE_SQLITE
+            g++ plugins/libsonolush/libsonolush.cpp -o ../packages/plugins/libsonolush.so -ldl -fPIC -shared -lmysqlclient -lpthread -lcrypto -lssl -ljsoncpp -lsqlite3 -std=c++17 -O2 -DENABLE_MYSQL -DENABLE_SQLITE -lz
             mv plugins/libsonolush ../packages/plugins
-            g++ plugins/libonedrive/libonedrive.cpp -o ../packages/plugins/libonedrive.so -fPIC -shared -ldl -lmysqlclient -lpthread -lcrypto -lssl -ljsoncpp -lsqlite3 -std=c++17 -lcurl -DENABLE_MYSQL -DENABLE_SQLITE
+            g++ plugins/libonedrive/libonedrive.cpp -o ../packages/plugins/libonedrive.so -fPIC -shared -ldl -lmysqlclient -lpthread -lcrypto -lssl -ljsoncpp -lsqlite3 -std=c++17 -lcurl -DENABLE_MYSQL -DENABLE_SQLITE -lz
             mv plugins/libonedrive ../packages/plugins
             cd ..
             mv ./sources/config ./packages/config
