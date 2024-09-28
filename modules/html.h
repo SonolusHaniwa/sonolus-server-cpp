@@ -372,6 +372,11 @@ H fetchSectionBottom(string searchUrl, string listUrl, bool hasHelp, string help
     return str_replace(source, args);
 }
 
+H fetchRecord(argvar args) {
+    string source = readFile("./web/html/components/records.html");
+    return str_replace(source, args);
+}
+
 vector<string> iconName = {
     "advanced", "award", "bookmark", "crown", "heart", 
     "medal", "ranking", "search", "shuffle", "star", 

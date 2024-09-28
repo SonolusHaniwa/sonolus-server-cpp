@@ -449,5 +449,6 @@
 	"selectAll": "Select All",
 	"unselectAll": "Select None",
 	"selected": "{0} Selected",
-	"helpButton": "Help"
+	"helpButton": "Help",
+	"leaderboard": "Leaderboard"
 }

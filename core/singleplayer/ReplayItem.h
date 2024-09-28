@@ -72,6 +72,7 @@ class ReplayItem {
         args["subtitle"] = subtitle;
         args["author"] = author;
         args["level"] = level.title;
+        args["level.id"] = to_string(level.id);
         args["engine"] = level.engine.title;
         args["data"] = data.url;
         args["configuration"] = configuration.url;

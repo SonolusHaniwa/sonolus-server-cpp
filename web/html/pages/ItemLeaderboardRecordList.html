@@ -1,0 +1,72 @@
+<body class="text-sm text-sonolus-ui-text-normal sm:text-base">
+    <div id="app" data-v-app="">
+        <div class="duration-150">
+            {{html.navbar}}
+            <div class="h-11 sm:h-16"></div>
+            <main class="mx-auto flex max-w-4xl flex-col space-y-9 p-9 transition-opacity v-transition:opacity-0 sm:space-y-12 sm:p-12">
+                <div class="flex flex-col space-y-2 sm:space-y-3">
+                    {{html.itemsList}}
+                </div>
+                <div class="fixed left-0 bottom-0 flex w-full justify-center">
+                    <div class="mr-2 sm:mr-3">
+                        <button data-href="{{url.sonolus}}" class="flex cursor-pointer select-none space-x-2 bg-sonolus-ui-button-normal p-2 transition-colors hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed sm:space-x-3 sm:p-3" onclick="displayOpenInSonolus(this)">
+                            <img class="h-5 w-5 sm:h-6 sm:w-6" data-src="data:image/png;base64,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" alt="Sonolus">
+                        </button>
+                        <div class="fixed top-0 left-0 z-50 flex h-[100vh] w-[100vw] select-none flex-col items-center justify-center bg-sonolus-main bg-opacity-90 transition-opacity" style="display: none; opacity: 0;" id="openInSonolus" onclick="hideOpenInSonolus()">
+                            <main class="mx-auto flex h-full max-w-4xl flex-col justify-center space-y-9 p-9 text-center sm:space-y-12 sm:p-12" style="opacity: 1">
+                                <div class="py-1 text-xl font-bold sm:py-1.5 sm:text-3xl">{{language.opening}}</div>
+                                <div class="space-y-1 sm:space-y-1.5">
+                                    <p>{{language.retry}}</p>
+                                    <a class="space-x-1 underline sm:space-x-1.5" href="{{url.sonolus}}">
+                                        <span>{{url.sonolus}}</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="inline h-4 w-4 fill-current align-text-bottom sm:h-5 sm:w-5">
+                                            <path d="M256 64c0-17.67 14.3-32 32-32h127.1c5.2 0 9.4.86 13.1 2.43 2.9 1.55 7.3 3.84 10.4 6.87 0 .05 0 .1.1.14 6.2 6.22 8.4 14.34 9.3 22.46V192c0 17.7-14.3 32-32 32s-32-14.3-32-32v-50.7L214.6 310.6c-12.5 12.5-32.7 12.5-45.2 0s-12.5-32.7 0-45.2L338.7 96H288c-17.7 0-32-14.33-32-32zM0 128c0-35.35 28.65-64 64-64h96c17.7 0 32 14.33 32 32 0 17.7-14.3 32-32 32H64v288h288v-96c0-17.7 14.3-32 32-32s32 14.3 32 32v96c0 35.3-28.7 64-64 64H64c-35.35 0-64-28.7-64-64V128z"></path>
+                                        </svg>
+                                    </a>
+                                </div>
+                                <div class="space-y-1 sm:space-y-1.5"><canvas id="qrcode" value="{{url.sonolus}}" style="margin: auto;"></canvas></div>
+                                <div class="space-y-1 sm:space-y-1.5">
+                                    <p>{{language.download}}</p>
+                                    <a class="space-x-1 underline sm:space-x-1.5" href="https://sonolus.com" target="_blank">
+                                        <span>https://sonolus.com</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="inline h-4 w-4 fill-current align-text-bottom sm:h-5 sm:w-5">
+                                            <path d="M256 64c0-17.67 14.3-32 32-32h127.1c5.2 0 9.4.86 13.1 2.43 2.9 1.55 7.3 3.84 10.4 6.87 0 .05 0 .1.1.14 6.2 6.22 8.4 14.34 9.3 22.46V192c0 17.7-14.3 32-32 32s-32-14.3-32-32v-50.7L214.6 310.6c-12.5 12.5-32.7 12.5-45.2 0s-12.5-32.7 0-45.2L338.7 96H288c-17.7 0-32-14.33-32-32zM0 128c0-35.35 28.65-64 64-64h96c17.7 0 32 14.33 32 32 0 17.7-14.3 32-32 32H64v288h288v-96c0-17.7 14.3-32 32-32s32 14.3 32 32v96c0 35.3-28.7 64-64 64H64c-35.35 0-64-28.7-64-64V128z"></path>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </main>
+                        </div>
+                    </div>
+                    <a aria-current="page" href="{{url.top}}" class="{{class.previous}}">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="h-5 w-5 fill-current sm:h-6 sm:w-6">
+                            <path d="m77.25 256 137.4-137.4c12.5-12.5 12.5-32.75 0-45.25s-32.75-12.5-45.25 0l-160 160c-12.5 12.5-12.5 32.75 0 45.25l160 160c6.2 6.3 14.4 9.4 22.6 9.4s16.38-3.125 22.62-9.375c12.5-12.5 12.5-32.75 0-45.25L77.25 256zm192.05 0 137.4-137.4c12.5-12.5 12.5-32.75 0-45.25s-32.75-12.5-45.25 0l-160 160c-12.5 12.5-12.5 32.75 0 45.25l160 160c6.15 6.3 14.35 9.4 22.55 9.4s16.38-3.125 22.62-9.375c12.5-12.5 12.5-32.75 0-45.25L269.3 256z"></path>
+                        </svg>
+                    </a>
+                    <a aria-current="page" href="{{url.previous}}" class="{{class.previous}}">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512" class="h-5 w-5 fill-current sm:h-6 sm:w-6">
+                            <path d="M192 448c-8.188 0-16.38-3.125-22.62-9.375l-160-160c-12.5-12.5-12.5-32.75 0-45.25l160-160c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25L77.25 256l137.4 137.4c12.5 12.5 12.5 32.75 0 45.25C208.4 444.9 200.2 448 192 448z"></path>
+                        </svg>
+                    </a>
+                    <a aria-current="page" href="{{url.jump}}" class="router-link-active router-link-exact-active flex select-none space-x-2 p-2 transition-colors sm:space-x-3 sm:p-3 cursor-pointer bg-sonolus-ui-button-normal hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed">
+                        <span class="min-w-[4.5rem] flex-grow text-center sm:min-w-[6rem]">{{pages.current}} / {{pages.all}}</span>
+                    </a>
+                    <a aria-current="page" href="{{url.next}}" class="{{class.next}}">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512" class="h-5 w-5 fill-current sm:h-6 sm:w-6">
+                            <path d="M64 448c-8.188 0-16.38-3.125-22.62-9.375-12.5-12.5-12.5-32.75 0-45.25L178.8 256 41.38 118.6c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0l160 160c12.5 12.5 12.5 32.75 0 45.25l-160 160C80.38 444.9 72.19 448 64 448z"></path>
+                        </svg>
+                    </a>
+                    <a aria-current="page" href="{{url.bottom}}" class="{{class.next}}">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="h-5 w-5 fill-current sm:h-6 sm:w-6">
+                            <path d="m246.6 233.4-160-160c-12.5-12.5-32.75-12.5-45.25 0s-12.5 32.75 0 45.25L178.8 256 41.4 393.4c-12.5 12.5-12.5 32.75 0 45.25C47.63 444.9 55.81 448 64 448s16.38-3.125 22.62-9.375l160-160C259.1 266.1 259.1 245.9 246.6 233.4zm192 0-160-160c-12.5-12.5-32.75-12.5-45.25 0s-12.5 32.75 0 45.25L370.8 256 233.4 393.4c-12.5 12.5-12.5 32.75 0 45.25 6.2 6.25 14.4 9.35 22.6 9.35s16.38-3.125 22.62-9.375l160-160C451.1 266.1 451.1 245.9 438.6 233.4z"></path>
+                        </svg>
+                    </a>
+                    <a aria-current="page" href="{{url.last}}" class="flex select-none space-x-2 p-2 transition-colors sm:space-x-3 sm:p-3 cursor-pointer bg-sonolus-ui-button-normal hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed ml-2 sm:ml-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="h-5 w-5 fill-current sm:h-6 sm:w-6">
+                            <path d="M177.5 66c-8.8-3.8-19-2-26 4.6l-144 136C2.7 211.1 0 217.4 0 224s2.7 12.9 7.5 17.4l144 136c7 6.6 17.2 8.4 26 4.6s14.5-12.5 14.5-22l0-88 192 0c17.7 0 32 14.3 32 32l0 144c0 17.7 14.3 32 32 32l32 0c17.7 0 32-14.3 32-32l0-144c0-70.7-57.3-128-128-128l-192 0 0-88c0-9.6-5.7-18.2-14.5-22z"/>
+                        </svg>
+                    </a>
+                </div>
+            </main>
+        </div>
+    </div>
+</body>

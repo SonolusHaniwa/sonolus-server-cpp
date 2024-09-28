@@ -90,7 +90,8 @@ jobs:
           cd packages
           (Get-Content ./config/config.json) -Replace '"mysql"', '"sqlite"' | Set-Content ./config/config.json
           choco install sqlite.shell
-          sqlite3 sonolus.db ".read ../data.sql"
+          sqlite3 sonolus.db ".read ../data1.sql"
+          sqlite3 sonolus2.db ".read ../data2.sql"
           
       - name: Checking Sonolus Server for Windows
         run: |

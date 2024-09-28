@@ -449,5 +449,6 @@
 	"selectAll": "全选",
 	"unselectAll": "全不选",
 	"selected": "已选择 {0}",
-	"helpButton": "帮助"
+	"helpButton": "帮助",
+	"leaderboard": "排行榜"
 }

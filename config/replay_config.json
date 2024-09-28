@@ -33,14 +33,14 @@
         {
             "title": "Same Level",
             "icon": "star",
-            "filter": "level IN (SELECT id FROM Level WHERE title = \"{{level}}\") AND (isPrivate = false OR author LIKE \"%#{{user.handle}}\")",
+            "filter": "level = \"{{level.id}}\" AND (isPrivate = false OR author LIKE \"%#{{user.handle}}\")",
             "itemType": "replay",
             "order": "id DESC"
         },
         {
             "title": "#SAME_CATEGORY",
             "icon": "star",
-            "filter": "author = \"{{author}}\" AND level IN (SELECT id FROM Level WHERE title = \"{{level}}\") AND (isPrivate = false OR author LIKE \"%#{{user.handle}}\")",
+            "filter": "author = \"{{author}}\" AND level = \"{{level.id}}\" AND (isPrivate = false OR author LIKE \"%#{{user.handle}}\")",
             "itemType": "replay",
             "order": "id DESC"
         }
@@ -65,7 +65,7 @@
                     "allowOtherServers": false
                 }
             ],
-            "filter": "author LIKE \"%{{author}}%\" AND (\"{{level}}\" = \"\" OR level in (SELECT id FROM Level WHERE name = \"{{level}}\")) AND (isPrivate = false OR author LIKE \"%#{{user.handle}}\")",
+            "filter": "author LIKE \"%{{author}}%\" AND (\"{{level}}\" = \"\" OR level = \"{{level.id}}\") AND (isPrivate = false OR author LIKE \"%#{{user.handle}}\")",
             "order": "id DESC"
         }
     ],

@@ -387,3 +387,48 @@ async function hideHelp() {
     await sleep(150);
     document.getElementById("helpInterface").style.visibility = "hidden";
 }
+
+var recordStatus = {};
+var realHeight = {};
+async function updateRecord(name) {
+    var isOpen = recordStatus[name] != undefined && recordStatus[name] != null && recordStatus[name];
+    if (isOpen) {
+        document.getElementById("sign-" + name).style.transform = "rotate(180deg)";
+        for (var i = 1.0; i > 0; i -= 0.04) {
+            var height = realHeight[name] * i;
+            document.getElementById("record-" + name).style.height = height + "px";
+            if (height < 60) document.getElementById("record-" + name).style.paddingBottom = (height - 30) + "px";
+            if (height < 30) document.getElementById("record-" + name).style.paddingTop = height + "px";
+            await sleep(1);
+        }
+        document.getElementById("record-" + name).style.display = "none";
+        document.getElementById("record-" + name).style.height = "";
+        recordStatus[name] = 0;
+    } else {
+        document.getElementById("sign-" + name).style.transform = "";
+        document.getElementById("record-" + name).style.display = "";
+        for (var i = 0.04; i <= 1; i += 0.04) {
+            var height = realHeight[name] * i;
+            document.getElementById("record-" + name).style.height = height + "px";
+            if (height < 60) document.getElementById("record-" + name).style.paddingBottom = (height - 30) + "px";
+            if (height < 30) document.getElementById("record-" + name).style.paddingTop = height + "px";
+            await sleep(1);
+        }
+        document.getElementById("record-" + name).style.height = "";
+        recordStatus[name] = 1;
+    }
+}
+
+addLoadEvent(() => {
+    var es = document.getElementsByClassName("record");
+    for (var i = 0; i < es.length; i++) {
+        var e = es[i];
+        realHeight[e.id.substr(7)] = e.clientHeight;
+        e.style.display = "none";
+    }
+    var ls = document.getElementsByClassName("leaderboard2");
+    for (var i = 0; i < ls.length; i++) {
+        var l = ls[i];
+        l.style.display = "none";
+    }
+})

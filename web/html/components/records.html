@@ -1,0 +1,14 @@
+<div class="flex bg-sonolus-ui-button-normal p-2 text-sm hover:bg-sonolus-ui-button-highlighted" style="justify-content: space-between; margin-top: 10px; cursor: pointer; user-select: none" onclick="updateRecord('{{leaderboard}}-{{name}}')">
+    <p>{{rank}}&nbsp;&nbsp;{{player}}</p>
+    <p class="flex">
+        {{value}}&nbsp;&nbsp;
+        <span id="sign-{{leaderboard}}-{{name}}" style="transform: rotate(180deg)">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="width: 13px; height: 20px; fill: gray;">
+                <path d="M233.4 105.4c12.5-12.5 32.8-12.5 45.3 0l192 192c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L256 173.3 86.6 342.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l192-192z"/>
+            </svg>
+        </span>
+    </p>
+</div>
+<div id="record-{{leaderboard}}-{{name}}" style="background-color: #ffffff08; width: 100%; padding: 30px; overflow: hidden" class="record">
+    {{replays}}
+</div>

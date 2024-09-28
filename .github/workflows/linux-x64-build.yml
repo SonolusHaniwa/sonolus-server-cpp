@@ -62,7 +62,8 @@ jobs:
           mv ./sources/README_en.md ./packages/
           cd packages
           sed -i 's/"mysql"/"sqlite"/g' ./config/config.json
-          sqlite3 sonolus.db ".read ../data.sql"
+          sqlite3 sonolus.db ".read ../data1.sql"
+          sqlite3 sonolus2.db ".read ../data2.sql"
           
       - name: Checking Sonolus Server for Linux x64
         run: |

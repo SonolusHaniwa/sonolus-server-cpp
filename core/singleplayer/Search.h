@@ -877,6 +877,9 @@ argvar argResolver(argvar source, Json::Value options, string localization) {
         } else if (options[i]["type"].asString() == "serverItem") {
             source[name] = str_replace("\\\"", "\"", source[name]);
             result[name] = json_decode(source[name])["name"].asString();
+            string tableName = options[i]["itemType"].asString();
+            tableName[0] += 'A' - 'a';
+            result[name + ".id"] = result[name] == "" ? "" : db.query("SELECT id FROM " + tableName + " WHERE name = \"" + result[name] + "\"", tableName)[0]["id"];
             if (result[name] == "") result[name] = source[name];
         } else if (options[i]["type"].asString() == "serverItems") {
             string tableName = options[i]["itemType"].asString();

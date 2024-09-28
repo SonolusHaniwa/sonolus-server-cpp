@@ -28,6 +28,24 @@
                         </button>
                     </div>
                 </div>
+                <a style="height:0px;margin:0px;" name="#LEADERBOARD"></a>
+                <div class="flex flex-col space-y-2 sm:space-y-3" style="display:{{html.enableLeaderboard}};">
+                    <h2 class="py-1 text-xl font-bold sm:py-1.5 sm:text-3xl">{{language.leaderboard}}</h2>
+                    <select id="leaderboard-type-selection" class="text-ellipsis border-none bg-sonolus-ui-button-normal p-2 text-sm hover:bg-sonolus-ui-button-highlighted active:bg-sonolus-ui-button-pressed sm:p-3 sm:text-base">{{html.leaderboardSelection}}</select>
+                    <div style="margin-top: 25px">{{html.leaderboards}}</div>
+                    <script>
+                        addLoadEvent(() => {
+                            document.getElementById("leaderboard-type-selection").onchange = () => {
+                                var e = document.getElementById("leaderboard-type-selection");
+                                for (var i = 0; i < e.childNodes.length; i++) {
+                                    var v = e.childNodes[i].value;
+                                    document.getElementById("leaderboard-" + v).style.display = "none";
+                                }
+                                document.getElementById("leaderboard-" + e.value).style.display = "";
+                            }
+                        });
+                    </script>
+                </div>
                 {{html.detailsSection}}
                 <div style="position:fixed;right:0px;width:64px;fill:white;margin-top:48px;">{{html.icons}}</div>
 

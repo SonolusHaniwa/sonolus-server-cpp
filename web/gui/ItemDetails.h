@@ -19,9 +19,11 @@
     argList["page.title"] = item.title + " | " + appConfig["server.title"].asString(); \
     argList["html.navbar"] = fetchNavBar(item.title).output(); \
     argList["editUrl"] = "/" + argv[0] + "/" + argv[1] + "/edit"; \
-    quickGUICommunity(request, argv[0], argv[1], argList, detailsIcon); \
     playlistValue = item.toJsonObject(); \
+    replayValue = item.toJsonObject(); \
     args = item.fetchParamList(); \
+    quickGUICommunity(request, argv[0], argv[1], argList, detailsIcon); \
+    quickGUILeaderboard(request, argv[0], argv[1], argList, detailsIcon, args); \
 }
 
 auto GUIDetails = [](client_conn conn, http_request request, param argv) {
@@ -50,6 +52,7 @@ auto GUIDetails = [](client_conn conn, http_request request, param argv) {
     detailsIcon += fetchIconButton("##DESCRIPTION", "{{icon.description}}").output();
     detailsIcon += fetchIconButton("##TAGS", "{{icon.tags}}").output();
     Json::Value playlistValue;
+    Json::Value replayValue;
     if (argv[0] == "levels") { quickGUIDetails(levels); }
     else if (argv[0] == "skins") { quickGUIDetails(skins); }
     else if (argv[0] == "backgrounds") { quickGUIDetails(backgrounds); }
@@ -70,6 +73,14 @@ auto GUIDetails = [](client_conn conn, http_request request, param argv) {
             auto level = playlist.levels[i];
             detailsSection += level.toHTMLObject().output();
         }
+        detailsSection += "</div>";
+    }
+    if (argv[0] == "replays") {
+        ReplayItem replay(replayValue["id"].asInt(), replayValue);
+        detailsIcon += fetchIconButton("##LEVEL", "{{icon.level}}").output();
+        detailsSection += "<a style=\"height:0px;margin:0px;\" name=\"#LEVEL\"></a>";
+        detailsSection += "<div class=\"flex flex-col space-y-2 sm:space-y-3\"><h2 class=\"py-1 text-xl font-bold sm:py-1.5 sm:text-3xl\">{{language.LEVEL}}</h2>";
+        detailsSection += replay.level.toHTMLObject().output();
         detailsSection += "</div>";
     }
     for (auto v : args) args[v.first] = quote_encode(v.second);
