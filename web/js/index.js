@@ -142,6 +142,13 @@ async function create(path, type, return_path, id = -1) {
         if (index.substr(0, type.length + 1) != type + "_") continue;
         if (typeof checkFunc[index] == "function" && !checkFunc[index]()) ok = false;
         var tmp_index = index.substr(type.length + 1);
+        if (searchConfig instanceof Array) {
+            var tmp = "";
+            for (var i = 0; i < searchConfig[index].length; i++)
+                tmp += (i ? "," : "") + searchConfig[index];
+            path += tmp_index + "=" + tmp + "&";
+            continue;
+        }
         postdata += tmp_index + "=" + searchConfig[index] + "&";
     }
     if (!ok) return;
@@ -172,9 +179,14 @@ async function search(path, type) {
     path += "?"; path += "type=" + type + "&";
     for (index in searchConfig) {
         if (index.substr(0, type.length + 1) != type + "_") continue;
-        if (searchConfig[index] == "") continue;
         var tmp_index = index.substr(type.length + 1);
-        path += tmp_index + "=" + searchConfig[index] + "&";
+        if (searchConfig instanceof Array) {
+            var tmp = "";
+            for (var i = 0; i < searchConfig[index].length; i++)
+                tmp += (i ? "," : "") + searchConfig[index];
+            path += tmp_index + "=" + tmp + "&";
+            continue;
+        } path += tmp_index + "=" + searchConfig[index] + "&";
     } path = path.substr(0, path.length - 1);
     document.getElementsByTagName("main")[0].style.opacity = "0";
     document.getElementsByTagName("nav")[0].style.transform = "translateY(-100%)";

@@ -110,7 +110,7 @@ H fetchSearchToggle(string query, string name, string def, string realDef, bool 
     return str_replace(source, args);
 }
 
-H fetchSearchSelect(string query, string name, vector<string> options, string def, string realDef, bool isMargin, bool isRequired) {
+H fetchSearchSelect(string query, string name, vector<pair<string, string> > options, string def, string realDef, bool isMargin, bool isRequired) {
     string source = readFile("./web/html/components/searchSelect.html");
     argvar args;
     args["search.query"] = query;
@@ -118,10 +118,10 @@ H fetchSearchSelect(string query, string name, vector<string> options, string de
     args["search.default"] = def;
     args["search.options"] = "";
     for (int i = 0; i < options.size(); i++) {
-        H optionsObject = H(true, "option", options[i]);
+        H optionsObject = H(true, "option", options[i].second);
         optionsObject["class"] = "bg-sonolus-ui-surface";
         optionsObject["id"] = "search-" + query + "-" + to_string(i);
-        optionsObject["value"] = to_string(i);
+        optionsObject["value"] = options[i].first;
         args["search.options"] += optionsObject.output();
     }
     args["search.isMargin"] = isMargin ? "style=\"margin-top: 12px;\"" : "";
@@ -211,7 +211,7 @@ H fetchSearchServerItem(string query, string name, string itemType, string def, 
 
 H fetchSearchLocalizationItem(string query, string name, string def, string realDef, bool isMargin, bool isRequired) {
     string source = readFile("./web/html/components/searchSelect.html");
-    argvar args; map<string, string> options = { {"default", "default"} };
+    argvar args; map<string, string> options = { { "default", "default" } };
     for (int i = 0; i < i18n_raw.size(); i++) options[i18n_raw[i]["name"].asString()] = i18n_raw[i]["name"].asString();
     args["search.query"] = query;
     args["search.name"] = name;
@@ -240,31 +240,36 @@ H fetchSearchColor(string query, string name, string def, bool isMargin) {
     return str_replace(source, args);
 }
 
-H fetchSearchMulti(string query, string name, vector<bool> defs, vector<string> values, vector<bool> realDefs, bool isMargin, bool isRequired) {
+H fetchSearchMulti(string query, string name, vector<string> defs, vector<pair<string, string> > values, vector<string> realDefs, bool isMargin, bool isRequired) {
     string source = readFile("./web/html/components/searchMulti.html");
     argvar args;
     args["search.isMargin"] = isMargin ? "style=\"margin-top: 12px;\"" : "";
     args["search.query"] = query;
     args["search.name"] = name;
-    args["search.default"] = "\"" + [&](){
+    args["search.default"] = "[" + [&](){
         string res = "";
-        for (int i = 0; i < defs.size(); i++) res += defs[i] + '0';
+        for (int i = 0; i < defs.size(); i++) res += "\"" + defs[i] + "\"" + (i != defs.size() - 1 ? "," : "");
         return res;
-    }() + "\"";
-    args["search.realDefault"] = "\"" + [&](){
+    }() + "]";
+    args["search.total"] = "[" + [&](){
         string res = "";
-        for (int i = 0; i < realDefs.size(); i++) res += realDefs[i] + '0';
+        for (int i = 0; i < values.size(); i++) res += "\"" + values[i].first + "\"" + (i != values.size() - 1 ? "," : "");
         return res;
-    }() + "\"";
+    }() + "]";
+    args["search.realDefault"] = "[" + [&](){
+        string res = "";
+        for (int i = 0; i < realDefs.size(); i++) res += "\"" + realDefs[i] + "\"" + (i != realDefs.size() - 1 ? "," : "");
+        return res;
+    }() + "]";
     args["search.isRequired"] = to_string(isRequired);
     args["search.options"] = "";
     for (int i = 0; i < values.size(); i++) {
         string source = readFile("./web/html/components/searchMultiOption.html");
         argvar args2;
         args2["id"] = "search-option-" + query + "-" + to_string(i);
-        args2["text"] = values[i];
+        args2["text"] = values[i].second;
         args2["name"] = query;
-        args2["index"] = to_string(i);
+        args2["index"] = values[i].first;
         args["search.options"] += str_replace(source, args2);
     }
     return str_replace(source, args);
@@ -279,14 +284,9 @@ H fetchSearchServerItems(string query, string name, string itemType, vector<stri
     sql = "SELECT * FROM (" + sql + ") AS A GROUP BY name";
     sql = "SELECT * FROM (" + sql + ") AS B ORDER BY id ASC";
     auto result = db.query(sql, tableName);
-    vector<bool> defs, realDefs; vector<string> values;
-    map<string, int> index;
-    for (int i = 0; i < result.size(); i++) 
-        values.push_back(result[i]["title"]), index[result[i]["name"]] = i,
-        defs.push_back(false), realDefs.push_back(false);
-    for (int i = 0; i < def.size(); i++) if (index.find(def[i]) != index.end()) defs[index[def[i]]] = true;
-    for (int i = 0; i < realDef.size(); i++) if (index.find(realDef[i]) != index.end()) realDefs[index[realDef[i]]] = true;
-    return fetchSearchMulti(query, name, defs, values, realDefs, isMargin, isRequired);
+    vector<pair<string, string> > values;
+    for (int i = 0; i < result.size(); i++) values.push_back({ result[i]["name"], result[i]["title"] });
+    return fetchSearchMulti(query, name, def, values, realDef, isMargin, isRequired);
 }
 
 H fetchSectionSearch(string searchOptions, string url, string type, bool hasHelp, string helpText) {

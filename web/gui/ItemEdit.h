@@ -82,8 +82,11 @@ auto GUIEdit = [](client_conn conn, http_request request, param argv){
             if (item["type"].asString() == "toggle") sections += fetchSearchToggle(type + "_" + query, item["name"].asString(), defValue, item["def"].asString(), 0, item["required"].asBool()).output();
             if (item["type"].asString() == "slider") sections += fetchSearchSlider(type + "_" + query, item["name"].asString(), defValue, item["def"].asString(), item["min"].asInt(), item["max"].asInt(), item["step"].asInt(), 0, item["required"].asBool()).output();
             if (item["type"].asString() == "select") {
-                vector<string> values = {};
-                for (int k = 0; k < item["values"].size(); k++) values.push_back(item["values"][k].asString());
+                vector<pair<string, string> > values = {};
+                for (int k = 0; k < item["values"].size(); k++) values.push_back({
+                    item["values"][k]["name"].asString(),
+                    item["values"][k]["title"].asString()
+                });
                 sections += fetchSearchSelect(type + "_" + query, item["name"].asString(), values, defValue, item["def"].asString(), 0, item["required"].asBool()).output();
             }
             if (item["type"].asString() == "file") sections += fetchSearchFile(type + "_" + query, item["name"].asString(), defValue, "\"\"", 0, item["required"].asBool()).output();

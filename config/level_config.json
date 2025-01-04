@@ -5,8 +5,8 @@
     "levels.enableGUICreate": false,
     "levels.enableSonolusCreate": false,
     "levels.enableResultUpload": true,
-    "levels.exceptGUICreate": [],
-    "levels.exceptSonolusCreate": [],
+    "levels.exceptGUICreate": [ 84718 ],
+    "levels.exceptSonolusCreate": [ 84718 ],
     "levels.exceptResultUpload": [],
     "levels.pageSize.info": 5,
     "levels.pageSize.list": 20,
@@ -62,17 +62,23 @@
                     "query": "difficulty",
                     "name": "#DIFFICULTY",
                     "type": "multi",
-                    "def": [ 1, 1, 1, 1, 1 ],
-                    "values": [ "EZ", "HD", "IN", "AT", "SP" ],
+                    "def": [ "EZ", "HD", "IN", "AT", "SP" ],
+                    "values": [
+                        { "name": "EZ", "title": "Easy" },
+                        { "name": "HD", "title": "Hard" },
+                        { "name": "IN", "title": "Insane" },
+                        { "name": "AT", "title": "Another" },
+                        { "name": "SP", "title": "Special" }
+                    ],
                     "variables": [
                         {
                             "name": "difficulty_or",
-                            "expr": "name LIKE \"%{{difficulty}}%\"",
+                            "expr": "tags LIKE \"%{{difficulty}}%\"",
                             "connector": "OR",
                             "default": "0"
                         }, {
                             "name": "difficulty_and",
-                            "expr": "name LIKE \"%{{difficulty}}%\"",
+                            "expr": "tags LIKE \"%{{difficulty}}%\"",
                             "connector": "AND",
                             "default": "1"
                         }

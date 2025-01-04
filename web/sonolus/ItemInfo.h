@@ -4,7 +4,7 @@
         icon: item["icon"].asString(), \
         itemType: item["itemType"].asString(), \
         items: name2##List( \
-            item["filter"].asString() == "" ? "1" : item["filter"].asString(), \
+            (item["filter"].asString() == "" ? "1" : item["filter"].asString()) + " AND (localization = \"" + $_GET["localization"] + "\" OR localization = \"default\")", \
             item["order"].asString() == "" ? "1" : item["order"].asString(), \
             1, appConfig[defineToString(name2)".pageSize.info"].asInt() \
         ), \

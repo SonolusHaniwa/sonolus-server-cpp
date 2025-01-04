@@ -28,7 +28,7 @@ auto GUIList = [](client_conn conn, http_request request, param argv) {
     int page = $_GET["page"] == "" ? 0 : atoi($_GET["page"].c_str());
     int itemsPerPage = appConfig[string(argv[0]) + ".pageSize.list"].asInt();
     int l = page * itemsPerPage + 1, r = (page + 1) * itemsPerPage;
-    auto it = $_GET.begin(); while (it != $_GET.end()) if (it->second == "") it = $_GET.erase(it); else it++;
+    auto it = $_GET.begin(); 
 
     // 准备 Filter
     string sqlFilter = "(localization = \"" + $_GET["localization"] + "\" OR localization = \"default\") AND (";

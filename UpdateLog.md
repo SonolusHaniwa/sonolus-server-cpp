@@ -1031,3 +1031,89 @@ type ServerMessage = {
 
 ## `ServerForm`
 - New optional `help` property.
+
+# Upcoming `0.8.9` Custom Server Changes (1/2)
+
+Specs and types are not yet available. This update includes breaking changes.
+
+## `ServerFileOption`
+- New `def` field for default value, use empty string for no file selected.
+```diff
+type ServerFileOption = {
+    query: string
+    name: Text | (string & {})
+    description?: string
+    required: boolean
+    type: 'file'
++   def: string
+}
+```
+
+## `ServerSelectOption`
+- `values` is now objects with `name` and `title`.
+- `def` is now name of the default value.
+- Query is now name of the selected value.
+```diff
+type ServerSelectOption = {
+    query: string
+    name: Text | (string & {})
+    description?: string
+    required: boolean
+    type: 'select'
+-   def: number
++   def: string
+-   values: (Text | (string & {}))[]
++   values: {
++       name: string
++       title: Text | (string & {})
++   }[]
+}
+```
+
+## `ServerMultiOption`
+- `values` is now objects with `name` and `title`.
+- Query is now comma separated list of names of the selected values.
+```diff
+type ServerMultiOption = {
+    query: string
+    name: Text | (string & {})
+    description?: string
+    required: boolean
+    type: 'multi'
+    def: boolean[]
+-   values: (Text | (string & {}))[]
++   values: {
++       name: string
++       title: Text | (string & {})
++   }[]
+}
+```
+
+# Upcoming `0.8.9` Custom Server Changes (2/2)
+
+## Infinite Pagination
+Infinite pagination in various lists has been reworked:
+- When `pageCount` is negative, it is treated as infinite pagination.
+- In infinite pagination, player can only request next pages one by one.
+- If `cursor` is specified, it will be attached as query when requesting next page.
+- If `cursor` is not specified, it is considered done and no more pages can be loaded.
+```diff
+type ServerItemList<T> = {
+    pageCount: number
++   cursor?: string
+    items: T[]
+    searches?: ServerForm[]
+}
+
+type ServerItemCommunityCommentList = {
+    pageCount: number
++   cursor?: string
+    comments: ServerItemCommunityComment[]
+}
+
+type ServerItemLeaderboardRecordList = {
+    pageCount: number
++   cursor?: string
+    records: ServerItemLeaderboardRecord[]
+}
+```

@@ -10,12 +10,10 @@
         addLoadEvent(function() {
             document.getElementById("{{id}}-enabled").style.display = "none";
             document.getElementById("{{id}}").onclick = function() {
-                searchConfig["{{name}}"] = 
-                    searchConfig["{{name}}"].substr(0, {{index}}) + 
-                    (1 - searchConfig["{{name}}"][{{index}}]) + 
-                    searchConfig["{{name}}"].substr({{index}} + 1);
-                document.getElementById("{{id}}-enabled").style.display = searchConfig["{{name}}"][{{index}}] == 1 ? "" : "none";
-                document.getElementById("{{id}}-disabled").style.display = searchConfig["{{name}}"][{{index}}] == 1 ? "none" : "";
+                if (searchConfig["{{name}}"].indexOf("{{index}}") == -1) searchConfig["{{name}}"].push("{{index}}");
+                else searchConfig["{{name}}"] = searchConfig["{{name}}"].filter((item) => item != "{{index}}");
+                document.getElementById("{{id}}-enabled").style.display = searchConfig["{{name}}"].indexOf("{{index}}") != -1 ? "" : "none";
+                document.getElementById("{{id}}-disabled").style.display = searchConfig["{{name}}"].indexOf("{{index}}") != -1 == 1 ? "none" : "";
             };
         });
     </script>

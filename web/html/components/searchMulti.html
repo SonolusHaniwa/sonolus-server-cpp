@@ -19,37 +19,35 @@
     </div>
     <script>
         addLoadEvent(function(){
+            var total = {{search.total}};
             var def = {{search.default}};
             var lang = "{{language.selected}}";
-            searchConfig["{{search.query}}"] = "";
-            for (var i = 0; i < def.length; i++) searchConfig["{{search.query}}"] += "0";
+            searchConfig["{{search.query}}"] = [];
             document.getElementById("search-info-{{search.query}}").innerHTML = lang.replace("{0}", "0");
             document.getElementById("search-optionsArea-{{search.query}}").onclick = function(){
-                var count = 0;
-                for (var i = 0; i < def.length; i++)
-                    if (searchConfig["{{search.query}}"][i] == 1) count++;
+                var count = searchConfig["{{search.query}}"].length;
                 document.getElementById("search-info-{{search.query}}").innerHTML = lang.replace("{0}", count);
-                document.getElementById("search-selected-{{search.query}}").style.display = count == def.length ? "none" : "";
-                document.getElementById("search-unselected-{{search.query}}").style.display = count != def.length ? "none" : "";
+                document.getElementById("search-selected-{{search.query}}").style.display = count == total.length ? "none" : "";
+                document.getElementById("search-unselected-{{search.query}}").style.display = count != total.length ? "none" : "";
             };
             document.getElementById("search-selected-{{search.query}}").onclick = function(){
-                for (var i = 0; i < def.length; i++)
-                    if (searchConfig["{{search.query}}"][i] == 0) document.getElementById("search-option-{{search.query}}-" + i).click();
-                var count = def.length;
+                for (var i = 0; i < total.length; i++)
+                    if (searchConfig["{{search.query}}"].indexOf(total[i]) == -1) document.getElementById("search-option-{{search.query}}-" + i).click();
+                var count = total.length;
                 document.getElementById("search-info-{{search.query}}").innerHTML = lang.replace("{0}", count);
-                document.getElementById("search-selected-{{search.query}}").style.display = count == def.length ? "none" : "";
-                document.getElementById("search-unselected-{{search.query}}").style.display = count != def.length ? "none" : "";
+                document.getElementById("search-selected-{{search.query}}").style.display = count == total.length ? "none" : "";
+                document.getElementById("search-unselected-{{search.query}}").style.display = count != total.length ? "none" : "";
             };
             document.getElementById("search-unselected-{{search.query}}").onclick = function(){
-                for (var i = 0; i < def.length; i++)
-                    if (searchConfig["{{search.query}}"][i] == 1) document.getElementById("search-option-{{search.query}}-" + i).click();
+                for (var i = 0; i < total.length; i++)
+                    if (searchConfig["{{search.query}}"].indexOf(total[i]) != -1) document.getElementById("search-option-{{search.query}}-" + i).click();
                 var count = 0;
                 document.getElementById("search-info-{{search.query}}").innerHTML = lang.replace("{0}", count);
-                document.getElementById("search-selected-{{search.query}}").style.display = count == def.length ? "none" : "";
-                document.getElementById("search-unselected-{{search.query}}").style.display = count != def.length ? "none" : "";
+                document.getElementById("search-selected-{{search.query}}").style.display = count == total.length ? "none" : "";
+                document.getElementById("search-unselected-{{search.query}}").style.display = count != total.length ? "none" : "";
             };
-            for (var i = 0; i < def.length; i++) 
-                if (def[i] == 1) document.getElementById("search-option-{{search.query}}-" + i).click();
+            for (var i = 0; i < total.length; i++) 
+                if (def.indexOf(total[i]) != -1) document.getElementById("search-option-{{search.query}}-" + i).click();
             if (def.length >= 20) {
                 document.getElementById("search-optionsAreaParent-{{search.query}}").style.marginLeft = "0px";
                 document.getElementById("search-optionsArea-{{search.query}}").style.marginRight = "0px";

@@ -30,7 +30,7 @@ auto GUISearch = [](client_conn conn, http_request request, param argv) {
             if (item["type"].asString() == "select") args[type + "_" + query] = $_GET.find(query) == $_GET.end() || type != $_GET["type"] ? item["def"].asString() : $_GET[query];
             if (item["type"].asString() == "multi") args[type + "_" + query] = $_GET.find(query) == $_GET.end() || type != $_GET["type"] ? [&](){
                 string res;
-                for (int i = 0; i < item["def"].size(); i++) res += item["def"][i].asString();
+                for (int k = 0; k < item["def"].size(); k++) res += item["def"][k].asString() + (k != item["def"].size() - 1 ? "," : "");
                 return res;
             }() : $_GET[query];
             if (item["type"].asString() == "serverItem") args[type + "_" + query] = $_GET.find(query) == $_GET.end() || type != $_GET["type"] ? item["def"].asString() : $_GET[query];
@@ -75,22 +75,26 @@ auto GUISearch = [](client_conn conn, http_request request, param argv) {
             if (item["type"].asString() == "slider") sections += fetchSearchSlider(
                 type + "_" + query, item["name"].asString(), args[type + "_" + query].c_str(), "0", item["min"].asInt(), item["max"].asInt(), item["step"].asInt(), 0, 0).output();
             if (item["type"].asString() == "select") {
-                vector<string> values = {};
-                for (int k = 0; k < item["values"].size(); k++) values.push_back(item["values"][k].asString());
+                vector<pair<string, string> > values = {};
+                for (int k = 0; k < item["values"].size(); k++) values.push_back({
+                    item["values"][k]["name"].asString(),
+                    item["values"][k]["title"].asString()
+                });
                 sections += fetchSearchSelect(type + "_" + query, item["name"].asString(), values, args[type + "_" + query].c_str(), "0", 0, 0).output();
             }
             if (item["type"].asString() == "multi") sections += fetchSearchMulti(
                 type + "_" + query, item["name"].asString(), [&](){
-                    vector<bool> defs;
-                    for (int k = 0; k < args[type + "_" + query].size(); k++) defs.push_back(args[type + "_" + query][k] - '0');
+                    vector<string> defs = explode(",", args[type + "_" + query]);
                     return defs;
                 }(), [&](){
-                    vector<string> values;
-                    for (int k = 0; k < item["values"].size(); k++) values.push_back(item["values"][k].asString());
+                    vector<pair<string, string> > values;
+                    for (int k = 0; k < item["values"].size(); k++) values.push_back({
+                        item["values"][k]["name"].asString(),
+                        item["values"][k]["title"].asString()
+                    });
                     return values;
                 }(), [&](){
-                    vector<bool> defs;
-                    for (int k = 0; k < item["def"].size(); k++) defs.push_back(false);
+                    vector<string> defs;
                     return defs;
                 }(), 0, 0).output();
             if (item["type"].asString() == "serverItem") sections += fetchSearchServerItem(type + "_" + query, item["name"].asString(), item["itemType"].asString(), "\"" + args[type + "_" + query] + "\"", "\"\"", localization, 0, 0).output();

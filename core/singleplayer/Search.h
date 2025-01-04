@@ -90,8 +90,8 @@ class SearchSelectOption {
     string query = "";
     string name = "";
     string type = "select";
-    int def = 0;
-    vector<string> values = {};
+    string def = "";
+    vector<pair<string, string> > values = {};
     string description = "";
     bool required = false;
 
@@ -101,8 +101,13 @@ class SearchSelectOption {
         res["name"] = name;
         res["type"] = type;
         res["def"] = def;
-        for (int i = 0; i < values.size(); i++)
-            res["values"].append(values[i]);
+        res["values"].resize(0);
+        for (int i = 0; i < values.size(); i++) {
+            Json::Value value;
+            value["name"] = values[i].first;
+            value["title"] = values[i].second;
+            res["values"].append(value);
+        }
         if (description != "") res["description"] = description;
         res["required"] = required;
         return res;
@@ -177,8 +182,8 @@ class SearchMultiOption {
     string query = "";
     string name = "";
     string type = "multi";
-    vector<bool> def = {};
-    vector<string> values = {};
+    vector<string> def = {};
+    vector<pair<string, string> > values = {};
     string description = "";
     bool required = false;
     
@@ -188,9 +193,19 @@ class SearchMultiOption {
         res["name"] = name;
         res["type"] = type;
         res["def"].resize(0);
-        for (int i = 0; i < def.size(); i++) res["def"].append((bool)def[i]);
+        for (int i = 0; i < values.size(); i++) {
+            bool has = false;
+            for (int j = 0; j < def.size(); j++) has |= def[j] == values[i].first;
+            res["def"].append(has);
+        }
         res["defs"] = res["def"];
-        for (int i = 0; i < values.size(); i++) res["values"].append(values[i]);
+        res["values"].resize(0);
+        for (int i = 0; i < values.size(); i++) {
+            Json::Value value;
+            value["name"] = values[i].first;
+            value["title"] = values[i].second;
+            res["values"].append(value);
+        }
         if (description != "") res["description"] = description;
         res["required"] = required;
         return res;
@@ -284,17 +299,20 @@ class SearchLocalizationItemOption {
     string query = "";
     string name = "";
     string type = "localizationItem";
-    int def = 0;
+    string def = "";
     string description = "";
     bool required = false;
 
     Json::Value toJsonObject() {
-        vector<string> values = {"default"};
-        for (int i = 0; i < i18n_raw.size(); i++) values.push_back(i18n_raw[i]["name"].asString());
+        vector<pair<string, string> > values = { { "default", "Default" } };
+        for (int i = 0; i < i18n_raw.size(); i++) values.push_back({
+            i18n_raw[i]["name"].asString(),
+            i18n_raw[i]["title"].asString()
+        });
         return SearchSelectOption({
             query: query,
             name: name,
-            def: def,
+            def: values[0].first,
             values: values,
             description: description,
             required: required
@@ -662,11 +680,14 @@ vector<SearchOption> constructSearchOptions(Json::Value orig) {
             search.push_back(SearchSelectOption({
                 query: orig[i]["query"].asString(), 
                 name: orig[i]["name"].asString(),
-                def: orig[i]["def"].asInt(),
+                def: orig[i]["def"].asString(),
                 values: [&](){
-                    vector<string> res;
+                    vector<pair<string, string> > res;
                     for (int j = 0; j < orig[i]["values"].size(); j++) 
-                        res.push_back(orig[i]["values"][j].asString());
+                        res.push_back({
+                            orig[i]["values"][j]["name"].asString(),
+                            orig[i]["values"][j]["title"].asString()
+                        });
                     return res;
                 }()
             }));
@@ -696,15 +717,17 @@ vector<SearchOption> constructSearchOptions(Json::Value orig) {
                 query: orig[i]["query"].asString(), 
                 name: orig[i]["name"].asString(),
                 def: [&](){
-                    vector<bool> res;
-                    for (int j = 0; j < orig[i]["def"].size(); j++) 
-                        res.push_back(orig[i]["def"][j].asBool());
+                    vector<string> res;
+                    for (int j = 0; j < orig[i]["def"].size(); j++) res.push_back(orig[i]["def"][j].asString());
                     return res;
                 }(),
                 values: [&](){
-                    vector<string> res;
+                    vector<pair<string, string> > res;
                     for (int j = 0; j < orig[i]["values"].size(); j++) 
-                        res.push_back(orig[i]["values"][j].asString());
+                        res.push_back({
+                            orig[i]["values"][j]["name"].asString(),
+                            orig[i]["values"][j]["title"].asString()
+                        });
                     return res;
                 }(),
                 description: orig[i]["description"].asString(),
@@ -795,7 +818,7 @@ Search constructDefaultSearchOption(vector<Search> searches, string defaultSearc
             result.options[i].file.def = options[result.options[i].file.query];
         } else if (result.options[i].type == "multi" && options.find(result.options[i].multi.query) != options.end()){
             for (int j = 0; j < result.options[i].multi.def.size(); j++) 
-                result.options[i].multi.def[j] = (bool)atoi(options[result.options[i].multi.query + to_string(j)].c_str());
+                result.options[i].multi.def[j] = options[result.options[i].multi.query + to_string(j)];
         } else if (result.options[i].type == "textArea" && options.find(result.options[i].textArea.query) != options.end()){
             result.options[i].textArea.def = options[result.options[i].textArea.query];
         } else if (result.options[i].type == "serverItem" && options.find(result.options[i].serverItem.query) != options.end()){
@@ -845,21 +868,25 @@ argvar argResolver(argvar source, Json::Value options, string localization) {
             if (source.find(name) == source.end()) result[name] = options[i]["def"].asString();
             else result[name] = source[name];
         } else if (options[i]["type"].asString() == "select") {
-            if (source.find(name) == source.end()) result[name] = options[i]["values"][options[i]["def"].asInt()].asString();
-            else result[name] = options[i]["values"][atoi(source[name].c_str())].asString();
+            if (source.find(name) == source.end()) result[name] = options[i]["def"].asInt();
+            else result[name] = source[name];
+            for (int j = 0; j < options[i]["values"].size(); j++)
+                if (options[i]["values"][j]["name"].asString() == result[name]) result[name] = options[i]["values"][j]["title"].asString();
         } else if (options[i]["type"].asString() == "localizationItem") {
             int id = atoi(source[name].c_str());
             if (id == 0) result[name] = "default";
             else result[name] = i18n_raw[id - 1]["name"].asString();
         } else if (options[i]["type"].asString() == "multi") {
-            if (source[name].size() != options[i]["values"].size()) {
+            if (source.find(name) == source.end()) {
                 source[name] = "";
-                for (int j = 0; j < options[i]["values"].size(); j++) source[name] += '0' + options[i]["def"][j].asInt();
-            } vector<string> res; Json::Value tmp = Json::arrayValue;
-            for (int j = 0; j < options[i]["values"].size(); j++)
-                if (source[name][j] == '1')
-                    res.push_back(options[i]["values"][j].asString()),
-                    tmp.append(options[i]["values"][j].asString());
+                for (int j = 0; j < options[i]["def"].size(); j++) 
+                    source[name] += (j ? "," : "") + options[i]["def"][j].asString();
+            }
+            vector<string> res; Json::Value tmp = Json::arrayValue;
+            res = explode(",", source[name]);
+            if (source[name] == "") res = {};
+            for (int j = 0; j < res.size(); j++) for (int k = 0; k < options[i]["values"].size(); k++)
+                if (options[i]["values"][k]["name"].asString() == res[j]) tmp.append(options[i]["values"][k]["title"].asString());
             result[name] = json_encode(tmp);
             for (int j = 0; j < options[i]["variables"].size(); j++) {
                 auto item = options[i]["variables"][j];
@@ -874,23 +901,11 @@ argvar argResolver(argvar source, Json::Value options, string localization) {
                 if (res.size() == 0) result[varName] += item["default"].asString(); // 防爆用
                 result[varName] += ")";
             }
-        } else if (options[i]["type"].asString() == "serverItem") {
-            source[name] = str_replace("\\\"", "\"", source[name]);
-            result[name] = json_decode(source[name])["name"].asString();
-            string tableName = options[i]["itemType"].asString();
-            tableName[0] += 'A' - 'a';
-            result[name + ".id"] = result[name] == "" ? "" : db.query("SELECT id FROM " + tableName + " WHERE name = \"" + result[name] + "\"", tableName)[0]["id"];
-            if (result[name] == "") result[name] = source[name];
         } else if (options[i]["type"].asString() == "serverItems") {
-            string tableName = options[i]["itemType"].asString();
-            tableName[0] += 'A' - 'a';
-            string sql = "SELECT id, name, title FROM " + tableName + " WHERE (localization = \"" + localization +
-                "\" OR localization = \"default\") ORDER BY CASE WHEN localization = \"default\" THEN 1 WHEN localization != \"default\" THEN 0 END ASC";
-            sql = "SELECT * FROM (" + sql + ") AS A GROUP BY name";
-            sql = "SELECT * FROM (" + sql + ") AS B ORDER BY id ASC";
-            auto res = db.query(sql, tableName);
+            vector<string> tmp2 = explode(",", source[name]);
+            if (source[name] == "") tmp2 = {};
             Json::Value tmp;
-            for (int j = 0; j < source[name].size(); j++) if (source[name][j] == '1') tmp.append(res[j]["name"]);
+            for (int j = 0; j < tmp2.size(); j++) tmp.append(tmp2[j]);
             result[name] = json_encode(tmp);
         } else result[name] = source[name];
     } return result;

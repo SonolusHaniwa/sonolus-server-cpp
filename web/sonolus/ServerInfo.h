@@ -26,20 +26,26 @@ auto ServerInfo = [](client_conn conn, http_request request, param argv){
     ServerInfo["configuration"]["options"].append(SearchSelectOption({
         query: "source",
         name: "Data Source",
-        def: 0,
+        def: appConfig["server.data.prefix"][0]["name"].asString(),
         values: [&](){
-            vector<string> values;
-            for (int i = 0; i < appConfig["server.data.prefix"].size(); i++) values.push_back(appConfig["server.data.prefix"][i]["name"].asString());
+            vector<pair<string, string> > values;
+            for (int i = 0; i < appConfig["server.data.prefix"].size(); i++) values.push_back({
+                appConfig["server.data.prefix"][i]["name"].asString(),
+                appConfig["server.data.prefix"][i]["title"].asString()
+            });
             return values;
         }(),
     }).toJsonObject());
     ServerInfo["configuration"]["options"].append(SearchSelectOption({
         query: "banner",
         name: "Banner Image",
-        def: 0,
+        def: appConfig["server.banner"][0]["name"].asString(),
         values: [&](){
-            vector<string> values;
-            for (int i = 0; i < appConfig["server.banner"].size(); i++) values.push_back(appConfig["server.banner"][i]["name"].asString());
+            vector<pair<string, string> > values;
+            for (int i = 0; i < appConfig["server.banner"].size(); i++) values.push_back({
+                appConfig["server.banner"][i]["name"].asString(),
+                appConfig["server.banner"][i]["title"].asString()
+            });
             return values;
         }(),
     }).toJsonObject());
