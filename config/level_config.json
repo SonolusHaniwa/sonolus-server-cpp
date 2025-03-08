@@ -44,24 +44,28 @@
                     "query": "keywords",
                     "name": "#KEYWORDS",
                     "type": "text",
+                    "required": false,
                     "placeholder": "#KEYWORDS_PLACEHOLDER"
                 },
                 {
                     "query": "artist",
                     "name": "#ARTISTS",
                     "type": "text",
+                    "required": false,
                     "placeholder": "#ARTISTS_PLACEHOLDER"
                 },
                 {
                     "query": "author",
                     "name": "#AUTHOR",
                     "type": "text",
+                    "required": false,
                     "placeholder": "#AUTHOR_PLACEHOLDER"
                 },
                 {
                     "query": "difficulty",
                     "name": "#DIFFICULTY",
                     "type": "multi",
+                    "required": false,
                     "def": [ "EZ", "HD", "IN", "AT", "SP" ],
                     "values": [
                         { "name": "EZ", "title": "Easy" },
@@ -91,6 +95,7 @@
                     "def": 1,
                     "min": 1,
                     "max": 50,
+                    "required": false,
                     "step": 1
                 },
                 {
@@ -100,12 +105,14 @@
                     "def": 50,
                     "min": 1,
                     "max": 50,
+                    "required": false,
                     "step": 1
                 },
                 {
                     "query": "random",
                     "name": "#RANDOM",
                     "type": "toggle",
+                    "required": false,
                     "def": 0
                 }
             ],

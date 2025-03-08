@@ -21,7 +21,7 @@
         { "name": 0, "title": "Phigros Banner", "hash": "b4b42df0b336e852d14b4d334c3d99f8992626d8" },
         { "name": 1, "title": "Sirius 1st Anniversary", "hash": "ff4aeb7f818d14508dd98699d71102fc57547c44" }
     ],
-    "server.rootUrl": "192.168.137.1:8080",
+    "server.rootUrl": "192.168.0.12:8080",
     "server.data.prefix": [
         { "name": 0, "title": "Default Data Source", "url": "" }
     ],

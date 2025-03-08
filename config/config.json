@@ -18,7 +18,7 @@
         "Record": 1
     },
     "server.listenHost": "0.0.0.0",
-    "server.listenPort": 8080,
+    "server.listenPort": 10086,
     "server.enableSSL": false,
     "server.httpsCacert": "cert.pem",
     "server.httpsPrivkey": "privkey.pem",
@@ -26,7 +26,7 @@
     "logSystem.debug": false,
     "logSystem.target": 1,
     "logSystem.targetFile": "./log.txt",
-    "sonolus.version": "0.8.9",
+    "sonolus.version": "0.8.11",
     "sonolus.itemsPerPage": 20,
     "session.expireTime": 30,
     "export.retryTime": 5,
