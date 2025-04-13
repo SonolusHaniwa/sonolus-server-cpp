@@ -3,8 +3,8 @@
 using namespace std;
 #define defineToString(str) #str
 
-std::string sonolus_server_version = "1.6.6";
-std::string Maximum_Sonolus_Version = "0.8.9";
+std::string sonolus_server_version = "1.6.7";
+std::string Maximum_Sonolus_Version = "0.8.11";
 std::string Sonolus_Version = Maximum_Sonolus_Version;
 Json::Value appConfig, studiosConfig;
 Json::Value i18n, i18n_raw;
